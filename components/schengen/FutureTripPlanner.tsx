@@ -1,0 +1,231 @@
+'use client'
+
+import { useState } from 'react'
+import { validateFutureTrip, getSafeTravelDates, isSchengenCountry } from '@/lib/schengen-calculator'
+import type { CountryVisit } from '@/types/global'
+import { countries } from '@/data/countries'
+
+interface FutureTripPlannerProps {
+  visits: CountryVisit[]
+}
+
+export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
+  const [plannedCountry, setPlannedCountry] = useState('')
+  const [entryDate, setEntryDate] = useState('')
+  const [exitDate, setExitDate] = useState('')
+  const [desiredDuration, setDesiredDuration] = useState('7')
+  const [validation, setValidation] = useState<ReturnType<typeof validateFutureTrip> | null>(null)
+  const [safeDates, setSafeDates] = useState<{ startDate: Date; endDate: Date } | null>(null)
+
+  const schengenCountries = countries.filter(country => isSchengenCountry(country.name))
+
+  const handleValidate = () => {
+    if (!plannedCountry || !entryDate || !exitDate) {
+      alert('모든 필드를 입력해주세요.')
+      return
+    }
+
+    const entry = new Date(entryDate)
+    const exit = new Date(exitDate)
+
+    if (exit <= entry) {
+      alert('출국일은 입국일보다 늦어야 합니다.')
+      return
+    }
+
+    const result = validateFutureTrip(visits, entry, exit, plannedCountry)
+    setValidation(result)
+  }
+
+  const handleFindSafeDates = () => {
+    if (!plannedCountry || !desiredDuration) {
+      alert('국가와 희망 체류 기간을 입력해주세요.')
+      return
+    }
+
+    const duration = parseInt(desiredDuration)
+    if (duration < 1 || duration > 90) {
+      alert('체류 기간은 1일에서 90일 사이여야 합니다.')
+      return
+    }
+
+    const safe = getSafeTravelDates(visits, duration)
+    setSafeDates(safe)
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* 미래 여행 계획 검증 */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold mb-4">🔮 미래 여행 계획 검증</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              방문 예정 국가
+            </label>
+            <select
+              value={plannedCountry}
+              onChange={(e) => setPlannedCountry(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">국가 선택</option>
+              <optgroup label="셰겐 지역">
+                {schengenCountries.map(country => (
+                  <option key={country.code} value={country.name}>
+                    {country.flag} {country.name}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="비셰겐 지역">
+                {countries.filter(c => !isSchengenCountry(c.name)).map(country => (
+                  <option key={country.code} value={country.name}>
+                    {country.flag} {country.name}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              입국 예정일
+            </label>
+            <input
+              type="date"
+              value={entryDate}
+              onChange={(e) => setEntryDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              출국 예정일
+            </label>
+            <input
+              type="date"
+              value={exitDate}
+              onChange={(e) => setExitDate(e.target.value)}
+              min={entryDate || new Date().toISOString().split('T')[0]}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={handleValidate}
+          className="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          여행 계획 검증하기
+        </button>
+
+        {validation && (
+          <div className={`mt-4 p-4 rounded-lg ${validation.canTravel ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+            <div className="space-y-2">
+              {validation.warnings.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-red-900 mb-1">경고</h4>
+                  {validation.warnings.map((warning, idx) => (
+                    <p key={idx} className="text-red-800 text-sm">{warning}</p>
+                  ))}
+                </div>
+              )}
+              
+              {validation.suggestions.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-1">제안</h4>
+                  {validation.suggestions.map((suggestion, idx) => (
+                    <p key={idx} className="text-gray-700 text-sm">{suggestion}</p>
+                  ))}
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-200">
+                <div>
+                  <span className="text-sm text-gray-600">최대 체류 가능일:</span>
+                  <p className="font-semibold">{validation.maxStayDays}일</p>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">여행 후 남은 일수:</span>
+                  <p className="font-semibold">{validation.remainingDaysAfterTrip}일</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 안전한 여행 날짜 찾기 */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold mb-4">📅 안전한 여행 날짜 찾기</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              희망 체류 기간 (일)
+            </label>
+            <input
+              type="number"
+              value={desiredDuration}
+              onChange={(e) => setDesiredDuration(e.target.value)}
+              min="1"
+              max="90"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex items-end">
+            <button
+              onClick={handleFindSafeDates}
+              className="w-full md:w-auto px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              안전한 날짜 찾기
+            </button>
+          </div>
+        </div>
+
+        {safeDates && (
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 className="font-medium text-blue-900 mb-2">추천 여행 날짜</h4>
+            <p className="text-blue-800">
+              <span className="font-semibold">
+                {safeDates.startDate.toLocaleDateString('ko-KR')}
+              </span>
+              {' ~ '}
+              <span className="font-semibold">
+                {safeDates.endDate.toLocaleDateString('ko-KR')}
+              </span>
+              {' '}
+              ({desiredDuration}일간)
+            </p>
+            <p className="text-sm text-blue-700 mt-1">
+              이 날짜로 여행하면 셰겐 90/180일 규칙을 준수할 수 있습니다.
+            </p>
+          </div>
+        )}
+
+        {safeDates === null && desiredDuration && (
+          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800">
+              향후 1년 내에 {desiredDuration}일간 안전하게 여행할 수 있는 날짜를 찾을 수 없습니다.
+              더 짧은 기간을 고려해보세요.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* 도움말 */}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h4 className="font-medium text-gray-900 mb-2">💡 사용 방법</h4>
+        <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+          <li>미래 여행을 계획하기 전에 셰겐 규정 준수 여부를 확인하세요</li>
+          <li>경고가 표시되면 대안 날짜나 기간을 고려하세요</li>
+          <li>안전한 날짜 찾기 기능으로 규정을 준수하는 여행 날짜를 자동으로 찾을 수 있습니다</li>
+          <li>비셰겐 국가는 90/180일 규칙이 적용되지 않습니다</li>
+        </ul>
+      </div>
+    </div>
+  )
+}

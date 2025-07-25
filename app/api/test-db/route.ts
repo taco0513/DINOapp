@@ -1,0 +1,30 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+export async function GET(request: NextRequest) {
+  try {
+    // Test database connection
+    const userCount = await prisma.user.count()
+    const visitCount = await prisma.countryVisit.count()
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Database connection successful',
+      data: {
+        userCount,
+        visitCount,
+        timestamp: new Date().toISOString()
+      }
+    })
+  } catch (error) {
+    console.error('Database connection error:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Database connection failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
+  }
+}

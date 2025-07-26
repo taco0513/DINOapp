@@ -1,22 +1,24 @@
 # 현재 Google OAuth에 추가해야 할 URL들
 
-## 🔗 최신 배포 URL (2025-07-26 19:50)
+## 🔗 최신 상태 (2025-07-26 20:50)
 
-**새로운 Vercel 배포 URL**: `dino-lppbjyrci-zimos-projects-6824b9bc.vercel.app`
-
-⚠️ **최신 배포 에러**: `dino-g4ekb6944-zimos-projects-6824b9bc.vercel.app` (Error 상태)  
-✅ **사용할 URL**: 이전 성공 배포 사용
+✅ **프로덕션 도메인**: `dinoapp.net` (DNS 전파 완료)  
+✅ **Vercel 배포**: `dino-eayk7s794-zimos-projects-6824b9bc.vercel.app` (안정)
 
 ## 📝 Google Console에 추가할 URL들
 
 ### Authorized JavaScript origins
 ```
-https://dino-lppbjyrci-zimos-projects-6824b9bc.vercel.app
+https://dinoapp.net
+https://www.dinoapp.net
+https://dino-eayk7s794-zimos-projects-6824b9bc.vercel.app
 ```
 
 ### Authorized redirect URIs  
 ```
-https://dino-lppbjyrci-zimos-projects-6824b9bc.vercel.app/api/auth/callback/google
+https://dinoapp.net/api/auth/callback/google
+https://www.dinoapp.net/api/auth/callback/google
+https://dino-eayk7s794-zimos-projects-6824b9bc.vercel.app/api/auth/callback/google
 ```
 
 ## 🔧 빠른 Google Console 업데이트 방법

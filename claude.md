@@ -9,6 +9,13 @@
 
 ## 🏗️ Development Guidelines
 
+### UI/Design Principles
+- **와이어프레임 중심 개발**: 복잡한 CSS 스타일링 대신 기능적인 와이어프레임에 집중
+- **Tailwind CSS 기본 사용**: 간단한 레이아웃과 기본 스타일만 적용
+- **불필요한 디자인 피하기**: 애니메이션, 복잡한 효과, 커스텀 스타일 최소화
+- **PostCSS 설정 유지**: Tailwind CSS가 작동하도록 PostCSS 설정 유지
+- **CSS 에러 방지**: 복잡한 스타일링으로 인한 배포 문제 방지
+
 ### Code Standards
 - TypeScript strict 모드 사용하여 타입 안전성 보장
 - Next.js 15 app router 컨벤션 준수

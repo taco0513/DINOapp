@@ -1,12 +1,9 @@
 import GoogleProvider from 'next-auth/providers/google'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import type { NextAuthOptions } from 'next-auth'
-import { prisma } from '@/lib/prisma'
 
-// NextAuth URL 설정을 간단하게 처리
+// Simplified NextAuth configuration without adapter for testing
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -22,12 +19,21 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async session({ session, user }) {
-      // With database sessions, user data comes from database
-      if (session.user && user) {
-        session.user.id = user.id
-        // @ts-ignore - custom property for Google access
-        session.user.googleId = user.googleId
+    async jwt({ token, account, user }) {
+      if (account && user) {
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+        token.picture = user.image
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.id as string
+        session.user.email = token.email as string
+        session.user.name = token.name as string
+        session.user.image = token.picture as string
       }
       return session
     },
@@ -37,14 +43,13 @@ export const authOptions: NextAuthOptions = {
         email: user?.email
       })
       
-      // Let PrismaAdapter handle user creation/updates
-      // Just verify the sign-in is valid
+      // For testing, just allow Google sign-in
       if (account?.provider === 'google' && user?.email) {
         console.log('[NextAuth] Google sign-in successful for:', user.email)
         return true
       }
       
-      return true
+      return false
     },
     async redirect({ url, baseUrl }) {
       console.log('[NextAuth] Redirect:', { url, baseUrl })
@@ -68,7 +73,7 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error'
   },
   session: {
-    strategy: 'database',
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,

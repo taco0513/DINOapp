@@ -11,7 +11,10 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar'
+          scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar',
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code'
         }
       }
     })
@@ -19,6 +22,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account, user }) {
       if (account && user) {
+        token.id = user.id
         token.googleId = account.providerAccountId
         token.accessToken = account.access_token
         token.refreshToken = account.refresh_token
@@ -27,10 +31,10 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub!
-        // @ts-ignore - googleId is custom property
+        session.user.id = token.id as string
+        // @ts-ignore - custom properties
         session.user.googleId = token.googleId
-        // @ts-ignore - accessToken is custom property
+        // @ts-ignore - custom property
         session.accessToken = token.accessToken
       }
       return session
@@ -61,7 +65,7 @@ export const authOptions: NextAuthOptions = {
           return false
         }
       }
-      return false
+      return true
     }
   },
   pages: {
@@ -72,5 +76,19 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: process.env.NODE_ENV === 'development'
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token' 
+        : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
+    }
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: true
 }

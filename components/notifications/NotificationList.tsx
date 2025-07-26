@@ -229,7 +229,7 @@ export default function NotificationList({
                     <div className="flex items-center gap-3 mt-3">
                       {notification.actionUrl && (
                         <Link
-                          href={notification.actionUrl}
+                          href={notification.actionUrl as any}
                           onClick={() => markAsRead(notification.id)}
                           className="text-sm text-blue-600 hover:text-blue-700"
                         >
@@ -258,7 +258,7 @@ export default function NotificationList({
       {limit && notifications.length > limit && (
         <div className="mt-4 text-center">
           <Link
-            href="/notifications"
+            href="/"
             className="text-sm text-blue-600 hover:text-blue-700"
           >
             모든 알림 보기 ({notifications.length})

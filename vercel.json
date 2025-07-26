@@ -1,18 +1,23 @@
 {
   "version": 2,
-  "alias": ["dinoapp.net"],
   "build": {
     "env": {
-      "NEXTAUTH_URL": "https://dinoapp.net",
-      "NODE_ENV": "production"
+      "NODE_ENV": "production",
+      "SKIP_ENV_VALIDATION": "true"
     }
   },
   "functions": {
     "app/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024
     },
     "app/api/gmail/**/*.ts": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/calendar/**/*.ts": {
+      "maxDuration": 45,
+      "memory": 1024
     }
   },
   "headers": [
@@ -21,7 +26,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://dinoapp.net"
+          "value": "https://dino-app-xi.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",
@@ -96,14 +101,27 @@
           "value": "public, max-age=31536000"
         }
       ]
-    }
-  ],
-  "rewrites": [
+    },
     {
-      "source": "/api/health",
-      "destination": "/api/test-db"
+      "source": "/favicon.ico",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
+      ]
     }
   ],
+  "rewrites": [],
   "redirects": [
     {
       "source": "/dashboard",
@@ -113,7 +131,9 @@
   ],
   "cleanUrls": true,
   "trailingSlash": false,
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev"
+  "installCommand": "npm ci",
+  "buildCommand": "npm run vercel-build",
+  "devCommand": "npm run dev",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
 }

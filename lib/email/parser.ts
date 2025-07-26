@@ -72,6 +72,7 @@ export class EmailParser {
 
       const result: ParsedEmailData = {
         ...extractedData,
+        type: extractedData.type || 'other',
         provider: provider.name,
         rawSubject: this.options.includeRawData ? subject : '',
         rawBody: this.options.includeRawData ? body : '',

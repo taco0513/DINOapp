@@ -74,6 +74,7 @@ export async function getUserTrips(options: TripQueryOptions): Promise<CountryVi
     skip: offset,
     select: {
       id: true,
+      userId: true,
       country: true,
       entryDate: true,
       exitDate: true,
@@ -86,7 +87,13 @@ export async function getUserTrips(options: TripQueryOptions): Promise<CountryVi
     }
   })
 
-  return trips as CountryVisit[]
+  return trips.map(trip => ({
+    ...trip,
+    entryDate: trip.entryDate.toISOString(),
+    exitDate: trip.exitDate?.toISOString() || null,
+    visaType: trip.visaType as any,
+    passportCountry: trip.passportCountry as any
+  })) as CountryVisit[]
 }
 
 /**
@@ -154,7 +161,13 @@ export async function getSchengenTrips(options: SchengenQueryOptions): Promise<C
     }
   })
 
-  return trips as CountryVisit[]
+  return trips.map(trip => ({
+    ...trip,
+    entryDate: trip.entryDate.toISOString(),
+    exitDate: trip.exitDate?.toISOString() || null,
+    visaType: trip.visaType as any,
+    passportCountry: trip.passportCountry as any
+  })) as CountryVisit[]
 }
 
 /**
@@ -238,12 +251,14 @@ export async function getUserStats(userId: string) {
 export async function createMultipleTrips(userId: string, trips: Omit<CountryVisit, 'id' | 'userId' | 'createdAt' | 'updatedAt'>[]) {
   const data = trips.map(trip => ({
     ...trip,
-    userId
+    userId,
+    passportCountry: trip.passportCountry || 'Unknown',
+    entryDate: new Date(trip.entryDate),
+    exitDate: trip.exitDate ? new Date(trip.exitDate) : null
   }))
 
   return await prisma.countryVisit.createMany({
-    data,
-    skipDuplicates: true
+    data
   })
 }
 
@@ -258,20 +273,17 @@ export async function searchTrips(userId: string, query: string, limit = 20): Pr
       OR: [
         {
           country: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         },
         {
           notes: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         },
         {
           visaType: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         }
       ]
@@ -282,6 +294,7 @@ export async function searchTrips(userId: string, query: string, limit = 20): Pr
     take: limit,
     select: {
       id: true,
+      userId: true,
       country: true,
       entryDate: true,
       exitDate: true,
@@ -294,7 +307,13 @@ export async function searchTrips(userId: string, query: string, limit = 20): Pr
     }
   })
 
-  return trips as CountryVisit[]
+  return trips.map(trip => ({
+    ...trip,
+    entryDate: trip.entryDate.toISOString(),
+    exitDate: trip.exitDate?.toISOString() || null,
+    visaType: trip.visaType as any,
+    passportCountry: trip.passportCountry as any
+  })) as CountryVisit[]
 }
 
 /**

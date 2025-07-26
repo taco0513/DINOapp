@@ -373,12 +373,20 @@ export async function findExistingTravelEvents(
     return response.data.items?.filter(event => 
       event.description?.includes(emailId)
     ).map(event => ({
-      id: event.id,
+      id: event.id || undefined,
       summary: event.summary || '',
-      description: event.description,
-      start: event.start || {},
-      end: event.end || {},
-      location: event.location
+      description: event.description || undefined,
+      start: {
+        dateTime: event.start?.dateTime || undefined,
+        date: event.start?.date || undefined,
+        timeZone: event.start?.timeZone || undefined
+      },
+      end: {
+        dateTime: event.end?.dateTime || undefined,
+        date: event.end?.date || undefined,
+        timeZone: event.end?.timeZone || undefined
+      },
+      location: event.location || undefined
     })) || []
     
   } catch (error) {

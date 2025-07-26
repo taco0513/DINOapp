@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
@@ -34,8 +34,9 @@ async function checkTripOwnership(tripId: string, userEmail: string) {
 // GET /api/trips/[id] - Get specific trip
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
@@ -46,7 +47,7 @@ export async function GET(
       )
     }
 
-    const trip = await checkTripOwnership(params.id, session.user.email)
+    const trip = await checkTripOwnership(id, session.user.email)
 
     if (!trip) {
       return NextResponse.json(
@@ -72,8 +73,9 @@ export async function GET(
 // PUT /api/trips/[id] - Update trip
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
@@ -85,7 +87,7 @@ export async function PUT(
     }
 
     // Check trip ownership
-    const existingTrip = await checkTripOwnership(params.id, session.user.email)
+    const existingTrip = await checkTripOwnership(id, session.user.email)
 
     if (!existingTrip) {
       return NextResponse.json(
@@ -101,7 +103,7 @@ export async function PUT(
 
     // Update trip
     const updatedTrip = await prisma.countryVisit.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...(validatedData.country && { country: validatedData.country }),
         ...(validatedData.entryDate && { entryDate: new Date(validatedData.entryDate) }),
@@ -143,8 +145,9 @@ export async function PUT(
 // DELETE /api/trips/[id] - Delete trip
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
@@ -156,7 +159,7 @@ export async function DELETE(
     }
 
     // Check trip ownership
-    const existingTrip = await checkTripOwnership(params.id, session.user.email)
+    const existingTrip = await checkTripOwnership(id, session.user.email)
 
     if (!existingTrip) {
       return NextResponse.json(
@@ -167,7 +170,7 @@ export async function DELETE(
 
     // Delete trip
     await prisma.countryVisit.delete({
-      where: { id: params.id }
+      where: { id: id }
     })
 
     return NextResponse.json({

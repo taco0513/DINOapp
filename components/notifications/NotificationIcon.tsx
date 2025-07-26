@@ -73,7 +73,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">알림</h3>
               <Link
-                href="/notifications"
+                href="/"
                 onClick={() => setShowDropdown(false)}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
@@ -139,7 +139,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
           {recentNotifications.length > 0 && (
             <div className="p-4 border-t border-gray-200">
               <Link
-                href="/notifications"
+                href="/"
                 onClick={() => setShowDropdown(false)}
                 className="block w-full text-center text-sm text-blue-600 hover:text-blue-700 py-2"
               >

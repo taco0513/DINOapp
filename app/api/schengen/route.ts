@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { calculateSchengenStatus, getSchengenWarnings } from '@/lib/schengen-calculator'
 
@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
     // Convert Prisma dates to match our types
     const visits = user.countryVisits.map(visit => ({
       id: visit.id,
+      userId: user.id,
       country: visit.country,
       entryDate: visit.entryDate.toISOString(),
       exitDate: visit.exitDate?.toISOString() || null,
@@ -42,8 +43,8 @@ export async function GET(request: NextRequest) {
       maxDays: visit.maxDays,
       passportCountry: visit.passportCountry as any,
       notes: visit.notes || undefined,
-      createdAt: visit.createdAt.toISOString(),
-      updatedAt: visit.updatedAt.toISOString()
+      createdAt: new Date(visit.createdAt),
+      updatedAt: new Date(visit.updatedAt)
     }))
 
     // Calculate Schengen status

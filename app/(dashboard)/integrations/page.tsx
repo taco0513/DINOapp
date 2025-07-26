@@ -57,31 +57,23 @@ export default function IntegrationsPage() {
 
   // 연결 상태 확인
   useEffect(() => {
-    if (status === 'authenticated' && session?.accessToken) {
+    if (status === 'authenticated' && session) {
       checkConnections()
     }
   }, [session, status])
 
   const checkConnections = async () => {
-    if (!session?.accessToken) return
+    if (!session) return
 
     setConnectionStatus(prev => ({ ...prev, loading: true }))
     
     try {
       // Gmail 연결 상태 확인
-      const gmailResponse = await fetch('/api/gmail/check', {
-        headers: {
-          'Authorization': `Bearer ${session.accessToken}`
-        }
-      })
+      const gmailResponse = await fetch('/api/gmail/check')
       const gmailData = await gmailResponse.json()
       
       // Calendar 연결 상태 확인
-      const calendarResponse = await fetch('/api/calendar/check', {
-        headers: {
-          'Authorization': `Bearer ${session.accessToken}`
-        }
-      })
+      const calendarResponse = await fetch('/api/calendar/check')
       const calendarData = await calendarResponse.json()
       
       setConnectionStatus({

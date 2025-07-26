@@ -102,7 +102,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
   }
 
   const startAnalysis = async () => {
-    if (!session?.accessToken) {
+    if (!session) {
       setError('인증이 필요합니다.')
       return
     }

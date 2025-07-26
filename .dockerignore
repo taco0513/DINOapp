@@ -1,0 +1,71 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production builds
+.next
+out
+dist
+build
+
+# Development files
+.env*.local
+.env.example
+
+# Testing
+coverage
+.nyc_output
+
+# Caching
+.next/cache
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# Documentation
+README.md
+docs/
+documentation/
+
+# Development tools
+.eslintrc*
+.prettierrc*
+jest.config.js
+tailwind.config.js
+postcss.config.js
+
+# Archive files
+bmad-core/
+bmad-temp/
+
+# Temporary files
+tmp/
+temp/

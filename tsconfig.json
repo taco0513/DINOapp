@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
+    "target": "ES2022",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "es2022"
     ],
+    "types": ["node"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -27,7 +31,18 @@
         "./*"
       ]
     },
-    "target": "ES2017"
+    // TypeScript 엄격성 설정 최적화
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": false,
+    "noImplicitOverride": true,
+    // 성능 최적화
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false
   },
   "include": [
     "next-env.d.ts",
@@ -36,6 +51,18 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
-  ]
+    "node_modules",
+    ".next",
+    "out",
+    "dist",
+    "build",
+    "coverage",
+    ".vercel",
+    "lib/gmail-analytics-broken.ts"
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }

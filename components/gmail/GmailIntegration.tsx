@@ -393,7 +393,16 @@ export default function GmailIntegration() {
             
             {activeTab === 'calendar' && (
               <CalendarSync 
-                travelInfos={travelEmails} 
+                travelInfos={travelEmails.map(email => ({
+                  ...email,
+                  extractedData: email.extractedData || {
+                    dates: [],
+                    airports: [],
+                    flights: [],
+                    bookingCodes: [],
+                    matchedPatterns: []
+                  }
+                }))} 
                 onSyncComplete={(result) => {
                   console.log('Calendar sync completed:', result)
                 }}

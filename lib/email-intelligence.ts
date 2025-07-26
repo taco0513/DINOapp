@@ -313,7 +313,7 @@ function mergeTravelInfos(info1: ExtractedTravelInfo, info2: ExtractedTravelInfo
   
   for (const field of fields) {
     if (!merged[field] && secondary[field]) {
-      merged[field] = secondary[field] as any
+      ;(merged as any)[field] = secondary[field]
     }
   }
   

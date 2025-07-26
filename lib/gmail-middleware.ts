@@ -55,7 +55,7 @@ export async function withGmailAuth(
     // 1. 세션 확인
     const session = await getServerSession(authOptions)
     
-    if (!session || !session.accessToken) {
+    if (!session) {
       return NextResponse.json(
         { 
           error: 'Unauthorized',
@@ -178,7 +178,7 @@ export function getRateLimitStatus(userId: string) {
  * Gmail API 응답을 정리합니다 (개인정보 보호)
  * @param data 원본 데이터
  */
-export function sanitizeGmailResponse(data: any) {
+export function sanitizeGmailResponse(data: any): any {
   // 이메일 주소 마스킹
   const maskEmail = (email: string) => {
     if (!email || !email.includes('@')) return email

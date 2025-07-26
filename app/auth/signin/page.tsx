@@ -1,33 +1,52 @@
 'use client'
 
-import { signIn, getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function SignInPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(false)
 
+  // Get callback URL from search params or default to dashboard
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
+
   useEffect(() => {
-    // Check if user is already signed in
-    getSession().then((session) => {
-      if (session) {
-        router.push('/dashboard' as any)
-      }
-    })
-  }, [router])
+    // If user is authenticated, redirect to callback URL
+    if (status === 'authenticated' && session) {
+      console.log('[SignIn] User already authenticated, redirecting to:', callbackUrl)
+      router.replace(callbackUrl)
+    }
+  }, [status, session, router, callbackUrl])
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
+    console.log('[SignIn] Starting Google sign in')
+    
     try {
+      // Use default NextAuth redirect behavior
       await signIn('google', {
         callbackUrl: '/dashboard',
-        redirect: true
+        redirect: true // Let NextAuth handle redirects
       })
     } catch (error) {
-      console.error('Sign in failed:', error)
+      console.error('[SignIn] Sign in failed:', error)
       setIsLoading(false)
     }
+  }
+
+  // Show loading state while checking session
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">잠시만 기다려주세요...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

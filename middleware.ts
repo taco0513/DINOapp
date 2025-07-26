@@ -52,14 +52,24 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith('/notifications') ||
       pathname.startsWith('/gmail')) {
     
-    const token = await getToken({ 
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET 
-    })
-    
-    if (!token) {
+    try {
+      const token = await getToken({ 
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET 
+      })
+      
+      console.log('[Middleware] Checking auth for:', pathname, 'Token exists:', !!token)
+      
+      if (!token) {
+        console.log('[Middleware] No token, redirecting to signin')
+        const url = new URL('/auth/signin', request.url)
+        url.searchParams.set('callbackUrl', encodeURIComponent(request.url))
+        return NextResponse.redirect(url)
+      }
+    } catch (error) {
+      console.error('[Middleware] Error checking token:', error)
       const url = new URL('/auth/signin', request.url)
-      url.searchParams.set('callbackUrl', request.url)
+      url.searchParams.set('callbackUrl', encodeURIComponent(request.url))
       return NextResponse.redirect(url)
     }
   }

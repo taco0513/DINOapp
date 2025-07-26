@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import GmailIntegration from '@/components/gmail/GmailIntegration'
 
 export const metadata: Metadata = {
-  title: 'Gmail 통합 - DiNoCal',
+  title: 'Gmail 통합 - DINO',
   description: 'Gmail에서 여행 이메일을 자동으로 분석하여 여행 기록을 생성합니다.'
 }
 

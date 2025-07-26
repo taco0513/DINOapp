@@ -1,0 +1,586 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { 
+  Mail, 
+  Search, 
+  RefreshCw, 
+  CheckCircle, 
+  XCircle, 
+  AlertTriangle,
+  Zap,
+  Filter,
+  Eye,
+  Download,
+  Calendar,
+  MapPin,
+  Plane,
+  Hotel,
+  User,
+  Hash
+} from 'lucide-react'
+import { TravelInfo } from '@/lib/gmail'
+
+interface GmailAnalyzerProps {
+  onAnalysisComplete: (travelInfos: TravelInfo[]) => void
+  onStatsUpdate: (stats: { emailsScanned: number }) => void
+}
+
+interface AnalysisProgress {
+  currentStep: string
+  progress: number
+  totalEmails: number
+  processedEmails: number
+  foundTravelEmails: number
+}
+
+interface FilterOptions {
+  confidence: number
+  maxResults: number
+  dateRange: 'week' | 'month' | 'quarter' | 'year' | 'all'
+  category: 'all' | 'airline' | 'hotel' | 'booking_platform'
+}
+
+export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: GmailAnalyzerProps) {
+  const { data: session } = useSession()
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisProgress, setAnalysisProgress] = useState<AnalysisProgress>({
+    currentStep: '',
+    progress: 0,
+    totalEmails: 0,
+    processedEmails: 0,
+    foundTravelEmails: 0
+  })
+  const [travelInfos, setTravelInfos] = useState<TravelInfo[]>([])
+  const [filteredTravelInfos, setFilteredTravelInfos] = useState<TravelInfo[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [filters, setFilters] = useState<FilterOptions>({
+    confidence: 0.6,
+    maxResults: 50,
+    dateRange: 'quarter',
+    category: 'all'
+  })
+  const [selectedTab, setSelectedTab] = useState<'results' | 'details'>('results')
+
+  // 필터 적용
+  useEffect(() => {
+    if (travelInfos.length === 0) {
+      setFilteredTravelInfos([])
+      return
+    }
+
+    let filtered = travelInfos.filter(info => info.confidence >= filters.confidence)
+
+    if (filters.category !== 'all') {
+      filtered = filtered.filter(info => {
+        const category = getCategoryFromEmail(info)
+        return category === filters.category
+      })
+    }
+
+    setFilteredTravelInfos(filtered)
+  }, [travelInfos, filters])
+
+  const getCategoryFromEmail = (travelInfo: TravelInfo): string => {
+    const subject = travelInfo.subject.toLowerCase()
+    const from = (travelInfo.from || '').toLowerCase()
+    
+    if (subject.includes('hotel') || subject.includes('숙박') || from.includes('booking') || from.includes('agoda')) {
+      return 'hotel'
+    }
+    if (subject.includes('flight') || subject.includes('항공') || from.includes('airline')) {
+      return 'airline'
+    }
+    return 'booking_platform'
+  }
+
+  const startAnalysis = async () => {
+    if (!session?.accessToken) {
+      setError('인증이 필요합니다.')
+      return
+    }
+
+    setIsAnalyzing(true)
+    setError(null)
+    setAnalysisProgress({
+      currentStep: 'Gmail 연결 확인 중...',
+      progress: 0,
+      totalEmails: 0,
+      processedEmails: 0,
+      foundTravelEmails: 0
+    })
+
+    try {
+      // 1단계: Gmail 연결 확인
+      setAnalysisProgress(prev => ({
+        ...prev,
+        currentStep: 'Gmail 연결 상태 확인 중...',
+        progress: 10
+      }))
+
+      const checkResponse = await fetch('/api/gmail/check')
+      const checkData = await checkResponse.json()
+      
+      if (!checkData.connected) {
+        throw new Error('Gmail 연결이 필요합니다.')
+      }
+
+      // 2단계: 이메일 검색 시작
+      setAnalysisProgress(prev => ({
+        ...prev,
+        currentStep: '여행 관련 이메일 검색 중...',
+        progress: 25
+      }))
+
+      // 검색 쿼리 생성
+      const queries = [
+        'subject:(flight OR 항공 OR airline OR boarding)',
+        'subject:(hotel OR 숙박 OR booking OR reservation)',
+        'subject:(travel OR 여행 OR trip OR 예약)',
+        'from:(booking.com OR agoda OR hotels.com OR koreanair OR asiana)'
+      ]
+
+      const searchResults = []
+      let totalFound = 0
+
+      for (let i = 0; i < queries.length; i++) {
+        const query = queries[i]
+        setAnalysisProgress(prev => ({
+          ...prev,
+          currentStep: `검색 중... (${i + 1}/${queries.length})`,
+          progress: 25 + (i * 15)
+        }))
+
+        const searchResponse = await fetch('/api/gmail/search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query,
+            maxResults: Math.ceil(filters.maxResults / queries.length)
+          })
+        })
+
+        if (searchResponse.ok) {
+          const searchData = await searchResponse.json()
+          searchResults.push(...(searchData.messages || []))
+          totalFound += searchData.messages?.length || 0
+        }
+      }
+
+      // 중복 제거
+      const uniqueEmails = Array.from(
+        new Map(searchResults.map(email => [email.id, email])).values()
+      ).slice(0, filters.maxResults)
+
+      setAnalysisProgress(prev => ({
+        ...prev,
+        currentStep: '이메일 내용 분석 중...',
+        progress: 70,
+        totalEmails: uniqueEmails.length
+      }))
+
+      onStatsUpdate({ emailsScanned: uniqueEmails.length })
+
+      // 3단계: 이메일 분석
+      const analyzeResponse = await fetch('/api/gmail/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messageIds: uniqueEmails.map(e => e.id),
+          extractTravelInfo: true
+        })
+      })
+
+      if (!analyzeResponse.ok) {
+        const errorData = await analyzeResponse.json()
+        throw new Error(errorData.message || '이메일 분석 중 오류가 발생했습니다.')
+      }
+
+      const analyzeData = await analyzeResponse.json()
+      const extractedTravelInfos = analyzeData.travelInfos || []
+
+      setAnalysisProgress(prev => ({
+        ...prev,
+        currentStep: '분석 완료!',
+        progress: 100,
+        processedEmails: uniqueEmails.length,
+        foundTravelEmails: extractedTravelInfos.length
+      }))
+
+      setTravelInfos(extractedTravelInfos)
+      onAnalysisComplete(extractedTravelInfos)
+
+    } catch (error) {
+      console.error('Analysis error:', error)
+      setError(error instanceof Error ? error.message : '분석 중 오류가 발생했습니다.')
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
+  const getConfidenceBadge = (confidence: number) => {
+    if (confidence >= 0.8) {
+      return <Badge className="bg-green-100 text-green-800">높음 {Math.round(confidence * 100)}%</Badge>
+    } else if (confidence >= 0.6) {
+      return <Badge className="bg-yellow-100 text-yellow-800">중간 {Math.round(confidence * 100)}%</Badge>
+    } else {
+      return <Badge className="bg-red-100 text-red-800">낮음 {Math.round(confidence * 100)}%</Badge>
+    }
+  }
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'airline': return <Plane className="h-4 w-4" />
+      case 'hotel': return <Hotel className="h-4 w-4" />
+      default: return <Mail className="h-4 w-4" />
+    }
+  }
+
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case 'airline': return '항공사'
+      case 'hotel': return '호텔'
+      case 'booking_platform': return '예약사이트'
+      default: return '기타'
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* 분석 설정 및 시작 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Gmail 이메일 분석
+          </CardTitle>
+          <CardDescription>
+            Gmail에서 여행 관련 이메일을 찾아 여행 정보를 자동으로 추출합니다
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* 분석 설정 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">최대 이메일 수</label>
+              <select
+                value={filters.maxResults}
+                onChange={(e) => setFilters(prev => ({ ...prev, maxResults: parseInt(e.target.value) }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                disabled={isAnalyzing}
+              >
+                <option value={20}>20개</option>
+                <option value={50}>50개</option>
+                <option value={100}>100개</option>
+                <option value={200}>200개</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">검색 기간</label>
+              <select
+                value={filters.dateRange}
+                onChange={(e) => setFilters(prev => ({ ...prev, dateRange: e.target.value as any }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                disabled={isAnalyzing}
+              >
+                <option value="week">최근 1주</option>
+                <option value="month">최근 1개월</option>
+                <option value="quarter">최근 3개월</option>
+                <option value="year">최근 1년</option>
+                <option value="all">전체</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">최소 신뢰도</label>
+              <select
+                value={filters.confidence}
+                onChange={(e) => setFilters(prev => ({ ...prev, confidence: parseFloat(e.target.value) }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                disabled={isAnalyzing}
+              >
+                <option value={0.3}>30% 이상</option>
+                <option value={0.5}>50% 이상</option>
+                <option value={0.6}>60% 이상</option>
+                <option value={0.8}>80% 이상</option>
+              </select>
+            </div>
+
+            <div className="flex items-end">
+              <Button
+                onClick={startAnalysis}
+                disabled={isAnalyzing}
+                className="w-full"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    분석 중...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="h-4 w-4 mr-2" />
+                    분석 시작
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* 진행 상황 */}
+          {isAnalyzing && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">{analysisProgress.currentStep}</span>
+                <span className="text-sm text-muted-foreground">
+                  {analysisProgress.progress}%
+                </span>
+              </div>
+              <Progress value={analysisProgress.progress} className="w-full" />
+              
+              {analysisProgress.totalEmails > 0 && (
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="text-center">
+                    <div className="font-medium">{analysisProgress.totalEmails}</div>
+                    <div className="text-muted-foreground">총 이메일</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium">{analysisProgress.processedEmails}</div>
+                    <div className="text-muted-foreground">처리됨</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium">{analysisProgress.foundTravelEmails}</div>
+                    <div className="text-muted-foreground">여행정보 발견</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 에러 메시지 */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 분석 결과 */}
+      {filteredTravelInfos.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                분석 결과
+              </div>
+              <Badge variant="outline">
+                {filteredTravelInfos.length}개 발견
+              </Badge>
+            </CardTitle>
+            <CardDescription>
+              추출된 여행 정보를 확인하고 캘린더에 동기화할 수 있습니다
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* 필터 및 요약 */}
+            <div className="mb-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  <span className="text-sm font-medium">필터:</span>
+                </div>
+                <select
+                  value={filters.category}
+                  onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value as any }))}
+                  className="px-3 py-1 border border-gray-300 rounded text-sm"
+                >
+                  <option value="all">모든 카테고리</option>
+                  <option value="airline">항공사</option>
+                  <option value="hotel">호텔</option>
+                  <option value="booking_platform">예약사이트</option>
+                </select>
+              </div>
+
+              {/* 요약 카드 */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-blue-50 p-3 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-blue-600">{filteredTravelInfos.length}</div>
+                  <div className="text-sm text-blue-800">총 여행정보</div>
+                </div>
+                <div className="bg-green-50 p-3 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-green-600">
+                    {filteredTravelInfos.filter(info => info.confidence >= 0.8).length}
+                  </div>
+                  <div className="text-sm text-green-800">높은 신뢰도</div>
+                </div>
+                <div className="bg-purple-50 p-3 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-purple-600">
+                    {new Set(filteredTravelInfos.map(info => info.destination).filter(Boolean)).size}
+                  </div>
+                  <div className="text-sm text-purple-800">목적지 수</div>
+                </div>
+                <div className="bg-orange-50 p-3 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-orange-600">
+                    {filteredTravelInfos.filter(info => info.flightNumber).length}
+                  </div>
+                  <div className="text-sm text-orange-800">항공편 정보</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 결과 탭 */}
+            <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as any)}>
+              <TabsList>
+                <TabsTrigger value="results" className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  결과 목록
+                </TabsTrigger>
+                <TabsTrigger value="details" className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  상세 정보
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="results" className="mt-4">
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {filteredTravelInfos.map((travelInfo, index) => (
+                    <div key={travelInfo.emailId} className="border rounded-lg p-4 hover:bg-gray-50">
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-medium text-gray-900 flex-1 mr-2">
+                          {travelInfo.subject}
+                        </h4>
+                        <div className="flex items-center gap-2">
+                          {getCategoryIcon(getCategoryFromEmail(travelInfo))}
+                          {getConfidenceBadge(travelInfo.confidence)}
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-gray-600 mb-3">{travelInfo.from}</p>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        {travelInfo.departureDate && (
+                          <div className="flex items-center gap-2">
+                            <Plane className="h-4 w-4 text-blue-600" />
+                            <span className="font-medium">출발:</span>
+                            <span>{travelInfo.departureDate}</span>
+                          </div>
+                        )}
+                        {travelInfo.returnDate && (
+                          <div className="flex items-center gap-2">
+                            <Plane className="h-4 w-4 text-green-600 rotate-180" />
+                            <span className="font-medium">귀국:</span>
+                            <span>{travelInfo.returnDate}</span>
+                          </div>
+                        )}
+                        {travelInfo.destination && (
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-red-600" />
+                            <span className="font-medium">목적지:</span>
+                            <span>{travelInfo.destination}</span>
+                          </div>
+                        )}
+                        {travelInfo.flightNumber && (
+                          <div className="flex items-center gap-2">
+                            <Hash className="h-4 w-4 text-purple-600" />
+                            <span className="font-medium">항공편:</span>
+                            <span>{travelInfo.flightNumber}</span>
+                          </div>
+                        )}
+                        {travelInfo.hotelName && (
+                          <div className="flex items-center gap-2">
+                            <Hotel className="h-4 w-4 text-orange-600" />
+                            <span className="font-medium">호텔:</span>
+                            <span>{travelInfo.hotelName}</span>
+                          </div>
+                        )}
+                        {travelInfo.passengerName && (
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4 text-indigo-600" />
+                            <span className="font-medium">승객:</span>
+                            <span>{travelInfo.passengerName}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="details" className="mt-4">
+                <div className="space-y-4">
+                  <div className="text-sm text-muted-foreground">
+                    상세 분석 정보와 데이터 품질 지표를 확인할 수 있습니다.
+                  </div>
+                  
+                  {/* 데이터 품질 분석 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-600">
+                            {Math.round(filteredTravelInfos.reduce((sum, info) => sum + info.confidence, 0) / filteredTravelInfos.length * 100)}%
+                          </div>
+                          <div className="text-sm text-muted-foreground">평균 신뢰도</div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-blue-600">
+                            {filteredTravelInfos.filter(info => info.departureDate && info.returnDate).length}
+                          </div>
+                          <div className="text-sm text-muted-foreground">완전한 여행</div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-purple-600">
+                            {filteredTravelInfos.filter(info => info.bookingReference).length}
+                          </div>
+                          <div className="text-sm text-muted-foreground">예약번호 있음</div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* 결과가 없을 때 */}
+      {!isAnalyzing && travelInfos.length === 0 && !error && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <Mail className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">분석 준비 완료</h3>
+            <p className="text-muted-foreground">
+              위 설정을 확인하고 "분석 시작" 버튼을 클릭하여 Gmail에서 여행 정보를 추출하세요.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  )
+}

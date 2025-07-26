@@ -1,4 +1,4 @@
-# DiNoCal Development Tasks
+# DINO Development Tasks
 
 ## 🚀 High Priority - Epic 1: Foundation & Authentication
 
@@ -74,21 +74,21 @@
 
 ## 🔌 Medium Priority - Epic 4: Google Services Integration
 
-- [ ] **story_4_1**: Gmail API Integration Setup
+- [x] **story_4_1**: Gmail API Integration Setup
   - Gmail API 읽기 전용 권한 설정
   - OAuth 스코프 최소 권한 원칙 구성
   - API 요청 제한 및 에러 처리 구현
   - 사용자 동의 플로우 명확한 안내
   - API 키와 설정 안전한 관리
 
-- [ ] **story_4_2**: Travel Email Detection and Parsing
+- [x] **story_4_2**: Travel Email Detection and Parsing
   - 항공사, 여행사 이메일 자동 감지
   - 이메일에서 날짜, 출발지, 도착지 정보 추출
   - 다양한 이메일 형식 지원 (항공권, 호텔, 렌터카)
   - 추출 정보 사용자 승인 후 여행 기록 추가
   - 개인정보 로컬 처리, 외부 전송 방지
 
-- [ ] **story_4_3**: Google Calendar Synchronization
+- [x] **story_4_3**: Google Calendar Synchronization
   - 여행 기록을 Google Calendar 이벤트로 생성
   - 캘린더 이벤트와 여행 기록 간 양방향 동기화
   - 이벤트 제목과 설명에 여행 정보 포함

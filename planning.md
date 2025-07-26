@@ -1,7 +1,7 @@
-# DiNoCal (Digital Nomad Calendar) - Planning Document
+# DINO (Digital Nomad) - Planning Document
 
 ## 🌍 Project Overview
-**DiNoCal**은 디지털 노마드와 장기 여행자를 위한 스마트 여행 관리 플랫폼으로, 복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리할 수 있도록 지원합니다.
+**DINO**는 디지털 노마드와 장기 여행자를 위한 스마트 여행 관리 플랫폼으로, 복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리할 수 있도록 지원합니다.
 
 ### 🎯 Core Goals
 - **비자 준수 자동화**: 78개국 비자 규정과 체류 한도를 자동 추적
@@ -40,7 +40,7 @@
 
 ## 📊 Project Structure
 ```
-/DiNoCal
+/DINO
 ├── app/                    # Next.js 15 App Router
 │   ├── (auth)/            # Authentication pages
 │   ├── (dashboard)/       # Main application

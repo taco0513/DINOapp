@@ -37,7 +37,7 @@ export default function Header() {
             <Link href={"/dashboard" as any} className="flex items-center">
               <h1 className="text-2xl font-bold">
                 <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  DiNoCal
+                  DINO
                 </span>
               </h1>
             </Link>

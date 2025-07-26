@@ -5,11 +5,11 @@ export default function HomePage() {
         <div className="space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              DiNoCal
+              DINO
             </span>
           </h1>
           <p className="text-xl text-gray-600 font-medium">
-            Digital Nomad Calendar
+            Digital Nomad
           </p>
           <p className="text-lg text-gray-500 max-w-lg mx-auto">
             복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 

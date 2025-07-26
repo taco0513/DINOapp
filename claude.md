@@ -1,4 +1,4 @@
-# Claude Code Rules for DiNoCal Project
+# Claude Code Rules for DINO Project
 
 ## 📋 Core Rules
 - 코딩 전 반드시 planning.md를 읽고 프로젝트 컨텍스트 이해
@@ -91,7 +91,7 @@
 - `npm run lint` - ESLint 실행
 - `npm run type-check` - TypeScript 검사
 
-## 🌍 DiNoCal Specific Guidelines
+## 🌍 DINO Specific Guidelines
 
 ### Visa & Travel Logic
 - 셰겐 90/180일 규칙 계산 시 정확성 최우선
@@ -117,7 +117,7 @@
 - 오프라인 기능 점진적 향상
 - 배터리 및 데이터 사용량 최적화
 
-Remember: DiNoCal은 실제 사용자의 법적 준수를 돕는 프로덕션 애플리케이션입니다. 
+Remember: DINO는 실제 사용자의 법적 준수를 돕는 프로덕션 애플리케이션입니다. 
 코드 품질, 보안, 사용자 경험에 대한 높은 기준을 유지하세요.
 
 **최종 목표**: "복잡한 비자 걱정 없이, 오직 여행의 즐거움만 생각할 수 있는" 플랫폼 구축

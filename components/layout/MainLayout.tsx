@@ -17,22 +17,15 @@ export default function MainLayout({ children }: MainLayoutProps) {
     <>
       <OfflineIndicator />
       
-      {/* Don't show layout for unauthenticated users */}
-      {(!session && status !== 'loading') ? (
-        <>
+      {/* Always show layout with header */}
+      <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', paddingBottom: '60px' }}>
+        <Header />
+        <main style={{ flex: 1 }}>
           {children}
-          <PWAInstallButton />
-        </>
-      ) : (
-        <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', paddingBottom: '60px' }}>
-          <Header />
-          <main style={{ flex: 1 }}>
-            {children}
-          </main>
-          <MobileBottomNav />
-          <PWAInstallButton />
-        </div>
-      )}
+        </main>
+        <MobileBottomNav />
+        <PWAInstallButton />
+      </div>
     </>
   )
 }

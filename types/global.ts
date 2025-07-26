@@ -20,15 +20,16 @@ export type PassportCountry = 'US' | 'UK' | 'EU' | 'CA' | 'AU' | 'JP' | 'OTHER'
 
 export interface CountryVisit {
   id: string
+  userId: string
   country: string
   entryDate: string // ISO 8601 date string
   exitDate: string | null // ISO 8601 date string or null if currently staying
   visaType: VisaType
   maxDays: number
-  passportCountry: PassportCountry
+  passportCountry?: PassportCountry
   notes?: string
-  createdAt: string
-  updatedAt: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface User {

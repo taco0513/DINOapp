@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   experimental: {
     typedRoutes: true,
     optimizePackageImports: ['date-fns', 'react-icons'],
@@ -82,5 +82,3 @@ const nextConfig = {
     return config
   }
 }
-
-export default nextConfig

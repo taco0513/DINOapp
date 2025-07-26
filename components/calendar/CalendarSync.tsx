@@ -15,7 +15,7 @@ import {
   CheckCircle, 
   RefreshCw, 
   AlertTriangle,
-  Sync,
+  RotateCcw,
   Eye,
   Clock,
   MapPin,
@@ -282,7 +282,7 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium flex items-center gap-2">
-                    <Sync className="h-4 w-4 animate-spin" />
+                    <RotateCcw className="h-4 w-4 animate-spin" />
                     {syncProgress.currentStep}
                   </span>
                   <span className="text-sm text-muted-foreground">
@@ -477,7 +477,7 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                 </>
               ) : (
                 <>
-                  <Sync className="h-4 w-4 mr-2" />
+                  <RotateCcw className="h-4 w-4 mr-2" />
                   캘린더에 동기화 ({selectedTravelInfos.length}개)
                 </>
               )}

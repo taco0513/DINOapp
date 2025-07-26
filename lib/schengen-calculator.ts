@@ -1,11 +1,8 @@
 import type { CountryVisit, SchengenStatus, SchengenViolation } from '@/types/global'
+import { getSchengenCountries } from '@/data/countries'
 
-const SCHENGEN_COUNTRIES = [
-  'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
-  'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
-  'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
-  'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
-]
+// Get Schengen country names from the countries data
+const SCHENGEN_COUNTRIES = getSchengenCountries().map(country => country.name)
 
 export interface SchengenVisit {
   country: string

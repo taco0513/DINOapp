@@ -114,3 +114,7 @@ export function getSchengenCountries(): CountryInfo[] {
 export function getNonSchengenCountries(): CountryInfo[] {
   return COUNTRIES.filter(country => !country.isSchengen)
 }
+
+// Default export for backward compatibility
+export default COUNTRIES
+export const countries = COUNTRIES

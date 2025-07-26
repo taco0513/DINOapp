@@ -3,19 +3,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import type { NextAuthOptions } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 
-// Dynamic URL handling for multiple Vercel deployments
-const getBaseUrl = () => {
-  // In production, always use VERCEL_URL if NEXTAUTH_URL is not set
-  if (process.env.VERCEL) {
-    return process.env.NEXTAUTH_URL || `https://${process.env.VERCEL_URL}`
-  }
-  return process.env.NEXTAUTH_URL || 'http://localhost:3000'
-}
-
-// Vercel 배포 URL 사용
-if (process.env.VERCEL && !process.env.NEXTAUTH_URL) {
-  process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`
-}
+// NextAuth URL 설정을 간단하게 처리
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -56,8 +44,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       console.log('[NextAuth] SignIn attempt:', { 
         provider: account?.provider,
-        email: user?.email,
-        baseUrl: getBaseUrl()
+        email: user?.email
       })
       
       if (account?.provider === 'google') {
@@ -88,22 +75,20 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async redirect({ url, baseUrl }) {
-      console.log('[NextAuth] Redirect:', { url, baseUrl, configuredUrl: getBaseUrl() })
-      // Always use the dynamic base URL
-      const dynamicBaseUrl = getBaseUrl()
+      console.log('[NextAuth] Redirect:', { url, baseUrl })
       
-      // If the URL is relative, make it absolute
+      // 상대 경로인 경우
       if (url.startsWith('/')) {
-        return `${dynamicBaseUrl}${url}`
+        return `${baseUrl}${url}`
       }
       
-      // If the URL is already absolute and matches our domain, use it
-      if (url.startsWith(dynamicBaseUrl)) {
+      // 이미 절대 경로이고 같은 호스트인 경우
+      if (url.startsWith(baseUrl)) {
         return url
       }
       
-      // Default to dashboard
-      return `${dynamicBaseUrl}/dashboard`
+      // 기본값: 대시보드
+      return `${baseUrl}/dashboard`
     }
   },
   pages: {
@@ -114,39 +99,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  cookies: {
-    sessionToken: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: undefined // Let NextAuth handle domain automatically
-      }
-    },
-    callbackUrl: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.callback-url`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    },
-    csrfToken: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Host-' : ''}next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    }
-  },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true,
-  // Fix for Vercel deployment
-  useSecureCookies: process.env.NODE_ENV === 'production',
-  trustHost: true
+  debug: true
 }

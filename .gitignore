@@ -1,13 +1,14 @@
-<<<<<<< HEAD
 node_modules
 # Keep environment variables out of version control
 .env
+.env.local
+.env.production
+.env.development
 
 /generated/prisma
 .next/
 bmad-temp/
 .vercel
-=======
 # Logs
 logs
 *.log
@@ -147,4 +148,3 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
->>>>>>> b8e68310a316168fc3eb6be56852ede77d21c974

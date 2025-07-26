@@ -147,7 +147,8 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "NEXT_RUNTIME": "nodejs"
   },
   "build": {
     "env": {

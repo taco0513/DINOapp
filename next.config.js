@@ -10,6 +10,11 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
+// Polyfill for server-side builds
+if (typeof self === 'undefined') {
+  global.self = global;
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -101,11 +106,32 @@ const nextConfig = {
   webpack: (config, { isServer, webpack }) => {
     // Fix for 'self is not defined' error in server-side builds
     if (isServer) {
+      // Add polyfills for server-side
+      const originalEntry = config.entry;
+      config.entry = async () => {
+        const entries = await originalEntry();
+        
+        if (entries['main.js'] && !entries['main.js'].includes('./lib/polyfills.js')) {
+          entries['main.js'].unshift('./lib/polyfills.js');
+        }
+        
+        return entries;
+      };
+      
+      // Define globals
       config.plugins.push(
         new webpack.DefinePlugin({
+          'typeof self': "'object'",
+          'typeof window': "'undefined'",
+        })
+      );
+      
+      // Provide plugin for self
+      config.plugins.push(
+        new webpack.ProvidePlugin({
           self: 'global',
         })
-      )
+      );
     }
 
     // Bundle optimization configurations

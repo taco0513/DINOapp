@@ -5,13 +5,11 @@ import { prisma } from '@/lib/prisma'
 
 // Dynamic URL handling for multiple Vercel deployments
 const getBaseUrl = () => {
-  if (process.env.NEXTAUTH_URL) {
-    return process.env.NEXTAUTH_URL
+  // In production, always use VERCEL_URL if NEXTAUTH_URL is not set
+  if (process.env.VERCEL) {
+    return process.env.NEXTAUTH_URL || `https://${process.env.VERCEL_URL}`
   }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return 'http://localhost:3000'
+  return process.env.NEXTAUTH_URL || 'http://localhost:3000'
 }
 
 export const authOptions: NextAuthOptions = {
@@ -51,6 +49,12 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async signIn({ user, account }) {
+      console.log('[NextAuth] SignIn attempt:', { 
+        provider: account?.provider,
+        email: user?.email,
+        baseUrl: getBaseUrl()
+      })
+      
       if (account?.provider === 'google') {
         try {
           // Update user with Google ID if not exists
@@ -72,11 +76,29 @@ export const authOptions: NextAuthOptions = {
           }
           return true
         } catch (error) {
-          console.error('Error updating user:', error)
+          console.error('[NextAuth] Error updating user:', error)
           return false
         }
       }
       return true
+    },
+    async redirect({ url, baseUrl }) {
+      console.log('[NextAuth] Redirect:', { url, baseUrl, configuredUrl: getBaseUrl() })
+      // Always use the dynamic base URL
+      const dynamicBaseUrl = getBaseUrl()
+      
+      // If the URL is relative, make it absolute
+      if (url.startsWith('/')) {
+        return `${dynamicBaseUrl}${url}`
+      }
+      
+      // If the URL is already absolute and matches our domain, use it
+      if (url.startsWith(dynamicBaseUrl)) {
+        return url
+      }
+      
+      // Default to dashboard
+      return `${dynamicBaseUrl}/dashboard`
     }
   },
   pages: {

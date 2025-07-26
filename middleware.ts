@@ -8,8 +8,8 @@ import { getToken } from 'next-auth/jwt'
 
 const ALLOWED_ORIGINS = [
   'http://localhost:3000',
-  'https://dinocal.vercel.app',
-  'https://dinocal.app'
+  'https://dino-app-psi.vercel.app',
+  'https://dinoapp.net'
 ]
 
 const RATE_LIMIT_MAP = new Map()
@@ -52,7 +52,10 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith('/notifications') ||
       pathname.startsWith('/gmail')) {
     
-    const token = await getToken({ req: request })
+    const token = await getToken({ 
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET 
+    })
     
     if (!token) {
       const url = new URL('/auth/signin', request.url)
@@ -61,13 +64,14 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect root to dashboard if authenticated
-  if (pathname === '/') {
-    const token = await getToken({ req: request })
-    if (token) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
-  }
+  // Don't redirect root to dashboard - let the page handle it
+  // This was causing issues with auth flow
+  // if (pathname === '/') {
+  //   const token = await getToken({ req: request })
+  //   if (token) {
+  //     return NextResponse.redirect(new URL('/dashboard', request.url))
+  //   }
+  // }
 
   return response
 }
@@ -133,13 +137,15 @@ function handleCORS(request: NextRequest, response: NextResponse) {
   if (request.method === 'OPTIONS') {
     return new NextResponse(null, { status: 200 })
   }
+  
+  return response
 }
 
 /**
  * Simple in-memory rate limiting
  */
 async function applyRateLimit(request: NextRequest) {
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'anonymous'
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous'
   const now = Date.now()
   const windowMs = 60 * 1000 // 1 minute window
   const maxRequests = 100

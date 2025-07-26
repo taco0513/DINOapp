@@ -2,18 +2,18 @@
 
 ## 🔗 최신 배포 URL (2025-07-26 19:31)
 
-**새로운 Vercel 배포 URL**: `dino-2mnyz2rnu-zimos-projects-6824b9bc.vercel.app`
+**새로운 Vercel 배포 URL**: `dino-eayk7s794-zimos-projects-6824b9bc.vercel.app`
 
 ## 📝 Google Console에 추가할 URL들
 
 ### Authorized JavaScript origins
 ```
-https://dino-2mnyz2rnu-zimos-projects-6824b9bc.vercel.app
+https://dino-eayk7s794-zimos-projects-6824b9bc.vercel.app
 ```
 
 ### Authorized redirect URIs  
 ```
-https://dino-2mnyz2rnu-zimos-projects-6824b9bc.vercel.app/api/auth/callback/google
+https://dino-eayk7s794-zimos-projects-6824b9bc.vercel.app/api/auth/callback/google
 ```
 
 ## ⚠️ 중요 사항

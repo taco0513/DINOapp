@@ -20,36 +20,18 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      if (account && user) {
-        token.id = user.id
-        token.email = user.email
-        token.name = user.name
-        token.picture = user.image
+      // Keep it simple
+      if (user) {
+        token.sub = user.id
       }
       return token
     },
     async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.id as string
-        session.user.email = token.email as string
-        session.user.name = token.name as string
-        session.user.image = token.picture as string
+      // Keep it simple
+      if (token?.sub) {
+        session.user.id = token.sub
       }
       return session
-    },
-    async signIn({ user, account }) {
-      console.log('[NextAuth] SignIn attempt:', { 
-        provider: account?.provider,
-        email: user?.email
-      })
-      
-      // Allow all sign-ins for testing
-      if (user?.email) {
-        console.log('[NextAuth] Sign-in successful for:', user.email)
-        return true
-      }
-      
-      return true
     },
     async redirect({ url, baseUrl }) {
       console.log('[NextAuth] Redirect:', { url, baseUrl })

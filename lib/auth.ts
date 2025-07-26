@@ -43,13 +43,13 @@ export const authOptions: NextAuthOptions = {
         email: user?.email
       })
       
-      // For testing, just allow Google sign-in
-      if (account?.provider === 'google' && user?.email) {
-        console.log('[NextAuth] Google sign-in successful for:', user.email)
+      // Allow all sign-ins for testing
+      if (user?.email) {
+        console.log('[NextAuth] Sign-in successful for:', user.email)
         return true
       }
       
-      return false
+      return true
     },
     async redirect({ url, baseUrl }) {
       console.log('[NextAuth] Redirect:', { url, baseUrl })

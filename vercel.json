@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "dinoapp",
   "alias": ["dinoapp.net"],
   "build": {
     "env": {
@@ -114,7 +113,6 @@
   ],
   "cleanUrls": true,
   "trailingSlash": false,
-  "regions": ["iad1", "sfo1"],
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev"

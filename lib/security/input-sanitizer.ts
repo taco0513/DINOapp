@@ -1,5 +1,15 @@
-// Server-side and client-side compatible import
-import createDOMPurify from 'isomorphic-dompurify'
+// Server-side HTML sanitization utilities
+const htmlEntities: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#039;'
+}
+
+const escapeHtml = (str: string): string => {
+  return str.replace(/[&<>"']/g, (match) => htmlEntities[match])
+}
 
 // XSS 방지를 위한 입력 정화
 export class InputSanitizer {
@@ -13,18 +23,19 @@ export class InputSanitizer {
       return ''
     }
 
-    const DOMPurify = createDOMPurify()
-
-    const config = {
-      ALLOWED_TAGS: options?.allowedTags || [],
-      ALLOWED_ATTR: options?.allowedAttributes || [],
-      KEEP_CONTENT: !options?.stripHtml,
-      RETURN_DOM: false,
-      RETURN_DOM_FRAGMENT: false,
-      RETURN_DOM_IMPORT: false
+    // Strip HTML tags if requested
+    if (options?.stripHtml) {
+      return input.replace(/<[^>]*>/g, '')
     }
 
-    return DOMPurify.sanitize(input, config)
+    // For server-side or when specific tags are allowed, use basic escaping
+    if (options?.allowedTags && options.allowedTags.length > 0) {
+      // Simple implementation - just escape dangerous characters
+      return escapeHtml(input)
+    }
+
+    // Default: remove all HTML tags
+    return input.replace(/<[^>]*>/g, '')
   }
 
   // 일반 텍스트 정화 (HTML 태그 완전 제거)
@@ -33,13 +44,8 @@ export class InputSanitizer {
       return ''
     }
 
-    const DOMPurify = createDOMPurify()
-
-    return DOMPurify.sanitize(input, {
-      ALLOWED_TAGS: [],
-      ALLOWED_ATTR: [],
-      KEEP_CONTENT: true
-    })
+    // Remove all HTML tags
+    return input.replace(/<[^>]*>/g, '').trim()
   }
 
   // SQL Injection 방지를 위한 문자열 이스케이프

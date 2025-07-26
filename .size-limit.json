@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Main Bundle",
+    "path": ".next/static/chunks/main-*.js",
+    "limit": "100 KB"
+  },
+  {
+    "name": "Framework Bundle", 
+    "path": ".next/static/chunks/framework-*.js",
+    "limit": "150 KB"
+  },
+  {
+    "name": "Page Bundle - Dashboard",
+    "path": ".next/static/chunks/pages/dashboard-*.js",
+    "limit": "50 KB"
+  },
+  {
+    "name": "Page Bundle - Trips",
+    "path": ".next/static/chunks/pages/trips-*.js",
+    "limit": "40 KB"
+  },
+  {
+    "name": "Total App Size",
+    "path": [
+      ".next/static/chunks/main-*.js",
+      ".next/static/chunks/framework-*.js",
+      ".next/static/chunks/pages/**/*.js"
+    ],
+    "limit": "500 KB"
+  },
+  {
+    "name": "CSS Bundle",
+    "path": ".next/static/css/*.css",
+    "limit": "100 KB"
+  }
+]

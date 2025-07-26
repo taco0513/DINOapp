@@ -58,7 +58,12 @@
     "build",
     "coverage",
     ".vercel",
-    "lib/gmail-analytics-broken.ts"
+    "lib/gmail-analytics-broken.ts",
+    "__tests__",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "playwright.config.ts",
+    "playwright.global-setup.ts"
   ],
   "ts-node": {
     "compilerOptions": {

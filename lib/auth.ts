@@ -19,7 +19,8 @@ export const authOptions: NextAuthOptions = {
   
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60, // 7 days (reduced from 30 days)
+    updateAge: 24 * 60 * 60, // Extend session every 24 hours
   },
   
   cookies: {
@@ -27,7 +28,26 @@ export const authOptions: NextAuthOptions = {
       name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'strict', // Changed from 'lax' to 'strict' for better security
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? '.dinoapp.net' : undefined
+      }
+    },
+    callbackUrl: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: 'strict',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
+    },
+    csrfToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Host-' : ''}next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'strict',
         path: '/',
         secure: process.env.NODE_ENV === 'production'
       }
@@ -59,14 +79,27 @@ export const authOptions: NextAuthOptions = {
       return `${baseUrl}/dashboard`
     },
     
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       // Store user info and access token on first sign in
       if (user && account) {
         token.id = user.id
         token.accessToken = account.access_token
         token.refreshToken = account.refresh_token
+        token.provider = account.provider
+        token.iat = Math.floor(Date.now() / 1000) // Issue time
+        token.exp = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7 days
         console.log('[Auth] JWT token created for:', user.email)
       }
+      
+      // Check token expiration
+      if (token.exp && Date.now() >= token.exp * 1000) {
+        console.warn('[Auth] Token expired for:', token.email)
+        return {}
+      }
+      
+      // Add security metadata
+      token.jti = crypto.randomUUID() // JWT ID for tracking
+      
       return token
     },
     

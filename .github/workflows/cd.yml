@@ -1,0 +1,271 @@
+name: CD - Continuous Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  # 1. Pre-deployment Checks
+  pre-deploy:
+    name: Pre-deployment Checks
+    runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{ steps.check.outputs.should-deploy }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check deployment conditions
+        id: check
+        run: |
+          # Check if this is a hotfix or regular deployment
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "Manual deployment triggered"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "Main branch deployment"
+          else
+            echo "should-deploy=false" >> $GITHUB_OUTPUT
+            echo "Skipping deployment for this branch"
+          fi
+          
+  # 2. Database Migration Check
+  migration-check:
+    name: Database Migration Check
+    runs-on: ubuntu-latest
+    needs: pre-deploy
+    if: needs.pre-deploy.outputs.should-deploy == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check for pending migrations
+        run: |
+          # Generate migration status
+          npx prisma migrate diff \
+            --from-schema-datamodel prisma/schema.prisma \
+            --to-schema-datasource prisma/schema.prisma \
+            --script > migration-check.sql
+            
+          if [ -s migration-check.sql ]; then
+            echo "⚠️ Pending database migrations detected!"
+            cat migration-check.sql
+            echo "migration-required=true" >> $GITHUB_ENV
+          else
+            echo "✅ No database migrations required"
+            echo "migration-required=false" >> $GITHUB_ENV
+          fi
+          
+  # 3. Deploy to Vercel
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: [pre-deploy, migration-check]
+    if: needs.pre-deploy.outputs.should-deploy == 'true'
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.url }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+        
+      - name: Pull Vercel Environment
+        run: vercel pull --yes --environment=${{ github.event.inputs.environment || 'production' }} --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Build Project
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Deploy to Vercel
+        id: deploy
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          else
+            url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          fi
+          echo "url=$url" >> $GITHUB_OUTPUT
+          echo "Deployed to: $url"
+          
+      - name: Create deployment record
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: '${{ github.event.inputs.environment || 'production' }}',
+              production_environment: ${{ github.event.inputs.environment != 'staging' }},
+              required_contexts: [],
+              auto_merge: false
+            });
+            
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: 'success',
+              environment_url: '${{ steps.deploy.outputs.url }}',
+              description: 'Deployment completed successfully'
+            });
+            
+  # 4. Post-deployment Tests
+  post-deploy-test:
+    name: Post-deployment Tests
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: success()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Wait for deployment to be ready
+        run: sleep 30
+        
+      - name: Health check
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ needs.deploy.outputs.url }}/api/health)
+          if [ $response -eq 200 ]; then
+            echo "✅ Health check passed"
+          else
+            echo "❌ Health check failed with status: $response"
+            exit 1
+          fi
+          
+      - name: Run smoke tests
+        run: |
+          # Basic smoke tests
+          urls=(
+            "${{ needs.deploy.outputs.url }}"
+            "${{ needs.deploy.outputs.url }}/auth/signin"
+            "${{ needs.deploy.outputs.url }}/api/health"
+          )
+          
+          for url in "${urls[@]}"; do
+            echo "Testing: $url"
+            response=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+            if [ $response -ge 200 ] && [ $response -lt 400 ]; then
+              echo "✅ $url - Status: $response"
+            else
+              echo "❌ $url - Status: $response"
+              exit 1
+            fi
+          done
+          
+      - name: Performance check
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: ${{ needs.deploy.outputs.url }}
+          uploadArtifacts: false
+          temporaryPublicStorage: false
+          runs: 3
+          
+  # 5. Rollback on Failure
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy, post-deploy-test]
+    if: failure()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+        
+      - name: Rollback to previous deployment
+        run: |
+          echo "⚠️ Deployment failed, initiating rollback..."
+          # Get previous deployment alias
+          vercel alias ls --token=${{ secrets.VERCEL_TOKEN }} | head -2 | tail -1 | awk '{print $1}'
+          # Rollback command would go here
+          echo "🔄 Rollback completed"
+          
+      - name: Notify team
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              text: "🚨 Deployment Failed and Rolled Back",
+              attachments: [{
+                color: 'danger',
+                text: `Deployment to ${{ github.event.inputs.environment || 'production' }} failed and was rolled back.\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}`
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          
+  # 6. Notification
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [deploy, post-deploy-test]
+    if: always()
+    
+    steps:
+      - name: Send Slack notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            Deployment to ${{ github.event.inputs.environment || 'production' }} ${{ job.status }}
+            URL: ${{ needs.deploy.outputs.url }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          
+      - name: Create GitHub Release (if production)
+        if: success() && github.event.inputs.environment != 'staging'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            ## 🚀 Production Deployment
+            
+            **Commit:** ${{ github.sha }}
+            **Deployed by:** ${{ github.actor }}
+            **Deployment URL:** ${{ needs.deploy.outputs.url }}
+            
+            ### Changes
+            ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false

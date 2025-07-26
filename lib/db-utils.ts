@@ -1,29 +1,31 @@
 import { prisma } from './prisma'
+import { OptimizedQueries, dbPerformanceMonitor } from './db-performance'
 import type { VisaType, PassportCountry, CountryVisit, User } from '@/types/global'
 
-// User operations
+// User operations with performance optimization
 export async function getUserByEmail(email: string) {
-  return await prisma.user.findUnique({
+  const startTime = Date.now()
+  
+  const result = await prisma.user.findUnique({
     where: { email },
     include: {
       countryVisits: {
-        orderBy: { entryDate: 'desc' }
+        orderBy: { entryDate: 'desc' },
+        take: 50 // Limit initial load for performance
       },
       notificationSettings: true
     }
   })
+  
+  const duration = Date.now() - startTime
+  dbPerformanceMonitor.trackQuery('getUserByEmail', duration, { email })
+  
+  return result
 }
 
 export async function getUserById(id: string) {
-  return await prisma.user.findUnique({
-    where: { id },
-    include: {
-      countryVisits: {
-        orderBy: { entryDate: 'desc' }
-      },
-      notificationSettings: true
-    }
-  })
+  // Use optimized query with caching
+  return await OptimizedQueries.getUserWithTrips(prisma, id, 50)
 }
 
 // Country visit operations
@@ -70,30 +72,25 @@ export async function deleteCountryVisit(id: string) {
   })
 }
 
-export async function getUserCountryVisits(userId: string) {
-  return await prisma.countryVisit.findMany({
+export async function getUserCountryVisits(userId: string, limit: number = 100) {
+  const startTime = Date.now()
+  
+  const result = await prisma.countryVisit.findMany({
     where: { userId },
-    orderBy: { entryDate: 'desc' }
+    orderBy: { entryDate: 'desc' },
+    take: limit
   })
+  
+  const duration = Date.now() - startTime
+  dbPerformanceMonitor.trackQuery('getUserCountryVisits', duration, { userId, limit })
+  
+  return result
 }
 
-// Schengen calculations
-export async function getSchengenCountryVisits(userId: string, fromDate: Date) {
-  const schengenCountries = [
-    'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
-    'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
-    'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
-    'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
-  ]
-
-  return await prisma.countryVisit.findMany({
-    where: {
-      userId,
-      country: { in: schengenCountries },
-      entryDate: { gte: fromDate }
-    },
-    orderBy: { entryDate: 'asc' }
-  })
+// Schengen calculations with optimization
+export async function getSchengenCountryVisits(userId: string, fromDate: Date, toDate: Date = new Date()) {
+  // Use optimized query with caching and compound indexes
+  return await OptimizedQueries.getSchengenVisitsOptimized(prisma, userId, fromDate, toDate)
 }
 
 // Notification settings
@@ -117,43 +114,37 @@ export async function updateNotificationSettings(userId: string, settings: {
   })
 }
 
-// Analytics
+// Analytics with optimized aggregation
 export async function getUserTravelStats(userId: string) {
-  const visits = await prisma.countryVisit.findMany({
-    where: { userId }
-  })
-
-  const uniqueCountries = new Set(visits.map(visit => visit.country))
-  const totalDays = visits.reduce((sum, visit) => {
-    if (visit.exitDate) {
-      const days = Math.ceil((visit.exitDate.getTime() - visit.entryDate.getTime()) / (1000 * 60 * 60 * 24))
-      return sum + days
-    }
-    return sum
-  }, 0)
-
-  const schengenVisits = visits.filter(visit => {
-    const schengenCountries = [
-      'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
-      'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
-      'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
-      'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
-    ]
-    return schengenCountries.includes(visit.country)
-  })
-
-  const schengenDays = schengenVisits.reduce((sum, visit) => {
-    if (visit.exitDate) {
-      const days = Math.ceil((visit.exitDate.getTime() - visit.entryDate.getTime()) / (1000 * 60 * 60 * 24))
-      return sum + days
-    }
-    return sum
-  }, 0)
+  // Use optimized country statistics query
+  const countryStats = await OptimizedQueries.getCountryStatistics(prisma, userId)
+  
+  // Calculate aggregate statistics
+  const totalCountries = countryStats.length
+  const totalDays = countryStats.reduce((sum: number, stat: any) => sum + Number(stat.total_days || 0), 0)
+  const totalVisits = countryStats.reduce((sum: number, stat: any) => sum + Number(stat.visit_count || 0), 0)
+  
+  // Calculate Schengen-specific stats
+  const schengenCountries = [
+    'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
+    'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
+    'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
+    'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
+  ]
+  
+  const schengenStats = countryStats.filter((stat: any) => schengenCountries.includes(stat.country))
+  const schengenDays = schengenStats.reduce((sum: number, stat: any) => sum + Number(stat.total_days || 0), 0)
 
   return {
-    totalCountries: uniqueCountries.size,
+    totalCountries,
     totalDays,
     schengenDays,
-    totalVisits: visits.length
+    totalVisits,
+    countryBreakdown: countryStats
   }
+}
+
+// Cache invalidation helper
+export function invalidateUserCache(userId: string) {
+  OptimizedQueries.clearUserCache(userId)
 }

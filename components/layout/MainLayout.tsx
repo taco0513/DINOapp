@@ -2,6 +2,9 @@
 
 import { useSession } from 'next-auth/react'
 import Header from './Header'
+import PWAInstallButton from '@/components/pwa/PWAInstallButton'
+import OfflineIndicator from '@/components/pwa/OfflineIndicator'
+import MobileBottomNav from '@/components/mobile/MobileBottomNav'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -10,17 +13,26 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   const { data: session, status } = useSession()
 
-  // Don't show layout for unauthenticated users
-  if (!session && status !== 'loading') {
-    return <>{children}</>
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header />
-      <main className="flex-1">
-        {children}
-      </main>
-    </div>
+    <>
+      <OfflineIndicator />
+      
+      {/* Don't show layout for unauthenticated users */}
+      {(!session && status !== 'loading') ? (
+        <>
+          {children}
+          <PWAInstallButton />
+        </>
+      ) : (
+        <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', paddingBottom: '60px' }}>
+          <Header />
+          <main style={{ flex: 1 }}>
+            {children}
+          </main>
+          <MobileBottomNav />
+          <PWAInstallButton />
+        </div>
+      )}
+    </>
   )
 }

@@ -2,27 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Calendar, 
-  Settings, 
-  CheckCircle, 
-  RefreshCw, 
-  AlertTriangle,
-  Clock,
-  MapPin,
-  Plane,
-  Hotel,
-  ExternalLink,
-  Plus,
-  Eye,
-  FileText
-} from 'lucide-react'
-import CalendarSync from '@/components/calendar/CalendarSync'
+import Link from 'next/link'
 import { TravelInfo } from '@/lib/gmail'
 
 interface CalendarStats {
@@ -105,394 +85,464 @@ export default function CalendarPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p>로딩 중...</p>
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>로딩 중...</div>
         </div>
-      </div>
+      </main>
     )
   }
 
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full">
-          <CardContent className="p-8 text-center">
-            <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">로그인이 필요합니다</h3>
-            <p className="text-muted-foreground mb-4">
-              Google Calendar 통합을 사용하려면 먼저 로그인해주세요.
-            </p>
-            <Button onClick={() => window.location.href = '/auth/signin'}>
-              로그인하기
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
+        <div style={{ border: '1px solid #e0e0e0', padding: '60px', textAlign: 'center', maxWidth: '400px' }}>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}>📅</div>
+          <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+            로그인이 필요합니다
+          </h3>
+          <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
+            Google Calendar 통합을 사용하려면 먼저 로그인해주세요.
+          </p>
+          <Link
+            href="/auth/signin"
+            style={{
+              display: 'inline-block',
+              padding: '12px 30px',
+              backgroundColor: '#000',
+              color: '#fff',
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: '500'
+            }}
+          >
+            로그인하기
+          </Link>
+        </div>
+      </main>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Calendar className="h-8 w-8 text-blue-600" />
-            Calendar 통합
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Gmail에서 추출한 여행 정보를 Google Calendar와 동기화하세요
-          </p>
+    <main style={{
+      minHeight: '100vh',
+      padding: '40px 20px',
+      backgroundColor: '#ffffff',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        {/* Navigation */}
+        <nav style={{ marginBottom: '40px', paddingBottom: '20px', borderBottom: '1px solid #e0e0e0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Link href="/dashboard" style={{ fontSize: '20px', fontWeight: 'bold', color: '#000', textDecoration: 'none' }}>
+              DINO
+            </Link>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <Link href="/dashboard" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>대시보드</Link>
+              <Link href="/trips" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>여행기록</Link>
+              <Link href="/schengen" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>셰겐계산기</Link>
+              <span style={{ color: '#000', fontSize: '14px', fontWeight: '500' }}>캘린더</span>
+            </div>
+          </div>
+        </nav>
+
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '40px' }}>
+          <div>
+            <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+              📅 Calendar 통합
+            </h1>
+            <p style={{ fontSize: '16px', color: '#666' }}>
+              Gmail에서 추출한 여행 정보를 Google Calendar와 동기화하세요
+            </p>
+          </div>
+          <button
+            onClick={() => window.open('https://calendar.google.com', '_blank')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#fff',
+              border: '1px solid #e0e0e0',
+              fontSize: '14px',
+              cursor: 'pointer'
+            }}
+          >
+            🔗 Google Calendar 열기
+          </button>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => window.open('https://calendar.google.com', '_blank')}
-        >
-          <ExternalLink className="h-4 w-4 mr-2" />
-          Google Calendar 열기
-        </Button>
-      </div>
 
-      {/* 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">전체 이벤트</p>
-                <p className="text-2xl font-bold">{calendarStats.totalEvents}</p>
-              </div>
-              <Calendar className="h-8 w-8 text-blue-600" />
+        {/* Statistics Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+          <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+              {calendarStats.totalEvents}
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">예정된 여행</p>
-                <p className="text-2xl font-bold text-green-600">{calendarStats.upcomingEvents}</p>
-              </div>
-              <Plane className="h-8 w-8 text-green-600" />
+            <div style={{ fontSize: '14px', color: '#666' }}>전체 이벤트</div>
+          </div>
+          
+          <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+              {calendarStats.upcomingEvents}
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">지난 여행</p>
-                <p className="text-2xl font-bold text-gray-600">{calendarStats.pastEvents}</p>
-              </div>
-              <Clock className="h-8 w-8 text-gray-600" />
+            <div style={{ fontSize: '14px', color: '#666' }}>예정된 여행</div>
+          </div>
+          
+          <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+              {calendarStats.pastEvents}
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Gmail 분석</p>
-                <p className="text-2xl font-bold text-purple-600">{travelInfos.length}</p>
-              </div>
-              <FileText className="h-8 w-8 text-purple-600" />
+            <div style={{ fontSize: '14px', color: '#666' }}>지난 여행</div>
+          </div>
+          
+          <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+              {travelInfos.length}
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div style={{ fontSize: '14px', color: '#666' }}>Gmail 분석</div>
+          </div>
+        </div>
 
-      {/* 에러 메시지 */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+        {/* Error Message */}
+        {error && (
+          <div style={{ border: '1px solid #e0e0e0', backgroundColor: '#fff3f3', padding: '20px', marginBottom: '40px' }}>
+            <div style={{ color: '#d73a49', fontSize: '14px' }}>⚠️ {error}</div>
+          </div>
+        )}
 
-      {/* 메인 콘텐츠 */}
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <Eye className="h-4 w-4" />
-            개요
-          </TabsTrigger>
-          <TabsTrigger value="sync" className="flex items-center gap-2">
-            <RefreshCw className="h-4 w-4" />
-            동기화
-          </TabsTrigger>
-          <TabsTrigger value="manage" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            관리
-          </TabsTrigger>
-        </TabsList>
+        {/* Tab Navigation */}
+        <div style={{ borderBottom: '1px solid #e0e0e0', marginBottom: '40px' }}>
+          <div style={{ display: 'flex', gap: '0' }}>
+            <button
+              onClick={() => setActiveTab('overview')}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                backgroundColor: activeTab === 'overview' ? '#fff' : '#f9f9f9',
+                borderBottom: activeTab === 'overview' ? '2px solid #000' : '2px solid transparent',
+                fontSize: '14px',
+                cursor: 'pointer',
+                color: activeTab === 'overview' ? '#000' : '#666'
+              }}
+            >
+              👁️ 개요
+            </button>
+            <button
+              onClick={() => setActiveTab('sync')}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                backgroundColor: activeTab === 'sync' ? '#fff' : '#f9f9f9',
+                borderBottom: activeTab === 'sync' ? '2px solid #000' : '2px solid transparent',
+                fontSize: '14px',
+                cursor: 'pointer',
+                color: activeTab === 'sync' ? '#000' : '#666'
+              }}
+            >
+              🔄 동기화
+            </button>
+            <button
+              onClick={() => setActiveTab('manage')}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                backgroundColor: activeTab === 'manage' ? '#fff' : '#f9f9f9',
+                borderBottom: activeTab === 'manage' ? '2px solid #000' : '2px solid transparent',
+                fontSize: '14px',
+                cursor: 'pointer',
+                color: activeTab === 'manage' ? '#000' : '#666'
+              }}
+            >
+              ⚙️ 관리
+            </button>
+          </div>
+        </div>
 
-        <TabsContent value="overview" className="mt-6 space-y-6">
-          {/* 개요 섹션 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Google Calendar 통합 개요</CardTitle>
-              <CardDescription>
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <div style={{ display: 'grid', gap: '40px' }}>
+            {/* Overview Section */}
+            <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+                Google Calendar 통합 개요
+              </h3>
+              <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
                 DINO는 Gmail에서 추출한 여행 정보를 Google Calendar와 자동으로 동기화합니다
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <h4 className="font-semibold flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    지원되는 기능
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+                <div>
+                  <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px', color: '#000' }}>
+                    ✅ 지원되는 기능
                   </h4>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      항공편 예약 자동 추가
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      호텔 예약 일정 동기화
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      여행 기간 자동 계산
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      중복 이벤트 자동 방지
-                    </li>
-                  </ul>
+                  <div style={{ fontSize: '14px', color: '#666', lineHeight: '1.8' }}>
+                    <div>• 항공편 예약 자동 추가</div>
+                    <div>• 호텔 예약 일정 동기화</div>
+                    <div>• 여행 기간 자동 계산</div>
+                    <div>• 중복 이벤트 자동 방지</div>
+                  </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <h4 className="font-semibold flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-blue-600" />
-                    사용 방법
+                <div>
+                  <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px', color: '#000' }}>
+                    ⚙️ 사용 방법
                   </h4>
-                  <ol className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2">
-                      <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
-                      Gmail 연결 및 이메일 분석
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
-                      동기화할 캘린더 선택
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">3</span>
-                      여행 정보 선택 및 동기화
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">4</span>
-                      Google Calendar에서 확인
-                    </li>
-                  </ol>
+                  <div style={{ fontSize: '14px', color: '#666', lineHeight: '1.8' }}>
+                    <div>1. Gmail 연결 및 이메일 분석</div>
+                    <div>2. 동기화할 캘린더 선택</div>
+                    <div>3. 여행 정보 선택 및 동기화</div>
+                    <div>4. Google Calendar에서 확인</div>
+                  </div>
                 </div>
               </div>
               
               {travelInfos.length === 0 && (
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    아직 Gmail에서 여행 정보를 분석하지 않았습니다. 
-                    <Button 
-                      variant="link" 
-                      className="p-0 h-auto ml-1"
-                      onClick={() => window.location.href = '/gmail'}
-                    >
-                      Gmail 페이지
-                    </Button>
-                    에서 먼저 이메일을 분석해주세요.
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* 최근 여행 정보 미리보기 */}
-          {travelInfos.length > 0 && (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>분석된 여행 정보</CardTitle>
-                    <CardDescription>
-                      Gmail에서 추출된 여행 정보들입니다
-                    </CardDescription>
-                  </div>
-                  <Badge variant="outline">
-                    {travelInfos.length}개 발견
-                  </Badge>
+                <div style={{ 
+                  border: '1px solid #e0e0e0', 
+                  backgroundColor: '#fffbf0', 
+                  padding: '20px', 
+                  marginTop: '30px',
+                  fontSize: '14px',
+                  color: '#666'
+                }}>
+                  ⚠️ 아직 Gmail에서 여행 정보를 분석하지 않았습니다. 
+                  <Link href="/gmail" style={{ color: '#000', textDecoration: 'underline', marginLeft: '5px' }}>
+                    Gmail 페이지
+                  </Link>
+                  에서 먼저 이메일을 분석해주세요.
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              )}
+            </div>
+
+            {/* Travel Info Preview */}
+            {travelInfos.length > 0 && (
+              <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '5px', color: '#000' }}>
+                      분석된 여행 정보
+                    </h3>
+                    <p style={{ fontSize: '14px', color: '#666' }}>
+                      Gmail에서 추출된 여행 정보들입니다
+                    </p>
+                  </div>
+                  <div style={{ 
+                    padding: '5px 10px', 
+                    border: '1px solid #e0e0e0', 
+                    fontSize: '12px', 
+                    color: '#666' 
+                  }}>
+                    {travelInfos.length}개 발견
+                  </div>
+                </div>
+                
+                <div style={{ display: 'grid', gap: '15px' }}>
                   {travelInfos.slice(0, 3).map((info) => (
-                    <div key={info.emailId} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">{info.subject}</h4>
-                        <Badge variant={info.confidence >= 0.7 ? 'default' : 'secondary'}>
+                    <div key={info.emailId} style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                        <h4 style={{ fontSize: '14px', fontWeight: '500', color: '#000' }}>
+                          {info.subject}
+                        </h4>
+                        <div style={{ 
+                          padding: '3px 8px', 
+                          backgroundColor: info.confidence >= 0.7 ? '#000' : '#f0f0f0',
+                          color: info.confidence >= 0.7 ? '#fff' : '#666',
+                          fontSize: '12px'
+                        }}>
                           신뢰도 {Math.round(info.confidence * 100)}%
-                        </Badge>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-muted-foreground">
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', fontSize: '12px', color: '#666' }}>
                         {info.departureDate && (
-                          <div className="flex items-center gap-1">
-                            <Plane className="h-3 w-3" />
-                            출발: {info.departureDate}
-                          </div>
+                          <div>✈️ 출발: {info.departureDate}</div>
                         )}
                         {info.destination && (
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            목적지: {info.destination}
-                          </div>
+                          <div>📍 목적지: {info.destination}</div>
                         )}
                         {info.hotelName && (
-                          <div className="flex items-center gap-1">
-                            <Hotel className="h-3 w-3" />
-                            숙소: {info.hotelName}
-                          </div>
+                          <div>🏨 숙소: {info.hotelName}</div>
                         )}
                       </div>
                     </div>
                   ))}
                   
                   {travelInfos.length > 3 && (
-                    <div className="text-center pt-4">
-                      <Button 
-                        variant="outline"
+                    <div style={{ textAlign: 'center', paddingTop: '20px' }}>
+                      <button 
                         onClick={() => setActiveTab('sync')}
+                        style={{
+                          padding: '10px 20px',
+                          backgroundColor: '#fff',
+                          border: '1px solid #e0e0e0',
+                          fontSize: '14px',
+                          cursor: 'pointer'
+                        }}
                       >
                         모든 여행 정보 보기 ({travelInfos.length - 3}개 더)
-                      </Button>
+                      </button>
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
+              </div>
+            )}
+          </div>
+        )}
 
-        <TabsContent value="sync" className="mt-6">
-          {travelInfos.length > 0 ? (
-            <CalendarSync 
-              travelInfos={travelInfos} 
-              onSyncComplete={handleSyncComplete}
-            />
-          ) : (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">동기화할 여행 정보가 없습니다</h3>
-                <p className="text-muted-foreground mb-4">
+        {activeTab === 'sync' && (
+          <div>
+            {travelInfos.length > 0 ? (
+              <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>
+                  동기화 설정
+                </h3>
+                <div style={{ 
+                  border: '1px solid #e0e0e0', 
+                  padding: '40px', 
+                  textAlign: 'center',
+                  backgroundColor: '#f9f9f9',
+                  fontSize: '14px',
+                  color: '#666'
+                }}>
+                  동기화 기능은 실제 구현 시 CalendarSync 컴포넌트가 표시됩니다
+                </div>
+              </div>
+            ) : (
+              <div style={{ border: '1px solid #e0e0e0', padding: '60px', textAlign: 'center' }}>
+                <div style={{ fontSize: '48px', marginBottom: '20px' }}>📄</div>
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+                  동기화할 여행 정보가 없습니다
+                </h3>
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
                   먼저 Gmail에서 여행 이메일을 분석해주세요.
                 </p>
-                <div className="flex gap-2 justify-center">
-                  <Button 
-                    onClick={() => window.location.href = '/gmail'}
+                <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+                  <Link
+                    href="/gmail"
+                    style={{
+                      display: 'inline-block',
+                      padding: '12px 30px',
+                      backgroundColor: '#000',
+                      color: '#fff',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
                   >
                     Gmail 분석하기
-                  </Button>
-                  <Button 
-                    variant="outline"
+                  </Link>
+                  <button
                     onClick={loadTravelInfos}
                     disabled={isLoading}
+                    style={{
+                      padding: '12px 30px',
+                      backgroundColor: '#fff',
+                      border: '1px solid #e0e0e0',
+                      fontSize: '14px',
+                      cursor: isLoading ? 'not-allowed' : 'pointer',
+                      opacity: isLoading ? 0.6 : 1
+                    }}
                   >
-                    {isLoading ? (
-                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                    )}
-                    새로고침
-                  </Button>
+                    {isLoading ? '🔄 로딩중...' : '🔄 새로고침'}
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="manage" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 캘린더 설정 */}
-            <Card>
-              <CardHeader>
-                <CardTitle>캘린더 설정</CardTitle>
-                <CardDescription>
-                  Google Calendar 연결 및 설정을 관리합니다
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">Google Calendar 연결</p>
-                    <p className="text-sm text-muted-foreground">
-                      {session?.user?.email || '연결된 계정 없음'}
-                    </p>
-                  </div>
-                  <Badge variant="default">연결됨</Badge>
-                </div>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => window.open('https://calendar.google.com/calendar/u/0/r/settings', '_blank')}
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Google Calendar 설정
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* 동기화 내역 */}
-            <Card>
-              <CardHeader>
-                <CardTitle>동기화 내역</CardTitle>
-                <CardDescription>
-                  최근 동기화 활동을 확인합니다
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {calendarStats.lastSyncDate ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">마지막 동기화</span>
-                      <span className="text-sm text-muted-foreground">
-                        {calendarStats.lastSyncDate}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">총 이벤트</span>
-                      <span className="text-sm font-medium">
-                        {calendarStats.totalEvents}개
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-4">
-                    <Clock className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      아직 동기화 내역이 없습니다
-                    </p>
-                  </div>
-                )}
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={loadCalendarStats}
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  내역 새로고침
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+            )}
           </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+        )}
+
+        {activeTab === 'manage' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px' }}>
+            {/* Calendar Settings */}
+            <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+                캘린더 설정
+              </h3>
+              <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
+                Google Calendar 연결 및 설정을 관리합니다
+              </p>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <div>
+                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#000', marginBottom: '5px' }}>
+                    Google Calendar 연결
+                  </p>
+                  <p style={{ fontSize: '12px', color: '#666' }}>
+                    {session?.user?.email || '연결된 계정 없음'}
+                  </p>
+                </div>
+                <div style={{ 
+                  padding: '5px 10px', 
+                  backgroundColor: '#000', 
+                  color: '#fff', 
+                  fontSize: '12px' 
+                }}>
+                  연결됨
+                </div>
+              </div>
+              
+              <button
+                onClick={() => window.open('https://calendar.google.com/calendar/u/0/r/settings', '_blank')}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: '#fff',
+                  border: '1px solid #e0e0e0',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
+                🔗 Google Calendar 설정
+              </button>
+            </div>
+
+            {/* Sync History */}
+            <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+                동기화 내역
+              </h3>
+              <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
+                최근 동기화 활동을 확인합니다
+              </p>
+              
+              {calendarStats.lastSyncDate ? (
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '14px', color: '#000' }}>마지막 동기화</span>
+                    <span style={{ fontSize: '14px', color: '#666' }}>
+                      {calendarStats.lastSyncDate}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '14px', color: '#000' }}>총 이벤트</span>
+                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#000' }}>
+                      {calendarStats.totalEvents}개
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '20px 0', marginBottom: '20px' }}>
+                  <div style={{ fontSize: '32px', marginBottom: '10px' }}>🕒</div>
+                  <p style={{ fontSize: '14px', color: '#666' }}>
+                    아직 동기화 내역이 없습니다
+                  </p>
+                </div>
+              )}
+              
+              <button
+                onClick={loadCalendarStats}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: '#fff',
+                  border: '1px solid #e0e0e0',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
+                🔄 내역 새로고침
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
   )
 }

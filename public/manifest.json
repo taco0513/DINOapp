@@ -1,0 +1,102 @@
+{
+  "name": "DINO - Digital Nomad Visa Tracker",
+  "short_name": "DINO",
+  "description": "복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 플랫폼",
+  "start_url": "/dashboard?utm_source=pwa",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0066cc",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ko",
+  "categories": ["travel", "productivity", "lifestyle"],
+  "display_override": ["window-controls-overlay", "standalone"],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+dino",
+      "url": "/import?url=%s"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/import",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"]
+      }
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "여행 기록 추가",
+      "short_name": "새 여행",
+      "description": "새로운 여행 기록을 추가합니다",
+      "url": "/trips?action=add",
+      "icons": [{"src": "/icons/shortcut-add.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "셰겐 계산기",
+      "short_name": "셰겐",
+      "description": "셰겐 90/180일 규칙을 확인합니다",
+      "url": "/schengen",
+      "icons": [{"src": "/icons/shortcut-schengen.png", "sizes": "96x96"}]
+    }
+  ],
+  "prefer_related_applications": false
+}

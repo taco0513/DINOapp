@@ -11,6 +11,13 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=\"__tests__/(hooks|lib|components)\"",
+    "test:integration": "jest --testPathPattern=\"__tests__/api\"",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:visual": "percy snapshot ./visual-tests",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "export-claude": "node scripts/export-claude.js",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -23,7 +30,15 @@
     "build:production": "NODE_ENV=production npm run build",
     "vercel-build": "prisma generate && SKIP_TYPE_CHECK=true next build",
     "check:all": "npm run type-check && npm run lint && npm run test",
-    "clean": "rm -rf .next && rm -rf node_modules/.cache"
+    "clean": "rm -rf .next && rm -rf node_modules/.cache",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "prepare": "husky install || true",
+    "pre-commit": "lint-staged",
+    "ci:test": "npm run check:all && npm run build",
+    "security:audit": "npm audit --audit-level=moderate",
+    "lighthouse": "lighthouse http://localhost:3000 --budget-path=./lighthouse-budget.json",
+    "bundle-size": "size-limit"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +56,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "googleapis": "^154.0.0",
+    "isomorphic-dompurify": "^2.26.0",
     "lucide-react": "^0.525.0",
     "next": "^15.4.4",
     "next-auth": "^4.24.11",
@@ -50,6 +66,8 @@
     "zod": "^4.0.10"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.4.4",
+    "@playwright/test": "^1.41.1",
     "@tailwindcss/postcss": "^4.1.11",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
@@ -67,6 +85,7 @@
     "prisma": "^6.12.0",
     "tailwindcss": "^4.1.11",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

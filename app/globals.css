@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import '../styles/mobile-touch.css';
 
 * {
   box-sizing: border-box;
@@ -13,4 +14,34 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   background: #ffffff;
   color: #000000;
+  touch-action: manipulation;
+}
+
+/* PWA 지원 개선 */
+@media (display-mode: standalone) {
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+/* 반응형 기본 설정 */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 12px;
+  }
 }

@@ -1,0 +1,120 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Every Monday at 9 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  # 1. Update Dependencies
+  update-deps:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          
+      - name: Update npm dependencies
+        run: |
+          npx npm-check-updates -u --target minor
+          npm install
+          npm audit fix
+          
+      - name: Test updated dependencies
+        run: |
+          npm run build
+          npm test
+        continue-on-error: true
+        
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(deps): update dependencies'
+          title: '⬆️ Update Dependencies'
+          body: |
+            ## 📦 Dependency Updates
+            
+            This PR contains automatic dependency updates for the week.
+            
+            ### 🔄 Updates Include:
+            - Minor version updates
+            - Security patches
+            - Sub-dependency updates
+            
+            ### ✅ Automated Checks:
+            - Build test: ${{ steps.test.outcome }}
+            - Security audit: Completed
+            
+            ### 🔍 Please Review:
+            - [ ] No breaking changes in changelog
+            - [ ] All tests pass
+            - [ ] Application builds successfully
+            - [ ] No console errors in development
+            
+            ---
+            🤖 *This PR was created automatically by the dependency update workflow.*
+          branch: deps/weekly-update-${{ github.run_number }}
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
+            
+  # 2. Security Audit
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run security audit
+        id: audit
+        run: |
+          npm audit --json > audit-results.json || true
+          
+      - name: Parse audit results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const auditResults = JSON.parse(fs.readFileSync('audit-results.json', 'utf8'));
+            
+            if (auditResults.metadata.vulnerabilities.total > 0) {
+              const { info, low, moderate, high, critical } = auditResults.metadata.vulnerabilities;
+              
+              let body = `## 🔒 Security Audit Results\n\n`;
+              body += `Found **${auditResults.metadata.vulnerabilities.total}** vulnerabilities:\n\n`;
+              body += `- 🔴 Critical: ${critical}\n`;
+              body += `- 🟠 High: ${high}\n`;
+              body += `- 🟡 Moderate: ${moderate}\n`;
+              body += `- 🟢 Low: ${low}\n`;
+              body += `- ℹ️ Info: ${info}\n\n`;
+              
+              if (critical > 0 || high > 0) {
+                body += `### ⚠️ Action Required!\n`;
+                body += `Critical or high severity vulnerabilities detected. Please review and update dependencies immediately.\n`;
+                
+                // Create an issue
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: '🚨 Security Vulnerabilities Detected',
+                  body: body,
+                  labels: ['security', 'high-priority']
+                });
+              }
+            }

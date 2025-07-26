@@ -1,0 +1,71 @@
+# Configuration for auto-labeling PRs
+
+# Frontend related changes
+frontend:
+  - app/**/*
+  - components/**/*
+  - styles/**/*
+  - public/**/*
+  - '*.css'
+  - '*.scss'
+
+# Backend related changes  
+backend:
+  - app/api/**/*
+  - lib/**/*
+  - prisma/**/*
+  - scripts/**/*
+
+# Documentation changes
+documentation:
+  - '*.md'
+  - docs/**/*
+  - LICENSE
+
+# Test related changes
+tests:
+  - '**/*.test.*'
+  - '**/*.spec.*'
+  - tests/**/*
+  - __tests__/**/*
+  - cypress/**/*
+  - playwright/**/*
+
+# Configuration changes
+config:
+  - '*.json'
+  - '*.yml'
+  - '*.yaml'
+  - '.env*'
+  - '.gitignore'
+  - '.eslintrc*'
+  - 'tsconfig*'
+
+# Dependencies
+dependencies:
+  - package.json
+  - pnpm-lock.yaml
+  - package-lock.json
+  - yarn.lock
+
+# Database changes
+database:
+  - prisma/**/*
+  - migrations/**/*
+  - scripts/*sql
+
+# Security related
+security:
+  - lib/security.ts
+  - lib/auth.ts
+  - app/api/auth/**/*
+
+# Performance related
+performance:
+  - lib/monitoring.ts
+  - lib/db-performance.ts
+  - app/api/analytics/**/*
+
+# GitHub specific
+github:
+  - .github/**/*

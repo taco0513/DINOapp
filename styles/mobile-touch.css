@@ -1,0 +1,359 @@
+/* 모바일 터치 인터페이스 최적화 CSS */
+
+/* 터치 영역 최소 크기 보장 (44px x 44px) */
+button, 
+input[type="button"], 
+input[type="submit"], 
+input[type="reset"],
+a,
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 터치 피드백 강화 */
+button:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+a:active,
+.touch-target:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-out;
+}
+
+/* 스크롤 영역 터치 최적화 */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 입력 필드 터치 최적화 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select {
+  font-size: 16px; /* iOS 줌 방지 */
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  touch-action: manipulation;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 모바일 네비게이션 최적화 */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  padding: 8px 0;
+  z-index: 100;
+  display: none;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #666;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-item:active {
+  color: #000;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.mobile-nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+/* 스와이프 제스처 지원 */
+.swipe-container {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+}
+
+.swipe-item {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+/* 풀 투 리프레시 */
+.pull-to-refresh {
+  position: relative;
+  overflow: hidden;
+}
+
+.pull-indicator {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  padding: 20px;
+  transition: top 0.3s ease;
+}
+
+.pull-indicator.visible {
+  top: 0;
+}
+
+/* 햅틱 피드백 지원 클래스 */
+.haptic-light { /* JS에서 햅틱 피드백 트리거 */ }
+.haptic-medium { /* JS에서 햅틱 피드백 트리거 */ }
+.haptic-heavy { /* JS에서 햅틱 피드백 트리거 */ }
+
+/* 모바일 모달 최적화 */
+.mobile-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1000;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.mobile-modal.open {
+  transform: translateY(0);
+}
+
+.mobile-modal-handle {
+  width: 40px;
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+  margin: 0 auto 20px auto;
+}
+
+/* 액션 시트 스타일 */
+.action-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.action-sheet.open {
+  transform: translateY(0);
+}
+
+.action-sheet-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.action-sheet-item:active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.action-sheet-item:last-child {
+  border-bottom: none;
+}
+
+.action-sheet-cancel {
+  margin-top: 10px;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #e0e0e0;
+}
+
+/* 세이프 에어리어 지원 */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* 빠른 액션 버튼 */
+.floating-action-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 99;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-action-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 미디어 쿼리 */
+@media (max-width: 768px) {
+  /* 모바일에서 네비게이션 표시 */
+  .mobile-nav {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  /* 데스크톱 네비게이션 숨김 */
+  .desktop-nav {
+    display: none;
+  }
+  
+  /* 컨테이너 패딩 조정 */
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  /* 텍스트 크기 조정 */
+  h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 18px; }
+  
+  /* 카드 간격 조정 */
+  .card {
+    margin-bottom: 16px;
+  }
+  
+  /* 테이블 스크롤 */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 더 작은 화면에서 추가 최적화 */
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  /* 버튼 패딩 증가 */
+  button {
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+  
+  /* 입력 필드 패딩 증가 */
+  input, textarea, select {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+}
+
+/* 터치 디바이스 전용 스타일 */
+@media (hover: none) and (pointer: coarse) {
+  /* 호버 효과 비활성화 */
+  *:hover {
+    /* 호버 스타일 제거 */
+  }
+  
+  /* 터치 피드백 강화 */
+  button:active,
+  a:active,
+  .touch-target:active {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* 가로 모드 최적화 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .mobile-modal {
+    max-height: 70vh;
+  }
+  
+  .floating-action-button {
+    bottom: 20px;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .mobile-nav {
+    background: #1a1a1a;
+    border-top-color: #333;
+  }
+  
+  .mobile-nav-item {
+    color: #ccc;
+  }
+  
+  .mobile-nav-item:active {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .mobile-modal,
+  .action-sheet {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  
+  .action-sheet-item {
+    border-bottom-color: #333;
+  }
+  
+  .action-sheet-cancel {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+}

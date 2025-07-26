@@ -12,8 +12,10 @@ const getBaseUrl = () => {
   return process.env.NEXTAUTH_URL || 'http://localhost:3000'
 }
 
-// 중요: NEXTAUTH_URL을 설정하지 않으면 NextAuth가 자동으로 현재 URL을 사용합니다
-process.env.NEXTAUTH_URL = undefined as any
+// Vercel 배포 URL 사용
+if (process.env.VERCEL && !process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),

@@ -10,11 +10,6 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-// Polyfill for server-side builds
-if (typeof self === 'undefined') {
-  global.self = global;
-}
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -32,7 +27,7 @@ const nextConfig = {
     webpackBuildWorker: true,
     scrollRestoration: true
   },
-  output: 'standalone',
+  // output: 'standalone', // Temporarily disabled to fix SSR issues
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -103,116 +98,14 @@ const nextConfig = {
       ]
     }
   ],
-  webpack: (config, { isServer, webpack }) => {
-    // Fix for 'self is not defined' error in server-side builds
+  webpack: (config, { isServer }) => {
+    // Simple fix for SSR issues
     if (isServer) {
-      // Add polyfills for server-side
-      const originalEntry = config.entry;
-      config.entry = async () => {
-        const entries = await originalEntry();
-        
-        if (entries['main.js'] && !entries['main.js'].includes('./lib/polyfills.js')) {
-          entries['main.js'].unshift('./lib/polyfills.js');
-        }
-        
-        return entries;
-      };
-      
-      // Define globals
-      config.plugins.push(
-        new webpack.DefinePlugin({
-          'typeof self': "'object'",
-          'typeof window': "'undefined'",
-        })
-      );
-      
-      // Provide plugin for self
-      config.plugins.push(
-        new webpack.ProvidePlugin({
-          self: 'global',
-        })
-      );
-    }
-
-    // Bundle optimization configurations
-    config.optimization = {
-      ...config.optimization,
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          // Vendor libraries
-          vendor: {
-            name: 'vendor',
-            chunks: 'all',
-            test: /node_modules/,
-            priority: 20
-          },
-          // Common utilities
-          common: {
-            name: 'common',
-            minChunks: 2,
-            chunks: 'all',
-            priority: 10,
-            reuseExistingChunk: true,
-            enforce: true
-          },
-          // Security libraries
-          security: {
-            name: 'security',
-            test: /node_modules\/(crypto-js|bcryptjs|jsonwebtoken|next-auth)/,
-            chunks: 'all',
-            priority: 30
-          },
-          // UI libraries
-          ui: {
-            name: 'ui',
-            test: /node_modules\/(@radix-ui|lucide-react)/,
-            chunks: 'all',
-            priority: 25
-          },
-          // Date libraries
-          date: {
-            name: 'date',
-            test: /node_modules\/date-fns/,
-            chunks: 'all',
-            priority: 25
-          }
-        }
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'isomorphic-dompurify': false,
+        'dompurify': false,
       }
-    }
-
-    // Tree shaking optimization
-    config.optimization.usedExports = true
-    config.optimization.sideEffects = false
-
-    // Minimize dependencies and fix SSR issues
-    if (isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        dns: false,
-        child_process: false,
-        tls: false,
-        crypto: false,
-        stream: false,
-        buffer: false,
-        process: false,
-      }
-      
-      // Additional fix for problematic modules
-      config.externals = [...(config.externals || []), 'canvas', 'jsdom']
-    }
-
-    // Bundle size analysis in development
-    if (process.env.ANALYZE === 'true') {
-      config.plugins.push(
-        new webpack.DefinePlugin({
-          __BUNDLE_ANALYZE__: JSON.stringify(true)
-        })
-      )
     }
 
     return config

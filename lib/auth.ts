@@ -22,22 +22,12 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, account, user }) {
-      if (account && user) {
-        token.id = user.id
-        token.googleId = account.providerAccountId
-        token.accessToken = account.access_token
-        token.refreshToken = account.refresh_token
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string
-        // @ts-ignore - custom properties
-        session.user.googleId = token.googleId
-        // @ts-ignore - custom property
-        session.accessToken = token.accessToken
+    async session({ session, user }) {
+      // With database sessions, user data comes from database
+      if (session.user && user) {
+        session.user.id = user.id
+        // @ts-ignore - custom property for Google access
+        session.user.googleId = user.googleId
       }
       return session
     },
@@ -47,31 +37,13 @@ export const authOptions: NextAuthOptions = {
         email: user?.email
       })
       
-      if (account?.provider === 'google') {
-        try {
-          // Update user with Google ID if not exists
-          if (user.email) {
-            await prisma.user.upsert({
-              where: { email: user.email },
-              update: {
-                googleId: account.providerAccountId,
-                name: user.name,
-                image: user.image,
-              },
-              create: {
-                email: user.email,
-                name: user.name,
-                image: user.image,
-                googleId: account.providerAccountId,
-              }
-            })
-          }
-          return true
-        } catch (error) {
-          console.error('[NextAuth] Error updating user:', error)
-          return false
-        }
+      // Let PrismaAdapter handle user creation/updates
+      // Just verify the sign-in is valid
+      if (account?.provider === 'google' && user?.email) {
+        console.log('[NextAuth] Google sign-in successful for:', user.email)
+        return true
       }
+      
       return true
     },
     async redirect({ url, baseUrl }) {
@@ -96,7 +68,7 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error'
   },
   session: {
-    strategy: 'jwt',
+    strategy: 'database',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,

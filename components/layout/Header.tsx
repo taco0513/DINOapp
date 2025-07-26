@@ -19,7 +19,16 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' })
+    try {
+      await signOut({ 
+        callbackUrl: `${window.location.origin}/`,
+        redirect: true 
+      })
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Fallback: clear session and redirect manually
+      window.location.href = '/'
+    }
   }
 
   const isActive = (href: string) => pathname === href

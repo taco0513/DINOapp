@@ -45,10 +45,16 @@ export const authOptions: NextAuthOptions = {
     },
     
     async redirect({ url, baseUrl }) {
+      // Handle signout redirect
+      if (url.includes('/api/auth/signout')) {
+        return baseUrl
+      }
+      
       // Always redirect to dashboard after sign in
       if (url.startsWith(baseUrl)) {
         return url
       }
+      
       // Redirect to dashboard by default
       return `${baseUrl}/dashboard`
     },

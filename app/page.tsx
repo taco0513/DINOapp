@@ -38,7 +38,18 @@ export default function HomePage() {
           <LoadingSpinner size="lg" className="mx-auto" />
           <p style={{ marginTop: '1rem', color: '#6b7280' }}>대시보드로 이동 중...</p>
           <button
-            onClick={() => signOut({ callbackUrl: '/' })}
+            onClick={async () => {
+              try {
+                await signOut({ 
+                  callbackUrl: `${window.location.origin}/`,
+                  redirect: true 
+                })
+              } catch (error) {
+                console.error('Logout error:', error)
+                // Fallback: clear session and redirect manually
+                window.location.href = '/'
+              }
+            }}
             style={{
               marginTop: '2rem',
               padding: '8px 16px',

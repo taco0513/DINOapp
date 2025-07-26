@@ -12,6 +12,12 @@ export class InputSanitizer {
       return ''
     }
 
+    // Server-side fallback
+    if (typeof window === 'undefined') {
+      // Simple HTML tag removal for server-side
+      return input.replace(/<[^>]*>/g, '')
+    }
+
     const config = {
       ALLOWED_TAGS: options?.allowedTags || [],
       ALLOWED_ATTR: options?.allowedAttributes || [],
@@ -28,6 +34,12 @@ export class InputSanitizer {
   static sanitizeText(input: string): string {
     if (!input || typeof input !== 'string') {
       return ''
+    }
+
+    // Server-side fallback
+    if (typeof window === 'undefined') {
+      // Simple HTML tag removal for server-side
+      return input.replace(/<[^>]*>/g, '').trim()
     }
 
     return DOMPurify.sanitize(input, {

@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "name": "dinocal",
-  "alias": ["dinocal.app"],
+  "name": "dinoapp",
+  "alias": ["dinoapp.net"],
   "build": {
     "env": {
-      "NEXTAUTH_URL": "https://dinocal.vercel.app",
+      "NEXTAUTH_URL": "https://dinoapp.net",
       "NODE_ENV": "production"
     }
   },
@@ -22,7 +22,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://dinocal.vercel.app"
+          "value": "https://dinoapp.net"
         },
         {
           "key": "Access-Control-Allow-Methods",

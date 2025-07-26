@@ -1,8 +1,62 @@
 'use client'
 
 import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 export default function HomePage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === 'loading') return // Still loading
+    
+    if (session) {
+      // If user is logged in, redirect to dashboard
+      router.replace('/dashboard')
+    }
+  }, [session, status, router])
+
+  if (status === 'loading') {
+    return (
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <LoadingSpinner size="lg" className="mx-auto" />
+          <p style={{ marginTop: '1rem', color: '#6b7280' }}>로딩 중...</p>
+        </div>
+      </main>
+    )
+  }
+
+  // If user is logged in, show loading while redirecting
+  if (session) {
+    return (
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <LoadingSpinner size="lg" className="mx-auto" />
+          <p style={{ marginTop: '1rem', color: '#6b7280' }}>대시보드로 이동 중...</p>
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            style={{
+              marginTop: '2rem',
+              padding: '8px 16px',
+              backgroundColor: '#ef4444',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px'
+            }}
+          >
+            로그아웃
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       <div style={{ maxWidth: '600px', textAlign: 'center' }}>

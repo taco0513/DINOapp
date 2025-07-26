@@ -1,12 +1,19 @@
 import GoogleProvider from 'next-auth/providers/google'
 import type { NextAuthOptions } from 'next-auth'
 
-// Ultra-simplified NextAuth configuration to eliminate login loops
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar',
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code'
+        }
+      }
     })
   ],
   
@@ -15,16 +22,44 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
+    }
+  },
+  
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Simple validation - always allow Google sign in
-      return account?.provider === 'google'
+      // Allow Google sign in only
+      if (account?.provider === 'google') {
+        console.log('[Auth] Google sign in successful for:', user.email)
+        return true
+      }
+      return false
     },
     
-    async jwt({ token, user }) {
-      // Store user ID on first sign in
-      if (user) {
+    async redirect({ url, baseUrl }) {
+      // Always redirect to dashboard after sign in
+      if (url.startsWith(baseUrl)) {
+        return url
+      }
+      // Redirect to dashboard by default
+      return `${baseUrl}/dashboard`
+    },
+    
+    async jwt({ token, user, account }) {
+      // Store user info and access token on first sign in
+      if (user && account) {
         token.id = user.id
+        token.accessToken = account.access_token
+        token.refreshToken = account.refresh_token
+        console.log('[Auth] JWT token created for:', user.email)
       }
       return token
     },
@@ -33,6 +68,7 @@ export const authOptions: NextAuthOptions = {
       // Send properties to the client
       if (token.id) {
         session.user.id = token.id as string
+        session.accessToken = token.accessToken as string
       }
       return session
     },
@@ -44,5 +80,11 @@ export const authOptions: NextAuthOptions = {
   },
   
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development'
+  debug: process.env.NODE_ENV === 'development',
+  
+  // Add explicit redirect URLs
+  trustHost: true,
+  
+  // Use secure cookies in production
+  useSecureCookies: process.env.NODE_ENV === 'production'
 }

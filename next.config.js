@@ -99,6 +99,15 @@ const nextConfig = {
     }
   ],
   webpack: (config, { isServer, webpack }) => {
+    // Fix for 'self is not defined' error in server-side builds
+    if (isServer) {
+      config.plugins.push(
+        new webpack.DefinePlugin({
+          self: 'global',
+        })
+      )
+    }
+
     // Bundle optimization configurations
     config.optimization = {
       ...config.optimization,
@@ -152,7 +161,7 @@ const nextConfig = {
     config.optimization.usedExports = true
     config.optimization.sideEffects = false
 
-    // Minimize dependencies
+    // Minimize dependencies and fix SSR issues
     if (isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -161,7 +170,14 @@ const nextConfig = {
         dns: false,
         child_process: false,
         tls: false,
+        crypto: false,
+        stream: false,
+        buffer: false,
+        process: false,
       }
+      
+      // Additional fix for problematic modules
+      config.externals = [...(config.externals || []), 'canvas', 'jsdom']
     }
 
     // Bundle size analysis in development

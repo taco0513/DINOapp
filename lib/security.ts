@@ -1,5 +1,4 @@
 import { NextRequest } from 'next/server'
-import DOMPurify from 'isomorphic-dompurify'
 
 // Rate limiting store (in production, use Redis or similar)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
@@ -76,16 +75,7 @@ export function sanitizeHTML(input: string): string {
     return ''
   }
   
-  // Only use DOMPurify in browser environment
-  if (typeof window !== 'undefined') {
-    return DOMPurify.sanitize(input, {
-      ALLOWED_TAGS: [], // No HTML tags allowed
-      ALLOWED_ATTR: [],
-      KEEP_CONTENT: true
-    })
-  }
-  
-  // Server-side fallback: simple HTML tag removal
+  // Remove all HTML tags
   return input.replace(/<[^>]*>/g, '')
 }
 

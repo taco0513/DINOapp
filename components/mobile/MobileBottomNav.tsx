@@ -41,11 +41,6 @@ const navItems: NavItem[] = [
 export default function MobileBottomNav() {
   const pathname = usePathname()
 
-  // 모바일이 아닌 경우 렌더링하지 않음
-  if (typeof window !== 'undefined' && window.innerWidth > 768) {
-    return null
-  }
-
   return (
     <nav
       style={{
@@ -63,6 +58,7 @@ export default function MobileBottomNav() {
         alignItems: 'center',
         height: '64px'
       }}
+      className="md:hidden"
     >
       {navItems.map((item) => {
         const isActive = pathname === item.href || 

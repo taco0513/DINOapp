@@ -76,9 +76,9 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav style={{
-            display: window.innerWidth >= 768 ? 'flex' : 'none',
+            display: 'none',
             gap: '10px'
-          }}>
+          }} className="md:flex">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -103,13 +103,13 @@ export default function Header() {
             {session?.user && (
               <>
                 <div style={{
-                  display: window.innerWidth >= 640 ? 'flex' : 'none',
+                  display: 'none',
                   alignItems: 'center',
                   gap: '12px',
                   border: '1px solid #666',
                   padding: '6px 12px',
                   backgroundColor: '#f9f9f9'
-                }}>
+                }} className="sm:flex">
                   {session.user.image && (
                     <img
                       src={session.user.image}
@@ -148,7 +148,7 @@ export default function Header() {
             <button
               type="button"
               style={{
-                display: window.innerWidth < 768 ? 'flex' : 'none',
+                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: '8px',
@@ -157,6 +157,7 @@ export default function Header() {
                 color: '#333',
                 cursor: 'pointer'
               }}
+              className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span style={{ display: 'none' }}>메뉴 열기</span>
@@ -179,9 +180,7 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div style={{
-            display: window.innerWidth < 768 ? 'block' : 'none'
-          }}>
+          <div className="md:hidden">
             <div style={{
               padding: '16px 8px',
               borderTop: '2px solid #333',

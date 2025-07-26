@@ -60,11 +60,21 @@ export default function DashboardPage() {
 
   if (status === 'loading') {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="mb-5 text-sm text-gray-600">로딩 중...</div>
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f0f0f0'
+      }}>
+        <div style={{
+          padding: '20px',
+          border: '2px solid #ccc',
+          backgroundColor: 'white'
+        }}>
+          로딩 중...
         </div>
-      </main>
+      </div>
     )
   }
 
@@ -73,220 +83,294 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Container with max width and padding */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#f0f0f0',
+      padding: '20px'
+    }}>
+      {/* 진짜 와이어프레임 컨테이너 */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        backgroundColor: 'white',
+        border: '3px solid #333',
+        padding: '20px'
+      }}>
         
-        {/* Wireframe Header Section */}
-        <div className="bg-white border-2 border-gray-300 p-6 mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="border-l-4 border-blue-500 pl-4">
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                DINO Dashboard
-              </h1>
-              <p className="text-sm text-gray-600">
-                환영합니다, {session.user?.name}님
-              </p>
+        {/* 헤더 박스 */}
+        <div style={{
+          border: '2px solid #666',
+          padding: '15px',
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: '#f9f9f9'
+        }}>
+          <div>
+            <h1 style={{ margin: '0 0 5px 0', fontSize: '24px', fontWeight: 'bold' }}>
+              DINO Dashboard
+            </h1>
+            <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
+              환영합니다, {session.user?.name}님
+            </p>
+          </div>
+          <button 
+            onClick={handleLogout}
+            style={{
+              padding: '8px 16px',
+              border: '2px solid #333',
+              backgroundColor: 'white',
+              cursor: 'pointer'
+            }}
+          >
+            로그아웃
+          </button>
+        </div>
+
+        {/* 메인 그리드 - 와이어프레임 박스들 */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+          marginBottom: '20px'
+        }}>
+          
+          {/* 여행 기록 박스 */}
+          <div style={{
+            border: '2px solid #666',
+            padding: '20px',
+            backgroundColor: 'white'
+          }}>
+            <div style={{
+              borderBottom: '1px solid #ccc',
+              paddingBottom: '10px',
+              marginBottom: '15px'
+            }}>
+              <h3 style={{ margin: '0', fontSize: '18px' }}>여행 기록</h3>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 text-sm font-medium"
+            
+            <div style={{
+              border: '1px dashed #999',
+              padding: '20px',
+              textAlign: 'center',
+              marginBottom: '15px',
+              backgroundColor: '#fafafa'
+            }}>
+              <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
+                {dataLoading ? '...' : statsData ? statsData.overview.totalVisits : '0'}
+              </div>
+              <div style={{ fontSize: '12px', color: '#666' }}>총 여행 수</div>
+            </div>
+            
+            <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
+              새로운 여행을 추가하고 기존 기록을 관리하세요
+            </p>
+            
+            <button 
+              onClick={() => router.push('/trips')}
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '2px solid #333',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
             >
-              로그아웃
+              여행 추가하기
+            </button>
+          </div>
+
+          {/* 셰겐 계산기 박스 */}
+          <div style={{
+            border: '2px solid #666',
+            padding: '20px',
+            backgroundColor: 'white'
+          }}>
+            <div style={{
+              borderBottom: '1px solid #ccc',
+              paddingBottom: '10px',
+              marginBottom: '15px'
+            }}>
+              <h3 style={{ margin: '0', fontSize: '18px' }}>셰겐 계산기</h3>
+            </div>
+            
+            <div style={{
+              border: '1px dashed #999',
+              padding: '20px',
+              textAlign: 'center',
+              marginBottom: '15px',
+              backgroundColor: '#fafafa'
+            }}>
+              <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
+                {dataLoading ? '...' : schengenData ? `${schengenData.status.usedDays}/90` : '0/90'}
+              </div>
+              <div style={{ fontSize: '12px', color: '#666' }}>사용일/허용일</div>
+              {schengenData && (
+                <div style={{
+                  marginTop: '10px',
+                  padding: '5px 10px',
+                  border: '1px solid #ccc',
+                  backgroundColor: schengenData.status.isCompliant ? '#e6ffe6' : '#ffe6e6',
+                  fontSize: '12px'
+                }}>
+                  {schengenData.status.isCompliant ? '준수' : '위반'}
+                </div>
+              )}
+            </div>
+            
+            <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
+              90/180일 규칙을 확인하고 규정 준수를 확인하세요
+            </p>
+            
+            <button 
+              onClick={() => router.push('/schengen')}
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '2px solid #333',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              계산기 열기
+            </button>
+          </div>
+
+          {/* 통계 박스 */}
+          <div style={{
+            border: '2px solid #666',
+            padding: '20px',
+            backgroundColor: 'white'
+          }}>
+            <div style={{
+              borderBottom: '1px solid #ccc',
+              paddingBottom: '10px',
+              marginBottom: '15px'
+            }}>
+              <h3 style={{ margin: '0', fontSize: '18px' }}>통계</h3>
+            </div>
+            
+            <div style={{
+              border: '1px dashed #999',
+              padding: '20px',
+              textAlign: 'center',
+              marginBottom: '15px',
+              backgroundColor: '#fafafa'
+            }}>
+              <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
+                {dataLoading ? '...' : statsData ? statsData.overview.totalCountries : '0'}
+              </div>
+              <div style={{ fontSize: '12px', color: '#666' }}>방문 국가</div>
+            </div>
+            
+            <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
+              여행 패턴과 체류 일수를 분석해보세요
+            </p>
+            
+            <button 
+              onClick={() => router.push('/analytics')}
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '2px solid #333',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              통계 보기
             </button>
           </div>
         </div>
 
-        {/* Main Features Grid - Wireframe Style */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* 최근 활동 박스 */}
+        <div style={{
+          border: '2px solid #666',
+          padding: '20px',
+          backgroundColor: 'white'
+        }}>
+          <div style={{
+            borderBottom: '1px solid #ccc',
+            paddingBottom: '10px',
+            marginBottom: '15px'
+          }}>
+            <h3 style={{ margin: '0', fontSize: '18px' }}>최근 활동</h3>
+          </div>
           
-          {/* Travel Records Card */}
-          <div className="bg-white border-2 border-gray-300 p-6 hover:border-blue-400 transition-colors">
-            <div className="border-b border-gray-200 pb-3 mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                여행 기록
-              </h3>
+          {dataLoading ? (
+            <div style={{
+              border: '1px dashed #999',
+              padding: '40px',
+              textAlign: 'center',
+              color: '#666'
+            }}>
+              최근 활동을 불러오는 중...
             </div>
-            
-            <div className="space-y-4">
-              <div className="bg-gray-50 border border-gray-200 p-4 text-center">
-                {dataLoading ? (
-                  <div className="text-sm text-gray-500">로딩중...</div>
-                ) : statsData ? (
-                  <>
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      {statsData.overview.totalVisits}
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide">
-                      총 여행 수
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-3xl font-bold text-gray-400">-</div>
-                )}
+          ) : statsData && statsData.overview.totalVisits > 0 ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gap: '15px'
+            }}>
+              <div style={{
+                border: '1px solid #ccc',
+                padding: '15px',
+                textAlign: 'center',
+                backgroundColor: '#f9f9f9'
+              }}>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  {statsData.overview.totalVisits}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>총 여행</div>
               </div>
-              
-              <p className="text-sm text-gray-600 text-center">
-                새로운 여행을 추가하고 기존 기록을 관리하세요
-              </p>
-              
+              <div style={{
+                border: '1px solid #ccc',
+                padding: '15px',
+                textAlign: 'center',
+                backgroundColor: '#f9f9f9'
+              }}>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  {statsData.overview.totalCountries}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>방문 국가</div>
+              </div>
+              <div style={{
+                border: '1px solid #ccc',
+                padding: '15px',
+                textAlign: 'center',
+                backgroundColor: '#f9f9f9'
+              }}>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  {statsData.overview.totalDays}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>총 체류일</div>
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              border: '1px dashed #999',
+              padding: '40px',
+              textAlign: 'center'
+            }}>
+              <p style={{ marginBottom: '20px', color: '#666' }}>아직 여행 기록이 없습니다</p>
               <button 
                 onClick={() => router.push('/trips')}
-                className="w-full py-3 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-medium text-sm uppercase tracking-wide"
+                style={{
+                  padding: '10px 20px',
+                  border: '2px solid #333',
+                  backgroundColor: 'white',
+                  cursor: 'pointer'
+                }}
               >
-                여행 추가하기
+                첫 번째 여행 추가하기
               </button>
             </div>
-          </div>
-
-          {/* Schengen Calculator Card */}
-          <div className="bg-white border-2 border-gray-300 p-6 hover:border-purple-400 transition-colors">
-            <div className="border-b border-gray-200 pb-3 mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                셰겐 계산기
-              </h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-gray-50 border border-gray-200 p-4 text-center">
-                {dataLoading ? (
-                  <div className="text-sm text-gray-500">로딩중...</div>
-                ) : schengenData ? (
-                  <>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
-                      {schengenData.status.usedDays}/90
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide mb-2">
-                      사용일수
-                    </div>
-                    <div className={`inline-block px-2 py-1 text-xs border ${
-                      schengenData.status.isCompliant 
-                        ? 'border-green-400 text-green-700 bg-green-50' 
-                        : 'border-red-400 text-red-700 bg-red-50'
-                    }`}>
-                      {schengenData.status.isCompliant ? '준수' : '위반'}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-3xl font-bold text-gray-400">-/-</div>
-                )}
-              </div>
-              
-              <p className="text-sm text-gray-600 text-center">
-                90/180일 규칙 준수 여부를 확인하세요
-              </p>
-              
-              <button 
-                onClick={() => router.push('/schengen')}
-                className="w-full py-3 border-2 border-purple-500 text-purple-600 hover:bg-purple-50 font-medium text-sm uppercase tracking-wide"
-              >
-                계산기 열기
-              </button>
-            </div>
-          </div>
-
-          {/* Statistics Card */}
-          <div className="bg-white border-2 border-gray-300 p-6 hover:border-green-400 transition-colors">
-            <div className="border-b border-gray-200 pb-3 mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                통계
-              </h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-gray-50 border border-gray-200 p-4 text-center">
-                {dataLoading ? (
-                  <div className="text-sm text-gray-500">로딩중...</div>
-                ) : statsData ? (
-                  <>
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      {statsData.overview.totalCountries}
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide">
-                      방문 국가
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-3xl font-bold text-gray-400">-</div>
-                )}
-              </div>
-              
-              <p className="text-sm text-gray-600 text-center">
-                여행 패턴과 체류 일수를 분석해보세요
-              </p>
-              
-              <button 
-                onClick={() => router.push('/analytics')}
-                className="w-full py-3 border-2 border-green-500 text-green-600 hover:bg-green-50 font-medium text-sm uppercase tracking-wide"
-              >
-                통계 보기
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Recent Activity Section - Wireframe Style */}
-        <div className="bg-white border-2 border-gray-300">
-          <div className="border-b-2 border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900">
-              최근 활동
-            </h3>
-          </div>
-          
-          <div className="p-6">
-            {dataLoading ? (
-              <div className="text-center py-12 border-2 border-dashed border-gray-200">
-                <p className="text-gray-500">최근 활동을 불러오는 중...</p>
-              </div>
-            ) : statsData && statsData.overview.totalVisits > 0 ? (
-              <div className="space-y-6">
-                <p className="text-sm text-gray-600 font-medium">
-                  최근 여행 기록 요약:
-                </p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-gray-50 border-2 border-gray-200 p-4 text-center">
-                    <div className="text-2xl font-bold text-gray-900 mb-2">
-                      {statsData.overview.totalVisits}
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide border-t pt-2">
-                      총 여행
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 border-2 border-gray-200 p-4 text-center">
-                    <div className="text-2xl font-bold text-gray-900 mb-2">
-                      {statsData.overview.totalCountries}
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide border-t pt-2">
-                      방문 국가
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 border-2 border-gray-200 p-4 text-center">
-                    <div className="text-2xl font-bold text-gray-900 mb-2">
-                      {statsData.overview.totalDays}
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide border-t pt-2">
-                      총 체류일
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-12 border-2 border-dashed border-gray-200">
-                <p className="text-gray-600 mb-6">아직 여행 기록이 없습니다</p>
-                <button 
-                  onClick={() => router.push('/trips')}
-                  className="px-6 py-3 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-medium text-sm uppercase tracking-wide"
-                >
-                  첫 번째 여행 추가하기
-                </button>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
-    </main>
+    </div>
   )
 }

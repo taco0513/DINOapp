@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 interface NavItem {
   id: string
@@ -40,6 +41,21 @@ const navItems: NavItem[] = [
 
 export default function MobileBottomNav() {
   const pathname = usePathname()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  if (!isMobile) {
+    return null
+  }
 
   return (
     <nav
@@ -58,7 +74,6 @@ export default function MobileBottomNav() {
         alignItems: 'center',
         height: '64px'
       }}
-      className="md:hidden"
     >
       {navItems.map((item) => {
         const isActive = pathname === item.href || 

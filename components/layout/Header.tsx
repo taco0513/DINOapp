@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const navigation = [
   { name: '대시보드', href: '/dashboard' },
@@ -17,6 +17,17 @@ export default function Header() {
   const { data: session, status } = useSession()
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const handleSignOut = async () => {
     try {
@@ -33,8 +44,24 @@ export default function Header() {
 
   const isActive = (href: string) => pathname === href
 
-  if (!session && status !== 'loading') {
-    return null // Don't show header for unauthenticated users
+  // 헤더는 항상 보여주되, 로딩 상태만 체크
+  if (status === 'loading') {
+    return (
+      <header style={{
+        backgroundColor: 'white',
+        border: '2px solid #333',
+        borderBottom: '3px solid #333',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        height: '64px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div>로딩 중...</div>
+      </header>
+    )
   }
 
   return (
@@ -76,9 +103,9 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav style={{
-            display: 'none',
+            display: isMobile ? 'none' : 'flex',
             gap: '10px'
-          }} className="md:flex">
+          }}>
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -103,13 +130,13 @@ export default function Header() {
             {session?.user && (
               <>
                 <div style={{
-                  display: 'none',
+                  display: isMobile ? 'none' : 'flex',
                   alignItems: 'center',
                   gap: '12px',
                   border: '1px solid #666',
                   padding: '6px 12px',
                   backgroundColor: '#f9f9f9'
-                }} className="sm:flex">
+                }}>
                   {session.user.image && (
                     <img
                       src={session.user.image}
@@ -148,7 +175,7 @@ export default function Header() {
             <button
               type="button"
               style={{
-                display: 'flex',
+                display: isMobile ? 'flex' : 'none',
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: '8px',
@@ -157,7 +184,6 @@ export default function Header() {
                 color: '#333',
                 cursor: 'pointer'
               }}
-              className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span style={{ display: 'none' }}>메뉴 열기</span>
@@ -179,8 +205,8 @@ export default function Header() {
         </div>
 
         {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden">
+        {mobileMenuOpen && isMobile && (
+          <div>
             <div style={{
               padding: '16px 8px',
               borderTop: '2px solid #333',

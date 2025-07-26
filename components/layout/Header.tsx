@@ -71,18 +71,26 @@ export default function Header() {
       borderBottom: '3px solid #333',
       position: 'sticky',
       top: 0,
-      zIndex: 50
+      zIndex: 50,
+      height: '70px',
+      display: 'flex',
+      alignItems: 'center'
     }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 20px'
+        padding: '0 20px',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center'
       }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          height: '64px'
+          width: '100%',
+          height: '100%'
         }}>
           {/* Logo */}
           <div>

@@ -1,4 +1,5 @@
-import DOMPurify from 'isomorphic-dompurify'
+// Server-side and client-side compatible import
+import createDOMPurify from 'isomorphic-dompurify'
 
 // XSS 방지를 위한 입력 정화
 export class InputSanitizer {
@@ -12,11 +13,7 @@ export class InputSanitizer {
       return ''
     }
 
-    // Server-side fallback
-    if (typeof window === 'undefined') {
-      // Simple HTML tag removal for server-side
-      return input.replace(/<[^>]*>/g, '')
-    }
+    const DOMPurify = createDOMPurify()
 
     const config = {
       ALLOWED_TAGS: options?.allowedTags || [],
@@ -36,11 +33,7 @@ export class InputSanitizer {
       return ''
     }
 
-    // Server-side fallback
-    if (typeof window === 'undefined') {
-      // Simple HTML tag removal for server-side
-      return input.replace(/<[^>]*>/g, '').trim()
-    }
+    const DOMPurify = createDOMPurify()
 
     return DOMPurify.sanitize(input, {
       ALLOWED_TAGS: [],

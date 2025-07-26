@@ -3,6 +3,17 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import type { NextAuthOptions } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 
+// Dynamic URL handling for multiple Vercel deployments
+const getBaseUrl = () => {
+  if (process.env.NEXTAUTH_URL) {
+    return process.env.NEXTAUTH_URL
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  return 'http://localhost:3000'
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [

@@ -36,8 +36,8 @@ export default function HomePage() {
             로그인하여 시작하기
           </Link>
           
-          <Link 
-            href="/dashboard"
+          <button
+            onClick={() => window.location.href = '/dashboard'}
             style={{
               display: 'inline-block',
               padding: '12px 24px',
@@ -47,7 +47,8 @@ export default function HomePage() {
               borderRadius: '6px',
               fontWeight: '500',
               border: '2px solid #3b82f6',
-              transition: 'all 0.2s'
+              transition: 'all 0.2s',
+              cursor: 'pointer'
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = '#3b82f6'
@@ -59,7 +60,7 @@ export default function HomePage() {
             }}
           >
             대시보드 보기
-          </Link>
+          </button>
         </div>
       </div>
     </main>

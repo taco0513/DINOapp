@@ -21,10 +21,10 @@ export default function HomePage() {
 
   if (status === 'loading') {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <div style={{ textAlign: 'center' }}>
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+        <div className="text-center">
           <LoadingSpinner size="lg" className="mx-auto" />
-          <p style={{ marginTop: '1rem', color: '#6b7280' }}>로딩 중...</p>
+          <p className="mt-4 text-gray-600">로딩 중...</p>
         </div>
       </main>
     )
@@ -33,10 +33,10 @@ export default function HomePage() {
   // If user is logged in, show loading while redirecting
   if (session) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <div style={{ textAlign: 'center' }}>
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+        <div className="text-center">
           <LoadingSpinner size="lg" className="mx-auto" />
-          <p style={{ marginTop: '1rem', color: '#6b7280' }}>대시보드로 이동 중...</p>
+          <p className="mt-4 text-gray-600">대시보드로 이동 중...</p>
           <button
             onClick={async () => {
               try {
@@ -50,16 +50,7 @@ export default function HomePage() {
                 window.location.href = '/'
               }
             }}
-            style={{
-              marginTop: '2rem',
-              padding: '8px 16px',
-              backgroundColor: '#ef4444',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}
+            className="mt-8 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors cursor-pointer text-sm"
           >
             로그아웃
           </button>
@@ -69,62 +60,65 @@ export default function HomePage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-      <div style={{ maxWidth: '600px', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-2xl mx-auto text-center">
+        <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
           DINO
         </h1>
-        <p style={{ fontSize: '1.25rem', color: '#6b7280', marginBottom: '1rem' }}>
+        <p className="text-2xl text-gray-700 mb-4">
           Digital Nomad
         </p>
-        <p style={{ fontSize: '1rem', color: '#9ca3af', lineHeight: '1.6', marginBottom: '2rem' }}>
+        <p className="text-lg text-gray-600 leading-relaxed mb-8 max-w-xl mx-auto">
           복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 
           스마트 여행 관리 플랫폼입니다.
         </p>
         
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="flex gap-4 justify-center flex-wrap">
           <Link 
             href="/auth/signin"
-            style={{
-              display: 'inline-block',
-              padding: '12px 24px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              textDecoration: 'none',
-              borderRadius: '6px',
-              fontWeight: '500',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
+            className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
             로그인하여 시작하기
           </Link>
           
           <Link 
             href="/demo"
-            style={{
-              display: 'inline-block',
-              padding: '12px 24px',
-              backgroundColor: 'transparent',
-              color: '#3b82f6',
-              textDecoration: 'none',
-              borderRadius: '6px',
-              fontWeight: '500',
-              border: '2px solid #3b82f6',
-              transition: 'all 0.2s'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#3b82f6'
-              e.currentTarget.style.color = 'white'
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-              e.currentTarget.style.color = '#3b82f6'
-            }}
+            className="inline-flex items-center px-6 py-3 bg-white hover:bg-gray-50 text-blue-600 font-medium rounded-lg transition-all border-2 border-blue-600 hover:border-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
             데모 보기
           </Link>
+        </div>
+        
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">실시간 추적</h3>
+            <p className="text-sm text-gray-600">비자 만료일과 체류 기간을 자동으로 계산합니다</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">규정 준수</h3>
+            <p className="text-sm text-gray-600">셰겐 90/180일 규칙을 정확하게 계산합니다</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">자동 기록</h3>
+            <p className="text-sm text-gray-600">Gmail과 Calendar를 통해 여행을 자동 감지합니다</p>
+          </div>
         </div>
       </div>
     </main>

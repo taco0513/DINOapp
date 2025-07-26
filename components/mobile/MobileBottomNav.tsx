@@ -53,14 +53,15 @@ export default function MobileBottomNav() {
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#fff',
-        borderTop: '1px solid #e0e0e0',
+        backgroundColor: 'white',
+        border: '3px solid #333',
+        borderBottom: 'none',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         zIndex: 100,
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        height: '60px'
+        height: '64px'
       }}
     >
       {navItems.map((item) => {
@@ -76,28 +77,22 @@ export default function MobileBottomNav() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '6px 12px',
+              padding: '8px 12px',
               textDecoration: 'none',
-              color: isActive ? '#000' : '#666',
+              color: '#333',
               fontSize: '12px',
-              fontWeight: isActive ? '600' : '400',
-              transition: 'color 0.2s ease, transform 0.1s ease',
+              fontWeight: 'medium',
               minWidth: '60px',
-              position: 'relative'
-            }}
-            onTouchStart={(e) => {
-              e.currentTarget.style.transform = 'scale(0.95)'
-            }}
-            onTouchEnd={(e) => {
-              e.currentTarget.style.transform = 'scale(1)'
+              position: 'relative',
+              border: isActive ? '2px solid #333' : '1px solid #666',
+              backgroundColor: isActive ? '#f0f0f0' : 'white',
+              margin: '4px 2px'
             }}
           >
             <div
               style={{
-                fontSize: '20px',
-                marginBottom: '2px',
-                transition: 'transform 0.2s ease',
-                transform: isActive ? 'scale(1.1)' : 'scale(1)'
+                fontSize: '18px',
+                marginBottom: '2px'
               }}
             >
               {item.icon}
@@ -114,9 +109,9 @@ export default function MobileBottomNav() {
                   position: 'absolute',
                   top: '2px',
                   right: '8px',
-                  backgroundColor: '#ff3b30',
-                  color: '#fff',
-                  borderRadius: '10px',
+                  backgroundColor: 'white',
+                  color: '#333',
+                  border: '1px solid #333',
                   minWidth: '18px',
                   height: '18px',
                   display: 'flex',
@@ -128,22 +123,6 @@ export default function MobileBottomNav() {
               >
                 {item.badge > 99 ? '99+' : item.badge}
               </div>
-            )}
-
-            {/* 활성 상태 인디케이터 */}
-            {isActive && (
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '0',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '4px',
-                  height: '4px',
-                  backgroundColor: '#000',
-                  borderRadius: '2px'
-                }}
-              />
             )}
           </Link>
         )

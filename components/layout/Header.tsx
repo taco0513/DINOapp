@@ -38,31 +38,60 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header style={{
+      backgroundColor: 'white',
+      border: '2px solid #333',
+      borderBottom: '3px solid #333',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 20px'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: '64px'
+        }}>
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href={"/dashboard" as any} className="flex items-center">
-              <h1 className="text-2xl font-bold">
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  DINO
-                </span>
+          <div>
+            <Link href={"/dashboard" as any} style={{ textDecoration: 'none' }}>
+              <h1 style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                margin: 0,
+                color: '#333',
+                border: '2px solid #333',
+                padding: '8px 12px',
+                backgroundColor: 'white'
+              }}>
+                DINO
               </h1>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav style={{
+            display: window.innerWidth >= 768 ? 'flex' : 'none',
+            gap: '10px'
+          }}>
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href as any}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                }`}
+                style={{
+                  padding: '8px 16px',
+                  border: isActive(item.href) ? '2px solid #333' : '1px solid #666',
+                  backgroundColor: isActive(item.href) ? '#f0f0f0' : 'white',
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: 'medium'
+                }}
               >
                 {item.name}
               </Link>
@@ -70,25 +99,45 @@ export default function Header() {
           </nav>
 
           {/* User Menu */}
-          <div className="flex items-center space-x-4">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             {session?.user && (
               <>
-                <div className="hidden sm:flex items-center space-x-3">
+                <div style={{
+                  display: window.innerWidth >= 640 ? 'flex' : 'none',
+                  alignItems: 'center',
+                  gap: '12px',
+                  border: '1px solid #666',
+                  padding: '6px 12px',
+                  backgroundColor: '#f9f9f9'
+                }}>
                   {session.user.image && (
                     <img
                       src={session.user.image}
                       alt={session.user.name || 'User'}
-                      className="h-8 w-8 rounded-full"
+                      style={{
+                        height: '32px',
+                        width: '32px',
+                        borderRadius: '50%',
+                        border: '1px solid #666'
+                      }}
                     />
                   )}
-                  <span className="text-gray-700 text-sm font-medium">
+                  <span style={{ color: '#333', fontSize: '14px', fontWeight: 'medium' }}>
                     {session.user.name}
                   </span>
                 </div>
                 
                 <button
                   onClick={handleSignOut}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  style={{
+                    backgroundColor: 'white',
+                    border: '2px solid #333',
+                    color: '#333',
+                    padding: '8px 16px',
+                    fontSize: '14px',
+                    fontWeight: 'medium',
+                    cursor: 'pointer'
+                  }}
                 >
                   로그아웃
                 </button>
@@ -98,12 +147,21 @@ export default function Header() {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+              style={{
+                display: window.innerWidth < 768 ? 'flex' : 'none',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '8px',
+                border: '2px solid #333',
+                backgroundColor: 'white',
+                color: '#333',
+                cursor: 'pointer'
+              }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <span className="sr-only">메뉴 열기</span>
+              <span style={{ display: 'none' }}>메뉴 열기</span>
               <svg
-                className="h-6 w-6"
+                style={{ height: '24px', width: '24px' }}
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
@@ -121,17 +179,29 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+          <div style={{
+            display: window.innerWidth < 768 ? 'block' : 'none'
+          }}>
+            <div style={{
+              padding: '16px 8px',
+              borderTop: '2px solid #333',
+              backgroundColor: '#f9f9f9'
+            }}>
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href as any}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                  }`}
+                  style={{
+                    display: 'block',
+                    padding: '12px 16px',
+                    margin: '4px 0',
+                    border: isActive(item.href) ? '2px solid #333' : '1px solid #666',
+                    backgroundColor: isActive(item.href) ? 'white' : '#f9f9f9',
+                    color: '#333',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: 'medium'
+                  }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -140,20 +210,43 @@ export default function Header() {
               
               {/* Mobile user info */}
               {session?.user && (
-                <div className="border-t border-gray-200 pt-4 pb-3">
-                  <div className="flex items-center px-3">
+                <div style={{
+                  borderTop: '1px solid #666',
+                  paddingTop: '16px',
+                  marginTop: '16px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '12px',
+                    border: '1px solid #666',
+                    backgroundColor: 'white'
+                  }}>
                     {session.user.image && (
                       <img
                         src={session.user.image}
                         alt={session.user.name || 'User'}
-                        className="h-10 w-10 rounded-full"
+                        style={{
+                          height: '40px',
+                          width: '40px',
+                          borderRadius: '50%',
+                          border: '1px solid #666'
+                        }}
                       />
                     )}
-                    <div className="ml-3">
-                      <div className="text-base font-medium text-gray-800">
+                    <div style={{ marginLeft: '12px' }}>
+                      <div style={{
+                        fontSize: '16px',
+                        fontWeight: 'medium',
+                        color: '#333'
+                      }}>
                         {session.user.name}
                       </div>
-                      <div className="text-sm font-medium text-gray-500">
+                      <div style={{
+                        fontSize: '14px',
+                        fontWeight: 'medium',
+                        color: '#666'
+                      }}>
                         {session.user.email}
                       </div>
                     </div>

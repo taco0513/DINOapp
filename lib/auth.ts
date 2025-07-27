@@ -120,7 +120,8 @@ export const authOptions: NextAuthOptions = {
   
   pages: {
     signIn: '/auth/signin',
-    error: '/auth/error'
+    error: '/auth/error',
+    signOut: '/logout'  // Use our custom logout page
   },
   
   secret: process.env.NEXTAUTH_SECRET,

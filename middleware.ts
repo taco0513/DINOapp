@@ -45,6 +45,11 @@ export async function middleware(request: NextRequest) {
     response.headers.set('X-RateLimit-Reset', String(rateLimitResult.resetTime))
   }
 
+  // Skip authentication check for logout page
+  if (pathname === '/logout') {
+    return response
+  }
+
   // Protected routes authentication
   if (pathname.startsWith('/dashboard') || 
       pathname.startsWith('/trips') || 

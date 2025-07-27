@@ -1,60 +1,11 @@
 'use client'
 
 import { useEffect } from 'react'
-import { signOut } from 'next-auth/react'
 
 export default function LogoutPage() {
   useEffect(() => {
-    const performLogout = async () => {
-      try {
-        // Clear all cookies client-side first
-        if (typeof window !== 'undefined') {
-          // Clear session storage
-          window.sessionStorage.clear()
-          window.localStorage.clear()
-          
-          // Clear all cookies
-          document.cookie.split(";").forEach(function(c) { 
-            const eqPos = c.indexOf("=");
-            const name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
-            if (name.includes('next-auth') || name.includes('session')) {
-              document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
-              document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' + window.location.hostname + ';';
-              document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.' + window.location.hostname + ';';
-              // For subdomains
-              document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.vercel.app;';
-              document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.dinoapp.net;';
-            }
-          });
-        }
-        
-        // Call our custom logout endpoint
-        await fetch('/api/auth/logout', {
-          method: 'POST',
-          credentials: 'include',
-          cache: 'no-cache'
-        })
-        
-        // Sign out from NextAuth without redirect
-        await signOut({ 
-          redirect: false,
-          callbackUrl: '/'
-        })
-        
-        // Force hard reload to home page
-        setTimeout(() => {
-          window.location.replace('/')
-        }, 100)
-        
-      } catch (error) {
-        console.error('Logout error:', error)
-        // Force redirect anyway
-        window.location.replace('/')
-      }
-    }
-    
-    // Execute logout immediately
-    performLogout()
+    // Simply redirect to NextAuth signout endpoint
+    window.location.href = '/api/auth/signout?callbackUrl=/'
   }, [])
   
   return (

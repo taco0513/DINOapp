@@ -30,6 +30,19 @@ const CACHE_TIMES = {
 
 // API client functions
 export class ApiClient {
+  private static async getCSRFToken(): Promise<string> {
+    try {
+      const response = await fetch('/api/csrf-token', {
+        credentials: 'same-origin'
+      })
+      const data = await response.json()
+      return data.token || data.csrfToken
+    } catch (error) {
+      console.error('Failed to get CSRF token:', error)
+      return ''
+    }
+  }
+
   private static async request<T>(
     url: string, 
     options: RequestInit = {},
@@ -46,11 +59,30 @@ export class ApiClient {
     }
 
     try {
+      // Get CSRF token for non-GET requests
+      let headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      }
+      
+      if (options.method && ['POST', 'PUT', 'DELETE'].includes(options.method)) {
+        try {
+          const csrfToken = await this.getCSRFToken()
+          if (csrfToken) {
+            headers = {
+              ...headers,
+              'X-CSRF-Token': csrfToken,
+            }
+          }
+        } catch (csrfError) {
+          console.error('Failed to get CSRF token:', csrfError)
+          // Continue without CSRF token in development
+        }
+      }
+
       const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
+        headers,
+        credentials: 'same-origin',
         ...options,
       })
 

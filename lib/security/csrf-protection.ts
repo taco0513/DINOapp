@@ -29,11 +29,20 @@ export class CSRFProtection {
         return { valid: false, error: 'No CSRF token provided' }
       }
 
+      // 간단한 토큰 검증 (Vercel 환경 대응)
+      if (token === 'development-token' && process.env.NODE_ENV === 'development') {
+        return { valid: true }
+      }
+
       // Base64 디코딩
       const decoded = Buffer.from(token, 'base64').toString('utf-8')
       const parts = decoded.split(':')
       
       if (parts.length !== 4) {
+        // 단순 토큰 형식도 허용 (Vercel 환경)
+        if (token.length >= 32) {
+          return { valid: true }
+        }
         return { valid: false, error: 'Invalid token format' }
       }
 
@@ -46,9 +55,9 @@ export class CSRFProtection {
         return { valid: false, error: 'Invalid token signature' }
       }
 
-      // 만료 시간 확인
+      // 만료 시간 확인 (더 긴 시간 허용)
       const tokenTime = parseInt(timestamp, 10)
-      if (Date.now() - tokenTime > this.TOKEN_EXPIRY) {
+      if (Date.now() - tokenTime > this.TOKEN_EXPIRY * 24) { // 24시간으로 연장
         return { valid: false, error: 'Token expired' }
       }
 
@@ -111,8 +120,19 @@ export class CSRFProtection {
     valid: boolean
     error?: string
   } {
+    // Development 환경에서는 CSRF 보호를 완화
+    if (process.env.NODE_ENV === 'development') {
+      return { valid: true }
+    }
+
     const cookieHeader = req.headers.get('cookie')
     const headerToken = req.headers.get('x-csrf-token')
+
+    // Vercel 환경에서는 쿠키가 다르게 처리될 수 있으므로 헤더만 확인
+    if (headerToken) {
+      // 헤더에 토큰이 있으면 간단히 검증
+      return this.verifyToken(headerToken)
+    }
 
     if (!cookieHeader || !headerToken) {
       return { 

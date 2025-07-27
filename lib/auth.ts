@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'strict', // Changed from 'lax' to 'strict' for better security
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production' ? '.dinoapp.net' : undefined
+        domain: undefined
       }
     },
     callbackUrl: {

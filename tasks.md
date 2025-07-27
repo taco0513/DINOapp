@@ -28,21 +28,21 @@
   - TypeScript 타입 정의와 데이터베이스 스키마 일치
   - 기본 데이터베이스 연결 및 쿼리 함수 구현
 
-- [x] **story_2_2**: Add New Travel Record
+- [x] **story_2_2**: Add New Travel Record (UI 완성, API 구현 완료)
   - "새 여행 추가" 폼 구현 (모든 필수 필드)
   - 78개 지원 국가 목록 자동완성 기능
   - 14가지 비자 유형 선택 옵션
   - 사용자 친화적인 날짜 선택기 구현
   - 폼 검증 및 명확한 오류 메시지
 
-- [x] **story_2_3**: View Travel Records List
+- [x] **story_2_3**: View Travel Records List (UI 완성, API 구현 완료)
   - 여행 기록 시간순(최신순) 정렬 표시
   - 국가, 날짜, 비자 유형, 체류일 정보 표시
   - 페이지네이션 또는 무한 스크롤 구현
   - 국가별, 비자 유형별 필터링 기능
   - 검색 기능 (국가명, 기간 검색)
 
-- [x] **story_2_4**: Edit and Delete Travel Records
+- [x] **story_2_4**: Edit and Delete Travel Records (UI 완성, API 구현 완료)
   - 각 여행 기록에 편집/삭제 버튼 구현
   - 편집 모드에서 기존 데이터 미리 채움
   - 삭제 전 확인 다이얼로그 표시

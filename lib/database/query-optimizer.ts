@@ -4,7 +4,8 @@
  */
 
 import { PrismaClient, Prisma } from '@prisma/client'
-import { prisma } from './connection-pool'
+import { getPrismaClient } from './dev-prisma'
+const prisma = getPrismaClient()
 
 interface QueryMetrics {
   query: string

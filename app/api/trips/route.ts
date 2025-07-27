@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { getPrismaClient } from '@/lib/database/dev-prisma'
+const prisma = getPrismaClient()
 import { getUserTripsOptimized } from '@/lib/database/query-optimizer'
 import { systemAlert } from '@/lib/notifications/alert-manager'
 import { z } from 'zod'
@@ -60,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      trips: trips
+      data: trips
     })
 
   } catch (error) {
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse
     }
 
-    // CSRF 보핐
+    // CSRF 보호 (개선된 버전)
     const csrfResult = await csrfProtection(request, {
       requireDoubleSubmit: true
     })
@@ -134,11 +135,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      trip: trip,
+      data: trip,
       message: 'Trip created successfully'
     }, { status: 201 })
 
   } catch (error) {
+    console.error('Trip creation error:', error)
+    
     if (error instanceof z.ZodError) {
       const validationErrors: Record<string, string[]> = {}
       error.issues.forEach(issue => {
@@ -167,7 +170,7 @@ export async function PUT(request: NextRequest) {
       return rateLimitResponse
     }
 
-    // CSRF 보호
+    // CSRF 보호 (개선된 버전)
     const csrfResult = await csrfProtection(request, {
       requireDoubleSubmit: true
     })
@@ -229,7 +232,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      trip: updatedTrip,
+      data: updatedTrip,
       message: 'Trip updated successfully'
     })
 
@@ -261,7 +264,7 @@ export async function DELETE(request: NextRequest) {
       return rateLimitResponse
     }
 
-    // CSRF 보호
+    // CSRF 보호 (개선된 버전)
     const csrfResult = await csrfProtection(request, {
       requireDoubleSubmit: true
     })

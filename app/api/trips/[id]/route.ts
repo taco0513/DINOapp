@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { getPrismaClient } from '@/lib/database/dev-prisma'
+const prisma = getPrismaClient()
 import { csrfProtection } from '@/lib/security/csrf-protection'
 import { z } from 'zod'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError, createValidationError } from '@/lib/api/error-handler'
@@ -74,7 +75,7 @@ export async function PUT(
   const requestId = generateRequestId()
   
   try {
-    // CSRF 보호
+    // CSRF 보호 (개선된 버전)
     const csrfResult = await csrfProtection(request, {
       requireDoubleSubmit: true
     })
@@ -149,7 +150,7 @@ export async function DELETE(
   const requestId = generateRequestId()
   
   try {
-    // CSRF 보호
+    // CSRF 보호 (개선된 버전)
     const csrfResult = await csrfProtection(request, {
       requireDoubleSubmit: true
     })

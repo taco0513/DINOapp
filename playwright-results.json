@@ -1,0 +1,236 @@
+{
+  "config": {
+    "configFile": "/Users/zimo_mbp16_m1max/Projects/DINOapp/playwright.config.ts",
+    "rootDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "/Users/zimo_mbp16_m1max/Projects/DINOapp/playwright.global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 5,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "app-functionality.spec.ts",
+      "file": "app-functionality.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "App Functionality Tests",
+          "file": "app-functionality.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load home page successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 2396,
+                      "error": {
+                        "message": "Error: expect.toBeVisible: Error: strict mode violation: locator('text=DINO').or(locator('h1')) resolved to 2 elements:\n    1) <h1>DINO</h1> aka getByRole('link', { name: 'DINO' })\n    2) <h1>DINO</h1> aka locator('div').filter({ hasText: /^DINODigital Nomad Visa Tracker복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 플랫폼$/ }).getByRole('heading')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=DINO').or(locator('h1'))\u001b[22m\n\u001b[2m    4 × locator resolved to <title>DINO - Digital Nomad Visa Tracker</title>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n",
+                        "stack": "Error: expect.toBeVisible: Error: strict mode violation: locator('text=DINO').or(locator('h1')) resolved to 2 elements:\n    1) <h1>DINO</h1> aka getByRole('link', { name: 'DINO' })\n    2) <h1>DINO</h1> aka locator('div').filter({ hasText: /^DINODigital Nomad Visa Tracker복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 플랫폼$/ }).getByRole('heading')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=DINO').or(locator('h1'))\u001b[22m\n\u001b[2m    4 × locator resolved to <title>DINO - Digital Nomad Visa Tracker</title>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n    at /Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e/app-functionality.spec.ts:11:68",
+                        "location": {
+                          "file": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e/app-functionality.spec.ts",
+                          "column": 68,
+                          "line": 11
+                        },
+                        "snippet": "   9 |     \n  10 |     // Should see DINO app name or some content\n> 11 |     await expect(page.locator('text=DINO').or(page.locator('h1'))).toBeVisible({ timeout: 10000 })\n     |                                                                    ^\n  12 |   })\n  13 |\n  14 |   test('should have proper meta tags and title', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e/app-functionality.spec.ts",
+                            "column": 68,
+                            "line": 11
+                          },
+                          "message": "Error: expect.toBeVisible: Error: strict mode violation: locator('text=DINO').or(locator('h1')) resolved to 2 elements:\n    1) <h1>DINO</h1> aka getByRole('link', { name: 'DINO' })\n    2) <h1>DINO</h1> aka locator('div').filter({ hasText: /^DINODigital Nomad Visa Tracker복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 플랫폼$/ }).getByRole('heading')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=DINO').or(locator('h1'))\u001b[22m\n\u001b[2m    4 × locator resolved to <title>DINO - Digital Nomad Visa Tracker</title>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n\n   9 |     \n  10 |     // Should see DINO app name or some content\n> 11 |     await expect(page.locator('text=DINO').or(page.locator('h1'))).toBeVisible({ timeout: 10000 })\n     |                                                                    ^\n  12 |   })\n  13 |\n  14 |   test('should have proper meta tags and title', async ({ page }) => {\n    at /Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e/app-functionality.spec.ts:11:68"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-27T07:27:46.037Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results/app-functionality-App-Func-530f6-load-home-page-successfully-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results/app-functionality-App-Func-530f6-load-home-page-successfully-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/zimo_mbp16_m1max/Projects/DINOapp/test-results/app-functionality-App-Func-530f6-load-home-page-successfully-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/zimo_mbp16_m1max/Projects/DINOapp/__tests__/e2e/app-functionality.spec.ts",
+                        "column": 68,
+                        "line": 11
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "baff3c975e821cba5a73-c0b431cf0d5dd1addcba",
+              "file": "app-functionality.spec.ts",
+              "line": 4,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-07-27T07:27:40.469Z",
+    "duration": 8133.1050000000005,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -12,21 +12,9 @@ if (process.env.NODE_ENV === 'development') {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // typedRoutes: true, // Disabled temporarily to fix deployment
-    optimizePackageImports: [
-      'date-fns', 
-      'react-icons', 
-      'lucide-react',
-      'zod',
-      '@radix-ui/react-checkbox',
-      '@radix-ui/react-progress',
-      '@radix-ui/react-slot',
-      '@radix-ui/react-tabs'
-    ],
-    webpackBuildWorker: true,
-    scrollRestoration: true
-  },
+  // experimental: {
+  //   scrollRestoration: true
+  // },
   // output: 'standalone', // Temporarily disabled to fix SSR issues
   eslint: {
     ignoreDuringBuilds: true,
@@ -105,6 +93,14 @@ const nextConfig = {
         ...config.resolve.alias,
         'isomorphic-dompurify': false,
         'dompurify': false,
+      }
+    }
+
+    // Fix for webpack "Cannot read properties of undefined (reading 'call')"
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: false
       }
     }
 

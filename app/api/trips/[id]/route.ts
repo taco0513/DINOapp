@@ -106,9 +106,9 @@ export async function PUT(
       where: { id: id },
       data: {
         ...(validatedData.country && { country: validatedData.country }),
-        ...(validatedData.entryDate && { entryDate: new Date(validatedData.entryDate) }),
+        ...(validatedData.entryDate && { entryDate: new Date(validatedData.entryDate).toISOString() }),
         ...(validatedData.exitDate !== undefined && { 
-          exitDate: validatedData.exitDate ? new Date(validatedData.exitDate) : null 
+          exitDate: validatedData.exitDate ? new Date(validatedData.exitDate).toISOString() : null 
         }),
         ...(validatedData.visaType && { visaType: validatedData.visaType }),
         ...(validatedData.maxDays && { maxDays: validatedData.maxDays }),

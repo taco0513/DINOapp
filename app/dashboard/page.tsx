@@ -4,6 +4,10 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ApiClient } from '@/lib/api-client'
+import NotificationIcon from '@/components/notifications/NotificationIcon'
+import LanguageSelector from '@/components/ui/LanguageSelector'
+import LanguageTest from '@/components/ui/LanguageTest'
+import { t } from '@/lib/i18n'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -72,7 +76,7 @@ export default function DashboardPage() {
           border: '2px solid #ccc',
           backgroundColor: 'white'
         }}>
-          로딩 중...
+          {t('common.loading')}
         </div>
       </div>
     )
@@ -109,23 +113,27 @@ export default function DashboardPage() {
         }}>
           <div>
             <h1 style={{ margin: '0 0 5px 0', fontSize: '24px', fontWeight: 'bold' }}>
-              DINO Dashboard
+              {t('nav.dashboard')} - {t('app.title')}
             </h1>
             <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
-              환영합니다, {session.user?.name}님
+              {t('dashboard.welcome', { name: session.user?.name || '' })}
             </p>
           </div>
-          <button 
-            onClick={handleLogout}
-            style={{
-              padding: '8px 16px',
-              border: '2px solid #333',
-              backgroundColor: 'white',
-              cursor: 'pointer'
-            }}
-          >
-            로그아웃
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <LanguageSelector />
+            <NotificationIcon userId={session.user?.email || ''} />
+            <button 
+              onClick={handleLogout}
+              style={{
+                padding: '8px 16px',
+                border: '2px solid #333',
+                backgroundColor: 'white',
+                cursor: 'pointer'
+              }}
+            >
+              {t('dashboard.logout')}
+            </button>
+          </div>
         </div>
 
         {/* 메인 그리드 - 와이어프레임 박스들 */}
@@ -147,7 +155,7 @@ export default function DashboardPage() {
               paddingBottom: '10px',
               marginBottom: '15px'
             }}>
-              <h3 style={{ margin: '0', fontSize: '18px' }}>여행 기록</h3>
+              <h3 style={{ margin: '0', fontSize: '18px' }}>{t('nav.trips')}</h3>
             </div>
             
             <div style={{
@@ -160,11 +168,11 @@ export default function DashboardPage() {
               <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
                 {dataLoading ? '...' : statsData ? statsData.overview.totalVisits : '0'}
               </div>
-              <div style={{ fontSize: '12px', color: '#666' }}>총 여행 수</div>
+              <div style={{ fontSize: '12px', color: '#666' }}>{t('common.total')} {t('nav.trips')}</div>
             </div>
             
             <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
-              새로운 여행을 추가하고 기존 기록을 관리하세요
+              {t('trips.description')}
             </p>
             
             <button 
@@ -178,7 +186,7 @@ export default function DashboardPage() {
                 fontSize: '14px'
               }}
             >
-              여행 추가하기
+              {t('trips.add')}
             </button>
           </div>
 
@@ -193,7 +201,7 @@ export default function DashboardPage() {
               paddingBottom: '10px',
               marginBottom: '15px'
             }}>
-              <h3 style={{ margin: '0', fontSize: '18px' }}>셰겐 계산기</h3>
+              <h3 style={{ margin: '0', fontSize: '18px' }}>{t('nav.schengen')}</h3>
             </div>
             
             <div style={{
@@ -206,7 +214,7 @@ export default function DashboardPage() {
               <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
                 {dataLoading ? '...' : schengenData ? `${schengenData.status.usedDays}/90` : '0/90'}
               </div>
-              <div style={{ fontSize: '12px', color: '#666' }}>사용일/허용일</div>
+              <div style={{ fontSize: '12px', color: '#666' }}>{t('schengen.used_days')}/90</div>
               {schengenData && (
                 <div style={{
                   marginTop: '10px',
@@ -215,13 +223,13 @@ export default function DashboardPage() {
                   backgroundColor: schengenData.status.isCompliant ? '#e6ffe6' : '#ffe6e6',
                   fontSize: '12px'
                 }}>
-                  {schengenData.status.isCompliant ? '준수' : '위반'}
+                  {schengenData.status.isCompliant ? t('schengen.compliant') : t('schengen.violation')}
                 </div>
               )}
             </div>
             
             <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
-              90/180일 규칙을 확인하고 규정 준수를 확인하세요
+              {t('schengen.description')}
             </p>
             
             <button 
@@ -235,7 +243,7 @@ export default function DashboardPage() {
                 fontSize: '14px'
               }}
             >
-              계산기 열기
+              {t('nav.schengen')}
             </button>
           </div>
 
@@ -250,7 +258,7 @@ export default function DashboardPage() {
               paddingBottom: '10px',
               marginBottom: '15px'
             }}>
-              <h3 style={{ margin: '0', fontSize: '18px' }}>통계</h3>
+              <h3 style={{ margin: '0', fontSize: '18px' }}>{t('dashboard.stats.view')}</h3>
             </div>
             
             <div style={{
@@ -263,7 +271,7 @@ export default function DashboardPage() {
               <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
                 {dataLoading ? '...' : statsData ? statsData.overview.totalCountries : '0'}
               </div>
-              <div style={{ fontSize: '12px', color: '#666' }}>방문 국가</div>
+              <div style={{ fontSize: '12px', color: '#666' }}>{t('dashboard.stats.countries')}</div>
             </div>
             
             <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
@@ -281,7 +289,7 @@ export default function DashboardPage() {
                 fontSize: '14px'
               }}
             >
-              통계 보기
+{t('dashboard.stats.view')}
             </button>
           </div>
         </div>
@@ -297,7 +305,7 @@ export default function DashboardPage() {
             paddingBottom: '10px',
             marginBottom: '15px'
           }}>
-            <h3 style={{ margin: '0', fontSize: '18px' }}>최근 활동</h3>
+            <h3 style={{ margin: '0', fontSize: '18px' }}>{t('dashboard.recent_activity')}</h3>
           </div>
           
           {dataLoading ? (
@@ -307,7 +315,7 @@ export default function DashboardPage() {
               textAlign: 'center',
               color: '#666'
             }}>
-              최근 활동을 불러오는 중...
+{t('dashboard.loading_activity')}
             </div>
           ) : statsData && statsData.overview.totalVisits > 0 ? (
             <div style={{
@@ -324,7 +332,7 @@ export default function DashboardPage() {
                 <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
                   {statsData.overview.totalVisits}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>총 여행</div>
+                <div style={{ fontSize: '12px', color: '#666' }}>{t('common.total')} {t('nav.trips')}</div>
               </div>
               <div style={{
                 border: '1px solid #ccc',
@@ -335,7 +343,7 @@ export default function DashboardPage() {
                 <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
                   {statsData.overview.totalCountries}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>방문 국가</div>
+                <div style={{ fontSize: '12px', color: '#666' }}>{t('dashboard.stats.countries')}</div>
               </div>
               <div style={{
                 border: '1px solid #ccc',
@@ -346,7 +354,7 @@ export default function DashboardPage() {
                 <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
                   {statsData.overview.totalDays}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>총 체류일</div>
+                <div style={{ fontSize: '12px', color: '#666' }}>{t('common.total')} {t('common.days')}</div>
               </div>
             </div>
           ) : (
@@ -355,7 +363,7 @@ export default function DashboardPage() {
               padding: '40px',
               textAlign: 'center'
             }}>
-              <p style={{ marginBottom: '20px', color: '#666' }}>아직 여행 기록이 없습니다</p>
+              <p style={{ marginBottom: '20px', color: '#666' }}>{t('dashboard.no_trips')}</p>
               <button 
                 onClick={() => router.push('/trips')}
                 style={{
@@ -365,12 +373,13 @@ export default function DashboardPage() {
                   cursor: 'pointer'
                 }}
               >
-                첫 번째 여행 추가하기
+                {t('dashboard.add_first_trip')}
               </button>
             </div>
           )}
         </div>
       </div>
+      <LanguageTest />
     </div>
   )
 }

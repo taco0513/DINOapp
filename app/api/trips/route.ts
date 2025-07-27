@@ -59,6 +59,9 @@ export async function GET(request: NextRequest) {
       includeActive: undefined // 모든 여행 포함
     })
 
+    // Debug logging
+    console.log(`[GET /api/trips] Found ${trips.length} trips for user ${user.id}`)
+
     return NextResponse.json({
       success: true,
       data: trips
@@ -119,13 +122,13 @@ export async function POST(request: NextRequest) {
       return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
-    // 여행 기록 생성
+    // 여행 기록 생성 - Convert date strings to ISO-8601 format
     const trip = await prisma.countryVisit.create({
       data: {
         userId: user.id,
         country: validatedData.country,
-        entryDate: validatedData.entryDate,
-        exitDate: validatedData.exitDate || null,
+        entryDate: new Date(validatedData.entryDate).toISOString(),
+        exitDate: validatedData.exitDate ? new Date(validatedData.exitDate).toISOString() : null,
         visaType: validatedData.visaType,
         maxDays: validatedData.maxDays,
         passportCountry: validatedData.passportCountry,
@@ -159,164 +162,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT 및 DELETE 메서드 추가
-export async function PUT(request: NextRequest) {
-  const requestId = generateRequestId()
-  
-  try {
-    // Rate limiting
-    const rateLimitResponse = await applyRateLimit(request, 'mutation')
-    if (rateLimitResponse) {
-      return rateLimitResponse
-    }
-
-    // CSRF 보호 (개선된 버전)
-    const csrfResult = await csrfProtection(request, {
-      requireDoubleSubmit: true
-    })
-    if (!csrfResult.protected) {
-      return csrfResult.response!
-    }
-
-    // Security middleware
-    const securityResult = await securityMiddleware(request)
-    if (!securityResult.proceed) {
-      return securityResult.response!
-    }
-
-    const sanitizedBody = await sanitizeRequestBody(request, {
-      country: 'text',
-      notes: 'text',
-      visaType: 'text'
-    })
-
-    if (!sanitizedBody || !sanitizedBody.id) {
-      return createErrorResponse(ErrorCode.BAD_REQUEST, 'Trip ID is required for updates', undefined, requestId)
-    }
-
-    const validatedData = createTripSchema.parse(sanitizedBody)
-    const session = await getServerSession(authOptions)
-    const user = await prisma.user.findUnique({
-      where: { email: session!.user!.email! }
-    })
-
-    if (!user) {
-      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
-    }
-
-    // 소유권 확인
-    const existingTrip = await prisma.countryVisit.findFirst({
-      where: { 
-        id: sanitizedBody.id,
-        userId: user.id
-      }
-    })
-
-    if (!existingTrip) {
-      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
-    }
-
-    const updatedTrip = await prisma.countryVisit.update({
-      where: { id: sanitizedBody.id },
-      data: {
-        country: validatedData.country,
-        entryDate: validatedData.entryDate,
-        exitDate: validatedData.exitDate || null,
-        visaType: validatedData.visaType,
-        maxDays: validatedData.maxDays,
-        passportCountry: validatedData.passportCountry,
-        notes: validatedData.notes || null,
-        updatedAt: new Date()
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      data: updatedTrip,
-      message: 'Trip updated successfully'
-    })
-
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const validationErrors: Record<string, string[]> = {}
-      error.issues.forEach(issue => {
-        const field = issue.path.join('.')
-        if (!validationErrors[field]) {
-          validationErrors[field] = []
-        }
-        validationErrors[field].push(issue.message)
-      })
-      return createValidationError(validationErrors, requestId)
-    }
-
-    // Error updating trip
-    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
-  }
-}
-
-export async function DELETE(request: NextRequest) {
-  const requestId = generateRequestId()
-  
-  try {
-    // Rate limiting
-    const rateLimitResponse = await applyRateLimit(request, 'mutation')
-    if (rateLimitResponse) {
-      return rateLimitResponse
-    }
-
-    // CSRF 보호 (개선된 버전)
-    const csrfResult = await csrfProtection(request, {
-      requireDoubleSubmit: true
-    })
-    if (!csrfResult.protected) {
-      return csrfResult.response!
-    }
-
-    // Security middleware
-    const securityResult = await securityMiddleware(request)
-    if (!securityResult.proceed) {
-      return securityResult.response!
-    }
-
-    const url = new URL(request.url)
-    const tripId = url.searchParams.get('id')
-
-    if (!tripId) {
-      return createErrorResponse(ErrorCode.BAD_REQUEST, 'Trip ID is required for deletion', undefined, requestId)
-    }
-
-    const session = await getServerSession(authOptions)
-    const user = await prisma.user.findUnique({
-      where: { email: session!.user!.email! }
-    })
-
-    if (!user) {
-      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
-    }
-
-    // 소유권 확인
-    const existingTrip = await prisma.countryVisit.findFirst({
-      where: { 
-        id: tripId,
-        userId: user.id
-      }
-    })
-
-    if (!existingTrip) {
-      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
-    }
-
-    await prisma.countryVisit.delete({
-      where: { id: tripId }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Trip deleted successfully'
-    })
-
-  } catch (error) {
-    // Error deleting trip
-    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
-  }
-}

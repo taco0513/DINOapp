@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { Notification } from '@/types/notification'
+import { t } from '@/lib/i18n'
 
 interface NotificationIconProps {
   userId: string
@@ -22,25 +23,43 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
     return () => clearInterval(interval)
   }, [userId])
 
-  const loadNotifications = () => {
-    const stored = localStorage.getItem(`notifications-${userId}`)
-    if (stored) {
-      const notifications = JSON.parse(stored) as Notification[]
-      const unread = notifications.filter(n => !n.read)
-      setUnreadCount(unread.length)
-      setRecentNotifications(unread.slice(0, 3)) // Show only 3 most recent
+  const loadNotifications = async () => {
+    try {
+      const response = await fetch('/api/notifications', {
+        credentials: 'same-origin'
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          const notifications = data.data.notifications as Notification[]
+          const unread = notifications.filter(n => !n.read)
+          setUnreadCount(unread.length)
+          setRecentNotifications(unread.slice(0, 3)) // Show only 3 most recent
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load notifications:', error)
     }
   }
 
-  const markAsRead = (notificationId: string) => {
-    const stored = localStorage.getItem(`notifications-${userId}`)
-    if (stored) {
-      const notifications = JSON.parse(stored) as Notification[]
-      const updated = notifications.map(n => 
-        n.id === notificationId ? { ...n, read: true } : n
-      )
-      localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated))
-      loadNotifications()
+  const markAsRead = async (notificationId: string) => {
+    try {
+      const response = await fetch('/api/notifications/mark-read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ notificationId })
+      })
+      
+      if (response.ok) {
+        // Reload notifications to update the count
+        loadNotifications()
+      }
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error)
     }
   }
 
@@ -71,13 +90,13 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold">알림</h3>
+              <h3 className="font-semibold">{t('notifications.title')}</h3>
               <Link
                 href="/"
                 onClick={() => setShowDropdown(false)}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                모두 보기
+                {t('notifications.view_all')}
               </Link>
             </div>
           </div>
@@ -85,7 +104,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
           <div className="max-h-80 overflow-y-auto">
             {recentNotifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
-                새로운 알림이 없습니다
+                {t('notifications.empty')}
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -143,7 +162,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
                 onClick={() => setShowDropdown(false)}
                 className="block w-full text-center text-sm text-blue-600 hover:text-blue-700 py-2"
               >
-                모든 알림 보기
+                {t('notifications.view_all')}
               </Link>
             </div>
           )}

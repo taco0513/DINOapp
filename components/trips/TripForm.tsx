@@ -31,13 +31,20 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
     setError(null)
 
     try {
+      let response;
       if (trip) {
-        await ApiClient.updateTrip(trip.id, formData)
+        response = await ApiClient.updateTrip(trip.id, formData)
       } else {
-        await ApiClient.createTrip(formData)
+        response = await ApiClient.createTrip(formData)
       }
-      onSuccess()
+      
+      if (response.success) {
+        onSuccess()
+      } else {
+        setError(response.error || 'An error occurred while saving')
+      }
     } catch (err) {
+      console.error('Form submission error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)

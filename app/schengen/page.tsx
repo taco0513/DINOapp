@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
+import { t } from '@/lib/i18n'
 
 export default function SchengenPage() {
   const { data: session, status } = useSession()
@@ -14,6 +15,7 @@ export default function SchengenPage() {
   const [hasTrips, setHasTrips] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
   const [trips, setTrips] = useState<CountryVisit[]>([])
+  const [schengenData, setSchengenData] = useState<any>(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -23,21 +25,29 @@ export default function SchengenPage() {
       return
     }
 
-    checkTripsExistence()
+    loadSchengenData()
   }, [session, status, router])
 
-  const checkTripsExistence = async () => {
+  const loadSchengenData = async () => {
     setLoading(true)
     try {
-      const response = await ApiClient.getTrips()
-      if (response.success && response.data) {
-        setTrips(response.data)
-        setHasTrips(response.data.length > 0)
+      const [tripsResponse, schengenResponse] = await Promise.all([
+        ApiClient.getTrips(),
+        ApiClient.getSchengenStatus()
+      ])
+
+      if (tripsResponse.success && tripsResponse.data) {
+        setTrips(tripsResponse.data)
+        setHasTrips(tripsResponse.data.length > 0)
       } else {
         setHasTrips(false)
       }
+
+      if (schengenResponse.success && schengenResponse.data) {
+        setSchengenData(schengenResponse.data)
+      }
     } catch (error) {
-      // Error checking trips
+      console.error('Error loading Schengen data:', error)
       setHasTrips(false)
     } finally {
       setLoading(false)
@@ -48,7 +58,7 @@ export default function SchengenPage() {
     return (
       <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>로딩 중...</div>
+          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>{t('common.loading')}</div>
         </div>
       </main>
     )
@@ -69,10 +79,10 @@ export default function SchengenPage() {
               DINO
             </Link>
             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-              <Link href="/dashboard" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>대시보드</Link>
-              <Link href="/trips" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>여행기록</Link>
-              <span style={{ color: '#000', fontSize: '14px', fontWeight: '500' }}>셰겐계산기</span>
-              <Link href="/calendar" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>캘린더</Link>
+              <Link href="/dashboard" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>{t('nav.dashboard')}</Link>
+              <Link href="/trips" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>{t('nav.trips')}</Link>
+              <span style={{ color: '#000', fontSize: '14px', fontWeight: '500' }}>{t('nav.schengen')}</span>
+              <Link href="/calendar" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>{t('nav.calendar')}</Link>
             </div>
           </div>
         </nav>
@@ -80,10 +90,10 @@ export default function SchengenPage() {
         {/* Header */}
         <div style={{ marginBottom: '40px' }}>
           <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
-            셰겐 계산기
+            {t('schengen.title')}
           </h1>
           <p style={{ fontSize: '16px', color: '#666' }}>
-            90/180일 규칙을 확인하고 규정 준수를 추적하세요
+            {t('schengen.description')}
           </p>
         </div>
 
@@ -100,18 +110,58 @@ export default function SchengenPage() {
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                 <div style={{ border: '1px solid #e0e0e0', padding: '20px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>45 / 90</div>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+                    {schengenData ? `${schengenData.status.usedDays} / 90` : '0 / 90'}
+                  </div>
                   <div style={{ fontSize: '14px', color: '#666' }}>사용된 일수</div>
                 </div>
                 <div style={{ border: '1px solid #e0e0e0', padding: '20px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>45</div>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+                    {schengenData ? schengenData.status.remainingDays : '90'}
+                  </div>
                   <div style={{ fontSize: '14px', color: '#666' }}>남은 일수</div>
                 </div>
                 <div style={{ border: '1px solid #e0e0e0', padding: '20px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>2024-06-15</div>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+                    {schengenData ? schengenData.status.nextResetDate : '---'}
+                  </div>
                   <div style={{ fontSize: '14px', color: '#666' }}>다음 재설정</div>
                 </div>
               </div>
+              
+              {/* Compliance Status and Warnings */}
+              {schengenData && (
+                <div style={{ marginTop: '20px' }}>
+                  <div style={{
+                    padding: '15px',
+                    border: `2px solid ${schengenData.status.isCompliant ? '#22c55e' : '#ef4444'}`,
+                    backgroundColor: schengenData.status.isCompliant ? '#f0fdf4' : '#fef2f2',
+                    color: schengenData.status.isCompliant ? '#15803d' : '#dc2626',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    textAlign: 'center'
+                  }}>
+                    {schengenData.status.isCompliant ? '✅ 셰겐 규정 준수' : '⚠️ 셰겐 규정 위반'}
+                  </div>
+                  
+                  {schengenData.warnings && schengenData.warnings.length > 0 && (
+                    <div style={{ marginTop: '15px' }}>
+                      {schengenData.warnings.map((warning: string, index: number) => (
+                        <div key={index} style={{
+                          padding: '10px',
+                          backgroundColor: '#fff3cd',
+                          border: '1px solid #ffeaa7',
+                          color: '#856404',
+                          fontSize: '14px',
+                          marginBottom: '5px'
+                        }}>
+                          {warning}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Usage Chart */}

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
+import { t } from '@/lib/i18n'
 
 // Dynamic imports for better code splitting
 const TripForm = lazy(() => import('@/components/trips/TripForm'))
@@ -37,9 +38,11 @@ export default function TripsPage() {
       const response = await ApiClient.getTrips()
       if (response.success && response.data) {
         setTrips(response.data)
+      } else {
+        console.error('Failed to load trips:', response.error)
       }
     } catch (error) {
-      // Error loading trips
+      console.error('Error loading trips:', error)
     } finally {
       setLoading(false)
     }
@@ -55,10 +58,11 @@ export default function TripsPage() {
     setShowForm(true)
   }
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = async () => {
     setShowForm(false)
     setEditingTrip(null)
-    loadTrips()
+    // Force reload trips after successful creation/update
+    await loadTrips()
   }
 
   const handleFormCancel = () => {
@@ -99,7 +103,7 @@ export default function TripsPage() {
     return (
       <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>로딩 중...</div>
+          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>{t('common.loading')}</div>
         </div>
       </main>
     )
@@ -127,10 +131,10 @@ export default function TripsPage() {
           }}>
             <div>
               <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px', color: '#000' }}>
-                여행 기록
+                {t('trips.title')}
               </h1>
               <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
-                여행 기록을 추가하고 관리하세요
+                {t('trips.description')}
               </p>
             </div>
             <button 
@@ -144,7 +148,7 @@ export default function TripsPage() {
                 fontSize: '14px'
               }}
             >
-              새 여행 추가
+{t('trips.add')}
             </button>
           </div>
 

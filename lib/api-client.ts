@@ -100,7 +100,20 @@ export class ApiClient {
       return data
     } catch (error) {
       // API request failed
-      throw error
+      console.error('API request failed:', error)
+      
+      // Return a proper error response instead of throwing
+      if (error instanceof Error) {
+        return {
+          success: false,
+          error: error.message
+        }
+      }
+      
+      return {
+        success: false,
+        error: 'An unexpected error occurred'
+      }
     }
   }
 
@@ -110,6 +123,8 @@ export class ApiClient {
       memoryCache.delete(CacheKeys.USER_SCHENGEN_STATUS(userId))
       memoryCache.delete(CacheKeys.USER_STATS(userId))
     }
+    // Also invalidate the general trips cache
+    memoryCache.delete('trips:all')
   }
 
   // Trip operations
@@ -182,6 +197,18 @@ export class ApiClient {
       cacheKey,
       CACHE_TIMES.USER_DATA
     )
+  }
+
+  // Notifications
+  static async getNotifications(): Promise<ApiResponse<any>> {
+    return this.request('/api/notifications')
+  }
+
+  static async markNotificationRead(notificationId: string): Promise<ApiResponse<any>> {
+    return this.request('/api/notifications/mark-read', {
+      method: 'POST',
+      body: JSON.stringify({ notificationId })
+    })
   }
 
   // Statistics

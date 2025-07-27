@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
       name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'strict', // Changed from 'lax' to 'strict' for better security
+        sameSite: 'lax', // Use 'lax' for better compatibility with Vercel
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         domain: undefined
@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
       name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.callback-url`,
       options: {
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production'
       }
@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
       name: `${process.env.NODE_ENV === 'production' ? '__Host-' : ''}next-auth.csrf-token`,
       options: {
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production'
       }
@@ -67,7 +67,12 @@ export const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       // Handle signout redirect
       if (url.includes('/api/auth/signout')) {
-        return baseUrl
+        return '/'
+      }
+      
+      // Allow relative URLs
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`
       }
       
       // Always redirect to dashboard after sign in

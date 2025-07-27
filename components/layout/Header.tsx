@@ -31,13 +31,18 @@ export default function Header() {
 
   const handleSignOut = async () => {
     try {
+      // Use relative URL for better compatibility
       await signOut({ 
-        callbackUrl: `${window.location.origin}/`,
+        callbackUrl: '/',
         redirect: true 
       })
     } catch (error) {
-      // Logout error occurred
+      console.error('Logout error:', error)
       // Fallback: clear session and redirect manually
+      // Clear all auth cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
       window.location.href = '/'
     }
   }

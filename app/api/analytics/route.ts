@@ -178,16 +178,16 @@ export async function GET(request: NextRequest) {
         const metric = event.data
         switch (metric.name) {
           case 'CLS':
-            summary.webVitals.cls.push(metric.value)
+            if (metric.value !== undefined) summary.webVitals.cls.push(metric.value)
             break
           case 'LCP':
-            summary.webVitals.lcp.push(metric.value)
+            if (metric.value !== undefined) summary.webVitals.lcp.push(metric.value)
             break
           case 'FID':
-            summary.webVitals.fid.push(metric.value)
+            if (metric.value !== undefined) summary.webVitals.fid.push(metric.value)
             break
           case 'TTFB':
-            summary.webVitals.ttfb.push(metric.value)
+            if (metric.value !== undefined) summary.webVitals.ttfb.push(metric.value)
             break
         }
       }
@@ -195,13 +195,15 @@ export async function GET(request: NextRequest) {
       // Process API performance
       if (event.event === 'api_performance') {
         totalApiCalls++
-        totalApiTime += event.data.duration
+        if (event.data.duration !== undefined) {
+          totalApiTime += event.data.duration
+        }
         
-        if (event.data.status >= 400) {
+        if (event.data.status !== undefined && event.data.status >= 400) {
           apiErrors++
         }
         
-        if (event.data.duration > 1000) {
+        if (event.data.duration !== undefined && event.data.duration > 1000) {
           summary.apiPerformance.slowQueries.push({
             endpoint: event.data.endpoint,
             method: event.data.method,
@@ -212,9 +214,11 @@ export async function GET(request: NextRequest) {
       }
 
       // Process user actions
-      if (event.event === 'user_action') {
+      if (event.event === 'user_action' && event.data.action) {
         const action = event.data.action
-        summary.userActions[action] = (summary.userActions[action] || 0) + 1
+        if (typeof action === 'string') {
+          summary.userActions[action] = (summary.userActions[action] || 0) + 1
+        }
       }
     })
 

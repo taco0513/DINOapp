@@ -152,7 +152,6 @@
   },
   "build": {
     "env": {
-      "SKIP_TYPE_CHECK": "true",
       "NEXT_TELEMETRY_DISABLED": "1",
       "SKIP_ENV_VALIDATION": "true"
     }

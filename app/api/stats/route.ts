@@ -35,9 +35,9 @@ export async function GET(request: NextRequest) {
     const visits = user.countryVisits
 
     // Calculate statistics
-    const uniqueCountries = new Set(visits.map(visit => visit.country))
+    const uniqueCountries = new Set(visits.map((visit) => visit.country))
     
-    const totalDays = visits.reduce((sum, visit) => {
+    const totalDays = visits.reduce((sum: number, visit) => {
       if (visit.exitDate) {
         const days = Math.ceil((visit.exitDate.getTime() - visit.entryDate.getTime()) / (1000 * 60 * 60 * 24))
         return sum + days
@@ -52,11 +52,11 @@ export async function GET(request: NextRequest) {
       'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
     ]
 
-    const schengenVisits = visits.filter(visit => 
+    const schengenVisits = visits.filter((visit) => 
       schengenCountries.includes(visit.country)
     )
 
-    const schengenDays = schengenVisits.reduce((sum, visit) => {
+    const schengenDays = schengenVisits.reduce((sum: number, visit) => {
       if (visit.exitDate) {
         const days = Math.ceil((visit.exitDate.getTime() - visit.entryDate.getTime()) / (1000 * 60 * 60 * 24))
         return sum + days
@@ -66,20 +66,20 @@ export async function GET(request: NextRequest) {
 
     // Current year statistics
     const currentYear = new Date().getFullYear()
-    const currentYearVisits = visits.filter(visit => 
+    const currentYearVisits = visits.filter((visit) => 
       visit.entryDate.getFullYear() === currentYear
     )
 
-    const currentYearCountries = new Set(currentYearVisits.map(visit => visit.country))
+    const currentYearCountries = new Set(currentYearVisits.map((visit) => visit.country))
 
     // Most visited countries
-    const countryCount = visits.reduce((acc, visit) => {
+    const countryCount = visits.reduce((acc: Record<string, number>, visit) => {
       acc[visit.country] = (acc[visit.country] || 0) + 1
       return acc
     }, {} as Record<string, number>)
 
     const mostVisitedCountries = Object.entries(countryCount)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([country, count]) => ({ country, visits: count }))
 
@@ -87,12 +87,12 @@ export async function GET(request: NextRequest) {
     const sixMonthsAgo = new Date()
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
     
-    const recentVisits = visits.filter(visit => 
+    const recentVisits = visits.filter((visit) => 
       visit.entryDate >= sixMonthsAgo
     )
 
     // Visa type distribution
-    const visaTypes = visits.reduce((acc, visit) => {
+    const visaTypes = visits.reduce((acc: Record<string, number>, visit) => {
       acc[visit.visaType] = (acc[visit.visaType] || 0) + 1
       return acc
     }, {} as Record<string, number>)
@@ -114,12 +114,12 @@ export async function GET(request: NextRequest) {
         mostVisitedCountries,
         recentActivity: {
           visits: recentVisits.length,
-          countries: new Set(recentVisits.map(v => v.country)).size
+          countries: new Set(recentVisits.map((v) => v.country)).size
         },
         visaTypeDistribution: Object.entries(visaTypes)
-          .sort(([,a], [,b]) => b - a)
+          .sort(([, a], [, b]) => b - a)
           .map(([type, count]) => ({ type, count })),
-        timeline: visits.slice(0, 10).map(visit => ({
+        timeline: visits.slice(0, 10).map((visit) => ({
           id: visit.id,
           country: visit.country,
           entryDate: visit.entryDate.toISOString(),

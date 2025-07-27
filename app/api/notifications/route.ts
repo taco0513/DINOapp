@@ -9,6 +9,7 @@ import {
   checkUpcomingTrips,
   DEFAULT_PREFERENCES 
 } from '@/lib/notifications'
+import type { NotificationPreferences } from '@/types/notification'
 import { calculateSchengenStatus } from '@/lib/schengen-calculator'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
 
@@ -37,13 +38,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user notification preferences (use defaults if not set)
-    let preferences = DEFAULT_PREFERENCES
+    let preferences: NotificationPreferences = {
+      ...DEFAULT_PREFERENCES,
+      userId: user.id
+    }
     try {
       // TODO: Get from database when preferences table is implemented
-      preferences = {
-        ...DEFAULT_PREFERENCES,
-        userId: user.id
-      }
+      // For now, using defaults with userId
     } catch (error) {
       // Use defaults if no preferences found
     }

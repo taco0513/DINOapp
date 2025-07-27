@@ -31,7 +31,7 @@
     "postinstall": "prisma generate",
     "build:analyze": "ANALYZE=true npm run build",
     "build:production": "NODE_ENV=production npm run build",
-    "vercel-build": "prisma generate && SKIP_TYPE_CHECK=true next build",
+    "vercel-build": "prisma generate && next build",
     "check:all": "npm run type-check && npm run lint && npm run test",
     "clean": "rm -rf .next && rm -rf node_modules/.cache",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",

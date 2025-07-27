@@ -130,5 +130,13 @@ export const authOptions: NextAuthOptions = {
   trustHost: true,
   
   // Use secure cookies in production
-  useSecureCookies: process.env.NODE_ENV === 'production'
+  useSecureCookies: process.env.NODE_ENV === 'production',
+  
+  // Events for debugging
+  events: {
+    async signOut(message) {
+      // Log signout event
+      console.log('User signed out:', message)
+    }
+  }
 }

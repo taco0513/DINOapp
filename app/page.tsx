@@ -38,14 +38,28 @@ export default function HomePage() {
           <button
             onClick={async () => {
               try {
-                await signOut({ 
-                  callbackUrl: `${window.location.origin}/`,
-                  redirect: true 
+                // First try custom logout endpoint
+                const response = await fetch('/api/auth/logout', {
+                  method: 'POST',
+                  credentials: 'same-origin'
                 })
+                
+                if (response.ok) {
+                  // Clear client-side session
+                  await signOut({ redirect: false })
+                  // Redirect to home
+                  window.location.href = '/'
+                } else {
+                  // Fallback to regular signOut
+                  await signOut({ 
+                    callbackUrl: '/',
+                    redirect: true 
+                  })
+                }
               } catch (error) {
-                // Logout error occurred
-                // Fallback: clear session and redirect manually
-                window.location.href = '/'
+                console.error('Logout error:', error)
+                // Manual fallback
+                window.location.href = '/api/auth/signout'
               }
             }}
             style={{

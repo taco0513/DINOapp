@@ -31,19 +31,45 @@ export default function Header() {
 
   const handleSignOut = async () => {
     try {
-      // Use relative URL for better compatibility
-      await signOut({ 
-        callbackUrl: '/',
-        redirect: true 
+      // First try custom logout endpoint
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'same-origin'
       })
+      
+      if (response.ok) {
+        // Clear client-side session
+        await signOut({ redirect: false })
+        // Redirect to home
+        window.location.href = '/'
+      } else {
+        // Fallback to regular signOut
+        await signOut({ 
+          callbackUrl: '/',
+          redirect: true 
+        })
+      }
     } catch (error) {
       console.error('Logout error:', error)
-      // Fallback: clear session and redirect manually
-      // Clear all auth cookies
-      document.cookie.split(";").forEach(function(c) { 
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-      window.location.href = '/'
+      // Manual fallback
+      try {
+        // Clear all cookies manually
+        const cookies = ['next-auth.session-token', '__Secure-next-auth.session-token', 
+                        'next-auth.csrf-token', '__Host-next-auth.csrf-token',
+                        'next-auth.callback-url', '__Secure-next-auth.callback-url'];
+        
+        cookies.forEach(name => {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.vercel.app;`;
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=vercel.app;`;
+        });
+        
+        // Force reload to home
+        window.location.href = '/'
+      } catch (e) {
+        // Last resort
+        window.location.href = '/api/auth/signout'
+      }
     }
   }
 

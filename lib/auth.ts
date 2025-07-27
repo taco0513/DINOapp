@@ -19,16 +19,16 @@ export const authOptions: NextAuthOptions = {
   
   session: {
     strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 7 days (reduced from 30 days)
-    updateAge: 24 * 60 * 60, // Extend session every 24 hours
+    maxAge: 24 * 60 * 60, // 1 day only
+    updateAge: 60 * 60, // Update every hour
   },
   
   cookies: {
     sessionToken: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      name: `next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax', // Use 'lax' for better compatibility with Vercel
+        sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         domain: undefined

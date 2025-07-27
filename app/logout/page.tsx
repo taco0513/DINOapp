@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 
 export default function LogoutPage() {
   useEffect(() => {
-    // Simply redirect to NextAuth signout endpoint
-    window.location.href = '/api/auth/signout?callbackUrl=/'
+    // Use force logout endpoint that clears all cookies server-side
+    window.location.href = '/api/force-logout'
   }, [])
   
   return (

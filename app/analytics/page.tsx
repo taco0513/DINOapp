@@ -32,7 +32,7 @@ export default function AnalyticsPage() {
         setStatsData(response.data)
       }
     } catch (error) {
-      console.error('Error loading stats:', error)
+      // Error loading stats
     } finally {
       setLoading(false)
     }

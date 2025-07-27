@@ -42,7 +42,7 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
       await ApiClient.deleteTrip(trip.id)
       onDelete()
     } catch (error) {
-      console.error('Error deleting trip:', error)
+      // Error deleting trip
     } finally {
       setLoading(false)
       setShowDeleteConfirm(false)
@@ -50,68 +50,80 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
   }
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
+    return date.toLocaleDateString('ko-KR')
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div style={{ border: '2px solid #333', padding: '20px', marginBottom: '15px', backgroundColor: 'white' }}>
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="text-3xl">{country?.flag || '🌍'}</div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              {trip.country}
-              {country?.isSchengen && (
-                <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                  셰겐
-                </span>
-              )}
-            </h3>
-            <p className="text-sm text-gray-600">{trip.visaType}</p>
-          </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
+        <div>
+          <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '5px', margin: 0 }}>
+            {country?.flag || '🌍'} {trip.country}
+            {country?.isSchengen && (
+              <span style={{ 
+                marginLeft: '8px', 
+                padding: '2px 6px', 
+                backgroundColor: '#e0e0e0', 
+                fontSize: '10px',
+                border: '1px solid #666'
+              }}>
+                셰겐
+              </span>
+            )}
+          </h3>
+          <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            {trip.visaType}
+          </p>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div style={{ display: 'flex', gap: '5px' }}>
           <button
             onClick={() => onEdit(trip)}
-            className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+            style={{
+              padding: '6px',
+              backgroundColor: 'white',
+              border: '1px solid #666',
+              cursor: 'pointer',
+              fontSize: '12px'
+            }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
+            수정
           </button>
           <button
             onClick={handleDelete}
             disabled={loading}
-            className={`p-2 transition-colors ${
-              showDeleteConfirm 
-                ? 'text-red-600 bg-red-50' 
-                : 'text-gray-400 hover:text-red-600'
-            }`}
+            style={{
+              padding: '6px',
+              backgroundColor: showDeleteConfirm ? '#ffe6e6' : 'white',
+              border: '1px solid #cc0000',
+              color: '#cc0000',
+              cursor: 'pointer',
+              fontSize: '12px'
+            }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            {loading ? '...' : '삭제'}
           </button>
         </div>
       </div>
 
       {/* Dates */}
-      <div className="space-y-2 mb-4">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">입국:</span>
-          <span className="font-medium">{formatDate(entryDate)}</span>
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '14px' }}>
+          <span style={{ color: '#666' }}>입국:</span>
+          <span style={{ fontWeight: 'bold' }}>{formatDate(entryDate)}</span>
         </div>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">출국:</span>
-          <span className="font-medium">
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '14px' }}>
+          <span style={{ color: '#666' }}>출국:</span>
+          <span style={{ fontWeight: 'bold' }}>
             {exitDate ? formatDate(exitDate) : (
-              <span className="text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs">
+              <span style={{ 
+                padding: '2px 6px', 
+                backgroundColor: '#e6ffe6', 
+                color: '#006600',
+                fontSize: '10px',
+                border: '1px solid #666'
+              }}>
                 현재 체류 중
               </span>
             )}
@@ -120,59 +132,101 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
       </div>
 
       {/* Duration */}
-      <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
-        <span className="text-sm text-gray-600">체류 일수:</span>
-        <div className="text-right">
-          <span className="font-bold text-lg text-gray-900">
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        padding: '10px', 
+        backgroundColor: '#f9f9f9',
+        border: '1px solid #ccc',
+        marginBottom: '15px'
+      }}>
+        <span style={{ fontSize: '14px', color: '#666' }}>체류 일수:</span>
+        <div style={{ textAlign: 'right' }}>
+          <span style={{ fontWeight: 'bold', fontSize: '18px', color: '#000' }}>
             {days}일
           </span>
-          <span className="text-sm text-gray-600 ml-2">
+          <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
             / {trip.maxDays}일
           </span>
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div className="w-full bg-gray-200 rounded-full h-2">
+      {/* Progress Bar - Wireframe Style */}
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ 
+          width: '100%', 
+          height: '20px', 
+          border: '1px solid #666',
+          backgroundColor: '#f0f0f0',
+          position: 'relative'
+        }}>
           <div
-            className={`h-2 rounded-full transition-all ${
-              days > trip.maxDays 
-                ? 'bg-red-500' 
-                : days > trip.maxDays * 0.8 
-                  ? 'bg-yellow-500' 
-                  : 'bg-green-500'
-            }`}
-            style={{ width: `${Math.min((days / trip.maxDays) * 100, 100)}%` }}
+            style={{
+              height: '100%',
+              width: `${Math.min((days / trip.maxDays) * 100, 100)}%`,
+              backgroundColor: days > trip.maxDays ? '#cc0000' : days > trip.maxDays * 0.8 ? '#ffcc00' : '#006600'
+            }}
           />
+          <span style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '10px',
+            fontWeight: 'bold'
+          }}>
+            {Math.round((days / trip.maxDays) * 100)}%
+          </span>
         </div>
         {days > trip.maxDays && (
-          <p className="text-xs text-red-600 mt-1">⚠️ 최대 체류 일수 초과</p>
+          <p style={{ fontSize: '12px', color: '#cc0000', margin: '5px 0 0 0' }}>⚠️ 최대 체류 일수 초과</p>
         )}
       </div>
 
       {/* Notes */}
       {trip.notes && (
-        <div className="pt-4 border-t border-gray-100">
-          <p className="text-sm text-gray-600">{trip.notes}</p>
+        <div style={{ paddingTop: '15px', borderTop: '1px solid #ccc' }}>
+          <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>{trip.notes}</p>
         </div>
       )}
 
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-800 mb-2">정말 이 여행 기록을 삭제하시겠습니까?</p>
-          <div className="flex gap-2">
+        <div style={{ 
+          marginTop: '15px', 
+          padding: '10px', 
+          backgroundColor: '#ffe6e6', 
+          border: '1px solid #cc0000'
+        }}>
+          <p style={{ fontSize: '14px', color: '#cc0000', marginBottom: '10px', margin: '0 0 10px 0' }}>
+            정말 이 여행 기록을 삭제하시겠습니까?
+          </p>
+          <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={handleDelete}
               disabled={loading}
-              className="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#cc0000',
+                color: 'white',
+                border: '1px solid #cc0000',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
             >
               {loading ? '삭제 중...' : '삭제'}
             </button>
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded transition-colors"
+              style={{
+                padding: '6px 12px',
+                backgroundColor: 'white',
+                color: '#666',
+                border: '1px solid #666',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
             >
               취소
             </button>

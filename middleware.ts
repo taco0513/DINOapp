@@ -58,16 +58,16 @@ export async function middleware(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET 
       })
       
-      console.log('[Middleware] Checking auth for:', pathname, 'Token exists:', !!token)
+      // Checking auth for protected route
       
       if (!token) {
-        console.log('[Middleware] No token, redirecting to signin')
+        // No token, redirecting to signin
         const url = new URL('/auth/signin', request.url)
         url.searchParams.set('callbackUrl', encodeURIComponent(request.url))
         return NextResponse.redirect(url)
       }
     } catch (error) {
-      console.error('[Middleware] Error checking token:', error)
+      // Error checking token
       const url = new URL('/auth/signin', request.url)
       url.searchParams.set('callbackUrl', encodeURIComponent(request.url))
       return NextResponse.redirect(url)

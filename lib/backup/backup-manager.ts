@@ -68,7 +68,7 @@ class BackupManager {
       const backupId = `backup_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       const timestamp = new Date().toISOString()
 
-      console.log(`🔄 Starting backup: ${backupId}`)
+      // Starting backup
 
       // 데이터 추출
       const backupData = await this.extractDatabaseData(options)
@@ -90,12 +90,12 @@ class BackupManager {
       // 백업 파일 생성
       const backupPath = await this.saveBackupData(backupId, backupData, metadata, options)
       
-      console.log(`✅ Backup completed: ${backupId}`)
-      console.log(`📁 Backup saved to: ${backupPath}`)
+      // Backup completed
+      // Backup saved
 
       return { success: true, backupId }
     } catch (error) {
-      console.error('❌ Backup failed:', error)
+      // Backup failed
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown backup error' 
@@ -113,31 +113,31 @@ class BackupManager {
   }> {
     try {
       if (options.dryRun) {
-        console.log(`🔍 Dry run mode: Analyzing backup ${options.backupId}`)
+        // Dry run mode: Analyzing backup
       } else {
-        console.log(`🔄 Starting restore from backup: ${options.backupId}`)
+        // Starting restore from backup
       }
 
       // 백업 파일 로드
       const { data: backupData, metadata } = await this.loadBackupData(options.backupId)
       
-      console.log(`📊 Backup info:`)
-      console.log(`  - Timestamp: ${metadata.timestamp}`)
-      console.log(`  - Tables: ${metadata.tables.join(', ')}`)
-      console.log(`  - Records: ${JSON.stringify(metadata.recordCounts)}`)
+      // Backup info:
+      // - Timestamp: ${metadata.timestamp}
+      // - Tables: ${metadata.tables.join(', ')}
+      // - Records: ${JSON.stringify(metadata.recordCounts)}
 
       if (options.dryRun) {
-        console.log(`✅ Dry run completed. Backup is valid and ready for restore.`)
+        // Dry run completed. Backup is valid and ready for restore.
         return { success: true, restoredTables: metadata.tables }
       }
 
       // 실제 복원 실행
       const restoredTables = await this.performRestore(backupData, metadata, options)
 
-      console.log(`✅ Restore completed from backup: ${options.backupId}`)
+      // Restore completed from backup
       return { success: true, restoredTables }
     } catch (error) {
-      console.error('❌ Restore failed:', error)
+      // Restore failed
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown restore error' 
@@ -166,7 +166,7 @@ class BackupManager {
 
       return backups.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     } catch (error) {
-      console.error('Error listing backups:', error)
+      // Error listing backups
       return []
     }
   }
@@ -189,10 +189,10 @@ class BackupManager {
         await fs.unlink(metadataPath)
       }
 
-      console.log(`🗑️ Backup deleted: ${backupId}`)
+      // Backup deleted
       return { success: true }
     } catch (error) {
-      console.error('Error deleting backup:', error)
+      // Error deleting backup
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown deletion error' 
@@ -319,7 +319,7 @@ class BackupManager {
     const calculatedChecksum = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex')
     
     if (calculatedChecksum !== metadata.checksum) {
-      console.warn('⚠️ Backup checksum mismatch - data may be corrupted')
+      // Backup checksum mismatch - data may be corrupted
     }
 
     return { data, metadata }

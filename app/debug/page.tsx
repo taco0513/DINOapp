@@ -13,7 +13,7 @@ export default function DebugPage() {
     fetch('/api/debug')
       .then(res => res.json())
       .then(data => setEnvVars(data))
-      .catch(err => console.error('Debug API error:', err))
+      .catch(err => setEnvVars({ error: 'Failed to load debug info' }))
 
     // Get cookies
     setCookies(document.cookie)

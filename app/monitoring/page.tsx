@@ -151,7 +151,7 @@ export default function MonitoringPage() {
         setError(data.error || 'Failed to load monitoring data')
       }
     } catch (err) {
-      console.error('Error loading monitoring data:', err)
+      // Error loading monitoring data
       setError('Network error while loading monitoring data')
     } finally {
       setLoading(false)

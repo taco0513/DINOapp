@@ -85,7 +85,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
         setChartData(dailyData)
       }
     } catch (error) {
-      console.error('Error loading chart data:', error)
+      // Error loading chart data
     } finally {
       setLoading(false)
     }

@@ -4,9 +4,13 @@ import { authOptions } from '@/lib/auth'
 import { alertManager } from '@/lib/notifications/alert-manager'
 import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
+import { csrfProtection } from '@/lib/security/csrf-protection'
+import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
 
 // GET /api/alerts - 알림 목록 조회
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'general')
@@ -23,18 +27,12 @@ export async function GET(request: NextRequest) {
     // 관리자 권한 확인
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
     if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
+      return createErrorResponse(ErrorCode.FORBIDDEN, 'Admin access required', undefined, requestId)
     }
 
     const url = new URL(request.url)
@@ -49,14 +47,14 @@ export async function GET(request: NextRequest) {
     }
 
     // 쿼리 파라미터 파싱
-    const severity = url.searchParams.get('severity') as any
+    const severity = url.searchParams.get('severity') as 'info' | 'warning' | 'error' | 'critical' | null
     const source = url.searchParams.get('source')
     const resolved = url.searchParams.get('resolved')
     const limit = parseInt(url.searchParams.get('limit') || '50')
     const offset = parseInt(url.searchParams.get('offset') || '0')
 
     const alerts = alertManager.getAlerts({
-      severity,
+      severity: severity || undefined,
       source: source || undefined,
       resolved: resolved ? resolved === 'true' : undefined,
       limit,
@@ -74,21 +72,28 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching alerts:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch alerts' },
-      { status: 500 }
-    )
+    // Error fetching alerts
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
 // POST /api/alerts - 새 알림 생성 (테스트용)
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
     if (rateLimitResponse) {
       return rateLimitResponse
+    }
+
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
     }
 
     // Security middleware
@@ -100,18 +105,12 @@ export async function POST(request: NextRequest) {
     // 관리자 권한 확인
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
     if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
+      return createErrorResponse(ErrorCode.FORBIDDEN, 'Admin access required', undefined, requestId)
     }
 
     const body = await request.json()
@@ -137,16 +136,15 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error creating alert:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create alert' },
-      { status: 500 }
-    )
+    // Error creating alert
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
 // PATCH /api/alerts - 알림 상태 업데이트
 export async function PATCH(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
@@ -163,28 +161,19 @@ export async function PATCH(request: NextRequest) {
     // 관리자 권한 확인
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
     if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
+      return createErrorResponse(ErrorCode.FORBIDDEN, 'Admin access required', undefined, requestId)
     }
 
     const body = await request.json()
     const { alertId, action } = body
 
     if (!alertId || !action) {
-      return NextResponse.json(
-        { success: false, error: 'Alert ID and action are required' },
-        { status: 400 }
-      )
+      return createErrorResponse(ErrorCode.BAD_REQUEST, 'Alert ID and action are required', undefined, requestId)
     }
 
     let result = false
@@ -194,10 +183,7 @@ export async function PATCH(request: NextRequest) {
         result = alertManager.resolveAlert(alertId)
         break
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return createErrorResponse(ErrorCode.BAD_REQUEST, 'Invalid action', { validActions: ['resolve'] }, requestId)
     }
 
     if (result) {
@@ -206,17 +192,11 @@ export async function PATCH(request: NextRequest) {
         message: `Alert ${action}d successfully`
       })
     } else {
-      return NextResponse.json(
-        { success: false, error: `Failed to ${action} alert` },
-        { status: 400 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, `Failed to ${action} alert`, undefined, requestId)
     }
 
   } catch (error) {
-    console.error('Error updating alert:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update alert' },
-      { status: 500 }
-    )
+    // Error updating alert
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }

@@ -2,8 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { withGmailAuth } from '@/lib/gmail-middleware'
 import { syncTravelToCalendar, findExistingTravelEvents } from '@/lib/calendar'
 import { TravelInfo } from '@/lib/gmail'
+import { csrfProtection } from '@/lib/security/csrf-protection'
 
 export async function POST(request: NextRequest) {
+  // CSRF 보호
+  const csrfResult = await csrfProtection(request, {
+    requireDoubleSubmit: true
+  })
+  if (!csrfResult.protected) {
+    return csrfResult.response!
+  }
+
   return withGmailAuth(request, async (session, request) => {
     try {
       const body = await request.json()
@@ -56,7 +65,7 @@ export async function POST(request: NextRequest) {
         const duplicateCount = duplicateChecks.filter(check => check.hasDuplicates).length
         
         if (duplicateCount > 0) {
-          console.log(`Skipped ${duplicateCount} duplicate travel info entries`)
+          // Skipped duplicate travel info entries
         }
       }
       
@@ -79,7 +88,7 @@ export async function POST(request: NextRequest) {
       })
       
     } catch (error) {
-      console.error('Error syncing to calendar:', error)
+      // Error syncing to calendar
       return NextResponse.json(
         {
           success: false,

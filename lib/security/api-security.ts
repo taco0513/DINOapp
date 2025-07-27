@@ -79,7 +79,7 @@ export function withApiSecurity(
       return await handler(req, context)
 
     } catch (error) {
-      console.error('API Security Error:', error)
+      // API Security Error occurred
       
       return NextResponse.json(
         { success: false, error: 'Internal server error' },

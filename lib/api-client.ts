@@ -67,7 +67,7 @@ export class ApiClient {
 
       return data
     } catch (error) {
-      console.error('API request failed:', error)
+      // API request failed
       throw error
     }
   }

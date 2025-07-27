@@ -14,14 +14,14 @@ function SignInContent() {
 
   useEffect(() => {
     if (status === 'authenticated' && session) {
-      console.log('[SignIn] User already authenticated, redirecting to:', callbackUrl)
+      // User already authenticated, redirecting
       router.replace(callbackUrl)
     }
   }, [status, session, router, callbackUrl])
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
-    console.log('[SignIn] Starting Google sign in')
+    // Starting Google sign in
     
     try {
       await signIn('google', {
@@ -29,7 +29,7 @@ function SignInContent() {
         redirect: true
       })
     } catch (error) {
-      console.error('[SignIn] Sign in failed:', error)
+      // Sign in failed
       setIsLoading(false)
     }
   }

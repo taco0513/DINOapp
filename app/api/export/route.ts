@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error exporting data:', error)
+    // Error exporting data
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

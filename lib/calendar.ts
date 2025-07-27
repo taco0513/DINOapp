@@ -75,7 +75,7 @@ export async function checkCalendarConnection(accessToken: string): Promise<bool
     
     return true
   } catch (error) {
-    console.error('Calendar connection failed:', error)
+    // Calendar connection failed
     return false
   }
 }
@@ -102,7 +102,7 @@ export async function getUserCalendars(accessToken: string) {
     })) || []
     
   } catch (error) {
-    console.error('Error fetching calendars:', error)
+    // Error fetching calendars
     throw new Error('캘린더 목록을 가져오는 중 오류가 발생했습니다.')
   }
 }
@@ -287,7 +287,7 @@ export async function createCalendarEvent(
     
     return response.data.id || null
   } catch (error) {
-    console.error('Error creating calendar event:', error)
+    // Error creating calendar event
     throw new Error('캘린더 이벤트 생성 중 오류가 발생했습니다.')
   }
 }
@@ -390,7 +390,7 @@ export async function findExistingTravelEvents(
     })) || []
     
   } catch (error) {
-    console.error('Error finding existing events:', error)
+    // Error finding existing events
     return []
   }
 }
@@ -413,7 +413,7 @@ export async function deleteCalendarEvent(
     
     return true
   } catch (error) {
-    console.error('Error deleting calendar event:', error)
+    // Error deleting calendar event
     return false
   }
 }

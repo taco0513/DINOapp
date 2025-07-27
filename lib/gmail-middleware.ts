@@ -85,7 +85,7 @@ export async function withGmailAuth(
     return await handler(session, request)
     
   } catch (error) {
-    console.error('Gmail middleware error:', error)
+    // Gmail middleware error
     
     // Gmail API 에러 처리
     if (error && typeof error === 'object' && 'code' in error) {

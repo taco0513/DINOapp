@@ -36,7 +36,7 @@ export default function Header() {
         redirect: true 
       })
     } catch (error) {
-      console.error('Logout error:', error)
+      // Logout error occurred
       // Fallback: clear session and redirect manually
       window.location.href = '/'
     }

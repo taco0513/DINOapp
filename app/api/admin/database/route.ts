@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { DatabaseMaintenance, dbPerformanceMonitor, OptimizedQueries } from '@/lib/db-performance'
 import { checkRateLimit, STRICT_RATE_LIMIT, logSecurityEvent, securityHeaders } from '@/lib/security'
+import { csrfProtection } from '@/lib/security/csrf-protection'
 
 // Admin-only database management endpoint
 export async function GET(request: NextRequest) {
@@ -84,7 +85,7 @@ export async function GET(request: NextRequest) {
     }
 
     const duration = Date.now() - startTime
-    console.log(`[DB Admin] ${action} completed in ${duration}ms`)
+    // Database admin action completed
 
     return NextResponse.json({
       success: true,
@@ -98,7 +99,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     const duration = Date.now() - startTime
-    console.error('[DB Admin] Error:', error)
+    // Database admin error
     
     logSecurityEvent('database_admin_error', {
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -126,6 +127,14 @@ export async function POST(request: NextRequest) {
         status: 429,
         headers: securityHeaders 
       })
+    }
+
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
     }
 
     // Authentication check
@@ -184,7 +193,7 @@ export async function POST(request: NextRequest) {
     }
 
     const duration = Date.now() - startTime
-    console.log(`[DB Maintenance] ${action} completed in ${duration}ms`)
+    // Database maintenance action completed
 
     return NextResponse.json({
       success: true,
@@ -198,7 +207,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     const duration = Date.now() - startTime
-    console.error('[DB Maintenance] Error:', error)
+    // Database maintenance error
     
     logSecurityEvent('database_maintenance_error', {
       error: error instanceof Error ? error.message : 'Unknown error',

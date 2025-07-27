@@ -248,7 +248,7 @@ export async function applyRateLimit(
     // 성공 시 헤더만 추가 (요청 계속 진행)
     return null
   } catch (error) {
-    console.error('Rate limiter error:', error)
+    // Rate limiter error
     // 오류 시 요청 허용 (fail-open)
     return null
   }
@@ -264,14 +264,7 @@ export function logSecurityEvent(
   const userAgent = req.headers.get('user-agent') || 'unknown'
   const timestamp = new Date().toISOString()
 
-  console.warn(`[SECURITY] ${event}`, {
-    timestamp,
-    clientId,
-    userAgent,
-    url: req.url,
-    method: req.method,
-    ...details
-  })
+  // Security event logged
 
   // 프로덕션에서는 보안 모니터링 시스템으로 전송
   // 예: Sentry, DataDog, CloudWatch 등

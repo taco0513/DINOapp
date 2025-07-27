@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     })
   } catch (error) {
-    console.error('[Debug Auth] Error:', error)
+    // Debug auth error
     return NextResponse.json({
       error: 'Debug auth failed',
       message: error instanceof Error ? error.message : 'Unknown error',

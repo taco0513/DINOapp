@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { csrfProtection } from '@/lib/security/csrf-protection'
 import { z } from 'zod'
 
 // Validation schema for import data
@@ -33,6 +34,14 @@ const importDataSchema = z.object({
 // POST /api/import - Import user's travel data
 export async function POST(request: NextRequest) {
   try {
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
+    }
+
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
@@ -169,7 +178,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.error('Error importing data:', error)
+    // Error importing data
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

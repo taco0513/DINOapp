@@ -222,7 +222,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
       onAnalysisComplete(extractedTravelInfos)
 
     } catch (error) {
-      console.error('Analysis error:', error)
+      // Analysis error occurred
       setError(error instanceof Error ? error.message : '분석 중 오류가 발생했습니다.')
     } finally {
       setIsAnalyzing(false)

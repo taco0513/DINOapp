@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
         calendars
       })
     } catch (error) {
-      console.error('Error fetching calendars:', error)
+      // Error fetching calendars
       return NextResponse.json(
         {
           success: false,

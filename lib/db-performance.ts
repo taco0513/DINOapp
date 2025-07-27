@@ -50,7 +50,7 @@ class DatabasePerformanceMonitor {
 
     // Log slow queries
     if (duration > this.slowQueryThreshold) {
-      console.warn(`[DB] Slow query detected (${duration}ms):`, query)
+      // Slow query detected
     }
 
     // Keep only last 1000 metrics

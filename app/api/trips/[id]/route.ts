@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { csrfProtection } from '@/lib/security/csrf-protection'
 import { z } from 'zod'
+import { createErrorResponse, ErrorCode, generateRequestId, handleApiError, createValidationError } from '@/lib/api/error-handler'
 
 // Zod schema for trip updates
 const updateTripSchema = z.object({
@@ -37,23 +39,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const requestId = generateRequestId()
+  
   try {
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const trip = await checkTripOwnership(id, session.user.email)
 
     if (!trip) {
-      return NextResponse.json(
-        { error: 'Trip not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
     }
 
     return NextResponse.json({
@@ -62,11 +60,8 @@ export async function GET(
     })
 
   } catch (error) {
-    console.error('Error fetching trip:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Error fetching trip
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
@@ -76,24 +71,28 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const requestId = generateRequestId()
+  
   try {
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
+    }
+
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     // Check trip ownership
     const existingTrip = await checkTripOwnership(id, session.user.email)
 
     if (!existingTrip) {
-      return NextResponse.json(
-        { error: 'Trip not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
     }
 
     const body = await request.json()
@@ -125,20 +124,19 @@ export async function PUT(
 
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { 
-          error: 'Validation error',
-          details: error.issues
-        },
-        { status: 400 }
-      )
+      const validationErrors: Record<string, string[]> = {}
+      error.issues.forEach(issue => {
+        const field = issue.path.join('.')
+        if (!validationErrors[field]) {
+          validationErrors[field] = []
+        }
+        validationErrors[field].push(issue.message)
+      })
+      return createValidationError(validationErrors, requestId)
     }
 
-    console.error('Error updating trip:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Error updating trip
+    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
   }
 }
 
@@ -148,24 +146,28 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const requestId = generateRequestId()
+  
   try {
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
+    }
+
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     // Check trip ownership
     const existingTrip = await checkTripOwnership(id, session.user.email)
 
     if (!existingTrip) {
-      return NextResponse.json(
-        { error: 'Trip not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
     }
 
     // Delete trip
@@ -179,10 +181,7 @@ export async function DELETE(
     })
 
   } catch (error) {
-    console.error('Error deleting trip:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Error deleting trip
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }

@@ -40,7 +40,7 @@ export default function DashboardPage() {
         setSchengenData(schengenResponse.data)
       }
     } catch (error) {
-      console.error('Error loading dashboard data:', error)
+      // Error loading dashboard data
     } finally {
       setDataLoading(false)
     }
@@ -53,7 +53,7 @@ export default function DashboardPage() {
         redirect: true 
       })
     } catch (error) {
-      console.error('Logout error:', error)
+      // Logout error occurred
       window.location.href = '/'
     }
   }

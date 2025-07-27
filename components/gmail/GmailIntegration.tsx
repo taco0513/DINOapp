@@ -380,7 +380,7 @@ export default function GmailIntegration() {
                         className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
                         onClick={() => {
                           // TODO: 여행 기록 추가 페이지로 이동하며 정보 전달
-                          console.log('Add travel record:', email)
+                          // TODO: Add travel record
                         }}
                       >
                         📅 여행 기록 추가
@@ -404,7 +404,7 @@ export default function GmailIntegration() {
                   }
                 }))} 
                 onSyncComplete={(result) => {
-                  console.log('Calendar sync completed:', result)
+                  // Calendar sync completed
                 }}
               />
             )}

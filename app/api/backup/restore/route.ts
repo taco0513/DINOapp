@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { backupManager } from '@/lib/backup/backup-manager'
 import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
+import { csrfProtection } from '@/lib/security/csrf-protection'
 
 // POST /api/backup/restore - 백업에서 복원
 export async function POST(request: NextRequest) {
@@ -12,6 +13,14 @@ export async function POST(request: NextRequest) {
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
     if (rateLimitResponse) {
       return rateLimitResponse
+    }
+
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
     }
 
     // Security middleware
@@ -66,8 +75,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log(`${dryRun ? '🔍 Dry run' : '🔄 Restore'} requested by: ${session.user.email}`)
-    console.log(`Backup ID: ${backupId}`)
+    // Restore operation requested
+    // Processing backup ID
 
     const result = await backupManager.restoreBackup({
       backupId,
@@ -81,7 +90,7 @@ export async function POST(request: NextRequest) {
         ? 'Backup validation completed successfully'
         : `Database restored successfully from backup: ${backupId}`
       
-      console.log(`✅ ${dryRun ? 'Validation' : 'Restore'} completed: ${backupId}`)
+      // Operation completed successfully
       
       return NextResponse.json({
         success: true,
@@ -97,7 +106,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error during restore operation:', error)
+    // Error during restore operation
     return NextResponse.json(
       { success: false, error: 'Failed to restore from backup' },
       { status: 500 }

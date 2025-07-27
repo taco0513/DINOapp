@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       // Allow Google sign in only
       if (account?.provider === 'google') {
-        console.log('[Auth] Google sign in successful for:', user.email)
+        // Google sign in successful
         return true
       }
       return false
@@ -88,12 +88,12 @@ export const authOptions: NextAuthOptions = {
         token.provider = account.provider
         token.iat = Math.floor(Date.now() / 1000) // Issue time
         token.exp = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7 days
-        console.log('[Auth] JWT token created for:', user.email)
+        // JWT token created
       }
       
       // Check token expiration
       if (token.exp && Date.now() >= token.exp * 1000) {
-        console.warn('[Auth] Token expired for:', token.email)
+        // Token expired
         return {}
       }
       

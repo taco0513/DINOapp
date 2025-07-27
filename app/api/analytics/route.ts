@@ -1,10 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { csrfProtection } from '@/lib/security/csrf-protection'
+import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
+
+interface AnalyticsEventData {
+  // Web Vitals data
+  name?: string
+  value?: number
+  rating?: 'good' | 'needs-improvement' | 'poor'
+  
+  // API Performance data
+  endpoint?: string
+  method?: string
+  duration?: number
+  status?: number
+  
+  // User Action data
+  action?: string
+  properties?: Record<string, string | number | boolean>
+  
+  // Generic properties
+  [key: string]: unknown
+}
 
 interface AnalyticsEvent {
   event: string
-  data: any
+  data: AnalyticsEventData
   timestamp?: number
   userId?: string
   sessionId?: string
@@ -15,15 +37,27 @@ const analyticsStore: AnalyticsEvent[] = []
 const MAX_EVENTS = 10000 // Keep last 10k events
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
+    }
+
     const session = await getServerSession(authOptions)
     const body = await request.json()
     
     // Validate event data
     if (!body.event || !body.data) {
-      return NextResponse.json(
-        { error: 'Invalid event data' },
-        { status: 400 }
+      return createErrorResponse(
+        ErrorCode.VALIDATION_ERROR,
+        'Invalid event data',
+        { required: ['event', 'data'] },
+        requestId
       )
     }
 
@@ -45,21 +79,11 @@ export async function POST(request: NextRequest) {
 
     // Log important events
     if (body.event === 'web_vitals' && body.data.rating === 'poor') {
-      console.warn('[Performance Warning]', {
-        metric: body.data.name,
-        value: body.data.value,
-        url: body.data.url,
-        userId: session?.user?.email
-      })
+      // Performance warning: poor web vitals detected
     }
 
     if (body.event === 'api_performance' && body.data.rating === 'poor') {
-      console.warn('[API Performance Warning]', {
-        endpoint: body.data.endpoint,
-        method: body.data.method,
-        duration: body.data.duration,
-        status: body.data.status
-      })
+      // API performance warning: slow endpoint detected
     }
 
     // In production, you might want to send to external services
@@ -72,25 +96,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
 
   } catch (error) {
-    console.error('Analytics error:', error)
-    return NextResponse.json(
-      { error: 'Failed to process analytics event' },
-      { status: 500 }
-    )
+    // Analytics processing error
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
 // GET endpoint for analytics dashboard
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     const session = await getServerSession(authOptions)
     
     // Only allow authenticated admin users to view analytics
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const url = new URL(request.url)
@@ -130,7 +150,12 @@ export async function GET(request: NextRequest) {
       },
       apiPerformance: {
         averageResponseTime: 0,
-        slowQueries: [] as any[],
+        slowQueries: [] as Array<{
+          endpoint: string | undefined
+          method: string | undefined
+          duration: number | undefined
+          timestamp: number | undefined
+        }>,
         errorRate: 0
       },
       userActions: {} as Record<string, number>,
@@ -202,10 +227,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(summary)
 
   } catch (error) {
-    console.error('Analytics retrieval error:', error)
-    return NextResponse.json(
-      { error: 'Failed to retrieve analytics data' },
-      { status: 500 }
-    )
+    // Analytics retrieval error
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }

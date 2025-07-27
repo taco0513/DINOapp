@@ -37,7 +37,7 @@ export default function SchengenPage() {
         setHasTrips(false)
       }
     } catch (error) {
-      console.error('Error checking trips:', error)
+      // Error checking trips
       setHasTrips(false)
     } finally {
       setLoading(false)

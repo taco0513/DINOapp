@@ -355,7 +355,7 @@ function WireframeGmailIntegration() {
                           cursor: 'pointer'
                         }}
                         onClick={() => {
-                          console.log('Add travel record:', email)
+                          // TODO: Add travel record
                         }}
                       >
                         📅 여행 기록 추가

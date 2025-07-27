@@ -319,7 +319,7 @@ export async function sanitizeRequestBody(
     
     return InputSanitizer.sanitizeObject(body, rules)
   } catch (error) {
-    console.error('Request body sanitization failed:', error)
+    // Request body sanitization failed
     return null
   }
 }

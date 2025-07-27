@@ -319,7 +319,7 @@ export async function csrfProtection(
 
     return { protected: true }
   } catch (error) {
-    console.error('CSRF protection error:', error)
+    // CSRF protection error
     
     return {
       protected: false,

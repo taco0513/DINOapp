@@ -28,7 +28,7 @@ export class OfflineApiClient {
         return response
       }
     } catch (error) {
-      console.log('API call failed, checking offline storage...')
+      // API call failed, checking offline storage
     }
 
     // 오프라인이거나 API 실패 시 로컬 저장소에서 데이터 가져오기
@@ -63,7 +63,7 @@ export class OfflineApiClient {
         return response
       }
     } catch (error) {
-      console.log('Online create failed, queuing for offline sync...')
+      // Online create failed, queuing for offline sync
     }
 
     // 오프라인인 경우 큐에 추가
@@ -115,7 +115,7 @@ export class OfflineApiClient {
         return response
       }
     } catch (error) {
-      console.log('Countries API failed, checking offline storage...')
+      // Countries API failed, checking offline storage
     }
 
     // 오프라인 저장소에서 데이터 가져오기
@@ -130,7 +130,7 @@ export class OfflineApiClient {
         }
       }
     } catch (error) {
-      console.error('Offline countries fetch failed:', error)
+      // Offline countries fetch failed
     }
 
     // 기본 국가 데이터 반환
@@ -148,7 +148,7 @@ export class OfflineApiClient {
         return await ApiClient.getSchengenStatus(userId)
       }
     } catch (error) {
-      console.log('Schengen API failed, calculating offline...')
+      // Schengen API failed, calculating offline
     }
 
     // 오프라인에서 로컬 계산
@@ -193,7 +193,7 @@ export class OfflineApiClient {
   // 오프라인 동기화
   static async syncOfflineData(): Promise<void> {
     if (!this.isOnline()) {
-      console.log('Still offline, skipping sync')
+      // Still offline, skipping sync
       return
     }
 
@@ -207,7 +207,7 @@ export class OfflineApiClient {
           }
           // 다른 작업 타입들 처리...
         } catch (error) {
-          console.error('Failed to sync item:', item, error)
+          // Failed to sync item
           // 실패한 항목은 큐에 남겨둠
           continue
         }
@@ -216,9 +216,9 @@ export class OfflineApiClient {
       // 성공적으로 동기화된 항목들 제거
       await offlineStorage.clearOfflineQueue()
       
-      console.log('Offline sync completed')
+      // Offline sync completed
     } catch (error) {
-      console.error('Offline sync failed:', error)
+      // Offline sync failed
     }
   }
 
@@ -228,7 +228,7 @@ export class OfflineApiClient {
       await offlineStorage.deleteCachedApiResponse(`trips:${userId || 'all'}`)
       // 다른 관련 캐시들도 무효화...
     } catch (error) {
-      console.error('Cache invalidation failed:', error)
+      // Cache invalidation failed
     }
   }
 
@@ -281,9 +281,9 @@ export class OfflineApiClient {
       // 만료된 캐시 정리
       await offlineStorage.cleanExpiredCache()
       
-      console.log('Offline data preloaded successfully')
+      // Offline data preloaded successfully
     } catch (error) {
-      console.error('Failed to preload offline data:', error)
+      // Failed to preload offline data
     }
   }
 }

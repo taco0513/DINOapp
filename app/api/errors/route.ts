@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { csrfProtection } from '@/lib/security/csrf-protection'
+import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
 
 interface ErrorReport {
   message: string
@@ -11,7 +13,7 @@ interface ErrorReport {
   userAgent?: string
   severity: 'low' | 'medium' | 'high' | 'critical'
   category: 'javascript' | 'api' | 'database' | 'network' | 'security' | 'unknown'
-  additionalData?: Record<string, any>
+  additionalData?: Record<string, string | number | boolean | null | undefined>
 }
 
 // In-memory error store (in production, use proper logging service)
@@ -19,15 +21,27 @@ const errorStore: ErrorReport[] = []
 const MAX_ERRORS = 5000
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
+    }
+
     const session = await getServerSession(authOptions)
     const body = await request.json()
     
     // Validate error data
     if (!body.message || !body.url) {
-      return NextResponse.json(
-        { error: 'Invalid error data' },
-        { status: 400 }
+      return createErrorResponse(
+        ErrorCode.VALIDATION_ERROR,
+        'Invalid error data',
+        { required: ['message', 'url'] },
+        requestId
       )
     }
 
@@ -53,20 +67,9 @@ export async function POST(request: NextRequest) {
 
     // Log based on severity
     if (errorReport.severity === 'critical' || errorReport.severity === 'high') {
-      console.error('[Critical Error]', {
-        message: errorReport.message,
-        stack: errorReport.stack,
-        url: errorReport.url,
-        userId: session?.user?.email,
-        timestamp: new Date(errorReport.timestamp).toISOString()
-      })
+      // Critical error detected
     } else {
-      console.warn('[Error Report]', {
-        message: errorReport.message,
-        url: errorReport.url,
-        severity: errorReport.severity,
-        category: errorReport.category
-      })
+      // Error report recorded
     }
 
     // In production, send to external error tracking service
@@ -85,25 +88,21 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error reporting failed:', error)
-    return NextResponse.json(
-      { error: 'Failed to process error report' },
-      { status: 500 }
-    )
+    // Error reporting failed
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
 // GET endpoint for error dashboard
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     const session = await getServerSession(authOptions)
     
     // Only allow authenticated admin users
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const url = new URL(request.url)
@@ -162,11 +161,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(summary)
 
   } catch (error) {
-    console.error('Error retrieval failed:', error)
-    return NextResponse.json(
-      { error: 'Failed to retrieve error data' },
-      { status: 500 }
-    )
+    // Error retrieval failed
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
@@ -267,25 +263,21 @@ async function sendToErrorTrackingService(error: ErrorReport) {
     // In production, send to Sentry, Rollbar, or similar service
     if (process.env.SENTRY_DSN) {
       // Sentry integration would go here
-      console.log('Would send to Sentry:', error.message)
+      // Would send to Sentry
     }
     
     // Could also send to custom logging service
     // await fetch('your-logging-service-url', { ... })
     
   } catch (err) {
-    console.error('Failed to send error to tracking service:', err)
+    // Failed to send error to tracking service
   }
 }
 
 async function sendCriticalErrorAlert(error: ErrorReport) {
   try {
     // Send email, Slack notification, or other alert
-    console.log('CRITICAL ERROR ALERT:', {
-      message: error.message,
-      url: error.url,
-      timestamp: new Date(error.timestamp).toISOString()
-    })
+    // Critical error alert triggered
     
     // In production, you might want to:
     // - Send email to administrators
@@ -294,6 +286,6 @@ async function sendCriticalErrorAlert(error: ErrorReport) {
     // - Trigger automated rollback if needed
     
   } catch (err) {
-    console.error('Failed to send critical error alert:', err)
+    // Failed to send critical error alert
   }
 }

@@ -572,7 +572,7 @@ export default function NotificationsPage() {
   }, [session, status, router])
 
   const handleSaveSettings = async (preferences: any) => {
-    console.log('Saving notification preferences:', preferences)
+    // Saving notification preferences
     localStorage.setItem(`notification-prefs-${session?.user?.email}`, JSON.stringify(preferences))
   }
 

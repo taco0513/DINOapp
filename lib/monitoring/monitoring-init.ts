@@ -26,12 +26,12 @@ class MonitoringSystem {
    */
   public async initialize(): Promise<void> {
     if (this.initialized) {
-      console.log('📊 Monitoring system already initialized')
+      // Monitoring system already initialized
       return
     }
 
     try {
-      console.log('🚀 Initializing monitoring system...')
+      // Initializing monitoring system
 
       // 1. 데이터베이스 연결 확인
       await this.initializeDatabase()
@@ -52,7 +52,7 @@ class MonitoringSystem {
       this.registerShutdownHandlers()
 
       this.initialized = true
-      console.log('✅ Monitoring system initialized successfully')
+      // Monitoring system initialized successfully
 
       // 시스템 시작 알림
       await systemAlert.warning('DINO monitoring system started', 'monitoring', {
@@ -61,7 +61,7 @@ class MonitoringSystem {
       })
 
     } catch (error) {
-      console.error('❌ Failed to initialize monitoring system:', error)
+      // Failed to initialize monitoring system
       await systemAlert.error('Failed to initialize monitoring system', 'monitoring', {
         error: error instanceof Error ? error.message : 'Unknown error'
       })
@@ -78,9 +78,9 @@ class MonitoringSystem {
         throw new Error('Database health check failed')
       }
 
-      console.log(`✅ Database connected (latency: ${health.latency}ms)`)
+      // Database connected
     } catch (error) {
-      console.error('❌ Database initialization failed:', error)
+      // Database initialization failed
       throw error
     }
   }
@@ -99,15 +99,15 @@ class MonitoringSystem {
       metricsCollector.stopCollection()
     })
 
-    console.log('📊 Metrics collection started')
+    // Metrics collection started
   }
 
   private async initializeAlertSystem(): Promise<void> {
     // 프로덕션 환경에서만 이메일/웹훅 알림 활성화
     if (process.env.NODE_ENV === 'production') {
-      console.log('📧 Production alert channels enabled')
+      // Production alert channels enabled
     } else {
-      console.log('🔧 Development mode - console alerts only')
+      // Development mode - console alerts only
     }
 
     // 초기 알림 테스트
@@ -127,7 +127,7 @@ class MonitoringSystem {
     // 초기 헬스체크
     await this.performHealthCheck()
 
-    console.log('❤️ Health checks initialized')
+    // Health checks initialized
   }
 
   private async performHealthCheck(): Promise<void> {
@@ -224,20 +224,20 @@ class MonitoringSystem {
   private async setupSystemEventListeners(): Promise<void> {
     // 프로세스 종료 신호 처리
     process.on('SIGTERM', async () => {
-      console.log('📤 SIGTERM received, starting graceful shutdown...')
+      // SIGTERM received, starting graceful shutdown
       await systemAlert.warning('System shutdown initiated (SIGTERM)', 'system')
       await this.shutdown()
     })
 
     process.on('SIGINT', async () => {
-      console.log('📤 SIGINT received, starting graceful shutdown...')
+      // SIGINT received, starting graceful shutdown
       await systemAlert.warning('System shutdown initiated (SIGINT)', 'system')
       await this.shutdown()
     })
 
     // 예상치 못한 에러 처리
     process.on('uncaughtException', async (error) => {
-      console.error('💥 Uncaught Exception:', error)
+      // Uncaught Exception
       await systemAlert.error('Uncaught exception detected', 'system', {
         error: error.message,
         stack: error.stack
@@ -245,13 +245,13 @@ class MonitoringSystem {
     })
 
     process.on('unhandledRejection', async (reason) => {
-      console.error('💥 Unhandled Rejection:', reason)
+      // Unhandled Rejection
       await systemAlert.error('Unhandled promise rejection detected', 'system', {
         reason: reason instanceof Error ? reason.message : String(reason)
       })
     })
 
-    console.log('👂 System event listeners configured')
+    // System event listeners configured
   }
 
   private registerShutdownHandlers(): void {
@@ -267,7 +267,7 @@ class MonitoringSystem {
   public async shutdown(): Promise<void> {
     if (!this.initialized) return
 
-    console.log('🔄 Shutting down monitoring system...')
+    // Shutting down monitoring system
 
     try {
       // 모든 종료 핸들러 실행
@@ -278,9 +278,9 @@ class MonitoringSystem {
       await systemAlert.warning('DINO monitoring system stopped', 'monitoring')
 
       this.initialized = false
-      console.log('✅ Monitoring system shutdown completed')
+      // Monitoring system shutdown completed
     } catch (error) {
-      console.error('❌ Error during monitoring system shutdown:', error)
+      // Error during monitoring system shutdown
     }
   }
 
@@ -311,5 +311,5 @@ export const monitoringSystem = MonitoringSystem.getInstance()
 
 // 자동 초기화 (프로덕션 환경에서만)
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_MONITORING === 'true') {
-  monitoringSystem.initialize().catch(console.error)
+  monitoringSystem.initialize().catch(() => { /* Failed to initialize monitoring */ })
 }

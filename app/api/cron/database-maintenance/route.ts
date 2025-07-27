@@ -1,24 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { DatabaseMaintenance, dbPerformanceMonitor } from '@/lib/db-performance'
+import { createErrorResponse, ErrorCode, generateRequestId } from '@/lib/api/error-handler'
+
+interface MaintenanceTask {
+  task: string
+  status: 'success' | 'error' | 'warning'
+  details?: string | object
+  error?: string
+}
 
 // Automated database maintenance cron job
 // Called by Vercel cron at 2 AM daily
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
+  const requestId = generateRequestId()
 
   try {
     // Verify this is a legitimate cron request
     const authHeader = request.headers.get('authorization')
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, 'Invalid cron secret', undefined, requestId)
     }
 
-    console.log('[DB Maintenance] Starting automated database maintenance...')
+    // Database maintenance started
 
     const results = {
       timestamp: new Date().toISOString(),
-      tasks: [] as any[]
+      tasks: [] as MaintenanceTask[]
     }
 
     // 1. Cleanup expired sessions
@@ -84,7 +93,7 @@ export async function GET(request: NextRequest) {
         const performanceReport = dbPerformanceMonitor.getPerformanceReport()
         
         // Log performance report before reset
-        console.log('[DB Maintenance] Weekly performance report:', performanceReport)
+        // Weekly performance report generated
         
         // Reset metrics for new week
         dbPerformanceMonitor['queryMetrics'] = []
@@ -131,7 +140,7 @@ export async function GET(request: NextRequest) {
       
       // Only report if there are slow queries
       if (queryAnalysis.slowQueries.length > 0) {
-        console.warn('[DB Maintenance] Slow queries detected:', queryAnalysis.slowQueries.length)
+        // Slow queries detected
         
         results.tasks.push({
           task: 'query_performance_analysis',
@@ -183,11 +192,11 @@ export async function GET(request: NextRequest) {
     const errorCount = results.tasks.filter(task => task.status === 'error').length
     const warningCount = results.tasks.filter(task => task.status === 'warning').length
 
-    console.log(`[DB Maintenance] Completed in ${duration}ms - Success: ${successCount}, Warnings: ${warningCount}, Errors: ${errorCount}`)
+    // Database maintenance completed
 
     // Send alert if there are errors
     if (errorCount > 0) {
-      console.error('[DB Maintenance] Maintenance completed with errors:', results.tasks.filter(task => task.status === 'error'))
+      // Maintenance completed with errors
       // In production, you might want to send an alert to your monitoring system
     }
 
@@ -199,14 +208,16 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     const duration = Date.now() - startTime
-    console.error('[DB Maintenance] Critical error during maintenance:', error)
+    // Critical error during maintenance
 
-    return NextResponse.json({
-      success: false,
-      error: 'Database maintenance failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      executionTime: duration,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return createErrorResponse(
+      ErrorCode.INTERNAL_SERVER_ERROR,
+      'Database maintenance failed',
+      {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        executionTime: duration
+      },
+      requestId
+    )
   }
 }

@@ -33,7 +33,7 @@ export default function SchengenCalculator({ onDataUpdate }: SchengenCalculatorP
         }
       }
     } catch (error) {
-      console.error('Error loading Schengen status:', error)
+      // Error loading Schengen status
     } finally {
       setLoading(false)
     }

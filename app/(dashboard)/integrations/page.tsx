@@ -188,7 +188,7 @@ export default function IntegrationsPage() {
       }
       
     } catch (error) {
-      console.error('Error checking connections:', error)
+      // Error checking connections
       setConnectionStatus({
         gmail: false,
         calendar: false,

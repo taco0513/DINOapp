@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     // CSRF 토큰 생성 및 응답
     return generateCSRFResponse(sessionId)
   } catch (error) {
-    console.error('CSRF token generation failed:', error)
+    // CSRF token generation failed
     
     return new Response(
       JSON.stringify({

@@ -9,6 +9,7 @@ import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
 import { csrfProtection } from '@/lib/security/csrf-protection'
 import { sanitizeRequestBody, InputSanitizer } from '@/lib/security/input-sanitizer'
+import { createErrorResponse, ErrorCode, generateRequestId, handleApiError, createValidationError } from '@/lib/api/error-handler'
 
 // Zod schema for trip validation
 const createTripSchema = z.object({
@@ -27,6 +28,8 @@ const createTripSchema = z.object({
 
 // GET /api/trips - Get all trips for authenticated user
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'general')
@@ -46,10 +49,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
     // Use optimized query with caching
@@ -64,16 +64,15 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching trips:', error)
-    return NextResponse.json(
-      { success: false, error: 'Database error' },
-      { status: 500 }
-    )
+    // Error fetching trips
+    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
   }
 }
 
 // POST /api/trips - Create new trip
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting (더 엄격한 제한)
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
@@ -81,7 +80,7 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse
     }
 
-    // CSRF 보호
+    // CSRF 보핐
     const csrfResult = await csrfProtection(request, {
       requireDoubleSubmit: true
     })
@@ -103,10 +102,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (!sanitizedBody) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid request body' },
-        { status: 400 }
-      )
+      return createErrorResponse(ErrorCode.BAD_REQUEST, 'Invalid request body', undefined, requestId)
     }
 
     // 입력 검증
@@ -119,10 +115,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
     // 여행 기록 생성
@@ -147,29 +140,26 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { 
-          success: false,
-          error: 'Validation failed',
-          details: error.issues.map(issue => ({
-            field: issue.path.join('.'),
-            message: issue.message
-          }))
-        },
-        { status: 400 }
-      )
+      const validationErrors: Record<string, string[]> = {}
+      error.issues.forEach(issue => {
+        const field = issue.path.join('.')
+        if (!validationErrors[field]) {
+          validationErrors[field] = []
+        }
+        validationErrors[field].push(issue.message)
+      })
+      return createValidationError(validationErrors, requestId)
     }
 
-    console.error('Error creating trip:', error)
-    return NextResponse.json(
-      { success: false, error: 'Database error' },
-      { status: 500 }
-    )
+    // Error creating trip
+    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
   }
 }
 
 // PUT 및 DELETE 메서드 추가
 export async function PUT(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
@@ -198,10 +188,7 @@ export async function PUT(request: NextRequest) {
     })
 
     if (!sanitizedBody || !sanitizedBody.id) {
-      return NextResponse.json(
-        { success: false, error: 'Trip ID is required for updates' },
-        { status: 400 }
-      )
+      return createErrorResponse(ErrorCode.BAD_REQUEST, 'Trip ID is required for updates', undefined, requestId)
     }
 
     const validatedData = createTripSchema.parse(sanitizedBody)
@@ -211,10 +198,7 @@ export async function PUT(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
     // 소유권 확인
@@ -226,10 +210,7 @@ export async function PUT(request: NextRequest) {
     })
 
     if (!existingTrip) {
-      return NextResponse.json(
-        { success: false, error: 'Trip not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
     }
 
     const updatedTrip = await prisma.countryVisit.update({
@@ -254,28 +235,25 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { 
-          success: false,
-          error: 'Validation failed',
-          details: error.issues.map(issue => ({
-            field: issue.path.join('.'),
-            message: issue.message
-          }))
-        },
-        { status: 400 }
-      )
+      const validationErrors: Record<string, string[]> = {}
+      error.issues.forEach(issue => {
+        const field = issue.path.join('.')
+        if (!validationErrors[field]) {
+          validationErrors[field] = []
+        }
+        validationErrors[field].push(issue.message)
+      })
+      return createValidationError(validationErrors, requestId)
     }
 
-    console.error('Error updating trip:', error)
-    return NextResponse.json(
-      { success: false, error: 'Database error' },
-      { status: 500 }
-    )
+    // Error updating trip
+    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
   }
 }
 
 export async function DELETE(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
@@ -301,10 +279,7 @@ export async function DELETE(request: NextRequest) {
     const tripId = url.searchParams.get('id')
 
     if (!tripId) {
-      return NextResponse.json(
-        { success: false, error: 'Trip ID is required for deletion' },
-        { status: 400 }
-      )
+      return createErrorResponse(ErrorCode.BAD_REQUEST, 'Trip ID is required for deletion', undefined, requestId)
     }
 
     const session = await getServerSession(authOptions)
@@ -313,10 +288,7 @@ export async function DELETE(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
     // 소유권 확인
@@ -328,10 +300,7 @@ export async function DELETE(request: NextRequest) {
     })
 
     if (!existingTrip) {
-      return NextResponse.json(
-        { success: false, error: 'Trip not found' },
-        { status: 404 }
-      )
+      return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
     }
 
     await prisma.countryVisit.delete({
@@ -344,10 +313,7 @@ export async function DELETE(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error deleting trip:', error)
-    return NextResponse.json(
-      { success: false, error: 'Database error' },
-      { status: 500 }
-    )
+    // Error deleting trip
+    return handleApiError(error, ErrorCode.DATABASE_ERROR, requestId)
   }
 }

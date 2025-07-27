@@ -140,7 +140,7 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
         monthlyTrips.set(monthKey, (monthlyTrips.get(monthKey) || 0) + 1)
         
       } catch (error) {
-        console.warn('Invalid date format:', trip.departureDate)
+        // Invalid date format
       }
     }
   }
@@ -409,7 +409,7 @@ export function generateTravelCalendar(travelInfos: TravelInfo[], year?: number,
           }
         }
       } catch (error) {
-        console.warn('Invalid date in trip:', trip.departureDate)
+        // Invalid date in trip
       }
     }
   }

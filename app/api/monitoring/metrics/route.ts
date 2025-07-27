@@ -1,14 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { metricsCollector } from '@/lib/monitoring/metrics-collector'
+import { metricsCollector, SystemMetrics } from '@/lib/monitoring/metrics-collector'
 import { dbPool } from '@/lib/database/connection-pool'
 import { queryOptimizer } from '@/lib/database/query-optimizer'
 import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
+import { csrfProtection } from '@/lib/security/csrf-protection'
+import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
+
+interface MetricsResponse {
+  success: boolean
+  timestamp: string
+  current: SystemMetrics | null
+  database: {
+    health: Awaited<ReturnType<typeof dbPool.healthCheck>>
+    connections: Awaited<ReturnType<typeof dbPool.getConnectionInfo>>
+    queries: Awaited<ReturnType<typeof queryOptimizer.getQueryStats>>
+    cache: ReturnType<typeof queryOptimizer.getCacheStats>
+  }
+  system: {
+    environment: string | undefined
+    uptime: number
+    version: string
+    memory: NodeJS.MemoryUsage
+  }
+  history?: SystemMetrics[]
+  averages?: Partial<SystemMetrics>
+}
 
 // GET /api/monitoring/metrics - 실시간 시스템 메트릭 조회
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'general')
@@ -25,19 +49,13 @@ export async function GET(request: NextRequest) {
     // 관리자 권한 확인 (운영 환경에서는 필수)
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     // Admin 이메일 체크 (환경변수로 설정)
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
     if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
+      return createErrorResponse(ErrorCode.FORBIDDEN, 'Admin access required', undefined, requestId)
     }
 
     const url = new URL(request.url)
@@ -54,7 +72,7 @@ export async function GET(request: NextRequest) {
       queryOptimizer.getQueryStats()
     ])
 
-    let response: any = {
+    let response: MetricsResponse = {
       success: true,
       timestamp: new Date().toISOString(),
       current: currentMetrics,
@@ -92,21 +110,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response)
 
   } catch (error) {
-    console.error('Error fetching metrics:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch metrics' },
-      { status: 500 }
-    )
+    // Error fetching metrics
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }
 
 // POST /api/monitoring/metrics/alerts - 알림 설정
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId()
+  
   try {
     // Rate limiting
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
     if (rateLimitResponse) {
       return rateLimitResponse
+    }
+
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
     }
 
     // Security middleware
@@ -118,18 +143,12 @@ export async function POST(request: NextRequest) {
     // 관리자 권한 확인
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
     if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
+      return createErrorResponse(ErrorCode.FORBIDDEN, 'Admin access required', undefined, requestId)
     }
 
     const body = await request.json()
@@ -143,9 +162,11 @@ export async function POST(request: NextRequest) {
         metricsCollector.removeAlert(alert.name)
         break
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
+        return createErrorResponse(
+          ErrorCode.VALIDATION_ERROR,
+          'Invalid action',
+          { validActions: ['add', 'remove'] },
+          requestId
         )
     }
 
@@ -155,10 +176,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error managing alerts:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to manage alerts' },
-      { status: 500 }
-    )
+    // Error managing alerts
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
   }
 }

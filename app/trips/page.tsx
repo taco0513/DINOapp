@@ -7,8 +7,8 @@ import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
 
 // Dynamic imports for better code splitting
-const WireframeTripForm = lazy(() => import('@/components/WireframeTripForm'))
-const WireframeTripCard = lazy(() => import('@/components/WireframeTripCard'))
+const TripForm = lazy(() => import('@/components/trips/TripForm'))
+const TripCard = lazy(() => import('@/components/trips/TripCard'))
 
 export default function TripsPage() {
   const { data: session, status } = useSession()
@@ -39,7 +39,7 @@ export default function TripsPage() {
         setTrips(response.data)
       }
     } catch (error) {
-      console.error('Error loading trips:', error)
+      // Error loading trips
     } finally {
       setLoading(false)
     }
@@ -72,7 +72,7 @@ export default function TripsPage() {
         await ApiClient.deleteTrip(trip.id!)
         loadTrips()
       } catch (error) {
-        console.error('Error deleting trip:', error)
+        // Error deleting trip
       }
     }
   }
@@ -242,7 +242,7 @@ export default function TripsPage() {
             }}>
               <Suspense fallback={<div style={{ padding: '20px', fontSize: '14px', color: '#666' }}>Loading trips...</div>}>
                 {filteredTrips.map(trip => (
-                  <WireframeTripCard
+                  <TripCard
                     key={trip.id}
                     trip={trip}
                     onEdit={handleEditTrip}
@@ -258,7 +258,7 @@ export default function TripsPage() {
       {/* Trip Form Modal */}
       {showForm && (
         <Suspense fallback={<div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', padding: '20px', backgroundColor: '#fff', border: '1px solid #e0e0e0' }}>Loading form...</div>}>
-          <WireframeTripForm
+          <TripForm
             trip={editingTrip || undefined}
             onSuccess={handleFormSuccess}
             onCancel={handleFormCancel}

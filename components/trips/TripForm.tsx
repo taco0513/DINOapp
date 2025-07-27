@@ -49,167 +49,306 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
-        <div className="p-4 sm:p-6">
-          <div className="flex justify-between items-center mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 pr-2">
-              {trip ? '여행 기록 수정' : '새 여행 기록 추가'}
-            </h2>
-            <button
-              onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600 flex-shrink-0"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px',
+      zIndex: 1000
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        border: '3px solid #333',
+        maxWidth: '600px',
+        width: '100%',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        padding: '20px'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+          paddingBottom: '10px',
+          borderBottom: '2px solid #333'
+        }}>
+          <h2 style={{
+            fontSize: '20px',
+            fontWeight: 'bold',
+            margin: 0
+          }}>
+            {trip ? '여행 기록 수정' : '새 여행 기록 추가'}
+          </h2>
+          <button
+            onClick={onCancel}
+            style={{
+              backgroundColor: 'white',
+              border: '2px solid #666',
+              padding: '5px 10px',
+              cursor: 'pointer',
+              fontSize: '14px'
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {error && (
+          <div style={{
+            marginBottom: '20px',
+            padding: '15px',
+            backgroundColor: '#ffe6e6',
+            border: '2px solid #cc0000',
+            color: '#cc0000'
+          }}>
+            {error}
           </div>
+        )}
 
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800">{error}</p>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '20px' }}>
+            {/* Country Selection */}
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                marginBottom: '5px'
+              }}>
+                국가 *
+              </label>
+              <select
+                value={formData.country}
+                onChange={(e) => handleChange('country', e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '2px solid #666',
+                  fontSize: '14px',
+                  backgroundColor: 'white'
+                }}
+              >
+                <option value="">국가를 선택하세요</option>
+                {COUNTRIES.map(country => (
+                  <option key={country.code} value={country.name}>
+                    {country.flag} {country.name} {country.isSchengen ? '(셰겐)' : ''}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            {/* Mobile-optimized grid layout */}
-            <div className="space-y-4 sm:space-y-6">
-              {/* Country Selection */}
+            {/* Date fields */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  국가 *
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginBottom: '5px'
+                }}>
+                  입국 날짜 *
                 </label>
-                <select
-                  value={formData.country}
-                  onChange={(e) => handleChange('country', e.target.value)}
+                <input
+                  type="date"
+                  value={formData.entryDate}
+                  onChange={(e) => handleChange('entryDate', e.target.value)}
                   required
-                  className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
-                >
-                  <option value="">국가를 선택하세요</option>
-                  {COUNTRIES.map(country => (
-                    <option key={country.code} value={country.name}>
-                      {country.flag} {country.name} {country.isSchengen ? '(셰겐)' : ''}
-                    </option>
-                  ))}
-                </select>
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '2px solid #666',
+                    fontSize: '14px'
+                  }}
+                />
               </div>
 
-              {/* Date fields in mobile-optimized layout */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    입국 날짜 *
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.entryDate}
-                    onChange={(e) => handleChange('entryDate', e.target.value)}
-                    required
-                    className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    출국 날짜 <span className="text-xs text-gray-500">(현재 체류 중이면 비워두세요)</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.exitDate || ''}
-                    onChange={(e) => handleChange('exitDate', e.target.value || null)}
-                    className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Visa and Duration fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    비자 유형 *
-                  </label>
-                  <select
-                    value={formData.visaType}
-                    onChange={(e) => handleChange('visaType', e.target.value)}
-                    required
-                    className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
-                  >
-                    {VISA_TYPES.map(type => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    최대 체류 가능 일수 *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="365"
-                    value={formData.maxDays}
-                    onChange={(e) => handleChange('maxDays', parseInt(e.target.value))}
-                    required
-                    className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Passport Country */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  여권 국가 *
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginBottom: '5px'
+                }}>
+                  출국 날짜
+                  <span style={{ fontSize: '10px', color: '#666', fontWeight: 'normal' }}>
+                    {' '}(체류 중이면 비워두세요)
+                  </span>
                 </label>
-                <select
-                  value={formData.passportCountry}
-                  onChange={(e) => handleChange('passportCountry', e.target.value)}
-                  required
-                  className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
-                >
-                  {PASSPORT_COUNTRIES.map(country => (
-                    <option key={country.code} value={country.code}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Notes */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  메모 (선택사항)
-                </label>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => handleChange('notes', e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm resize-none"
-                  placeholder="추가 정보나 메모를 입력하세요..."
+                <input
+                  type="date"
+                  value={formData.exitDate || ''}
+                  onChange={(e) => handleChange('exitDate', e.target.value || null)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '2px solid #666',
+                    fontSize: '14px'
+                  }}
                 />
               </div>
             </div>
 
-            {/* Actions - Mobile optimized buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-4 sm:py-3 px-4 rounded-lg transition-colors font-medium text-base sm:text-sm"
-              >
-                {loading ? '저장 중...' : (trip ? '수정하기' : '추가하기')}
-              </button>
-              <button
-                type="button"
-                onClick={onCancel}
-                className="w-full sm:flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 sm:py-3 px-4 rounded-lg transition-colors font-medium text-base sm:text-sm"
-              >
-                취소
-              </button>
+            {/* Visa and Duration fields */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginBottom: '5px'
+                }}>
+                  비자 유형 *
+                </label>
+                <select
+                  value={formData.visaType}
+                  onChange={(e) => handleChange('visaType', e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '2px solid #666',
+                    fontSize: '14px',
+                    backgroundColor: 'white'
+                  }}
+                >
+                  {VISA_TYPES.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginBottom: '5px'
+                }}>
+                  최대 체류 일수 *
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="365"
+                  value={formData.maxDays}
+                  onChange={(e) => handleChange('maxDays', parseInt(e.target.value))}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '2px solid #666',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
             </div>
-          </form>
-        </div>
+
+            {/* Passport Country */}
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                marginBottom: '5px'
+              }}>
+                여권 국가 *
+              </label>
+              <select
+                value={formData.passportCountry}
+                onChange={(e) => handleChange('passportCountry', e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '2px solid #666',
+                  fontSize: '14px',
+                  backgroundColor: 'white'
+                }}
+              >
+                {PASSPORT_COUNTRIES.map(country => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Notes */}
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                marginBottom: '5px'
+              }}>
+                메모 (선택사항)
+              </label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => handleChange('notes', e.target.value)}
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '2px solid #666',
+                  fontSize: '14px',
+                  resize: 'none',
+                  fontFamily: 'inherit'
+                }}
+                placeholder="추가 정보나 메모를 입력하세요..."
+              />
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div style={{
+            borderTop: '2px solid #333',
+            paddingTop: '20px',
+            display: 'flex',
+            gap: '10px'
+          }}>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                flex: 1,
+                backgroundColor: loading ? '#ccc' : '#333',
+                color: 'white',
+                padding: '12px 20px',
+                border: '2px solid #333',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                fontSize: '14px',
+                fontWeight: 'bold'
+              }}
+            >
+              {loading ? '저장 중...' : (trip ? '수정하기' : '추가하기')}
+            </button>
+            <button
+              type="button"
+              onClick={onCancel}
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+                color: '#666',
+                padding: '12px 20px',
+                border: '2px solid #666',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 'bold'
+              }}
+            >
+              취소
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

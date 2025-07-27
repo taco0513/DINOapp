@@ -83,9 +83,9 @@ class DatabaseConnectionPool {
   public async connect(): Promise<void> {
     try {
       await this.getClient().$connect()
-      console.log('✅ Database connected successfully')
+      // Database connected successfully
     } catch (error) {
-      console.error('❌ Database connection failed:', error)
+      // Database connection failed
       throw error
     }
   }
@@ -94,7 +94,7 @@ class DatabaseConnectionPool {
     if (this.client) {
       await this.client.$disconnect()
       this.client = null
-      console.log('🔌 Database disconnected')
+      // Database disconnected
     }
   }
 
@@ -115,7 +115,7 @@ class DatabaseConnectionPool {
         timestamp: new Date().toISOString()
       }
     } catch (error) {
-      console.error('Database health check failed:', error)
+      // Database health check failed
       return {
         status: 'unhealthy',
         latency: Date.now() - startTime,
@@ -159,7 +159,7 @@ class DatabaseConnectionPool {
         poolStatus: 'unknown'
       }
     } catch (error) {
-      console.error('Failed to get connection info:', error)
+      // Failed to get connection info
       return {
         activeConnections: -1,
         maxConnections: this.config.maxConnections,

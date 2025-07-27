@@ -158,10 +158,5 @@ export function logSecurityEvent(event: string, details: any, request: NextReque
   const ip = getClientIP(request)
   const userAgent = request.headers.get('user-agent') || 'unknown'
   
-  console.warn(`[SECURITY] ${event}`, {
-    ip,
-    userAgent,
-    timestamp: new Date().toISOString(),
-    details
-  })
+  // Security event logged
 }

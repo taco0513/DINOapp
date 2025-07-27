@@ -99,14 +99,14 @@ class MetricsCollector {
       this.notifySubscribers(metrics)
     }, intervalMs)
 
-    console.log(`📊 Metrics collection started (interval: ${intervalMs}ms)`)
+    // Metrics collection started
   }
 
   public stopCollection(): void {
     if (this.collectionInterval) {
       clearInterval(this.collectionInterval)
       this.collectionInterval = undefined
-      console.log('📊 Metrics collection stopped')
+      // Metrics collection stopped
     }
   }
 
@@ -137,7 +137,7 @@ class MetricsCollector {
         users: userMetrics
       }
     } catch (error) {
-      console.error('Failed to collect metrics:', error)
+      // Failed to collect metrics
       return this.getDefaultMetrics(timestamp)
     }
   }
@@ -302,7 +302,7 @@ class MetricsCollector {
   }
 
   private triggerAlert(alert: AlertConfig, value: number, timestamp: number): void {
-    console.warn(`🚨 ALERT: ${alert.name} - Value: ${value}, Threshold: ${alert.threshold}`)
+    // Alert triggered: ${alert.name}
     
     // 여기서 실제 알림 시스템 호출
     // 예: Slack, Discord, Email 등
@@ -313,7 +313,7 @@ class MetricsCollector {
       try {
         subscriber(metrics)
       } catch (error) {
-        console.error('Error notifying metrics subscriber:', error)
+        // Error notifying metrics subscriber
       }
     }
   }

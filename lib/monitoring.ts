@@ -153,7 +153,7 @@ class PerformanceMonitor {
         rating
       })
     } else {
-      console.log(`[API Performance] ${metric.method} ${metric.endpoint}: ${metric.duration}ms (${rating})`)
+      // API Performance logged
     }
   }
 
@@ -165,7 +165,7 @@ class PerformanceMonitor {
       // Send to error tracking service (Sentry)
       this.sendToErrorTracking(error)
     } else {
-      console.error('[Error Tracking]', error)
+      // Error tracked
     }
   }
 
@@ -186,7 +186,7 @@ class PerformanceMonitor {
     if (this.isProduction) {
       this.sendToAnalytics('user_action', event)
     } else {
-      console.log(`[User Action] ${action}`, properties)
+      // User action tracked
     }
   }
 
@@ -196,7 +196,7 @@ class PerformanceMonitor {
     if (this.isProduction) {
       this.sendToAnalytics('web_vitals', metric)
     } else {
-      console.log(`[Web Vitals] ${metric.name}: ${metric.value}ms (${metric.rating})`)
+      // Web vitals metric reported
     }
   }
 

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { backupManager } from '@/lib/backup/backup-manager'
 import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
+import { csrfProtection } from '@/lib/security/csrf-protection'
 
 // GET /api/backup - 백업 목록 조회
 export async function GET(request: NextRequest) {
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching backups:', error)
+    // Error fetching backups
     return NextResponse.json(
       { success: false, error: 'Failed to fetch backups' },
       { status: 500 }
@@ -72,6 +73,14 @@ export async function POST(request: NextRequest) {
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
     if (rateLimitResponse) {
       return rateLimitResponse
+    }
+
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
     }
 
     // Security middleware
@@ -104,7 +113,7 @@ export async function POST(request: NextRequest) {
       compress = true 
     } = body
 
-    console.log(`🔄 Backup requested by: ${session.user.email}`)
+    // Backup requested
 
     const result = await backupManager.createBackup({
       includeUserData,
@@ -113,7 +122,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (result.success) {
-      console.log(`✅ Backup created successfully: ${result.backupId}`)
+      // Backup created successfully
       return NextResponse.json({
         success: true,
         backupId: result.backupId,
@@ -127,7 +136,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error creating backup:', error)
+    // Error creating backup
     return NextResponse.json(
       { success: false, error: 'Failed to create backup' },
       { status: 500 }
@@ -142,6 +151,14 @@ export async function DELETE(request: NextRequest) {
     const rateLimitResponse = await applyRateLimit(request, 'mutation')
     if (rateLimitResponse) {
       return rateLimitResponse
+    }
+
+    // CSRF 보호
+    const csrfResult = await csrfProtection(request, {
+      requireDoubleSubmit: true
+    })
+    if (!csrfResult.protected) {
+      return csrfResult.response!
     }
 
     // Security middleware
@@ -177,7 +194,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    console.log(`🗑️ Backup deletion requested by: ${session.user.email}, ID: ${backupId}`)
+    // Backup deletion requested
 
     const result = await backupManager.deleteBackup(backupId)
 
@@ -194,7 +211,7 @@ export async function DELETE(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error deleting backup:', error)
+    // Error deleting backup
     return NextResponse.json(
       { success: false, error: 'Failed to delete backup' },
       { status: 500 }

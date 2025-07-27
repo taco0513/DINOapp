@@ -29,7 +29,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
       }
       onSuccess()
     } catch (error) {
-      console.error('Error saving trip:', error)
+      // Error saving trip
     }
   }
 

@@ -65,7 +65,7 @@ export default function CalendarPage() {
         })
       }
     } catch (err) {
-      console.error('Failed to load calendar stats:', err)
+      // Failed to load calendar stats
     }
   }
 

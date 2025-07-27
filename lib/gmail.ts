@@ -154,7 +154,7 @@ export async function searchTravelEmails(
           snippet: messageDetail.data.snippet || ''
         })
       } catch (error) {
-        console.error(`Error fetching message ${message.id}:`, error)
+        // Error fetching message
         // 개별 메시지 오류는 건너뛰고 계속 진행
       }
     }
@@ -162,7 +162,7 @@ export async function searchTravelEmails(
     return messages
     
   } catch (error) {
-    console.error('Error searching travel emails:', error)
+    // Error searching travel emails
     throw new Error('Gmail API 요청 중 오류가 발생했습니다.')
   }
 }
@@ -490,7 +490,7 @@ export async function analyzeTravelEmails(
     return travelInfos.sort((a, b) => b.confidence - a.confidence)
     
   } catch (error) {
-    console.error('Error analyzing travel emails:', error)
+    // Error analyzing travel emails
     throw new Error('이메일 분석 중 오류가 발생했습니다.')
   }
 }
@@ -510,7 +510,7 @@ export async function checkGmailConnection(accessToken: string): Promise<boolean
     
     return true
   } catch (error) {
-    console.error('Gmail connection failed:', error)
+    // Gmail connection failed
     return false
   }
 }

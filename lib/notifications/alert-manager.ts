@@ -153,7 +153,7 @@ class AlertManager {
   ): Promise<void> {
     const template = this.templates.get(templateId)
     if (!template) {
-      console.error(`Alert template not found: ${templateId}`)
+      // Alert template not found
       return
     }
 
@@ -217,7 +217,7 @@ class AlertManager {
       try {
         await this.sendToChannel(alert, channel, template)
       } catch (error) {
-        console.error(`Failed to send alert to channel ${channelId}:`, error)
+        // Failed to send alert to channel
       }
     }
   }
@@ -254,9 +254,9 @@ class AlertManager {
       critical: '🚨'
     }[alert.severity]
 
-    console.log(`${emoji} [${alert.severity.toUpperCase()}] ${alert.title}`)
-    console.log(`   ${alert.message}`)
-    console.log(`   Source: ${alert.source} | Time: ${alert.timestamp.toISOString()}`)
+    // Alert: ${alert.title}
+    // Message: ${alert.message}
+    // Source: ${alert.source}
   }
 
   private async sendToEmail(
@@ -281,11 +281,11 @@ class AlertManager {
         `
       }
 
-      console.log('📧 Email alert prepared:', emailData.subject)
+      // Email alert prepared
       // 실제 이메일 발송 로직은 여기에 구현
       
     } catch (error) {
-      console.error('Email sending failed:', error)
+      // Email sending failed
     }
   }
 
@@ -305,9 +305,9 @@ class AlertManager {
         throw new Error(`Webhook failed: ${response.statusText}`)
       }
 
-      console.log('🔗 Webhook alert sent successfully')
+      // Webhook alert sent successfully
     } catch (error) {
-      console.error('Webhook sending failed:', error)
+      // Webhook sending failed
     }
   }
 
@@ -365,9 +365,9 @@ class AlertManager {
     try {
       // 데이터베이스에 알림 로그 저장
       // 실제 구현에서는 Prisma를 사용하여 AlertLog 테이블에 저장
-      console.log('💾 Alert logged to database:', alert.id)
+      // Alert logged to database
     } catch (error) {
-      console.error('Database logging failed:', error)
+      // Database logging failed
     }
   }
 

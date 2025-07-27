@@ -36,31 +36,8 @@ export default function HomePage() {
         <div style={{ textAlign: 'center' }}>
           <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>대시보드로 이동 중...</div>
           <button
-            onClick={async () => {
-              try {
-                // First try custom logout endpoint
-                const response = await fetch('/api/auth/logout', {
-                  method: 'POST',
-                  credentials: 'same-origin'
-                })
-                
-                if (response.ok) {
-                  // Clear client-side session
-                  await signOut({ redirect: false })
-                  // Redirect to home
-                  window.location.href = '/'
-                } else {
-                  // Fallback to regular signOut
-                  await signOut({ 
-                    callbackUrl: '/',
-                    redirect: true 
-                  })
-                }
-              } catch (error) {
-                console.error('Logout error:', error)
-                // Manual fallback
-                window.location.href = '/api/auth/signout'
-              }
+            onClick={() => {
+              window.location.href = '/logout'
             }}
             style={{
               padding: '8px 20px',

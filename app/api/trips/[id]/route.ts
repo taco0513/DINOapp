@@ -3,11 +3,12 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getPrismaClient } from '@/lib/database/dev-prisma'
 const prisma = getPrismaClient()
+import { createTravelManager } from '@/lib/travel-manager'
 import { csrfProtection } from '@/lib/security/csrf-protection'
 import { z } from 'zod'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError, createValidationError } from '@/lib/api/error-handler'
 
-// Zod schema for trip updates
+// Zod schema for trip updates (enhanced)
 const updateTripSchema = z.object({
   country: z.string().min(1).optional(),
   entryDate: z.string().refine(date => !isNaN(Date.parse(date))).optional(),
@@ -19,7 +20,13 @@ const updateTripSchema = z.object({
   ]).optional(),
   maxDays: z.number().min(1).max(365).optional(),
   passportCountry: z.enum(['US', 'UK', 'EU', 'CA', 'AU', 'JP', 'OTHER']).optional(),
-  notes: z.string().optional()
+  notes: z.string().optional(),
+  status: z.enum(['completed', 'ongoing', 'planned']).optional(),
+  purpose: z.string().optional(),
+  accommodation: z.string().optional(),
+  cost: z.number().optional(),
+  rating: z.number().min(1).max(5).optional(),
+  isEmergency: z.boolean().optional()
 })
 
 async function checkTripOwnership(tripId: string, userEmail: string) {
@@ -101,21 +108,9 @@ export async function PUT(
     // Validate input
     const validatedData = updateTripSchema.parse(body)
 
-    // Update trip
-    const updatedTrip = await prisma.countryVisit.update({
-      where: { id: id },
-      data: {
-        ...(validatedData.country && { country: validatedData.country }),
-        ...(validatedData.entryDate && { entryDate: new Date(validatedData.entryDate).toISOString() }),
-        ...(validatedData.exitDate !== undefined && { 
-          exitDate: validatedData.exitDate ? new Date(validatedData.exitDate).toISOString() : null 
-        }),
-        ...(validatedData.visaType && { visaType: validatedData.visaType }),
-        ...(validatedData.maxDays && { maxDays: validatedData.maxDays }),
-        ...(validatedData.passportCountry && { passportCountry: validatedData.passportCountry }),
-        ...(validatedData.notes !== undefined && { notes: validatedData.notes })
-      }
-    })
+    // Use TravelManager for enhanced trip update
+    const travelManager = createTravelManager(existingTrip.user.id)
+    const updatedTrip = await travelManager.updateTrip(id, validatedData)
 
     return NextResponse.json({
       success: true,
@@ -171,10 +166,13 @@ export async function DELETE(
       return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found', undefined, requestId)
     }
 
-    // Delete trip
-    await prisma.countryVisit.delete({
-      where: { id: id }
-    })
+    // Use TravelManager for trip deletion
+    const travelManager = createTravelManager(existingTrip.user.id)
+    const deleted = await travelManager.deleteTrip(id)
+    
+    if (!deleted) {
+      return createErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR, 'Failed to delete trip', undefined, requestId)
+    }
 
     return NextResponse.json({
       success: true,

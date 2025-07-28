@@ -5,6 +5,7 @@ import { getPrismaClient } from '@/lib/database/dev-prisma'
 const prisma = getPrismaClient()
 import { getUserTripsOptimized } from '@/lib/database/query-optimizer'
 import { systemAlert } from '@/lib/notifications/alert-manager'
+import { createTravelManager } from '@/lib/travel-manager'
 import { z } from 'zod'
 import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
@@ -12,7 +13,7 @@ import { csrfProtection } from '@/lib/security/csrf-protection'
 import { sanitizeRequestBody, InputSanitizer } from '@/lib/security/input-sanitizer'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError, createValidationError } from '@/lib/api/error-handler'
 
-// Zod schema for trip validation
+// Zod schema for trip validation (enhanced)
 const createTripSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   entryDate: z.string().refine(date => !isNaN(Date.parse(date)), 'Invalid entry date'),
@@ -24,7 +25,31 @@ const createTripSchema = z.object({
   ]),
   maxDays: z.number().min(1).max(365),
   passportCountry: z.enum(['US', 'UK', 'EU', 'CA', 'AU', 'JP', 'OTHER']),
-  notes: z.string().optional()
+  notes: z.string().optional(),
+  status: z.enum(['completed', 'ongoing', 'planned']).optional().default('completed'),
+  purpose: z.string().optional(),
+  accommodation: z.string().optional(),
+  cost: z.number().optional(),
+  isEmergency: z.boolean().optional().default(false)
+})
+
+const updateTripSchema = z.object({
+  country: z.string().min(1).optional(),
+  entryDate: z.string().refine(date => !isNaN(Date.parse(date))).optional(),
+  exitDate: z.string().nullable().optional(),
+  visaType: z.enum([
+    'Tourist', 'Business', 'Student', 'Working Holiday', 'Digital Nomad',
+    'Transit', 'Work', 'Investor', 'Retirement', 'Volunteer', 'Visa Run',
+    'Extension', 'Spouse', 'Medical'
+  ]).optional(),
+  maxDays: z.number().min(1).max(365).optional(),
+  notes: z.string().optional(),
+  status: z.enum(['completed', 'ongoing', 'planned']).optional(),
+  purpose: z.string().optional(),
+  accommodation: z.string().optional(),
+  cost: z.number().optional(),
+  rating: z.number().min(1).max(5).optional(),
+  isEmergency: z.boolean().optional()
 })
 
 // GET /api/trips - Get all trips for authenticated user
@@ -53,18 +78,32 @@ export async function GET(request: NextRequest) {
       return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
-    // Use optimized query with caching
-    const trips = await getUserTripsOptimized(user.id, {
-      limit: 100, // 기본 100개 제한
-      includeActive: undefined // 모든 여행 포함
+    // Use TravelManager for enhanced functionality
+    const travelManager = createTravelManager(user.id)
+    
+    // Parse query parameters
+    const url = new URL(request.url)
+    const includeCompleted = url.searchParams.get('includeCompleted') !== 'false'
+    const includePlanned = url.searchParams.get('includePlanned') !== 'false'
+    const includeOngoing = url.searchParams.get('includeOngoing') !== 'false'
+    const limit = parseInt(url.searchParams.get('limit') || '100')
+    const sortBy = url.searchParams.get('sortBy') as 'entryDate' | 'createdAt' | 'country' || 'entryDate'
+    const sortOrder = url.searchParams.get('sortOrder') as 'asc' | 'desc' || 'desc'
+    
+    const trips = await travelManager.getTrips({
+      includeCompleted,
+      includePlanned,
+      includeOngoing,
+      limit,
+      sortBy,
+      sortOrder
     })
 
-    // Debug logging
-    console.log(`[GET /api/trips] Found ${trips.length} trips for user ${user.id}`)
-
+    
     return NextResponse.json({
       success: true,
-      data: trips
+      data: trips,
+      count: trips.length
     })
 
   } catch (error) {
@@ -122,18 +161,22 @@ export async function POST(request: NextRequest) {
       return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
     }
 
-    // 여행 기록 생성 - Convert date strings to ISO-8601 format
-    const trip = await prisma.countryVisit.create({
-      data: {
-        userId: user.id,
-        country: validatedData.country,
-        entryDate: new Date(validatedData.entryDate).toISOString(),
-        exitDate: validatedData.exitDate ? new Date(validatedData.exitDate).toISOString() : null,
-        visaType: validatedData.visaType,
-        maxDays: validatedData.maxDays,
-        passportCountry: validatedData.passportCountry,
-        notes: validatedData.notes || null
-      }
+    // Use TravelManager to create trip with enhanced functionality
+    const travelManager = createTravelManager(user.id)
+    
+    const trip = await travelManager.createTrip({
+      country: validatedData.country,
+      entryDate: validatedData.entryDate,
+      exitDate: validatedData.exitDate,
+      visaType: validatedData.visaType,
+      maxDays: validatedData.maxDays,
+      passportCountry: validatedData.passportCountry,
+      notes: validatedData.notes,
+      status: validatedData.status,
+      purpose: validatedData.purpose,
+      accommodation: validatedData.accommodation,
+      cost: validatedData.cost,
+      isEmergency: validatedData.isEmergency
     })
 
     return NextResponse.json({
@@ -143,7 +186,6 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
 
   } catch (error) {
-    console.error('Trip creation error:', error)
     
     if (error instanceof z.ZodError) {
       const validationErrors: Record<string, string[]> = {}

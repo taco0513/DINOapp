@@ -1,24 +1,15 @@
 import { GET, POST, PUT, DELETE } from '@/app/api/trips/route'
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { prisma } from '@/lib/prisma'
+import { getPrismaClient } from '@/lib/database/dev-prisma'
+import { getUserTripsOptimized } from '@/lib/database/query-optimizer'
+
+// Get mocked prisma client
+const prisma = getPrismaClient()
 
 // Mock next-auth
 jest.mock('next-auth', () => ({
   getServerSession: jest.fn()
-}))
-
-// Mock prisma
-jest.mock('@/lib/prisma', () => ({
-  prisma: {
-    countryVisit: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn()
-    }
-  }
 }))
 
 const mockTrip = {
@@ -29,6 +20,7 @@ const mockTrip = {
   exitDate: '2024-01-15',
   visaType: 'Tourist',
   maxDays: 90,
+  passportCountry: 'US',
   notes: 'Test trip 1',
   createdAt: new Date('2024-01-01'),
   updatedAt: new Date('2024-01-01')
@@ -50,7 +42,9 @@ describe('/api/trips API Integration Tests', () => {
 
   describe('GET /api/trips', () => {
     it('should return trips for authenticated user', async () => {
-      ;(prisma.countryVisit.findMany as jest.Mock).mockResolvedValue([mockTrip])
+      const mockUser = { id: 'test-user', email: 'test@example.com' }
+      ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser)
+      ;(getUserTripsOptimized as jest.Mock).mockResolvedValue([mockTrip])
 
       const request = new NextRequest('http://localhost:3000/api/trips')
       const response = await GET(request)
@@ -58,8 +52,8 @@ describe('/api/trips API Integration Tests', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.trips).toHaveLength(1)
-      expect(data.trips[0]).toMatchObject({
+      expect(data.data).toHaveLength(1)
+      expect(data.data[0]).toMatchObject({
         id: '1',
         country: 'France',
         entryDate: '2024-01-01',
@@ -80,7 +74,9 @@ describe('/api/trips API Integration Tests', () => {
     })
 
     it('should handle database errors gracefully', async () => {
-      ;(prisma.countryVisit.findMany as jest.Mock).mockRejectedValue(new Error('Database connection failed'))
+      const mockUser = { id: 'test-user', email: 'test@example.com' }
+      ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser)
+      ;(getUserTripsOptimized as jest.Mock).mockRejectedValue(new Error('Database connection failed'))
 
       const request = new NextRequest('http://localhost:3000/api/trips')
       const response = await GET(request)
@@ -88,7 +84,7 @@ describe('/api/trips API Integration Tests', () => {
 
       expect(response.status).toBe(500)
       expect(data.success).toBe(false)
-      expect(data.error).toBe('Database error')
+      expect(data.error.error).toBe('Database operation failed')
     })
   })
 
@@ -97,12 +93,16 @@ describe('/api/trips API Integration Tests', () => {
       country: 'Italy',
       entryDate: '2024-07-01',
       exitDate: '2024-07-15',
-      visaType: 'Tourist',
+      visaType: 'Tourist' as const,
       maxDays: 90,
+      passportCountry: 'US' as const,
       notes: 'Summer vacation'
     }
 
     it('should create a new trip', async () => {
+      const mockUser = { id: 'test-user', email: 'test@example.com' }
+      ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser)
+      
       const createdTrip = { ...mockTrip, ...validTripData, id: '3' }
       ;(prisma.countryVisit.create as jest.Mock).mockResolvedValue(createdTrip)
 
@@ -119,7 +119,7 @@ describe('/api/trips API Integration Tests', () => {
 
       expect(response.status).toBe(201)
       expect(data.success).toBe(true)
-      expect(data.trip).toMatchObject({
+      expect(data.data).toMatchObject({
         country: 'Italy',
         entryDate: '2024-07-01',
         exitDate: '2024-07-15'
@@ -127,10 +127,14 @@ describe('/api/trips API Integration Tests', () => {
     })
 
     it('should validate required fields', async () => {
+      const mockUser = { id: 'test-user', email: 'test@example.com' }
+      ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser)
+      
       const invalidData = {
         country: '', // Empty country
         entryDate: '2024-07-01',
-        visaType: 'Tourist'
+        visaType: 'Tourist' as const,
+        passportCountry: 'US' as const
         // Missing exitDate, maxDays
       }
 
@@ -147,7 +151,7 @@ describe('/api/trips API Integration Tests', () => {
 
       expect(response.status).toBe(400)
       expect(data.success).toBe(false)
-      expect(data.error).toContain('validation')
+      expect(data.error.error).toContain('Validation')
     })
 
     it('should validate date format', async () => {
@@ -198,8 +202,9 @@ describe('/api/trips API Integration Tests', () => {
       country: 'Spain',
       entryDate: '2024-01-01',
       exitDate: '2024-01-20', // Extended stay
-      visaType: 'Tourist',
+      visaType: 'Tourist' as const,
       maxDays: 90,
+      passportCountry: 'US' as const,
       notes: 'Extended vacation'
     }
 
@@ -333,8 +338,9 @@ describe('/api/trips API Integration Tests', () => {
         country: "'; DROP TABLE trips; --",
         entryDate: '2024-07-01',
         exitDate: '2024-07-15',
-        visaType: 'Tourist',
+        visaType: 'Tourist' as const,
         maxDays: 90,
+        passportCountry: 'US' as const,
         notes: 'Malicious attempt'
       }
 
@@ -381,8 +387,9 @@ describe('/api/trips API Integration Tests', () => {
         country: 'Portugal',
         entryDate: '2024-08-01',
         exitDate: '2024-08-15',
-        visaType: 'Tourist',
+        visaType: 'Tourist' as const,
         maxDays: 90,
+        passportCountry: 'US' as const,
         notes: 'Beach vacation'
       }
 

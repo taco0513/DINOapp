@@ -101,10 +101,8 @@ export default function TripsPage() {
 
   if (status === 'loading' || !session) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>{t('common.loading')}</div>
-        </div>
+      <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+        <div className="loading">{t('common.loading')}</div>
       </main>
     )
   }
@@ -113,72 +111,47 @@ export default function TripsPage() {
 
   return (
     <>
-      <main style={{ 
-        minHeight: '100vh', 
-        padding: '20px',
-        backgroundColor: '#ffffff',
-        fontFamily: 'system-ui, -apple-system, sans-serif'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <main style={{ minHeight: '100vh' }}>
+        <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
           {/* Header */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'flex-start',
-            marginBottom: '40px',
-            paddingBottom: '20px',
-            borderBottom: '1px solid #e0e0e0'
-          }}>
+          <header className="nav mb-8">
             <div>
-              <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px', color: '#000' }}>
+              <h1 className="mb-2">
                 {t('trips.title')}
               </h1>
-              <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
+              <p className="text-small text-secondary">
                 {t('trips.description')}
               </p>
             </div>
             <button 
               onClick={handleAddTrip}
-              style={{
-                padding: '8px 20px',
-                backgroundColor: '#000',
-                color: '#fff',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="btn btn-primary"
             >
-{t('trips.add')}
+              {t('trips.add')}
             </button>
-          </div>
+          </header>
 
           {/* Filter Tabs */}
-          <div style={{ marginBottom: '30px' }}>
-            <div style={{ display: 'flex', gap: '0', border: '1px solid #e0e0e0', width: 'fit-content' }}>
+          <div className="mb-8">
+            <div className="flex" style={{ gap: '0', border: '1px solid var(--color-border-strong)', width: 'fit-content' }}>
               <button
                 onClick={() => setFilter('all')}
+                className="btn btn-ghost"
                 style={{
-                  padding: '10px 20px',
-                  backgroundColor: filter === 'all' ? '#f0f0f0' : '#fff',
-                  border: 'none',
-                  borderRight: '1px solid #e0e0e0',
-                  color: '#000',
-                  fontSize: '14px',
-                  cursor: 'pointer'
+                  borderRadius: '0',
+                  borderRight: '1px solid var(--color-border-strong)',
+                  backgroundColor: filter === 'all' ? 'var(--color-surface)' : 'transparent'
                 }}
               >
                 전체 ({trips.length})
               </button>
               <button
                 onClick={() => setFilter('schengen')}
+                className="btn btn-ghost"
                 style={{
-                  padding: '10px 20px',
-                  backgroundColor: filter === 'schengen' ? '#f0f0f0' : '#fff',
-                  border: 'none',
-                  borderRight: '1px solid #e0e0e0',
-                  color: '#000',
-                  fontSize: '14px',
-                  cursor: 'pointer'
+                  borderRadius: '0',
+                  borderRight: '1px solid var(--color-border-strong)',
+                  backgroundColor: filter === 'schengen' ? 'var(--color-surface)' : 'transparent'
                 }}
               >
                 셰겐 ({trips.filter(t => {
@@ -193,13 +166,10 @@ export default function TripsPage() {
               </button>
               <button
                 onClick={() => setFilter('current')}
+                className="btn btn-ghost"
                 style={{
-                  padding: '10px 20px',
-                  backgroundColor: filter === 'current' ? '#f0f0f0' : '#fff',
-                  border: 'none',
-                  color: '#000',
-                  fontSize: '14px',
-                  cursor: 'pointer'
+                  borderRadius: '0',
+                  backgroundColor: filter === 'current' ? 'var(--color-surface)' : 'transparent'
                 }}
               >
                 현재 체류 중 ({trips.filter(t => !t.exitDate).length})
@@ -209,42 +179,31 @@ export default function TripsPage() {
 
           {/* Content */}
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-              <p style={{ fontSize: '14px', color: '#666' }}>여행 기록을 불러오는 중...</p>
+            <div className="text-center" style={{ padding: 'var(--space-16) var(--space-5)' }}>
+              <div className="loading">여행 기록을 불러오는 중...</div>
             </div>
           ) : filteredTrips.length === 0 ? (
-            <div style={{ border: '1px solid #e0e0e0', padding: '60px 40px', textAlign: 'center' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '10px' }}>
+            <div className="card text-center" style={{ padding: 'var(--space-16) var(--space-10)' }}>
+              <h3 className="mb-2">
                 {filter === 'all' ? '여행 기록이 없습니다' :
                  filter === 'schengen' ? '셰겐 지역 여행 기록이 없습니다' :
                  '현재 체류 중인 국가가 없습니다'}
               </h3>
-              <p style={{ fontSize: '14px', color: '#666', marginBottom: '25px', lineHeight: '1.5' }}>
+              <p className="text-small text-secondary mb-6">
                 {filter === 'all' ? '첫 번째 여행을 추가하여 비자 추적을 시작하세요' :
                  filter === 'schengen' ? '셰겐 지역 여행을 추가하면 90/180일 규칙을 자동으로 계산합니다' :
                  '현재 체류 중인 여행 기록이 없습니다'}
               </p>
               <button 
                 onClick={handleAddTrip}
-                style={{
-                  padding: '12px 30px',
-                  backgroundColor: '#000',
-                  color: '#fff',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
+                className="btn btn-primary"
               >
                 {filter === 'all' ? '첫 번째 여행 추가하기' : '여행 추가하기'}
               </button>
             </div>
           ) : (
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-              gap: '20px'
-            }}>
-              <Suspense fallback={<div style={{ padding: '20px', fontSize: '14px', color: '#666' }}>Loading trips...</div>}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Suspense fallback={<div className="loading">Loading trips...</div>}>
                 {filteredTrips.map(trip => (
                   <TripCard
                     key={trip.id}
@@ -261,7 +220,18 @@ export default function TripsPage() {
 
       {/* Trip Form Modal */}
       {showForm && (
-        <Suspense fallback={<div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', padding: '20px', backgroundColor: '#fff', border: '1px solid #e0e0e0' }}>Loading form...</div>}>
+        <Suspense fallback={
+          <div style={{ 
+            position: 'fixed', 
+            top: '50%', 
+            left: '50%', 
+            transform: 'translate(-50%, -50%)' 
+          }}>
+            <div className="card">
+              <div className="loading">Loading form...</div>
+            </div>
+          </div>
+        }>
           <TripForm
             trip={editingTrip || undefined}
             onSuccess={handleFormSuccess}

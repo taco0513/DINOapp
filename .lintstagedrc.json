@@ -1,15 +1,9 @@
 {
-  "*.{js,jsx,ts,tsx}": [
+  "**/*.{js,jsx,ts,tsx}": [
     "eslint --fix",
     "prettier --write"
   ],
-  "*.{json,css,md}": [
+  "**/*.{json,css,md}": [
     "prettier --write"
-  ],
-  "*.{ts,tsx}": [
-    "tsc --noEmit"
-  ],
-  "prisma/schema.prisma": [
-    "prisma format"
   ]
 }

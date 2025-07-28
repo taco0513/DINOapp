@@ -56,105 +56,81 @@ export default function SchengenPage() {
 
   if (status === 'loading' || !session) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>{t('common.loading')}</div>
-        </div>
+      <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+        <div className="loading">{t('common.loading')}</div>
       </main>
     )
   }
 
   return (
-    <main style={{
-      minHeight: '100vh',
-      padding: '40px 20px',
-      backgroundColor: '#ffffff',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <main style={{ minHeight: '100vh' }}>
+      <div className="container" style={{ paddingTop: 'var(--space-10)', paddingBottom: 'var(--space-10)' }}>
         {/* Navigation */}
-        <nav style={{ marginBottom: '40px', paddingBottom: '20px', borderBottom: '1px solid #e0e0e0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Link href="/dashboard" style={{ fontSize: '20px', fontWeight: 'bold', color: '#000', textDecoration: 'none' }}>
-              DINO
-            </Link>
-            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-              <Link href="/dashboard" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>{t('nav.dashboard')}</Link>
-              <Link href="/trips" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>{t('nav.trips')}</Link>
-              <span style={{ color: '#000', fontSize: '14px', fontWeight: '500' }}>{t('nav.schengen')}</span>
-              <Link href="/calendar" style={{ color: '#666', textDecoration: 'none', fontSize: '14px' }}>{t('nav.calendar')}</Link>
-            </div>
-          </div>
+        <nav className="nav mb-8">
+          <Link href="/dashboard" className="nav-brand">
+            DINO
+          </Link>
+          <ul className="nav-menu">
+            <li><Link href="/dashboard" className="nav-link">{t('nav.dashboard')}</Link></li>
+            <li><Link href="/trips" className="nav-link">{t('nav.trips')}</Link></li>
+            <li><span className="nav-link active">{t('nav.schengen')}</span></li>
+            <li><Link href="/calendar" className="nav-link">{t('nav.calendar')}</Link></li>
+          </ul>
         </nav>
 
         {/* Header */}
-        <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+        <header className="mb-10">
+          <h1 className="mb-2">
             {t('schengen.title')}
           </h1>
-          <p style={{ fontSize: '16px', color: '#666' }}>
+          <p className="text-secondary">
             {t('schengen.description')}
           </p>
-        </div>
+        </header>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>데이터를 불러오는 중...</div>
+          <div className="text-center" style={{ padding: 'var(--space-20) 0' }}>
+            <div className="loading">데이터를 불러오는 중...</div>
           </div>
         ) : hasTrips ? (
-          <div style={{ display: 'grid', gap: '40px' }}>
+          <div className="grid gap-10">
             {/* Schengen Status Card */}
-            <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>
+            <div className="card">
+              <h3 className="card-title mb-5">
                 현재 셰겐 상태
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                <div style={{ border: '1px solid #e0e0e0', padding: '20px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="stat">
+                  <div className="stat-value">
                     {schengenData ? `${schengenData.status.usedDays} / 90` : '0 / 90'}
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>사용된 일수</div>
+                  <div className="stat-label">사용된 일수</div>
                 </div>
-                <div style={{ border: '1px solid #e0e0e0', padding: '20px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+                <div className="stat">
+                  <div className="stat-value">
                     {schengenData ? schengenData.status.remainingDays : '90'}
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>남은 일수</div>
+                  <div className="stat-label">남은 일수</div>
                 </div>
-                <div style={{ border: '1px solid #e0e0e0', padding: '20px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+                <div className="stat">
+                  <div className="stat-value">
                     {schengenData ? schengenData.status.nextResetDate : '---'}
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>다음 재설정</div>
+                  <div className="stat-label">다음 재설정</div>
                 </div>
               </div>
               
               {/* Compliance Status and Warnings */}
               {schengenData && (
-                <div style={{ marginTop: '20px' }}>
-                  <div style={{
-                    padding: '15px',
-                    border: `2px solid ${schengenData.status.isCompliant ? '#22c55e' : '#ef4444'}`,
-                    backgroundColor: schengenData.status.isCompliant ? '#f0fdf4' : '#fef2f2',
-                    color: schengenData.status.isCompliant ? '#15803d' : '#dc2626',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    textAlign: 'center'
-                  }}>
+                <div className="mt-5">
+                  <div className={`alert ${schengenData.status.isCompliant ? 'alert-success' : 'alert-error'} text-center font-semibold`}>
                     {schengenData.status.isCompliant ? '✅ 셰겐 규정 준수' : '⚠️ 셰겐 규정 위반'}
                   </div>
                   
                   {schengenData.warnings && schengenData.warnings.length > 0 && (
-                    <div style={{ marginTop: '15px' }}>
+                    <div className="mt-4">
                       {schengenData.warnings.map((warning: string, index: number) => (
-                        <div key={index} style={{
-                          padding: '10px',
-                          backgroundColor: '#fff3cd',
-                          border: '1px solid #ffeaa7',
-                          color: '#856404',
-                          fontSize: '14px',
-                          marginBottom: '5px'
-                        }}>
+                        <div key={index} className="alert alert-warning mb-2">
                           {warning}
                         </div>
                       ))}
@@ -165,95 +141,72 @@ export default function SchengenPage() {
             </div>
 
             {/* Usage Chart */}
-            <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>
+            <div className="card">
+              <h3 className="card-title mb-5">
                 180일 사용 현황
               </h3>
               <div style={{ 
                 height: '200px', 
-                border: '1px solid #e0e0e0', 
+                border: '1px solid var(--color-border)', 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                color: '#666',
-                fontSize: '14px'
+                backgroundColor: 'var(--color-surface)'
               }}>
-                [차트 영역 - 180일간 셰겐 사용 현황]
+                <span className="text-secondary text-small">[차트 영역 - 180일간 셰겐 사용 현황]</span>
               </div>
             </div>
 
             {/* Future Trip Planner */}
-            <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>
+            <div className="card">
+              <h3 className="card-title mb-5">
                 미래 여행 계획
               </h3>
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: '#666' }}>
+              <div className="form-group">
+                <label className="form-label">
                   계획된 여행 날짜
                 </label>
                 <input 
                   type="date" 
-                  style={{ 
-                    width: '200px', 
-                    padding: '10px', 
-                    border: '1px solid #e0e0e0', 
-                    fontSize: '14px' 
-                  }} 
+                  className="form-input"
+                  style={{ width: '200px' }}
                 />
               </div>
-              <div style={{ 
-                border: '1px solid #e0e0e0', 
-                padding: '20px', 
-                backgroundColor: '#f9f9f9',
-                fontSize: '14px',
-                color: '#666'
-              }}>
-                여행 날짜를 선택하면 셰겐 규칙 준수 여부를 확인할 수 있습니다
+              <div className="alert" style={{ backgroundColor: 'var(--color-surface)' }}>
+                <p className="text-small text-secondary">
+                  여행 날짜를 선택하면 셰겐 규칙 준수 여부를 확인할 수 있습니다
+                </p>
               </div>
             </div>
           </div>
         ) : (
-          <div style={{ border: '1px solid #e0e0e0', padding: '60px', textAlign: 'center' }}>
-            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🇪🇺</div>
-            <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>
+          <div className="card text-center" style={{ padding: 'var(--space-16)' }}>
+            <div style={{ fontSize: '48px', marginBottom: 'var(--space-5)' }}>🇪🇺</div>
+            <h3 className="mb-2">
               셰겐 계산기
             </h3>
-            <p style={{ fontSize: '16px', color: '#666', marginBottom: '30px' }}>
+            <p className="text-secondary mb-8">
               여행 기록을 추가하면 자동으로 셰겐 지역 체류 일수가 계산됩니다
             </p>
             <Link 
               href="/trips"
-              style={{
-                display: 'inline-block',
-                padding: '12px 30px',
-                backgroundColor: '#000',
-                color: '#fff',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: '500',
-                marginBottom: '40px'
-              }}
+              className="btn btn-primary mb-10"
             >
               여행 기록 추가하기
             </Link>
             
-            <div style={{ borderTop: '1px solid #e0e0e0', paddingTop: '40px', marginTop: '40px' }}>
-              <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>
+            <div className="divider"></div>
+            
+            <div style={{ paddingTop: 'var(--space-10)' }}>
+              <h4 className="mb-5">
                 📚 셰겐 90/180일 규칙
               </h4>
-              <div style={{ 
-                textAlign: 'left', 
-                maxWidth: '600px', 
-                margin: '0 auto', 
-                fontSize: '14px', 
-                lineHeight: '1.6',
-                color: '#666'
-              }}>
-                <p style={{ marginBottom: '10px' }}>• 셰겐 지역 내에서 180일 중 최대 90일까지만 체류할 수 있습니다</p>
-                <p style={{ marginBottom: '10px' }}>• 이 규칙은 롤링 방식으로 적용됩니다 (고정된 기간이 아님)</p>
-                <p style={{ marginBottom: '10px' }}>• 매일 지난 180일간의 체류 일수를 계산합니다</p>
-                <p style={{ marginBottom: '10px' }}>• 비자 없이 입국하는 관광객에게 적용됩니다</p>
-                <p>• 장기 체류 비자나 거주권이 있으면 규칙이 다를 수 있습니다</p>
+              <div className="text-left" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <p className="text-small text-secondary mb-2">• 셰겐 지역 내에서 180일 중 최대 90일까지만 체류할 수 있습니다</p>
+                <p className="text-small text-secondary mb-2">• 이 규칙은 롤링 방식으로 적용됩니다 (고정된 기간이 아님)</p>
+                <p className="text-small text-secondary mb-2">• 매일 지난 180일간의 체류 일수를 계산합니다</p>
+                <p className="text-small text-secondary mb-2">• 비자 없이 입국하는 관광객에게 적용됩니다</p>
+                <p className="text-small text-secondary">• 장기 체류 비자나 거주권이 있으면 규칙이 다를 수 있습니다</p>
               </div>
             </div>
           </div>

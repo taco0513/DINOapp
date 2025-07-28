@@ -1,8 +1,13 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import '../styles/mobile-touch.css'
 import SessionProvider from '@/components/providers/SessionProvider'
 import MainLayout from '@/components/layout/MainLayout'
 import MonitoringProvider from '@/components/providers/MonitoringProvider'
+import PWAInstallButton from '@/components/pwa/PWAInstallButton'
+// import { OfflineIndicator } from '@/components/pwa/OfflineIndicator'
+import Script from 'next/script'
+import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -129,13 +134,94 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen">
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        {/* Google Analytics */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+              `}
+            </Script>
+          </>
+        )}
+        
+        {/* Preload critical resources */}
+        <link rel="preload" href="/fonts/main.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://accounts.google.com" />
+        <link rel="preconnect" href="https://www.googleapis.com" />
+        <link rel="dns-prefetch" href="//accounts.google.com" />
+        <link rel="dns-prefetch" href="//www.googleapis.com" />
+        
+        {/* Critical CSS should be inlined in production */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .loading-skeleton {
+              background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+              background-size: 200% 100%;
+              animation: loading 1.5s infinite;
+            }
+            @keyframes loading {
+              0% { background-position: 200% 0; }
+              100% { background-position: -200% 0; }
+            }
+          `
+        }} />
+      </head>
+      <body className="min-h-screen safe-area-bottom">
+        {/* Service Worker Registration */}
+        <Script
+          id="sw-registration"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'))
+                })
+              }
+            `
+          }}
+        />
+        
+        {/* Performance monitoring */}
+        <Script
+          id="performance-observer"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('PerformanceObserver' in window) {
+                const observer = new PerformanceObserver((list) => {
+                  list.getEntries().forEach((entry) => {
+                    if (entry.entryType === 'largest-contentful-paint') {
+                      localStorage.setItem('dino-lcp', entry.startTime.toString())
+                    }
+                  })
+                })
+                observer.observe({ entryTypes: ['largest-contentful-paint'] })
+              }
+            `
+          }}
+        />
+
         <MonitoringProvider>
           <SessionProvider>
-            <MainLayout>
-              {children}
-            </MainLayout>
+            <AnalyticsWrapper>
+              <MainLayout>
+                {children}
+                <PWAInstallButton />
+              </MainLayout>
+            </AnalyticsWrapper>
           </SessionProvider>
         </MonitoringProvider>
       </body>

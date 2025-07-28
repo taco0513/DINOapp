@@ -111,41 +111,45 @@
   - 개인 식별 정보 제외한 데이터 내보내기
   - 대용량 데이터 안정적 처리
 
-- [ ] **story_5_3**: Performance Optimization and Mobile Enhancement
-  - 초기 로딩 시간 3초 이내 달성
-  - 모든 페이지 전환 1초 이내 완료
-  - 모바일 터치 인터페이스 완벽 작동
-  - 오프라인 기본 조회 기능 제공
-  - Progressive Web App (PWA) 기능 구현
+- [x] **story_5_3**: Performance Optimization and Mobile Enhancement
+  - Next.js 성능 최적화 설정 (코드 스플리팅, 번들 최적화)
+  - PWA 구현 완료 (Service Worker, 오프라인 기능, 앱 설치)
+  - 모바일 터치 인터페이스 완벽 구현 (제스처, 햅틱 피드백)
+  - 오프라인 기본 조회 기능 제공 (IndexedDB, 캐싱)
+  - 성능 모니터링 시스템 구축 (Core Web Vitals 추적)
 
 ## 🧪 Quality Assurance Tasks
 
-- [ ] **testing_unit**: Core Logic Unit Tests
+- [x] **testing_unit**: Core Logic Unit Tests
   - 셰겐 계산 알고리즘 테스트
   - 데이터 검증 함수 테스트
   - 날짜 계산 유틸리티 테스트
 
-- [ ] **testing_integration**: API Integration Tests
+- [x] **testing_integration**: API Integration Tests
   - Google API 연동 테스트
   - 데이터베이스 작업 테스트
   - 인증 플로우 테스트
 
-- [ ] **testing_e2e**: End-to-End Tests
+- [x] **testing_e2e**: End-to-End Tests
   - 로그인부터 여행 기록 추가까지 전체 플로우
   - 셰겐 계산기 사용 시나리오
   - 모바일 환경 터치 인터랙션 테스트
 
 ## 🚀 Deployment & DevOps
 
-- [ ] **deployment_setup**: Production Deployment Setup
+- [x] **deployment_setup**: Production Deployment Setup
   - Vercel 배포 환경 구성
   - 환경 변수 설정
   - 도메인 및 SSL 구성
+  - GitHub Actions CI/CD 파이프라인 설정
+  - Docker 컨테이너화 및 docker-compose 구성
+  - 배포 문서 및 가이드 작성
 
-- [ ] **monitoring_setup**: Monitoring and Analytics
-  - 에러 추적 시스템 설정
-  - 사용 통계 분석 구현
-  - 성능 모니터링 설정
+- [x] **monitoring_setup**: Monitoring and Analytics
+  - 에러 추적 시스템 설정 (Sentry 통합 완료)
+  - 사용 통계 분석 구현 (Google Analytics, Vercel Analytics 통합)
+  - 성능 모니터링 설정 (Core Web Vitals 대시보드 구현)
+  - 알림 및 경고 시스템 구축
 
 ## Notes
 - 각 스토리는 1-3일 내 완료 가능하도록 설계

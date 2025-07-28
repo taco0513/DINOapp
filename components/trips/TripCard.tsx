@@ -54,52 +54,38 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
   }
 
   return (
-    <div style={{ border: '2px solid #333', padding: '20px', marginBottom: '15px', backgroundColor: 'white' }}>
+    <div className="card">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '5px', margin: 0 }}>
+          <h3 className="card-title flex items-center">
             {country?.flag || '🌍'} {trip.country}
             {country?.isSchengen && (
-              <span style={{ 
-                marginLeft: '8px', 
-                padding: '2px 6px', 
-                backgroundColor: '#e0e0e0', 
-                fontSize: '10px',
-                border: '1px solid #666'
-              }}>
+              <span className="badge ml-2">
                 셰겐
               </span>
             )}
           </h3>
-          <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+          <p className="card-description">
             {trip.visaType}
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '5px' }}>
+        <div className="flex gap-2">
           <button
             onClick={() => onEdit(trip)}
-            style={{
-              padding: '6px',
-              backgroundColor: 'white',
-              border: '1px solid #666',
-              cursor: 'pointer',
-              fontSize: '12px'
-            }}
+            className="btn btn-sm btn-ghost"
           >
             수정
           </button>
           <button
             onClick={handleDelete}
             disabled={loading}
+            className="btn btn-sm btn-ghost"
             style={{
-              padding: '6px',
-              backgroundColor: showDeleteConfirm ? '#ffe6e6' : 'white',
-              border: '1px solid #cc0000',
-              color: '#cc0000',
-              cursor: 'pointer',
-              fontSize: '12px'
+              borderColor: 'var(--color-error)',
+              color: 'var(--color-error)',
+              backgroundColor: showDeleteConfirm ? 'rgba(239, 68, 68, 0.05)' : 'transparent'
             }}
           >
             {loading ? '...' : '삭제'}
@@ -108,22 +94,16 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
       </div>
 
       {/* Dates */}
-      <div style={{ marginBottom: '15px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '14px' }}>
-          <span style={{ color: '#666' }}>입국:</span>
-          <span style={{ fontWeight: 'bold' }}>{formatDate(entryDate)}</span>
+      <div className="mb-4">
+        <div className="flex justify-between mb-2">
+          <span className="text-small text-secondary">입국:</span>
+          <span className="text-small font-semibold">{formatDate(entryDate)}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '14px' }}>
-          <span style={{ color: '#666' }}>출국:</span>
-          <span style={{ fontWeight: 'bold' }}>
+        <div className="flex justify-between">
+          <span className="text-small text-secondary">출국:</span>
+          <span className="text-small font-semibold">
             {exitDate ? formatDate(exitDate) : (
-              <span style={{ 
-                padding: '2px 6px', 
-                backgroundColor: '#e6ffe6', 
-                color: '#006600',
-                fontSize: '10px',
-                border: '1px solid #666'
-              }}>
+              <span className="badge badge-success">
                 현재 체류 중
               </span>
             )}
@@ -132,40 +112,34 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
       </div>
 
       {/* Duration */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        padding: '10px', 
-        backgroundColor: '#f9f9f9',
-        border: '1px solid #ccc',
-        marginBottom: '15px'
-      }}>
-        <span style={{ fontSize: '14px', color: '#666' }}>체류 일수:</span>
-        <div style={{ textAlign: 'right' }}>
-          <span style={{ fontWeight: 'bold', fontSize: '18px', color: '#000' }}>
-            {days}일
-          </span>
-          <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
-            / {trip.maxDays}일
-          </span>
+      <div className="stat mb-4">
+        <div className="flex justify-between items-center">
+          <span className="text-small text-secondary">체류 일수:</span>
+          <div className="text-right">
+            <span className="font-bold text-lg">
+              {days}일
+            </span>
+            <span className="text-small text-tertiary ml-2">
+              / {trip.maxDays}일
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Progress Bar - Wireframe Style */}
-      <div style={{ marginBottom: '15px' }}>
+      {/* Progress Bar */}
+      <div className="mb-4">
         <div style={{ 
           width: '100%', 
           height: '20px', 
-          border: '1px solid #666',
-          backgroundColor: '#f0f0f0',
+          border: '1px solid var(--color-border-strong)',
+          backgroundColor: 'var(--color-surface)',
           position: 'relative'
         }}>
           <div
             style={{
               height: '100%',
               width: `${Math.min((days / trip.maxDays) * 100, 100)}%`,
-              backgroundColor: days > trip.maxDays ? '#cc0000' : days > trip.maxDays * 0.8 ? '#ffcc00' : '#006600'
+              backgroundColor: days > trip.maxDays ? 'var(--color-error)' : days > trip.maxDays * 0.8 ? 'var(--color-warning)' : 'var(--color-success)'
             }}
           />
           <span style={{
@@ -173,60 +147,46 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            fontSize: '10px',
-            fontWeight: 'bold'
+            fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--font-semibold)'
           }}>
             {Math.round((days / trip.maxDays) * 100)}%
           </span>
         </div>
         {days > trip.maxDays && (
-          <p style={{ fontSize: '12px', color: '#cc0000', margin: '5px 0 0 0' }}>⚠️ 최대 체류 일수 초과</p>
+          <p className="text-small mt-2" style={{ color: 'var(--color-error)' }}>⚠️ 최대 체류 일수 초과</p>
         )}
       </div>
 
       {/* Notes */}
       {trip.notes && (
-        <div style={{ paddingTop: '15px', borderTop: '1px solid #ccc' }}>
-          <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>{trip.notes}</p>
+        <div style={{ paddingTop: 'var(--space-4)', borderTop: '1px solid var(--color-border)' }}>
+          <p className="text-small text-secondary">{trip.notes}</p>
         </div>
       )}
 
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
-        <div style={{ 
-          marginTop: '15px', 
-          padding: '10px', 
-          backgroundColor: '#ffe6e6', 
-          border: '1px solid #cc0000'
-        }}>
-          <p style={{ fontSize: '14px', color: '#cc0000', marginBottom: '10px', margin: '0 0 10px 0' }}>
+        <div className="alert alert-error mt-4">
+          <p className="text-small mb-3">
             정말 이 여행 기록을 삭제하시겠습니까?
           </p>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="flex gap-2">
             <button
               onClick={handleDelete}
               disabled={loading}
+              className="btn btn-sm"
               style={{
-                padding: '6px 12px',
-                backgroundColor: '#cc0000',
-                color: 'white',
-                border: '1px solid #cc0000',
-                cursor: 'pointer',
-                fontSize: '12px'
+                backgroundColor: 'var(--color-error)',
+                borderColor: 'var(--color-error)',
+                color: 'white'
               }}
             >
               {loading ? '삭제 중...' : '삭제'}
             </button>
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              style={{
-                padding: '6px 12px',
-                backgroundColor: 'white',
-                color: '#666',
-                border: '1px solid #666',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}
+              className="btn btn-sm"
             >
               취소
             </button>

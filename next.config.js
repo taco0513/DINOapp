@@ -12,15 +12,23 @@ if (process.env.NODE_ENV === 'development') {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // experimental: {
-  //   scrollRestoration: true
-  // },
+  experimental: {
+    // optimizeCss: true, // Temporarily disabled due to critters error
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-checkbox', '@radix-ui/react-progress'],
+    scrollRestoration: true,
+    webVitalsAttribution: ['CLS', 'LCP']
+  },
   // output: 'standalone', // Temporarily disabled to fix SSR issues
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // TODO: Fix lint errors and enable
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // TODO: Fix type errors and enable
+  },
+  // Performance optimizations
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
     domains: ['lh3.googleusercontent.com'],
@@ -96,12 +104,39 @@ const nextConfig = {
       }
     }
 
-    // Fix for webpack "Cannot read properties of undefined (reading 'call')"
+    // Performance optimizations
     if (!isServer) {
+      // Code splitting optimization
       config.optimization = {
         ...config.optimization,
-        splitChunks: false
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /node_modules/,
+              priority: 20
+            },
+            common: {
+              minChunks: 2,
+              chunks: 'all',
+              name: 'common',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true
+            }
+          }
+        }
       }
+    }
+
+    // Bundle size optimization
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.usedExports = true
+      config.optimization.sideEffects = false
     }
 
     return config

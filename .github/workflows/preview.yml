@@ -1,0 +1,111 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run type check
+        run: npm run type-check
+      
+      - name: Run linter
+        run: npm run lint
+      
+      - name: Run tests
+        run: npm test
+        env:
+          DATABASE_URL: "file:./test.db"
+          NEXTAUTH_SECRET: "test-secret"
+          NEXTAUTH_URL: "http://localhost:3000"
+      
+      - name: Comment test results
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const message = `### Test Results
+            
+            | Check | Status |
+            |-------|--------|
+            | Type Check | ${{ steps.type-check.outcome == 'success' && '✅' || '❌' }} |
+            | Linter | ${{ steps.lint.outcome == 'success' && '✅' || '❌' }} |
+            | Tests | ${{ steps.tests.outcome == 'success' && '✅' || '❌' }} |
+            
+            View the full logs for more details.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+
+  deploy-preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        id: deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-comment: true
+          github-comment-override: true
+      
+      - name: Comment preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const previewUrl = '${{ steps.deploy.outputs.preview-url }}';
+            const message = `### 🚀 Preview Deployment
+            
+            Your preview deployment is ready!
+            
+            🔗 **Preview URL**: ${previewUrl}
+            
+            #### Deployment Details
+            - **Commit**: \`${{ github.event.pull_request.head.sha.substring(0, 7) }}\`
+            - **Branch**: \`${{ github.head_ref }}\`
+            - **Status**: ✅ Deployed
+            
+            Please test the following:
+            - [ ] Google OAuth login
+            - [ ] Travel record CRUD operations
+            - [ ] Schengen calculator
+            - [ ] Mobile responsiveness
+            - [ ] Performance metrics`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });

@@ -40,134 +40,88 @@ export default function AnalyticsPage() {
 
   if (status === 'loading' || !session) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>로딩 중...</div>
-        </div>
+      <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+        <div className="loading">로딩 중...</div>
       </main>
     )
   }
 
   return (
-    <main style={{ 
-      minHeight: '100vh', 
-      padding: '20px',
-      backgroundColor: '#ffffff',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <main style={{ minHeight: '100vh' }}>
+      <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
         {/* Header */}
-        <div style={{ 
-          marginBottom: '40px',
-          paddingBottom: '20px',
-          borderBottom: '1px solid #e0e0e0'
-        }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px', color: '#000' }}>
-            통계
-          </h1>
-          <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
-            여행 패턴과 체류 일수를 분석해보세요
-          </p>
-        </div>
+        <header className="nav mb-8">
+          <div>
+            <h1 className="mb-2">
+              통계
+            </h1>
+            <p className="text-small text-secondary">
+              여행 패턴과 체류 일수를 분석해보세요
+            </p>
+          </div>
+        </header>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <p style={{ fontSize: '14px', color: '#666' }}>통계를 불러오는 중...</p>
+          <div className="text-center" style={{ padding: 'var(--space-16) var(--space-5)' }}>
+            <div className="loading">통계를 불러오는 중...</div>
           </div>
         ) : statsData ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+          <div className="flex flex-col gap-10">
             {/* Overview Cards */}
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '20px'
-            }}>
-              <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>총 방문 국가</p>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>{statsData.overview.totalCountries}</p>
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="stat">
+                <div className="stat-label">총 방문 국가</div>
+                <div className="stat-value">{statsData.overview.totalCountries}</div>
               </div>
 
-              <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>총 여행 일수</p>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>{statsData.overview.totalDays}일</p>
-                  </div>
-                </div>
+              <div className="stat">
+                <div className="stat-label">총 여행 일수</div>
+                <div className="stat-value">{statsData.overview.totalDays}일</div>
               </div>
 
-              <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>셰겐 사용 일수</p>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>{statsData.overview.schengenDays}/90일</p>
-                  </div>
-                </div>
+              <div className="stat">
+                <div className="stat-label">셰겐 사용 일수</div>
+                <div className="stat-value">{statsData.overview.schengenDays}/90일</div>
               </div>
 
-              <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>총 여행 횟수</p>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>{statsData.overview.totalVisits}</p>
-                  </div>
-                </div>
+              <div className="stat">
+                <div className="stat-label">총 여행 횟수</div>
+                <div className="stat-value">{statsData.overview.totalVisits}</div>
               </div>
 
-              <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>올해 방문 국가</p>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>{statsData.currentYear.countries}</p>
-                  </div>
-                </div>
+              <div className="stat">
+                <div className="stat-label">올해 방문 국가</div>
+                <div className="stat-value">{statsData.currentYear.countries}</div>
               </div>
 
-              <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>최근 6개월 활동</p>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>{statsData.recentActivity.visits}회</p>
-                  </div>
-                </div>
+              <div className="stat">
+                <div className="stat-label">최근 6개월 활동</div>
+                <div className="stat-value">{statsData.recentActivity.visits}회</div>
               </div>
             </div>
 
             {/* Most Visited Countries */}
             {statsData.mostVisitedCountries && statsData.mostVisitedCountries.length > 0 && (
-              <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '20px' }}>가장 많이 방문한 국가</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="card">
+                <h3 className="card-title mb-5">가장 많이 방문한 국가</h3>
+                <div className="flex flex-col gap-3">
                   {statsData.mostVisitedCountries.map((item: any, index: number) => {
                     const country = getCountryByName(item.country)
                     return (
-                      <div key={index} style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center',
-                        padding: '12px',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #e9ecef'
+                      <div key={index} className="flex justify-between items-center p-3" style={{ 
+                        backgroundColor: 'var(--color-surface)',
+                        border: '1px solid var(--color-border)'
                       }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="flex items-center gap-3">
                           <span style={{ fontSize: '18px' }}>{country?.flag || '🌍'}</span>
-                          <span style={{ fontWeight: '500', color: '#000' }}>{item.country}</span>
+                          <span className="font-medium">{item.country}</span>
                           {country?.isSchengen && (
-                            <span style={{ 
-                              fontSize: '11px', 
-                              backgroundColor: '#e6f3ff', 
-                              color: '#0066cc', 
-                              padding: '2px 6px'
-                            }}>
+                            <span className="badge">
                               셰겐
                             </span>
                           )}
                         </div>
-                        <span style={{ fontWeight: 'bold', color: '#0066cc' }}>{item.visits}회</span>
+                        <span className="font-bold" style={{ color: 'var(--color-primary)' }}>{item.visits}회</span>
                       </div>
                     )
                   })}
@@ -177,26 +131,26 @@ export default function AnalyticsPage() {
 
             {/* Visa Type Distribution */}
             {statsData.visaTypeDistribution && statsData.visaTypeDistribution.length > 0 && (
-              <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '20px' }}>비자 유형별 분포</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="card">
+                <h3 className="card-title mb-5">비자 유형별 분포</h3>
+                <div className="flex flex-col gap-3">
                   {statsData.visaTypeDistribution.map((item: any, index: number) => (
-                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ color: '#000' }}>{item.type}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div key={index} className="flex justify-between items-center">
+                      <span>{item.type}</span>
+                      <div className="flex items-center gap-3">
                         <div style={{ 
                           width: '100px', 
                           height: '8px', 
-                          backgroundColor: '#f0f0f0',
-                          border: '1px solid #e0e0e0'
+                          backgroundColor: 'var(--color-surface)',
+                          border: '1px solid var(--color-border)'
                         }}>
                           <div style={{ 
                             width: `${(item.count / statsData.overview.totalVisits) * 100}%`,
                             height: '100%',
-                            backgroundColor: '#0066cc'
+                            backgroundColor: 'var(--color-primary)'
                           }} />
                         </div>
-                        <span style={{ fontSize: '14px', color: '#666' }}>{item.count}</span>
+                        <span className="text-small text-secondary">{item.count}</span>
                       </div>
                     </div>
                   ))}
@@ -206,47 +160,38 @@ export default function AnalyticsPage() {
 
             {/* Recent Timeline */}
             {statsData.timeline && statsData.timeline.length > 0 && (
-              <div style={{ border: '1px solid #e0e0e0', padding: '30px' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '20px' }}>최근 여행 기록</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="card">
+                <h3 className="card-title mb-5">최근 여행 기록</h3>
+                <div className="flex flex-col gap-4">
                   {statsData.timeline.map((trip: any, index: number) => {
                     const country = getCountryByName(trip.country)
                     const entryDate = new Date(trip.entryDate)
                     const exitDate = trip.exitDate ? new Date(trip.exitDate) : null
                     
                     return (
-                      <div key={index} style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center',
-                        padding: '16px',
-                        border: '1px solid #e0e0e0'
+                      <div key={index} className="flex justify-between items-center p-4" style={{ 
+                        border: '1px solid var(--color-border)'
                       }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div className="flex items-center gap-4">
                           <span style={{ fontSize: '20px' }}>{country?.flag || '🌍'}</span>
                           <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                              <h4 style={{ fontWeight: '500', color: '#000' }}>{trip.country}</h4>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-medium">{trip.country}</h4>
                               {country?.isSchengen && (
-                                <span style={{ 
-                                  fontSize: '11px', 
-                                  backgroundColor: '#e6f3ff', 
-                                  color: '#0066cc', 
-                                  padding: '2px 6px'
-                                }}>
+                                <span className="badge">
                                   셰겐
                                 </span>
                               )}
                             </div>
-                            <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>{trip.visaType}</p>
-                            <p style={{ fontSize: '12px', color: '#888' }}>
+                            <p className="text-small text-secondary mb-1">{trip.visaType}</p>
+                            <p className="text-small text-tertiary">
                               {entryDate.toLocaleDateString('ko-KR')} 
                               {exitDate ? ` - ${exitDate.toLocaleDateString('ko-KR')}` : ' (현재 체류 중)'}
                             </p>
                           </div>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <p style={{ fontWeight: 'bold', fontSize: '18px', color: '#000' }}>
+                        <div className="text-right">
+                          <p className="font-bold text-lg">
                             {trip.days ? `${trip.days}일` : '-'}
                           </p>
                         </div>
@@ -258,21 +203,14 @@ export default function AnalyticsPage() {
             )}
           </div>
         ) : (
-          <div style={{ border: '1px solid #e0e0e0', padding: '60px 40px', textAlign: 'center' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '10px' }}>통계 데이터가 없습니다</h3>
-            <p style={{ fontSize: '14px', color: '#666', marginBottom: '25px', lineHeight: '1.5' }}>
+          <div className="card text-center" style={{ padding: 'var(--space-16) var(--space-10)' }}>
+            <h3 className="mb-2">통계 데이터가 없습니다</h3>
+            <p className="text-small text-secondary mb-6">
               여행 기록을 추가하면 상세한 통계를 확인할 수 있습니다
             </p>
             <button 
               onClick={() => router.push('/trips')}
-              style={{
-                padding: '12px 30px',
-                backgroundColor: '#000',
-                color: '#fff',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="btn btn-primary"
             >
               여행 기록 추가하기
             </button>

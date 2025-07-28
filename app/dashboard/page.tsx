@@ -64,21 +64,9 @@ export default function DashboardPage() {
 
   if (status === 'loading') {
     return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f0f0f0'
-      }}>
-        <div style={{
-          padding: '20px',
-          border: '2px solid #ccc',
-          backgroundColor: 'white'
-        }}>
-          {t('common.loading')}
-        </div>
-      </div>
+      <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+        <div className="loading">{t('common.loading')}</div>
+      </main>
     )
   }
 
@@ -87,291 +75,152 @@ export default function DashboardPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#f0f0f0',
-      padding: '20px'
-    }}>
-      {/* 진짜 와이어프레임 컨테이너 */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        backgroundColor: 'white',
-        border: '3px solid #333',
-        padding: '20px'
-      }}>
+    <main style={{ minHeight: '100vh' }}>
+      <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
         
-        {/* 헤더 박스 */}
-        <div style={{
-          border: '2px solid #666',
-          padding: '15px',
-          marginBottom: '20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          backgroundColor: '#f9f9f9'
-        }}>
+        {/* Header */}
+        <header className="nav mb-8">
           <div>
-            <h1 style={{ margin: '0 0 5px 0', fontSize: '24px', fontWeight: 'bold' }}>
+            <h1 className="nav-brand">
               {t('nav.dashboard')} - {t('app.title')}
             </h1>
-            <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
+            <p className="text-small text-secondary m-0">
               {t('dashboard.welcome', { name: session.user?.name || '' })}
             </p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <nav className="nav-menu">
             <LanguageSelector />
             <NotificationIcon userId={session.user?.email || ''} />
             <button 
               onClick={handleLogout}
-              style={{
-                padding: '8px 16px',
-                border: '2px solid #333',
-                backgroundColor: 'white',
-                cursor: 'pointer'
-              }}
+              className="btn btn-sm btn-ghost"
             >
               {t('dashboard.logout')}
             </button>
-          </div>
-        </div>
+          </nav>
+        </header>
 
-        {/* 메인 그리드 - 와이어프레임 박스들 */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '20px',
-          marginBottom: '20px'
-        }}>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           
-          {/* 여행 기록 박스 */}
-          <div style={{
-            border: '2px solid #666',
-            padding: '20px',
-            backgroundColor: 'white'
-          }}>
-            <div style={{
-              borderBottom: '1px solid #ccc',
-              paddingBottom: '10px',
-              marginBottom: '15px'
-            }}>
-              <h3 style={{ margin: '0', fontSize: '18px' }}>{t('nav.trips')}</h3>
+          {/* Travel Records */}
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">{t('nav.trips')}</h3>
             </div>
             
-            <div style={{
-              border: '1px dashed #999',
-              padding: '20px',
-              textAlign: 'center',
-              marginBottom: '15px',
-              backgroundColor: '#fafafa'
-            }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
+            <div className="stat mb-4">
+              <div className="stat-value">
                 {dataLoading ? '...' : statsData ? statsData.overview.totalVisits : '0'}
               </div>
-              <div style={{ fontSize: '12px', color: '#666' }}>{t('common.total')} {t('nav.trips')}</div>
+              <div className="stat-label">{t('common.total')} {t('nav.trips')}</div>
             </div>
             
-            <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
+            <p className="text-small text-secondary mb-4">
               {t('trips.description')}
             </p>
             
             <button 
               onClick={() => router.push('/trips')}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: '2px solid #333',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="btn btn-full"
             >
               {t('trips.add')}
             </button>
           </div>
 
-          {/* 셰겐 계산기 박스 */}
-          <div style={{
-            border: '2px solid #666',
-            padding: '20px',
-            backgroundColor: 'white'
-          }}>
-            <div style={{
-              borderBottom: '1px solid #ccc',
-              paddingBottom: '10px',
-              marginBottom: '15px'
-            }}>
-              <h3 style={{ margin: '0', fontSize: '18px' }}>{t('nav.schengen')}</h3>
+          {/* Schengen Calculator */}
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">{t('nav.schengen')}</h3>
             </div>
             
-            <div style={{
-              border: '1px dashed #999',
-              padding: '20px',
-              textAlign: 'center',
-              marginBottom: '15px',
-              backgroundColor: '#fafafa'
-            }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
+            <div className="stat mb-4">
+              <div className="stat-value">
                 {dataLoading ? '...' : schengenData ? `${schengenData.status.usedDays}/90` : '0/90'}
               </div>
-              <div style={{ fontSize: '12px', color: '#666' }}>{t('schengen.used_days')}/90</div>
+              <div className="stat-label">{t('schengen.used_days')}/90</div>
               {schengenData && (
-                <div style={{
-                  marginTop: '10px',
-                  padding: '5px 10px',
-                  border: '1px solid #ccc',
-                  backgroundColor: schengenData.status.isCompliant ? '#e6ffe6' : '#ffe6e6',
-                  fontSize: '12px'
-                }}>
+                <div className={`badge mt-2 ${schengenData.status.isCompliant ? 'badge-success' : 'badge-error'}`}>
                   {schengenData.status.isCompliant ? t('schengen.compliant') : t('schengen.violation')}
                 </div>
               )}
             </div>
             
-            <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
+            <p className="text-small text-secondary mb-4">
               {t('schengen.description')}
             </p>
             
             <button 
               onClick={() => router.push('/schengen')}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: '2px solid #333',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="btn btn-full"
             >
               {t('nav.schengen')}
             </button>
           </div>
 
-          {/* 통계 박스 */}
-          <div style={{
-            border: '2px solid #666',
-            padding: '20px',
-            backgroundColor: 'white'
-          }}>
-            <div style={{
-              borderBottom: '1px solid #ccc',
-              paddingBottom: '10px',
-              marginBottom: '15px'
-            }}>
-              <h3 style={{ margin: '0', fontSize: '18px' }}>{t('dashboard.stats.view')}</h3>
+          {/* Statistics */}
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">{t('dashboard.stats.view')}</h3>
             </div>
             
-            <div style={{
-              border: '1px dashed #999',
-              padding: '20px',
-              textAlign: 'center',
-              marginBottom: '15px',
-              backgroundColor: '#fafafa'
-            }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '5px' }}>
+            <div className="stat mb-4">
+              <div className="stat-value">
                 {dataLoading ? '...' : statsData ? statsData.overview.totalCountries : '0'}
               </div>
-              <div style={{ fontSize: '12px', color: '#666' }}>{t('dashboard.stats.countries')}</div>
+              <div className="stat-label">{t('dashboard.stats.countries')}</div>
             </div>
             
-            <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
+            <p className="text-small text-secondary mb-4">
               여행 패턴과 체류 일수를 분석해보세요
             </p>
             
             <button 
               onClick={() => router.push('/analytics')}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: '2px solid #333',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="btn btn-full"
             >
-{t('dashboard.stats.view')}
+              {t('dashboard.stats.view')}
             </button>
           </div>
         </div>
 
-        {/* 최근 활동 박스 */}
-        <div style={{
-          border: '2px solid #666',
-          padding: '20px',
-          backgroundColor: 'white'
-        }}>
-          <div style={{
-            borderBottom: '1px solid #ccc',
-            paddingBottom: '10px',
-            marginBottom: '15px'
-          }}>
-            <h3 style={{ margin: '0', fontSize: '18px' }}>{t('dashboard.recent_activity')}</h3>
+        {/* Recent Activity */}
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">{t('dashboard.recent_activity')}</h3>
           </div>
           
           {dataLoading ? (
-            <div style={{
-              border: '1px dashed #999',
-              padding: '40px',
-              textAlign: 'center',
-              color: '#666'
-            }}>
-{t('dashboard.loading_activity')}
+            <div className="text-center" style={{ padding: 'var(--space-10)' }}>
+              <div className="loading">{t('dashboard.loading_activity')}</div>
             </div>
           ) : statsData && statsData.overview.totalVisits > 0 ? (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-              gap: '15px'
-            }}>
-              <div style={{
-                border: '1px solid #ccc',
-                padding: '15px',
-                textAlign: 'center',
-                backgroundColor: '#f9f9f9'
-              }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="stat">
+                <div className="stat-value">
                   {statsData.overview.totalVisits}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>{t('common.total')} {t('nav.trips')}</div>
+                <div className="stat-label">{t('common.total')} {t('nav.trips')}</div>
               </div>
-              <div style={{
-                border: '1px solid #ccc',
-                padding: '15px',
-                textAlign: 'center',
-                backgroundColor: '#f9f9f9'
-              }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+              <div className="stat">
+                <div className="stat-value">
                   {statsData.overview.totalCountries}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>{t('dashboard.stats.countries')}</div>
+                <div className="stat-label">{t('dashboard.stats.countries')}</div>
               </div>
-              <div style={{
-                border: '1px solid #ccc',
-                padding: '15px',
-                textAlign: 'center',
-                backgroundColor: '#f9f9f9'
-              }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+              <div className="stat">
+                <div className="stat-value">
                   {statsData.overview.totalDays}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>{t('common.total')} {t('common.days')}</div>
+                <div className="stat-label">{t('common.total')} {t('common.days')}</div>
               </div>
             </div>
           ) : (
-            <div style={{
-              border: '1px dashed #999',
-              padding: '40px',
-              textAlign: 'center'
-            }}>
-              <p style={{ marginBottom: '20px', color: '#666' }}>{t('dashboard.no_trips')}</p>
+            <div className="text-center" style={{ padding: 'var(--space-10)' }}>
+              <p className="text-secondary mb-6">{t('dashboard.no_trips')}</p>
               <button 
                 onClick={() => router.push('/trips')}
-                style={{
-                  padding: '10px 20px',
-                  border: '2px solid #333',
-                  backgroundColor: 'white',
-                  cursor: 'pointer'
-                }}
+                className="btn btn-primary"
               >
                 {t('dashboard.add_first_trip')}
               </button>
@@ -380,6 +229,6 @@ export default function DashboardPage() {
         </div>
       </div>
       <LanguageTest />
-    </div>
+    </main>
   )
 }

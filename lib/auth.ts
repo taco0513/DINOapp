@@ -127,7 +127,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Enable debug in production temporarily
+  debug: process.env.NODE_ENV === 'development',
 
   // Add cookies configuration for production
   cookies: {

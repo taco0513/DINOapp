@@ -69,6 +69,7 @@ export async function middleware(request: NextRequest) {
       const token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
+        cookieName: '__Secure-next-auth.session-token',
       });
 
       // Checking auth for protected route

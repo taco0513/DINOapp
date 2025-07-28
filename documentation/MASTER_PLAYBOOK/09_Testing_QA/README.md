@@ -33,16 +33,16 @@
  /------------------\
 ```
 
-## Test Types & Coverage
+## 🎯 테스트 유형 및 커버리지
 
-### 1. Unit Tests
-**Coverage Target**: 80%+
+### 1. 단위 테스트 (Unit Tests)
+**커버리지 목표**: 80% 이상
 
-#### Frontend Components
+#### 프론트엔드 컴포넌트
 ```typescript
-// Example: Trip component test
+// 예시: 여행 컴포넌트 테스트
 describe('TripCard', () => {
-  it('should display trip details correctly', () => {
+  it('여행 정보를 올바르게 표시해야 함', () => {
     const trip = mockTrip();
     render(<TripCard trip={trip} />);
     expect(screen.getByText(trip.country)).toBeInTheDocument();
@@ -50,11 +50,11 @@ describe('TripCard', () => {
 });
 ```
 
-#### Business Logic
+#### 비즈니스 로직
 ```typescript
-// Example: Schengen calculation test
+// 예시: 솅겐 계산기 테스트
 describe('SchengenCalculator', () => {
-  it('should calculate days correctly', () => {
+  it('일수를 정확히 계산해야 함', () => {
     const stays = [
       { startDate: '2024-01-01', endDate: '2024-01-10' }
     ];
@@ -63,14 +63,14 @@ describe('SchengenCalculator', () => {
 });
 ```
 
-### 2. Integration Tests
-**Coverage Target**: 70%+
+### 2. 통합 테스트 (Integration Tests)
+**커버리지 목표**: 70% 이상
 
-#### API Integration
+#### API 통합
 ```typescript
-// Example: API route test
+// 예시: API 라우트 테스트
 describe('POST /api/trips', () => {
-  it('should create a new trip', async () => {
+  it('새로운 여행을 생성해야 함', async () => {
     const response = await request(app)
       .post('/api/trips')
       .send(validTripData)
@@ -81,11 +81,11 @@ describe('POST /api/trips', () => {
 });
 ```
 
-#### Database Integration
+#### 데이터베이스 통합
 ```typescript
-// Example: Prisma integration test
+// 예시: Prisma 통합 테스트
 describe('TripRepository', () => {
-  it('should persist trip data', async () => {
+  it('여행 데이터를 저장해야 함', async () => {
     const trip = await createTrip(tripData);
     const found = await findTripById(trip.id);
     expect(found).toEqual(trip);
@@ -93,33 +93,33 @@ describe('TripRepository', () => {
 });
 ```
 
-### 3. End-to-End Tests
-**Coverage Target**: Critical user journeys
+### 3. 종단간 테스트 (E2E Tests)
+**커버리지 목표**: 핵심 사용자 여정
 
-#### User Workflows
+#### 사용자 워크플로우
 ```typescript
-// Example: E2E test with Playwright
-test('user can add and view trips', async ({ page }) => {
+// 예시: Playwright E2E 테스트
+test('사용자가 여행을 추가하고 조회할 수 있음', async ({ page }) => {
   await page.goto('/dashboard');
-  await page.click('text=Add Trip');
-  await page.fill('[name=country]', 'France');
+  await page.click('text=여행 추가');
+  await page.fill('[name=country]', '프랑스');
   await page.fill('[name=startDate]', '2024-01-01');
   await page.fill('[name=endDate]', '2024-01-05');
-  await page.click('text=Save');
+  await page.click('text=저장');
   
-  await expect(page.locator('text=France')).toBeVisible();
+  await expect(page.locator('text=프랑스')).toBeVisible();
 });
 ```
 
-### 4. Performance Tests
-**Target Metrics**:
-- Page Load: < 3s
-- API Response: < 200ms
-- Time to Interactive: < 5s
+### 4. 성능 테스트 (Performance Tests)
+**목표 지표**:
+- 페이지 로드: < 3초
+- API 응답: < 200ms
+- 상호작용 시간: < 5초
 
 ```typescript
-// Example: Performance test
-test('dashboard loads within performance budget', async ({ page }) => {
+// 예시: 성능 테스트
+test('대시보드가 성능 예산 내에서 로드됨', async ({ page }) => {
   const metrics = await page.evaluate(() => ({
     lcp: performance.getEntriesByType('largest-contentful-paint')[0],
     fcp: performance.getEntriesByName('first-contentful-paint')[0]
@@ -129,17 +129,17 @@ test('dashboard loads within performance budget', async ({ page }) => {
 });
 ```
 
-### 5. Security Tests
-**Focus Areas**:
-- Authentication/Authorization
-- Input validation
-- SQL injection prevention
-- XSS protection
+### 5. 보안 테스트 (Security Tests)
+**주요 영역**:
+- 인증/인가
+- 입력 검증
+- SQL 인젝션 방지
+- XSS 보호
 
 ```typescript
-// Example: Security test
-describe('Security', () => {
-  it('should prevent SQL injection', async () => {
+// 예시: 보안 테스트
+describe('보안', () => {
+  it('SQL 인젝션을 방지해야 함', async () => {
     const maliciousInput = "'; DROP TABLE users; --";
     const response = await request(app)
       .post('/api/trips')
@@ -149,21 +149,21 @@ describe('Security', () => {
 });
 ```
 
-### 6. Accessibility Tests
-**WCAG 2.1 AA Compliance**
+### 6. 접근성 테스트 (Accessibility Tests)
+**WCAG 2.1 AA 준수**
 
 ```typescript
-// Example: A11y test
-test('dashboard is accessible', async ({ page }) => {
+// 예시: 접근성 테스트
+test('대시보드가 접근 가능함', async ({ page }) => {
   await page.goto('/dashboard');
   const violations = await checkA11y(page);
   expect(violations).toHaveLength(0);
 });
 ```
 
-## Test Infrastructure
+## 🛠️ 테스트 인프라
 
-### Test Environment Setup
+### 테스트 환경 설정
 ```yaml
 # test-config.yml
 environments:
@@ -183,10 +183,10 @@ environments:
     viewport: [desktop, mobile]
 ```
 
-### CI/CD Integration
+### CI/CD 통합
 ```yaml
 # .github/workflows/test.yml
-name: Test Suite
+name: 테스트 스위트
 on: [push, pull_request]
 
 jobs:
@@ -194,21 +194,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Run Unit Tests
+      - name: 단위 테스트 실행
         run: npm run test:unit
-      - name: Run Integration Tests
+      - name: 통합 테스트 실행
         run: npm run test:integration
-      - name: Run E2E Tests
+      - name: E2E 테스트 실행
         run: npm run test:e2e
-      - name: Upload Coverage
+      - name: 커버리지 업로드
         uses: codecov/codecov-action@v3
 ```
 
-## Test Data Management
+## 📊 테스트 데이터 관리
 
-### Test Data Strategy
+### 테스트 데이터 전략
 ```typescript
-// Test data factories
+// 테스트 데이터 팩토리
 export const createMockUser = (overrides = {}) => ({
   id: faker.string.uuid(),
   email: faker.internet.email(),
@@ -225,22 +225,22 @@ export const createMockTrip = (overrides = {}) => ({
 });
 ```
 
-### Database Seeding
+### 데이터베이스 시딩
 ```typescript
 // seed.ts
 async function seed() {
-  // Clear existing data
+  // 기존 데이터 정리
   await prisma.trip.deleteMany();
   await prisma.user.deleteMany();
   
-  // Create test users
+  // 테스트 사용자 생성
   const users = await Promise.all(
     Array(5).fill(null).map(() => 
       prisma.user.create({ data: createMockUser() })
     )
   );
   
-  // Create test trips
+  // 테스트 여행 생성
   for (const user of users) {
     await Promise.all(
       Array(10).fill(null).map(() =>
@@ -253,9 +253,9 @@ async function seed() {
 }
 ```
 
-## Quality Gates
+## 🚦 품질 게이트
 
-### Pre-Commit Checks
+### 커밋 전 검사
 ```json
 // .husky/pre-commit
 {
@@ -269,92 +269,92 @@ async function seed() {
 }
 ```
 
-### Pull Request Criteria
-- [ ] All tests pass
-- [ ] Code coverage ≥ 80%
-- [ ] No security vulnerabilities
-- [ ] Performance budgets met
-- [ ] Accessibility checks pass
+### PR 승인 기준
+- [ ] 모든 테스트 통과
+- [ ] 코드 커버리지 ≥ 80%
+- [ ] 보안 취약점 없음
+- [ ] 성능 예산 준수
+- [ ] 접근성 검사 통과
 
-### Definition of Done
-- [ ] Feature implemented
-- [ ] Unit tests written
-- [ ] Integration tests added
-- [ ] E2E tests for critical paths
-- [ ] Documentation updated
-- [ ] Code reviewed
-- [ ] QA approved
+### 완료 정의 (Definition of Done)
+- [ ] 기능 구현 완료
+- [ ] 단위 테스트 작성
+- [ ] 통합 테스트 추가
+- [ ] 핵심 경로 E2E 테스트
+- [ ] 문서 업데이트
+- [ ] 코드 리뷰 완료
+- [ ] QA 승인
 
-## Test Execution Strategy
+## 🚀 테스트 실행 전략
 
-### Local Development
+### 로컬 개발
 ```bash
-# Run all tests
+# 모든 테스트 실행
 npm test
 
-# Run specific test types
+# 특정 테스트 유형 실행
 npm run test:unit
 npm run test:integration
 npm run test:e2e
 
-# Run with coverage
+# 커버리지와 함께 실행
 npm run test:coverage
 
-# Run in watch mode
+# 워치 모드로 실행
 npm run test:watch
 ```
 
-### Continuous Integration
+### 지속적 통합
 ```mermaid
 graph LR
-    A[Code Push] --> B[Lint & Format]
-    B --> C[Unit Tests]
-    C --> D[Integration Tests]
-    D --> E[Build]
-    E --> F[E2E Tests]
-    F --> G[Deploy to Staging]
-    G --> H[Smoke Tests]
-    H --> I[Deploy to Production]
+    A[코드 푸시] --> B[린트 & 포맷]
+    B --> C[단위 테스트]
+    C --> D[통합 테스트]
+    D --> E[빌드]
+    E --> F[E2E 테스트]
+    F --> G[스테이징 배포]
+    G --> H[스모크 테스트]
+    H --> I[프로덕션 배포]
 ```
 
-## Bug Management
+## 🐛 버그 관리
 
-### Bug Report Template
+### 버그 리포트 템플릿
 ```markdown
-## Bug Description
-Brief description of the issue
+## 버그 설명
+문제에 대한 간단한 설명
 
-## Steps to Reproduce
-1. Go to '...'
-2. Click on '...'
-3. See error
+## 재현 단계
+1. '...'로 이동
+2. '...' 클릭
+3. 오류 확인
 
-## Expected Behavior
-What should happen
+## 예상 동작
+어떻게 동작해야 하는지
 
-## Actual Behavior
-What actually happens
+## 실제 동작
+실제로 어떻게 동작하는지
 
-## Environment
-- Browser:
+## 환경
+- 브라우저:
 - OS:
-- Version:
+- 버전:
 
-## Screenshots/Logs
-Attach relevant evidence
+## 스크린샷/로그
+관련 증거 첨부
 ```
 
-### Bug Severity Levels
-- **Critical**: System down, data loss
-- **High**: Major feature broken
-- **Medium**: Feature partially working
-- **Low**: Minor UI issues
+### 버그 심각도 수준
+- **치명적**: 시스템 다운, 데이터 손실
+- **높음**: 주요 기능 중단
+- **보통**: 기능 부분 작동
+- **낮음**: 사소한 UI 문제
 
-## Performance Testing
+## ⚡ 성능 테스팅
 
-### Load Testing
+### 부하 테스트
 ```javascript
-// k6 load test example
+// k6 부하 테스트 예시
 import http from 'k6/http';
 import { check } from 'k6';
 
@@ -369,17 +369,17 @@ export const options = {
 export default function() {
   const res = http.get('https://app.example.com/api/trips');
   check(res, {
-    'status is 200': (r) => r.status === 200,
-    'response time < 500ms': (r) => r.timings.duration < 500
+    '상태가 200임': (r) => r.status === 200,
+    '응답 시간이 500ms 미만': (r) => r.timings.duration < 500
   });
 }
 ```
 
-## Monitoring & Observability
+## 📈 모니터링 & 관찰가능성
 
-### Error Tracking
+### 오류 추적
 ```typescript
-// Sentry integration
+// Sentry 통합
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
@@ -392,13 +392,13 @@ Sentry.init({
 });
 ```
 
-### Performance Monitoring
+### 성능 모니터링
 ```typescript
-// Web Vitals tracking
+// Web Vitals 추적
 import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
 
 function sendToAnalytics(metric) {
-  // Send to analytics endpoint
+  // 분석 엔드포인트로 전송
   fetch('/api/analytics', {
     method: 'POST',
     body: JSON.stringify(metric),
@@ -413,59 +413,60 @@ getLCP(sendToAnalytics);
 getTTFB(sendToAnalytics);
 ```
 
-## Best Practices
+## 💡 모범 사례
 
-### Test Writing Guidelines
-1. **Arrange-Act-Assert**: Structure tests clearly
-2. **One assertion per test**: Keep tests focused
-3. **Descriptive names**: Test names should explain what they test
-4. **DRY**: Use test utilities and helpers
-5. **Fast tests**: Mock external dependencies
-6. **Isolated tests**: No test should depend on another
+### 테스트 작성 가이드라인
+1. **준비-실행-검증**: 테스트를 명확하게 구조화
+2. **테스트당 하나의 단언**: 테스트를 집중적으로 유지
+3. **설명적 이름**: 테스트 이름이 무엇을 테스트하는지 설명
+4. **DRY**: 테스트 유틸리티와 헬퍼 사용
+5. **빠른 테스트**: 외부 의존성을 모킹
+6. **격리된 테스트**: 다른 테스트에 의존하지 않음
 
-### Code Coverage Guidelines
-- **Unit Tests**: 80%+ coverage
-- **Critical Business Logic**: 95%+ coverage
-- **UI Components**: 70%+ coverage
-- **Utilities**: 90%+ coverage
+### 코드 커버리지 가이드라인
+- **단위 테스트**: 80% 이상 커버리지
+- **핵심 비즈니스 로직**: 95% 이상 커버리지
+- **UI 컴포넌트**: 70% 이상 커버리지
+- **유틸리티**: 90% 이상 커버리지
 
-### Test Maintenance
-- Review and update tests quarterly
-- Remove obsolete tests
-- Refactor test code alongside production code
-- Keep test data realistic and up-to-date
+### 테스트 유지보수
+- 분기별로 테스트 검토 및 업데이트
+- 불필요한 테스트 제거
+- 프로덕션 코드와 함께 테스트 코드 리팩터링
+- 테스트 데이터를 현실적이고 최신 상태로 유지
 
-## Tools & Resources
+## 🔧 도구 및 리소스
 
-### Testing Tools
-- **Unit Testing**: Jest, React Testing Library
-- **Integration Testing**: Supertest, MSW
-- **E2E Testing**: Playwright, Cypress
-- **Performance**: Lighthouse, WebPageTest
-- **Accessibility**: axe-core, Pa11y
-- **Security**: OWASP ZAP, Snyk
+### 테스팅 도구
+- **단위 테스트**: Jest, React Testing Library
+- **통합 테스트**: Supertest, MSW
+- **E2E 테스트**: Playwright, Cypress
+- **성능**: Lighthouse, WebPageTest
+- **접근성**: axe-core, Pa11y
+- **보안**: OWASP ZAP, Snyk
 
-### Documentation
-- [Jest Documentation](https://jestjs.io/)
-- [Playwright Documentation](https://playwright.dev/)
+### 문서화
+- [Jest 문서](https://jestjs.io/)
+- [Playwright 문서](https://playwright.dev/)
 - [Testing Library](https://testing-library.com/)
 - [Web Vitals](https://web.dev/vitals/)
 
-## Continuous Improvement
+## 📊 지속적 개선
 
-### Metrics to Track
-- Test execution time
-- Test flakiness rate
-- Bug escape rate
-- Time to detect bugs
-- Test coverage trends
+### 추적할 지표
+- 테스트 실행 시간
+- 테스트 불안정성 비율
+- 버그 탈출 비율
+- 버그 발견 시간
+- 테스트 커버리지 추세
 
-### Regular Reviews
-- Monthly test suite health check
-- Quarterly strategy review
-- Annual tool evaluation
+### 정기 검토
+- 월간 테스트 스위트 상태 점검
+- 분기별 전략 검토
+- 연간 도구 평가
 
 ---
 
-*Last Updated: [Current Date]*
-*Version: 1.0*
+> 🧪 **"품질은 우연이 아니라 의도의 결과다"**
+
+**체계적인 테스팅으로 완벽한 소프트웨어를 만드세요!**

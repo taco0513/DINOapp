@@ -6,10 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // Vercel 서버리스 환경을 위한 direct URL 설정
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Account {

@@ -1,3 +1,8 @@
+// PURPOSE: 셰겐 90/180일 규칙 계산 API - 사용자의 여행 기록 기반 체류 가능 일수 계산
+// ARCHITECTURE: API Layer - 셰겐 계산 로직과 데이터베이스를 연결
+// RELATED: lib/schengen-calculator.ts, app/api/trips/route.ts, components/schengen/SchengenCalculator.tsx
+// GOTCHAS: 날짜는 UTC로 처리, 셰겐 계산은 참고용이며 법적 책임 없음
+
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'

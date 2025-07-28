@@ -10,348 +10,462 @@
 - 🚀 **빠른 배포**: 자신감 있는 릴리스
 - 📈 **품질 향상**: 지속적인 품질 개선
 
-## 📚 테스팅 가이드
+## 📚 테스팅 철학
 
-### 1. [테스트 전략 수립](01_Testing_Strategy.md)
-- 테스트 피라미드 설계
-- 단위/통합/E2E 테스트 계획
-- 테스트 환경 구성
-- 자동화 전략
+### 핵심 원칙
+- **테스트 주도 개발(TDD)**: 구현 전 테스트 작성
+- **시프트 레프트**: 조기 테스트 및 지속적 테스트
+- **위험 기반 테스트**: 비즈니스 영향도 기반 우선순위
+- **자동화 우선**: 반복적 테스트 자동화
+- **사용자 중심**: 실제 사용자 시나리오 집중
 
-### 2. [단위 테스트 마스터](02_Unit_Testing.md)
-- Jest/Vitest 활용법
-- 모킹과 스터빙
-- TDD 개발 방법론
-- 커버리지 관리
+## 테스트 피라미드
 
-### 3. [통합 테스트](03_Integration_Testing.md)
-- API 테스트 자동화
-- 데이터베이스 테스트
-- 외부 서비스 테스트
-- 계약 테스트
-
-### 4. [E2E 테스트](04_E2E_Testing.md)
-- Playwright 활용법
-- 사용자 시나리오 테스트
-- 시각적 회귀 테스트
-- 성능 테스트
-
-### 5. [품질 관리](05_Quality_Management.md)
-- 코드 리뷰 프로세스
-- 정적 분석 도구
-- 품질 지표 관리
-- 지속적 개선
-
-### 6. [CI/CD 통합](06_CICD_Integration.md)
-- 자동화 파이프라인
-- 테스트 게이트
-- 배포 전략
-- 모니터링 연계
-
-## 🎯 테스트 수준별 가이드
-
-### Level 1: 기본 테스팅 (1-2주)
 ```
-학습 목표:
-- Jest 기본 사용법
-- 간단한 단위 테스트 작성
-- API 테스트 기초
-- 기본 E2E 테스트
-
-실습 내용:
-- 계산기 함수 테스트
-- 사용자 등록 API 테스트
-- 로그인 시나리오 E2E 테스트
+         /\
+        /E2E\        (5-10%)
+       /------\
+      /  API   \     (20-30%)
+     /----------\
+    / Integration \  (30-40%)
+   /--------------\
+  /   Unit Tests   \ (40-50%)
+ /------------------\
 ```
 
-### Level 2: 중급 테스팅 (2-3주)
-```
-학습 목표:
-- 모킹과 스터빙 활용
-- 통합 테스트 전략
-- 테스트 데이터 관리
-- CI/CD 파이프라인 연동
+## Test Types & Coverage
 
-실습 내용:
-- 외부 API 모킹 테스트
-- 데이터베이스 통합 테스트
-- 복잡한 사용자 플로우 테스트
-- GitHub Actions 연동
-```
+### 1. Unit Tests
+**Coverage Target**: 80%+
 
-### Level 3: 고급 테스팅 (3-4주)
-```
-학습 목표:
-- 테스트 아키텍처 설계
-- 성능 테스트 전략
-- 보안 테스트
-- 품질 지표 자동화
-
-실습 내용:
-- 마이크로서비스 테스트
-- 로드 테스트 시나리오
-- 취약점 스캔 자동화
-- 품질 대시보드 구축
+#### Frontend Components
+```typescript
+// Example: Trip component test
+describe('TripCard', () => {
+  it('should display trip details correctly', () => {
+    const trip = mockTrip();
+    render(<TripCard trip={trip} />);
+    expect(screen.getByText(trip.country)).toBeInTheDocument();
+  });
+});
 ```
 
-## 🛠️ 도구별 활용 가이드
-
-### Frontend 테스팅
-```
-React Testing Library:
-- 컴포넌트 단위 테스트
-- 사용자 중심 테스트
-- 접근성 테스트
-
-Jest:
-- 함수 단위 테스트
-- 스냅샷 테스트
-- 모킹 기능
-
-Cypress/Playwright:
-- 사용자 시나리오 테스트
-- 시각적 테스트
-- 크로스 브라우저 테스트
+#### Business Logic
+```typescript
+// Example: Schengen calculation test
+describe('SchengenCalculator', () => {
+  it('should calculate days correctly', () => {
+    const stays = [
+      { startDate: '2024-01-01', endDate: '2024-01-10' }
+    ];
+    expect(calculateDays(stays)).toBe(10);
+  });
+});
 ```
 
-### Backend 테스팅
-```
-Jest/Supertest:
-- API 엔드포인트 테스트
-- 미들웨어 테스트
-- 통합 테스트
+### 2. Integration Tests
+**Coverage Target**: 70%+
 
-Postman/Newman:
-- API 문서화 및 테스트
-- 자동화된 API 테스트
-- 환경별 테스트
-
-K6/Artillery:
-- 성능 및 로드 테스트
-- 스트레스 테스트
-- 확장성 테스트
-```
-
-### Database 테스팅
-```
-Testcontainers:
-- 격리된 데이터베이스 테스트
-- 실제 데이터베이스 환경
-- 마이그레이션 테스트
-
-Faker.js:
-- 테스트 데이터 생성
-- 현실적인 더미 데이터
-- 다양한 데이터 타입 지원
+#### API Integration
+```typescript
+// Example: API route test
+describe('POST /api/trips', () => {
+  it('should create a new trip', async () => {
+    const response = await request(app)
+      .post('/api/trips')
+      .send(validTripData)
+      .expect(201);
+    
+    expect(response.body).toHaveProperty('id');
+  });
+});
 ```
 
-## 📊 품질 지표 관리
-
-### 커버리지 목표
-```
-단위 테스트: 80% 이상
-통합 테스트: 60% 이상
-E2E 테스트: 핵심 시나리오 100%
-전체 커버리지: 70% 이상
-```
-
-### 품질 지표
-```
-버그 밀도: 기능당 버그 수
-테스트 통과율: 전체 테스트 중 통과 비율
-배포 성공률: 프로덕션 배포 성공 비율
-MTTR: 평균 복구 시간
+#### Database Integration
+```typescript
+// Example: Prisma integration test
+describe('TripRepository', () => {
+  it('should persist trip data', async () => {
+    const trip = await createTrip(tripData);
+    const found = await findTripById(trip.id);
+    expect(found).toEqual(trip);
+  });
+});
 ```
 
-### 성능 지표
-```
-응답 시간: API 평균 응답 시간
-처리량: 초당 요청 처리 수
-에러율: 전체 요청 중 에러 비율
-가용성: 서비스 가동 시간 비율
-```
+### 3. End-to-End Tests
+**Coverage Target**: Critical user journeys
 
-## 🎮 실습 시나리오
-
-### 시나리오 1: 쇼핑몰 테스팅
-```
-단위 테스트:
-- 상품 가격 계산 함수
-- 할인 적용 로직
-- 재고 관리 함수
-
-통합 테스트:
-- 주문 처리 플로우
-- 결제 시스템 연동
-- 재고 업데이트
-
-E2E 테스트:
-- 상품 구매 전체 플로우
-- 회원 가입부터 결제까지
-- 모바일 구매 시나리오
+#### User Workflows
+```typescript
+// Example: E2E test with Playwright
+test('user can add and view trips', async ({ page }) => {
+  await page.goto('/dashboard');
+  await page.click('text=Add Trip');
+  await page.fill('[name=country]', 'France');
+  await page.fill('[name=startDate]', '2024-01-01');
+  await page.fill('[name=endDate]', '2024-01-05');
+  await page.click('text=Save');
+  
+  await expect(page.locator('text=France')).toBeVisible();
+});
 ```
 
-### 시나리오 2: 사용자 관리 시스템
-```
-보안 테스트:
-- SQL 인젝션 방어
-- XSS 공격 방어
-- 인증 토큰 검증
+### 4. Performance Tests
+**Target Metrics**:
+- Page Load: < 3s
+- API Response: < 200ms
+- Time to Interactive: < 5s
 
-성능 테스트:
-- 동시 로그인 1000명
-- 대용량 데이터 조회
-- 메모리 사용량 모니터링
-
-접근성 테스트:
-- 스크린 리더 호환성
-- 키보드 네비게이션
-- 색상 대비 검사
-```
-
-## 💡 AI 활용 테스팅
-
-### 테스트 코드 생성
-```
-You: "사용자 등록 API의 단위 테스트를 
-     Jest로 작성해줘. 성공 케이스와 
-     실패 케이스 모두 포함해서."
-
-AI 응답:
-- 완전한 테스트 코드
-- 모킹 설정
-- 에지 케이스 커버
-- 에러 처리 테스트
+```typescript
+// Example: Performance test
+test('dashboard loads within performance budget', async ({ page }) => {
+  const metrics = await page.evaluate(() => ({
+    lcp: performance.getEntriesByType('largest-contentful-paint')[0],
+    fcp: performance.getEntriesByName('first-contentful-paint')[0]
+  }));
+  
+  expect(metrics.lcp.startTime).toBeLessThan(2500);
+});
 ```
 
-### 테스트 데이터 생성
-```
-You: "전자상거래 앱 테스트를 위한 
-     현실적인 더미 데이터를 생성해줘.
-     사용자, 상품, 주문 데이터 포함."
+### 5. Security Tests
+**Focus Areas**:
+- Authentication/Authorization
+- Input validation
+- SQL injection prevention
+- XSS protection
 
-AI 생성:
-- 다양한 사용자 프로필
-- 현실적인 상품 정보
-- 실제와 유사한 주문 패턴
-- 테스트 시나리오별 데이터
-```
-
-### 버그 분석
-```
-You: "E2E 테스트에서 간헐적으로 실패하는 
-     테스트가 있어. 원인을 분석해줘."
-
-AI 분석:
-- 타이밍 이슈 식별
-- 플래키 테스트 패턴 분석
-- 안정화 방법 제안
-- 모니터링 개선 방안
+```typescript
+// Example: Security test
+describe('Security', () => {
+  it('should prevent SQL injection', async () => {
+    const maliciousInput = "'; DROP TABLE users; --";
+    const response = await request(app)
+      .post('/api/trips')
+      .send({ country: maliciousInput })
+      .expect(400);
+  });
+});
 ```
 
-## 🔧 문제 해결 가이드
+### 6. Accessibility Tests
+**WCAG 2.1 AA Compliance**
 
-### 흔한 테스트 문제들
-
-#### Flaky Tests (간헐적 실패)
-```
-원인:
-- 비동기 처리 타이밍
-- 테스트 데이터 의존성
-- 외부 서비스 의존
-
-해결:
-- 적절한 대기 시간 설정
-- 테스트 격리 보장
-- 모킹 적극 활용
+```typescript
+// Example: A11y test
+test('dashboard is accessible', async ({ page }) => {
+  await page.goto('/dashboard');
+  const violations = await checkA11y(page);
+  expect(violations).toHaveLength(0);
+});
 ```
 
-#### 느린 테스트 실행
-```
-원인:
-- 너무 많은 E2E 테스트
-- 데이터베이스 초기화
-- 병렬 실행 부족
+## Test Infrastructure
 
-해결:
-- 테스트 피라미드 재구성
-- 테스트 데이터 최적화
-- 병렬 실행 환경 구성
-```
-
-#### 낮은 테스트 커버리지
-```
-원인:
-- 레거시 코드
-- 복잡한 비즈니스 로직
-- 테스팅 문화 부족
-
-해결:
-- 점진적 커버리지 향상
-- 중요 기능 우선 테스트
-- 팀 교육 및 가이드라인
+### Test Environment Setup
+```yaml
+# test-config.yml
+environments:
+  unit:
+    framework: Jest
+    coverage: 80%
+    parallel: true
+  
+  integration:
+    framework: Jest + Supertest
+    database: SQLite (in-memory)
+    mocks: enabled
+  
+  e2e:
+    framework: Playwright
+    browsers: [chromium, firefox, webkit]
+    viewport: [desktop, mobile]
 ```
 
-## 📈 테스트 성숙도 평가
+### CI/CD Integration
+```yaml
+# .github/workflows/test.yml
+name: Test Suite
+on: [push, pull_request]
 
-### Level 1: 기초 (0-3개월)
-```
-특징:
-- 수동 테스트 중심
-- 기본적인 단위 테스트
-- 일회성 테스트
-
-개선 방향:
-- 자동화 도구 도입
-- 테스트 케이스 체계화
-- CI/CD 파이프라인 구축
-```
-
-### Level 2: 발전 (3-6개월)
-```
-특징:
-- 자동화된 테스트 스위트
-- 체계적인 테스트 전략
-- 지속적 통합
-
-개선 방향:
-- 고급 테스트 기법 도입
-- 성능 테스트 강화
-- 품질 지표 모니터링
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Unit Tests
+        run: npm run test:unit
+      - name: Run Integration Tests
+        run: npm run test:integration
+      - name: Run E2E Tests
+        run: npm run test:e2e
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
 ```
 
-### Level 3: 성숙 (6개월+)
+## Test Data Management
+
+### Test Data Strategy
+```typescript
+// Test data factories
+export const createMockUser = (overrides = {}) => ({
+  id: faker.string.uuid(),
+  email: faker.internet.email(),
+  name: faker.person.fullName(),
+  ...overrides
+});
+
+export const createMockTrip = (overrides = {}) => ({
+  id: faker.string.uuid(),
+  country: faker.location.country(),
+  startDate: faker.date.future(),
+  endDate: faker.date.future(),
+  ...overrides
+});
 ```
-특징:
-- 완전 자동화된 테스트
-- 예측적 품질 관리
-- 데이터 기반 의사결정
 
-개선 방향:
-- AI 기반 테스트 생성
-- 자가 치유 테스트
-- 지능형 품질 분석
+### Database Seeding
+```typescript
+// seed.ts
+async function seed() {
+  // Clear existing data
+  await prisma.trip.deleteMany();
+  await prisma.user.deleteMany();
+  
+  // Create test users
+  const users = await Promise.all(
+    Array(5).fill(null).map(() => 
+      prisma.user.create({ data: createMockUser() })
+    )
+  );
+  
+  // Create test trips
+  for (const user of users) {
+    await Promise.all(
+      Array(10).fill(null).map(() =>
+        prisma.trip.create({
+          data: { ...createMockTrip(), userId: user.id }
+        })
+      )
+    );
+  }
+}
 ```
 
-## 🚀 테스트 자동화 로드맵
+## Quality Gates
 
-### 1개월 목표
-- 기본 단위 테스트 작성
-- 핵심 API 테스트 자동화
-- 주요 사용자 플로우 E2E 테스트
+### Pre-Commit Checks
+```json
+// .husky/pre-commit
+{
+  "hooks": {
+    "pre-commit": [
+      "npm run lint",
+      "npm run type-check",
+      "npm run test:unit"
+    ]
+  }
+}
+```
 
-### 3개월 목표
-- 포괄적인 테스트 스위트
-- CI/CD 파이프라인 통합
-- 성능 테스트 기준 수립
+### Pull Request Criteria
+- [ ] All tests pass
+- [ ] Code coverage ≥ 80%
+- [ ] No security vulnerabilities
+- [ ] Performance budgets met
+- [ ] Accessibility checks pass
 
-### 6개월 목표
-- 완전 자동화된 품질 게이트
-- 실시간 품질 모니터링
-- 예측적 품질 관리 시스템
+### Definition of Done
+- [ ] Feature implemented
+- [ ] Unit tests written
+- [ ] Integration tests added
+- [ ] E2E tests for critical paths
+- [ ] Documentation updated
+- [ ] Code reviewed
+- [ ] QA approved
+
+## Test Execution Strategy
+
+### Local Development
+```bash
+# Run all tests
+npm test
+
+# Run specific test types
+npm run test:unit
+npm run test:integration
+npm run test:e2e
+
+# Run with coverage
+npm run test:coverage
+
+# Run in watch mode
+npm run test:watch
+```
+
+### Continuous Integration
+```mermaid
+graph LR
+    A[Code Push] --> B[Lint & Format]
+    B --> C[Unit Tests]
+    C --> D[Integration Tests]
+    D --> E[Build]
+    E --> F[E2E Tests]
+    F --> G[Deploy to Staging]
+    G --> H[Smoke Tests]
+    H --> I[Deploy to Production]
+```
+
+## Bug Management
+
+### Bug Report Template
+```markdown
+## Bug Description
+Brief description of the issue
+
+## Steps to Reproduce
+1. Go to '...'
+2. Click on '...'
+3. See error
+
+## Expected Behavior
+What should happen
+
+## Actual Behavior
+What actually happens
+
+## Environment
+- Browser:
+- OS:
+- Version:
+
+## Screenshots/Logs
+Attach relevant evidence
+```
+
+### Bug Severity Levels
+- **Critical**: System down, data loss
+- **High**: Major feature broken
+- **Medium**: Feature partially working
+- **Low**: Minor UI issues
+
+## Performance Testing
+
+### Load Testing
+```javascript
+// k6 load test example
+import http from 'k6/http';
+import { check } from 'k6';
+
+export const options = {
+  vus: 100,
+  duration: '30s',
+  thresholds: {
+    http_req_duration: ['p(95)<500']
+  }
+};
+
+export default function() {
+  const res = http.get('https://app.example.com/api/trips');
+  check(res, {
+    'status is 200': (r) => r.status === 200,
+    'response time < 500ms': (r) => r.timings.duration < 500
+  });
+}
+```
+
+## Monitoring & Observability
+
+### Error Tracking
+```typescript
+// Sentry integration
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  integrations: [
+    new Sentry.BrowserTracing(),
+    new Sentry.Replay()
+  ],
+  tracesSampleRate: 0.1,
+  replaysSessionSampleRate: 0.1
+});
+```
+
+### Performance Monitoring
+```typescript
+// Web Vitals tracking
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+function sendToAnalytics(metric) {
+  // Send to analytics endpoint
+  fetch('/api/analytics', {
+    method: 'POST',
+    body: JSON.stringify(metric),
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+getCLS(sendToAnalytics);
+getFID(sendToAnalytics);
+getFCP(sendToAnalytics);
+getLCP(sendToAnalytics);
+getTTFB(sendToAnalytics);
+```
+
+## Best Practices
+
+### Test Writing Guidelines
+1. **Arrange-Act-Assert**: Structure tests clearly
+2. **One assertion per test**: Keep tests focused
+3. **Descriptive names**: Test names should explain what they test
+4. **DRY**: Use test utilities and helpers
+5. **Fast tests**: Mock external dependencies
+6. **Isolated tests**: No test should depend on another
+
+### Code Coverage Guidelines
+- **Unit Tests**: 80%+ coverage
+- **Critical Business Logic**: 95%+ coverage
+- **UI Components**: 70%+ coverage
+- **Utilities**: 90%+ coverage
+
+### Test Maintenance
+- Review and update tests quarterly
+- Remove obsolete tests
+- Refactor test code alongside production code
+- Keep test data realistic and up-to-date
+
+## Tools & Resources
+
+### Testing Tools
+- **Unit Testing**: Jest, React Testing Library
+- **Integration Testing**: Supertest, MSW
+- **E2E Testing**: Playwright, Cypress
+- **Performance**: Lighthouse, WebPageTest
+- **Accessibility**: axe-core, Pa11y
+- **Security**: OWASP ZAP, Snyk
+
+### Documentation
+- [Jest Documentation](https://jestjs.io/)
+- [Playwright Documentation](https://playwright.dev/)
+- [Testing Library](https://testing-library.com/)
+- [Web Vitals](https://web.dev/vitals/)
+
+## Continuous Improvement
+
+### Metrics to Track
+- Test execution time
+- Test flakiness rate
+- Bug escape rate
+- Time to detect bugs
+- Test coverage trends
+
+### Regular Reviews
+- Monthly test suite health check
+- Quarterly strategy review
+- Annual tool evaluation
 
 ---
 
-> 🧪 **"품질은 우연이 아니라 의도의 결과다"**
-
-**체계적인 테스팅으로 완벽한 소프트웨어를 만드세요!**
+*Last Updated: [Current Date]*
+*Version: 1.0*

@@ -148,3 +148,28 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Test artifacts and reports
+test-results/
+playwright-report/
+playwright-results.json
+
+# Backup and temporary files
+*-backup.*
+*.backup
+*.tmp
+
+# Development tools
+tools/
+stories/
+dangerfile.js
+
+# Prototype files
+prototype.html
+server.js
+
+# Database files (except production schema)
+prisma/dev.db
+prisma/test.db
+prisma/*.dev.prisma
+prisma/*.local.prisma

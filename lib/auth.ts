@@ -1,3 +1,8 @@
+// PURPOSE: NextAuth.js 인증 설정 - Google OAuth 2.0 전용
+// ARCHITECTURE: 인증 레이어 - 모든 보호된 라우트의 게이트웨이
+// RELATED: app/api/auth/[...nextauth]/route.ts, lib/prisma.ts, middleware.ts
+// GOTCHAS: Gmail/Calendar 권한은 사용자 동의 필요, refresh token 관리 중요
+
 import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';

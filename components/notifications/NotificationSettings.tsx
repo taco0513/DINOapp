@@ -42,7 +42,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
     }
     
     setSaving(false)
-    alert('알림 설정이 저장되었습니다.')
+    // Settings saved successfully
   }
 
   const handleRequestPermission = async () => {
@@ -82,7 +82,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
               type="checkbox"
               checked={preferences.email}
               onChange={(e) => setPreferences(prev => ({ ...prev, email: e.target.checked }))}
-              className="w-5 h-5 text-primary rounded focus:ring-primary"
+              className="w-5 h-5 text-primary rounded focus:ring-2 focus:ring-primary"
             />
           </label>
 
@@ -95,7 +95,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
               type="checkbox"
               checked={preferences.push}
               onChange={(e) => setPreferences(prev => ({ ...prev, push: e.target.checked }))}
-              className="w-5 h-5 text-primary rounded focus:ring-primary"
+              className="w-5 h-5 text-primary rounded focus:ring-2 focus:ring-primary"
             />
           </label>
 
@@ -106,7 +106,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
               </p>
               <button
                 onClick={handleRequestPermission}
-                className="btn btn-sm btn-primary"
+                className="btn btn-primary text-sm"
               >
                 알림 권한 요청
               </button>
@@ -129,7 +129,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
               value={preferences.visaExpiryDays.join(', ')}
               onChange={(e) => handleVisaExpiryDaysChange(e.target.value)}
               placeholder="30, 7, 1"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <p className="text-xs text-tertiary mt-1">예: 30일 전, 7일 전, 1일 전</p>
           </div>
@@ -147,7 +147,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
               }))}
               min="1"
               max="90"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <p className="text-xs text-tertiary mt-1">셰겐 지역 체류일이 이 값을 넘으면 경고</p>
           </div>
@@ -161,7 +161,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
               value={preferences.tripReminderDays.join(', ')}
               onChange={(e) => handleTripReminderDaysChange(e.target.value)}
               placeholder="7, 1"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <p className="text-xs text-tertiary mt-1">예: 7일 전, 1일 전</p>
           </div>
@@ -181,7 +181,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
                 ...prev, 
                 quiet: { ...prev.quiet, enabled: e.target.checked }
               }))}
-              className="w-5 h-5 text-primary rounded focus:ring-primary mr-3"
+              className="w-5 h-5 text-primary rounded focus:ring-2 focus:ring-primary mr-3"
             />
             <span className="font-medium">방해 금지 시간 사용</span>
           </label>
@@ -199,7 +199,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
                     ...prev, 
                     quiet: { ...prev.quiet, startTime: e.target.value }
                   }))}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
@@ -213,7 +213,7 @@ export default function NotificationSettings({ userId, onSave }: NotificationSet
                     ...prev, 
                     quiet: { ...prev.quiet, endTime: e.target.value }
                   }))}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>

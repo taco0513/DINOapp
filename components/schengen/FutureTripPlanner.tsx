@@ -21,7 +21,6 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
 
   const handleValidate = () => {
     if (!plannedCountry || !entryDate || !exitDate) {
-      alert('모든 필드를 입력해주세요.')
       return
     }
 
@@ -29,7 +28,6 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
     const exit = new Date(exitDate)
 
     if (exit <= entry) {
-      alert('출국일은 입국일보다 늦어야 합니다.')
       return
     }
 
@@ -39,13 +37,11 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
 
   const handleFindSafeDates = () => {
     if (!plannedCountry || !desiredDuration) {
-      alert('국가와 희망 체류 기간을 입력해주세요.')
       return
     }
 
     const duration = parseInt(desiredDuration)
     if (duration < 1 || duration > 90) {
-      alert('체류 기간은 1일에서 90일 사이여야 합니다.')
       return
     }
 
@@ -67,7 +63,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
             <select
               value={plannedCountry}
               onChange={(e) => setPlannedCountry(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">국가 선택</option>
               <optgroup label="셰겐 지역">
@@ -96,7 +92,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               value={entryDate}
               onChange={(e) => setEntryDate(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -109,7 +105,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               value={exitDate}
               onChange={(e) => setExitDate(e.target.value)}
               min={entryDate || new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>
@@ -172,7 +168,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               onChange={(e) => setDesiredDuration(e.target.value)}
               min="1"
               max="90"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -207,8 +203,8 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
         )}
 
         {safeDates === null && desiredDuration && (
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-yellow-800">
+          <div className="mt-4 alert alert-warning">
+            <p>
               향후 1년 내에 {desiredDuration}일간 안전하게 여행할 수 있는 날짜를 찾을 수 없습니다.
               더 짧은 기간을 고려해보세요.
             </p>
@@ -217,10 +213,10 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
       </div>
 
       {/* 도움말 */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-medium text-gray-900 mb-2">💡 사용 방법</h4>
-        <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
-          <li>미래 여행을 계획하기 전에 셰겐 규정 준수 여부를 확인하세요</li>
+      <div className="alert">
+        <h4 className="font-medium mb-2">💡 사용 방법</h4>
+        <ul className="text-sm text-secondary space-y-1 list-disc list-inside">
+          <li>미래 여행을 계획하기 전에 셰겐 규정 준수 여부를 확인하세요</li>  
           <li>경고가 표시되면 대안 날짜나 기간을 고려하세요</li>
           <li>안전한 날짜 찾기 기능으로 규정을 준수하는 여행 날짜를 자동으로 찾을 수 있습니다</li>
           <li>비셰겐 국가는 90/180일 규칙이 적용되지 않습니다</li>

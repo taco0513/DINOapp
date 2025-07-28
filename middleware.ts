@@ -107,35 +107,48 @@ function applySecurityHeaders(response: NextResponse) {
   // Content Security Policy
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com https://js.stripe.com https://*.sentry.io",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https://lh3.googleusercontent.com https://*.vercel-insights.com",
-    "connect-src 'self' https://accounts.google.com https://www.googleapis.com https://*.vercel-insights.com",
-    'frame-src https://accounts.google.com',
+    "img-src 'self' data: https://lh3.googleusercontent.com https://*.vercel-insights.com https://*.stripe.com blob:",
+    "connect-src 'self' https://accounts.google.com https://www.googleapis.com https://*.vercel-insights.com https://api.stripe.com https://*.sentry.io wss://localhost:* ws://localhost:*",
+    'frame-src https://accounts.google.com https://js.stripe.com',
     "object-src 'none'",
     "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
     'upgrade-insecure-requests',
   ].join('; ');
 
-  response.headers.set('Content-Security-Policy', csp);
+  // Development environment CSP adjustments
+  if (process.env.NODE_ENV === 'development') {
+    const devCsp = csp.replace(
+      "connect-src 'self' https://accounts.google.com https://www.googleapis.com https://*.vercel-insights.com https://api.stripe.com https://*.sentry.io wss://localhost:* ws://localhost:*",
+      "connect-src 'self' https://accounts.google.com https://www.googleapis.com https://*.vercel-insights.com https://api.stripe.com https://*.sentry.io http://localhost:* ws://localhost:* wss://localhost:*"
+    );
+    response.headers.set('Content-Security-Policy', devCsp);
+  } else {
+    response.headers.set('Content-Security-Policy', csp);
+  }
 
   // Security headers
-  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-XSS-Protection', '1; mode=block');
-  response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set(
     'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()'
+    'camera=(), microphone=(), geolocation=(), payment=(self), usb=()'
   );
   response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.set('X-Download-Options', 'noopen');
+  response.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
 
   // HSTS for HTTPS
   if (process.env.NODE_ENV === 'production') {
     response.headers.set(
       'Strict-Transport-Security',
-      'max-age=31536000; includeSubDomains; preload'
+      'max-age=63072000; includeSubDomains; preload'
     );
   }
 

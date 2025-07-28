@@ -98,7 +98,7 @@ function AuthErrorContent() {
       <div className="max-w-md w-full card">
         <div className="text-center mb-8">
           <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-error-light mb-4">
-            <svg className="h-6 w-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-6 w-6" style={{ color: 'var(--color-error)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
@@ -134,7 +134,7 @@ function AuthErrorContent() {
         <div className="mt-8 text-center">
           <p className="text-sm text-secondary">
             문제가 계속 발생하면{' '}
-            <a href="mailto:support@dinoapp.net" className="text-primary hover:opacity-70">
+            <a href="mailto:support@dinoapp.net" className="text-primary" style={{ opacity: '0.8' }}>
               고객지원
             </a>
             에 문의하세요.
@@ -151,7 +151,7 @@ export default function AuthErrorPage() {
       <div className="min-h-screen flex items-center justify-center bg-surface p-4">
         <div className="max-w-md w-full card">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-error mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: 'var(--color-error)' }}></div>
             <p className="mt-4 text-secondary">로딩 중...</p>
           </div>
         </div>

@@ -35,7 +35,9 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        domain: undefined,
+        // Set cookie domain to work across www and non-www
+        domain:
+          process.env.NODE_ENV === 'production' ? '.dinoapp.net' : undefined,
       },
     },
     callbackUrl: {
@@ -45,6 +47,8 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
+        domain:
+          process.env.NODE_ENV === 'production' ? '.dinoapp.net' : undefined,
       },
     },
     csrfToken: {
@@ -54,6 +58,8 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
+        // __Host- prefix requires no domain attribute
+        domain: undefined,
       },
     },
   },

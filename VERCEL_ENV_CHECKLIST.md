@@ -4,19 +4,19 @@
 
 ### 1. 인증 관련
 
-- [ ] `NEXTAUTH_URL` = `https://www.dinoapp.net` (www 포함!)
-- [ ] `NEXTAUTH_SECRET` = (32자 이상의 랜덤 문자열)
-- [ ] `GOOGLE_CLIENT_ID` = (프로덕션용 클라이언트 ID)
-- [ ] `GOOGLE_CLIENT_SECRET` = (프로덕션용 클라이언트 시크릿)
+- [x] `NEXTAUTH_URL` = `https://www.dinoapp.net` (www 포함!)
+- [x] `NEXTAUTH_SECRET` = (32자 이상의 랜덤 문자열)
+- [x] `GOOGLE_CLIENT_ID` = (프로덕션용 클라이언트 ID)
+- [x] `GOOGLE_CLIENT_SECRET` = (프로덕션용 클라이언트 시크릿)
 
 ### 2. 데이터베이스
 
-- [ ] `DATABASE_URL` = (SQLite 또는 PostgreSQL URL)
+- [x] `DATABASE_URL` = (SQLite 또는 PostgreSQL URL)
 
 ### 3. 앱 설정
 
-- [ ] `NEXT_PUBLIC_APP_URL` = `https://www.dinoapp.net`
-- [ ] `NODE_ENV` = `production`
+- [ ] ⚠️ **`NEXT_PUBLIC_APP_URL` = `https://www.dinoapp.net`** (반드시 설정 필요!)
+- [x] `NODE_ENV` = `production`
 
 ## Google Console 설정 확인
 

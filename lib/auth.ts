@@ -27,43 +27,6 @@ export const authOptions: NextAuthOptions = {
     updateAge: 60 * 60, // Update every hour
   },
 
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        // Set cookie domain to work across www and non-www
-        domain:
-          process.env.NODE_ENV === 'production' ? '.dinoapp.net' : undefined,
-      },
-    },
-    callbackUrl: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.callback-url`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain:
-          process.env.NODE_ENV === 'production' ? '.dinoapp.net' : undefined,
-      },
-    },
-    csrfToken: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Host-' : ''}next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        // __Host- prefix requires no domain attribute
-        domain: undefined,
-      },
-    },
-  },
-
   callbacks: {
     async signIn({ user, account, profile }) {
       // Allow Google sign in only
@@ -140,12 +103,6 @@ export const authOptions: NextAuthOptions = {
 
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
-
-  // Add explicit redirect URLs
-  trustHost: true,
-
-  // Use secure cookies in production
-  useSecureCookies: process.env.NODE_ENV === 'production',
 
   // Events for debugging
   events: {

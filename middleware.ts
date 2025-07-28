@@ -10,6 +10,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'https://dino-app-psi.vercel.app',
   'https://dinoapp.net',
+  'https://www.dinoapp.net',
 ];
 
 const RATE_LIMIT_MAP = new Map();

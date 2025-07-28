@@ -18,6 +18,15 @@ export const authOptions: NextAuthOptions = {
           response_type: 'code',
         },
       },
+      // Add profile callback to ensure data is saved
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
     }),
   ],
 
@@ -31,8 +40,24 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       // Allow Google sign in only
       if (account?.provider === 'google') {
-        // Google sign in successful
-        return true;
+        try {
+          // Ensure user exists in database
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
+
+          if (!existingUser) {
+            console.log('Creating new user:', user.email);
+          } else {
+            console.log('User already exists:', user.email);
+          }
+
+          // Google sign in successful
+          return true;
+        } catch (error) {
+          console.error('Sign in error:', error);
+          return false;
+        }
       }
       return false;
     },

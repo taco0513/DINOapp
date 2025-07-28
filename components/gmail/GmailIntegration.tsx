@@ -151,10 +151,10 @@ export default function GmailIntegration() {
   if (!session) {
     return (
       <div className='alert alert-warning'>
-        <h3 className='text-lg font-semibold text-yellow-800 mb-2'>
+        <h3 className='text-lg font-semibold mb-2'>
           Gmail 통합
         </h3>
-        <p className='text-yellow-700'>
+        <p>
           Gmail 통합을 사용하려면 먼저 로그인해주세요.
         </p>
       </div>
@@ -163,18 +163,18 @@ export default function GmailIntegration() {
 
   return (
     <div className='space-y-6'>
-      <div className='bg-white border border-gray-200 rounded-lg p-6'>
-        <h2 className='text-xl font-semibold text-gray-900 mb-4'>
+      <div className='card'>
+        <h2 className='text-xl font-semibold mb-4'>
           📧 Gmail 여행 이메일 분석 & 캘린더 동기화
         </h2>
-        <p className='text-gray-600 mb-6'>
+        <p className='text-secondary mb-6'>
           Gmail에서 여행 관련 이메일을 자동으로 찾아 분석하고 Google Calendar에
           동기화합니다.
         </p>
 
         {/* 연결 상태 */}
         <div className='mb-6'>
-          <h3 className='text-lg font-medium text-gray-700 mb-3'>연결 상태</h3>
+          <h3 className='text-lg font-medium mb-3'>연결 상태</h3>
 
           {connectionStatus && (
             <div
@@ -188,13 +188,7 @@ export default function GmailIntegration() {
                     connectionStatus.connected ? 'badge-success' : 'badge-error'
                   }`}
                 />
-                <span
-                  className={`font-medium ${
-                    connectionStatus.connected
-                      ? 'text-green-800'
-                      : 'text-red-800'
-                  }`}
-                >
+                <span className='font-medium'>
                   {connectionStatus.message}
                 </span>
               </div>
@@ -214,7 +208,7 @@ export default function GmailIntegration() {
         {connectionStatus?.connected && (
           <div className='mb-6'>
             <div className='flex items-center justify-between mb-4'>
-              <h3 className='text-lg font-medium text-gray-700'>
+              <h3 className='text-lg font-medium'>
                 여행 이메일 분석
               </h3>
               {travelEmails.length > 0 && (
@@ -251,7 +245,7 @@ export default function GmailIntegration() {
             {/* 에러 메시지 */}
             {error && (
               <div className='alert alert-error mb-4'>
-                <p className='text-red-700'>❌ {error}</p>
+                <p>❌ {error}</p>
               </div>
             )}
           </div>
@@ -302,7 +296,7 @@ export default function GmailIntegration() {
                 {travelEmails.map((email, index) => (
                   <div key={email.emailId} className='card'>
                     <div className='flex justify-between items-start mb-2'>
-                      <h5 className='font-medium text-gray-900 truncate flex-1 mr-2'>
+                      <h5 className='font-medium truncate flex-1 mr-2'>
                         {email.subject}
                       </h5>
                       <div className='flex items-center gap-2'>
@@ -322,12 +316,12 @@ export default function GmailIntegration() {
                           </span>
                         )}
                         <span
-                          className={`px-2 py-1 text-xs rounded-full ${
+                          className={`badge ${
                             email.confidence >= 0.7
-                              ? 'bg-green-100 text-green-800'
+                              ? 'badge-success'
                               : email.confidence >= 0.5
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
+                                ? 'badge-warning'
+                                : 'badge-error'
                           }`}
                         >
                           신뢰도 {Math.round(email.confidence * 100)}%
@@ -335,16 +329,16 @@ export default function GmailIntegration() {
                       </div>
                     </div>
 
-                    <p className='text-sm text-gray-600 mb-3'>{email.from}</p>
+                    <p className='text-sm text-secondary mb-3'>{email.from}</p>
 
                     <div className='grid grid-cols-2 gap-2 text-sm mb-3'>
                       {email.departureDate && (
                         <div className='flex items-center gap-1'>
                           <span>✈️</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             출발:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.departureDate}
                           </span>
                         </div>
@@ -352,10 +346,10 @@ export default function GmailIntegration() {
                       {email.returnDate && (
                         <div className='flex items-center gap-1'>
                           <span>🏠</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             귀국:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.returnDate}
                           </span>
                         </div>
@@ -363,10 +357,10 @@ export default function GmailIntegration() {
                       {email.departure && (
                         <div className='flex items-center gap-1'>
                           <span>📍</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             출발지:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.departure}
                           </span>
                         </div>
@@ -374,10 +368,10 @@ export default function GmailIntegration() {
                       {email.destination && (
                         <div className='flex items-center gap-1'>
                           <span>🎯</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             목적지:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.destination}
                           </span>
                         </div>
@@ -385,10 +379,10 @@ export default function GmailIntegration() {
                       {email.flightNumber && (
                         <div className='flex items-center gap-1'>
                           <span>✈️</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             항공편:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.flightNumber}
                           </span>
                         </div>
@@ -396,10 +390,10 @@ export default function GmailIntegration() {
                       {email.bookingReference && (
                         <div className='flex items-center gap-1'>
                           <span>📋</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             예약번호:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.bookingReference}
                           </span>
                         </div>
@@ -407,10 +401,10 @@ export default function GmailIntegration() {
                       {email.hotelName && (
                         <div className='flex items-center gap-1'>
                           <span>🏨</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             호텔:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.hotelName}
                           </span>
                         </div>
@@ -418,10 +412,10 @@ export default function GmailIntegration() {
                       {email.passengerName && (
                         <div className='flex items-center gap-1'>
                           <span>👤</span>
-                          <span className='font-medium text-gray-700'>
+                          <span className='font-medium'>
                             승객:
                           </span>
-                          <span className='text-gray-600'>
+                          <span className='text-secondary'>
                             {email.passengerName}
                           </span>
                         </div>
@@ -431,7 +425,7 @@ export default function GmailIntegration() {
                     {email.extractedData &&
                       email.extractedData.matchedPatterns.length > 0 && (
                         <div className='mb-3'>
-                          <p className='text-xs text-gray-500 mb-1'>
+                          <p className='text-xs text-tertiary mb-1'>
                             매칭된 패턴:
                           </p>
                           <div className='flex flex-wrap gap-1'>
@@ -483,34 +477,34 @@ export default function GmailIntegration() {
             {activeTab === 'stats' && travelStats && (
               <div className='space-y-4'>
                 <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-                  <div className='bg-white border border-gray-200 rounded-lg p-4 text-center'>
-                    <div className='text-2xl font-bold text-blue-600'>
+                  <div className='card text-center'>
+                    <div className='text-2xl font-bold text-primary'>
                       {travelStats.totalTrips}
                     </div>
-                    <div className='text-sm text-gray-600'>총 여행 수</div>
+                    <div className='text-sm text-secondary'>총 여행 수</div>
                   </div>
-                  <div className='bg-white border border-gray-200 rounded-lg p-4 text-center'>
-                    <div className='text-2xl font-bold text-green-600'>
+                  <div className='card text-center'>
+                    <div className='text-2xl font-bold text-success'>
                       {travelStats.totalDestinations}
                     </div>
-                    <div className='text-sm text-gray-600'>방문 도시</div>
+                    <div className='text-sm text-secondary'>방문 도시</div>
                   </div>
-                  <div className='bg-white border border-gray-200 rounded-lg p-4 text-center'>
-                    <div className='text-2xl font-bold text-purple-600'>
+                  <div className='card text-center'>
+                    <div className='text-2xl font-bold text-primary'>
                       {travelStats.totalAirlines}
                     </div>
-                    <div className='text-sm text-gray-600'>이용 항공사</div>
+                    <div className='text-sm text-secondary'>이용 항공사</div>
                   </div>
-                  <div className='bg-white border border-gray-200 rounded-lg p-4 text-center'>
-                    <div className='text-2xl font-bold text-orange-600'>
+                  <div className='card text-center'>
+                    <div className='text-2xl font-bold text-warning'>
                       {travelStats.travelFrequency.averageTripsPerMonth}
                     </div>
-                    <div className='text-sm text-gray-600'>월평균 여행</div>
+                    <div className='text-sm text-secondary'>월평균 여행</div>
                   </div>
                 </div>
 
                 {travelStats.mostVisitedDestinations.length > 0 && (
-                  <div className='bg-white border border-gray-200 rounded-lg p-4'>
+                  <div className='card'>
                     <h4 className='font-medium mb-3'>🌍 자주 방문한 목적지</h4>
                     <div className='space-y-2'>
                       {travelStats.mostVisitedDestinations.map((dest, idx) => (
@@ -529,7 +523,7 @@ export default function GmailIntegration() {
                 )}
 
                 {travelStats.preferredAirlines.length > 0 && (
-                  <div className='bg-white border border-gray-200 rounded-lg p-4'>
+                  <div className='card'>
                     <h4 className='font-medium mb-3'>✈️ 선호 항공사</h4>
                     <div className='space-y-2'>
                       {travelStats.preferredAirlines.map((airline, idx) => (
@@ -574,7 +568,7 @@ export default function GmailIntegration() {
                     </div>
                   ))
                 ) : (
-                  <div className='text-center py-8 text-gray-500'>
+                  <div className='text-center py-8 text-secondary'>
                     <div className='text-4xl mb-4'>🤖</div>
                     <p>
                       충분한 데이터가 모이면 개인화된 인사이트를 제공합니다.
@@ -590,7 +584,7 @@ export default function GmailIntegration() {
           !isLoading &&
           !error &&
           connectionStatus?.connected && (
-            <div className='text-center py-8 text-gray-500'>
+            <div className='text-center py-8 text-secondary'>
               <div className='text-4xl mb-4'>🔍</div>
               <p>분석할 여행 이메일을 찾지 못했습니다.</p>
               <p className='text-sm mt-1'>다른 검색 범위로 시도해보세요.</p>
@@ -600,8 +594,8 @@ export default function GmailIntegration() {
 
       {/* 개인정보 보호 안내 */}
       <div className='alert'>
-        <h4 className='font-medium text-blue-900 mb-2'>🔒 개인정보 보호</h4>
-        <ul className='text-sm text-blue-800 space-y-1'>
+        <h4 className='font-medium mb-2'>🔒 개인정보 보호</h4>
+        <ul className='text-sm space-y-1'>
           <li>• 이메일 내용은 로컬에서만 처리되며 외부로 전송되지 않습니다</li>
           <li>• 읽기 전용 권한만 사용하여 이메일을 수정할 수 없습니다</li>
           <li>• 분석된 정보는 사용자 승인 후에만 저장됩니다</li>

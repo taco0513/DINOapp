@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react'
 // import { Container } from '@/components/layout/Container'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+// Remove shadcn/ui imports - using minimal design system
 
 export default function OfflinePage() {
   const [isOnline, setIsOnline] = useState(true)
@@ -50,11 +49,11 @@ export default function OfflinePage() {
   return (
     <div className="container mx-auto px-4">
       <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center p-8">
+        <div className="card w-full max-w-md text-center">
           {/* 오프라인 아이콘 */}
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-surface flex items-center justify-center">
             <svg 
-              className="w-10 h-10 text-gray-500" 
+              className="w-10 h-10 text-secondary" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -70,10 +69,10 @@ export default function OfflinePage() {
 
           {/* 상태 표시 */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold mb-2">
               {isOnline ? '연결 중...' : '오프라인 모드'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-secondary">
               {isOnline 
                 ? '인터넷에 연결되었습니다. 잠시만 기다려주세요.'
                 : '인터넷 연결을 확인할 수 없습니다.'
@@ -82,44 +81,42 @@ export default function OfflinePage() {
           </div>
 
           {/* 연결 상태 표시 */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-6 p-4 bg-surface rounded-lg">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">연결 상태</span>
-              <span className={`text-sm font-medium ${isOnline ? 'text-green-600' : 'text-red-600'}`}>
+              <span className="text-sm text-secondary">연결 상태</span>
+              <span className={`text-sm font-medium ${isOnline ? 'text-success' : 'text-error'}`}>
                 {isOnline ? '온라인' : '오프라인'}
               </span>
             </div>
             {lastSync && (
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">마지막 동기화</span>
-                <span className="text-sm text-gray-700">{lastSync}</span>
+                <span className="text-sm text-secondary">마지막 동기화</span>
+                <span className="text-sm">{lastSync}</span>
               </div>
             )}
           </div>
 
           {/* 액션 버튼들 */}
           <div className="space-y-3">
-            <Button 
+            <button 
               onClick={handleRetry}
-              className="w-full"
-              variant={isOnline ? "default" : "outline"}
+              className={`w-full btn ${isOnline ? 'btn-primary' : 'btn-ghost'}`}
             >
               {isOnline ? '대시보드로 이동' : '다시 연결 시도'}
-            </Button>
+            </button>
             
-            <Button 
+            <button 
               onClick={handleViewCached}
-              variant="outline"
-              className="w-full"
+              className="w-full btn btn-ghost"
             >
               저장된 여행 기록 보기
-            </Button>
+            </button>
           </div>
 
           {/* 오프라인 기능 안내 */}
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">오프라인에서도 사용 가능</h3>
-            <ul className="text-sm text-blue-700 space-y-1 text-left">
+          <div className="mt-8 alert">
+            <h3 className="font-medium mb-2">오프라인에서도 사용 가능</h3>
+            <ul className="text-sm space-y-1 text-left">
               <li>• 저장된 여행 기록 조회</li>
               <li>• 셰겐 계산기 (캐시된 데이터)</li>
               <li>• 기본 앱 기능 사용</li>
@@ -127,10 +124,10 @@ export default function OfflinePage() {
           </div>
 
           {/* PWA 설치 안내 */}
-          <div className="mt-6 text-xs text-gray-500">
+          <div className="mt-6 text-xs text-tertiary">
             <p>더 나은 오프라인 경험을 위해 홈 화면에 앱을 추가해보세요.</p>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   )

@@ -41,16 +41,16 @@ export default function SimplePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="card border-b shadow-none rounded-none">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">🦕 DinoApp</h1>
-              <span className="ml-2 text-sm text-gray-500">디지털 노마드 캘린더</span>
+              <h1 className="text-xl font-bold">🦕 DinoApp</h1>
+              <span className="ml-2 text-sm text-secondary">디지털 노마드 캘린더</span>
             </div>
-            <div className="text-sm text-blue-600">프로토타입 데모</div>
+            <div className="text-sm text-primary">프로토타입 데모</div>
           </div>
         </div>
       </header>
@@ -58,31 +58,31 @@ export default function SimplePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6 border">
+          <div className="card">
             <div className="flex items-center mb-4">
               <div className="text-2xl mr-3">🗓️</div>
               <h3 className="text-lg font-semibold">여행 기록</h3>
             </div>
-            <div className="text-2xl font-bold text-blue-600 mb-1">{trips.length}</div>
-            <p className="text-gray-600 text-sm">총 여행 수</p>
+            <div className="text-2xl font-bold text-primary mb-1">{trips.length}</div>
+            <p className="text-secondary text-sm">총 여행 수</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6 border">
+          <div className="card">
             <div className="flex items-center mb-4">
               <div className="text-2xl mr-3">🇪🇺</div>
               <h3 className="text-lg font-semibold">셰겐 현황</h3>
             </div>
-            <div className="text-2xl font-bold text-green-600 mb-1">15/90</div>
-            <p className="text-gray-600 text-sm">사용 일수 (규정 준수)</p>
+            <div className="text-2xl font-bold text-success mb-1">15/90</div>
+            <p className="text-secondary text-sm">사용 일수 (규정 준수)</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6 border">
+          <div className="card">
             <div className="flex items-center mb-4">
               <div className="text-2xl mr-3">🌍</div>
               <h3 className="text-lg font-semibold">방문 국가</h3>
             </div>
-            <div className="text-2xl font-bold text-purple-600 mb-1">2</div>
-            <p className="text-gray-600 text-sm">총 방문 국가</p>
+            <div className="text-2xl font-bold text-primary mb-1">2</div>
+            <p className="text-secondary text-sm">총 방문 국가</p>
           </div>
         </div>
 
@@ -92,7 +92,7 @@ export default function SimplePage() {
             <h2 className="text-xl font-semibold">데이터 관리</h2>
             <button 
               onClick={() => setShowExportImport(!showExportImport)}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-primary hover:opacity-70"
             >
               {showExportImport ? '숨기기' : '보기'}
             </button>
@@ -106,13 +106,13 @@ export default function SimplePage() {
                   <div className="space-y-3">
                     <button
                       onClick={() => handleExport('json')}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+                      className="w-full btn btn-primary"
                     >
                       📄 JSON 형식으로 내보내기
                     </button>
                     <button
                       onClick={() => handleExport('csv')}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors"
+                      className="w-full btn btn-success"
                     >
                       📊 CSV 형식으로 내보내기
                     </button>
@@ -120,8 +120,8 @@ export default function SimplePage() {
                 </div>
                 <div>
                   <h4 className="font-medium mb-4">📥 데이터 가져오기</h4>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <p className="text-gray-500 mb-2">JSON 또는 CSV 파일을 선택하세요</p>
+                  <div className="border-2 border-dashed border rounded-lg p-6 text-center">
+                    <p className="text-secondary mb-2">JSON 또는 CSV 파일을 선택하세요</p>
                     <input type="file" accept=".json,.csv" className="text-sm" />
                   </div>
                 </div>
@@ -142,19 +142,19 @@ export default function SimplePage() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold text-lg">{trip.country}</h3>
-                      <p className="text-gray-600">
+                      <p className="text-secondary">
                         {trip.entryDate} ~ {trip.exitDate}
                       </p>
-                      <p className="text-sm text-gray-500">{trip.visaType} | 최대 {trip.maxDays}일</p>
+                      <p className="text-sm text-tertiary">{trip.visaType} | 최대 {trip.maxDays}일</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                      <span className="text-xs badge badge-success">
                         완료
                       </span>
                     </div>
                   </div>
                   {trip.notes && (
-                    <p className="mt-2 text-sm text-gray-600">{trip.notes}</p>
+                    <p className="mt-2 text-sm text-secondary">{trip.notes}</p>
                   )}
                 </div>
               ))}
@@ -168,9 +168,9 @@ export default function SimplePage() {
             <h2 className="text-xl font-semibold">셰겐 계산기</h2>
           </div>
           <div className="p-6">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h4 className="font-semibold text-blue-900 mb-3">📚 셰겐 90/180일 규칙</h4>
-              <div className="space-y-2 text-blue-800 text-sm">
+            <div className="alert">
+              <h4 className="font-semibold mb-3">📚 셰겐 90/180일 규칙</h4>
+              <div className="space-y-2 text-sm">
                 <p>• 셰겐 지역 내에서 180일 중 최대 90일까지만 체류할 수 있습니다</p>
                 <p>• 현재 사용량: 15일 / 90일 (규정 준수 ✅)</p>
                 <p>• 다음 초기화: 2024년 8월 15일</p>

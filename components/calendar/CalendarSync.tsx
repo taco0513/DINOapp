@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Checkbox } from '@/components/ui/checkbox'
+// Remove shadcn/ui imports - using minimal design system
 import { 
   Calendar, 
   Settings, 
@@ -230,68 +224,69 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
 
   const getConfidenceBadge = (confidence: number) => {
     if (confidence >= 0.8) {
-      return <Badge className="bg-green-100 text-green-800">높음</Badge>
+      return <span className="badge badge-success">높음</span>
     } else if (confidence >= 0.6) {
-      return <Badge className="bg-yellow-100 text-yellow-800">중간</Badge>
+      return <span className="badge badge-warning">중간</span>
     } else {
-      return <Badge className="bg-red-100 text-red-800">낮음</Badge>
+      return <span className="badge badge-error">낮음</span>
     }
   }
 
   if (!session) {
     return (
-      <Alert>
+      <div className="alert alert-warning">
         <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>
+        <p>
           Google Calendar 통합을 사용하려면 먼저 로그인해주세요.
-        </AlertDescription>
-      </Alert>
+        </p>
+      </div>
     )
   }
 
   if (travelInfos.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+      <div className="card">
+        <div className="p-8 text-center">
+          <Calendar className="h-16 w-16 text-tertiary mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">동기화할 여행 정보가 없습니다</h3>
-          <p className="text-muted-foreground">
+          <p className="text-secondary">
             먼저 Gmail에서 여행 이메일을 분석해주세요.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <div className="card">
+      <div className="p-6">
+        <h2 className="text-xl font-semibold flex items-center gap-2 mb-2">
           <Calendar className="h-5 w-5" />
           Google Calendar 동기화
-        </CardTitle>
-        <CardDescription>
+        </h2>
+        <p className="text-secondary mb-6">
           추출된 여행 정보를 Google Calendar에 자동으로 동기화합니다
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+        </p>
+        <div className="space-y-6">
         {/* 동기화 진행 상황 */}
         {isSyncing && (
-          <Card className="border-blue-200">
-            <CardContent className="p-4">
+          <div className="card" style={{borderColor: 'var(--color-primary)'}}>
+            <div className="p-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium flex items-center gap-2">
                     <RotateCcw className="h-4 w-4 animate-spin" />
                     {syncProgress.currentStep}
                   </span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-secondary">
                     {syncProgress.progress}%
                   </span>
                 </div>
-                <Progress value={syncProgress.progress} className="w-full" />
+                <div className="w-full bg-surface rounded-full h-2">
+                  <div className="bg-primary h-2 rounded-full transition-all" style={{width: `${syncProgress.progress}%`}}></div>
+                </div>
                 {syncProgress.totalCount > 0 && (
-                  <div className="flex justify-between text-sm text-muted-foreground">
+                  <div className="flex justify-between text-sm text-secondary">
                     <span>처리됨: {syncProgress.processedCount}</span>
                     <span>전체: {syncProgress.totalCount}</span>
                   </div>
@@ -331,18 +326,17 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                     </option>
                   ))}
                 </select>
-                <Button
-                  variant="outline"
-                  size="sm"
+                <button
                   onClick={loadCalendars}
                   disabled={isLoadingCalendars}
+                  className="btn btn-ghost btn-sm"
                 >
                   {isLoadingCalendars ? (
                     <RefreshCw className="h-4 w-4 animate-spin" />
                   ) : (
                     <RefreshCw className="h-4 w-4" />
                   )}
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -350,10 +344,12 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
             <div className="space-y-3">
               <label className="text-sm font-medium">동기화 옵션</label>
               <div className="flex items-center space-x-2">
-                <Checkbox
+                <input
+                  type="checkbox"
                   id="prevent-duplicates"
                   checked={preventDuplicates}
-                  onCheckedChange={(checked) => setPreventDuplicates(checked as boolean)}
+                  onChange={(e) => setPreventDuplicates(e.target.checked)}
+                  className="w-5 h-5 rounded"
                 />
                 <label htmlFor="prevent-duplicates" className="text-sm">
                   중복 이벤트 방지 (동일한 이메일에서 추출된 이벤트가 이미 있는 경우 건너뛰기)
@@ -363,11 +359,9 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
 
             {/* 고급 옵션 토글 */}
             <div>
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-                className="flex items-center gap-2"
+                className="btn btn-ghost btn-sm flex items-center gap-2"
               >
                 {showAdvancedOptions ? (
                   <ChevronUp className="h-4 w-4" />
@@ -375,12 +369,12 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                   <ChevronDown className="h-4 w-4" />
                 )}
                 고급 옵션
-              </Button>
+              </button>
               
               {showAdvancedOptions && (
-                <Card className="mt-3">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="text-sm text-muted-foreground">
+                <div className="card mt-3">
+                  <div className="p-4 space-y-3">
+                    <div className="text-sm text-secondary">
                       고급 동기화 옵션들입니다. 대부분의 경우 기본 설정을 사용하는 것을 권장합니다.
                     </div>
                     {/* 추후 고급 옵션들 추가 가능 */}
@@ -396,16 +390,15 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                   동기화할 여행 정보 선택
                 </label>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline">
+                  <span className="badge">
                     {selectedTravelInfos.length}/{travelInfos.length}
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  </span>
+                  <button
                     onClick={toggleSelectAll}
+                    className="btn btn-ghost btn-sm"
                   >
                     {selectedTravelInfos.length === travelInfos.length ? '전체 해제' : '전체 선택'}
-                  </Button>
+                  </button>
                 </div>
               </div>
               
@@ -415,22 +408,23 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                     key={info.emailId}
                     className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                       selectedTravelInfos.includes(info.emailId)
-                        ? 'border-blue-200 bg-blue-50'
-                        : 'border-gray-200 hover:bg-gray-50'
+                        ? 'border-primary bg-surface'
+                        : 'border hover:bg-surface'
                     }`}
                     onClick={() => toggleTravelInfo(info.emailId)}
                   >
                     <div className="flex items-start gap-3">
-                      <Checkbox
+                      <input
+                        type="checkbox"
                         checked={selectedTravelInfos.includes(info.emailId)}
-                        className="mt-1"
+                        className="mt-1 w-5 h-5 rounded"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium text-sm truncate">{info.subject}</h4>
                           {getConfidenceBadge(info.confidence)}
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-secondary">
                           {info.departureDate && (
                             <div className="flex items-center gap-1">
                               <Plane className="h-3 w-3" />
@@ -464,11 +458,10 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
             </div>
 
             {/* 동기화 버튼 */}
-            <Button
+            <button
               onClick={syncToCalendar}
               disabled={isSyncing || !selectedCalendarId || selectedTravelInfos.length === 0}
-              className="w-full"
-              size="lg"
+              className="btn btn-primary w-full"
             >
               {isSyncing ? (
                 <>
@@ -481,82 +474,84 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                   캘린더에 동기화 ({selectedTravelInfos.length}개)
                 </>
               )}
-            </Button>
-          </TabsContent>
+            </button>
+            </div>
+          )}
 
-          <TabsContent value="preview" className="mt-6">
+          {activeView === 'preview' && (
             <div className="space-y-4">
               {selectedTravelInfos.length > 0 ? (
                 <>
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">생성될 캘린더 이벤트 미리보기</h4>
-                    <Badge variant="outline">
+                    <span className="badge">
                       {selectedTravelInfos.length}개 이벤트
-                    </Badge>
+                    </span>
                   </div>
                   <div className="space-y-3">
                     {travelInfos
                       .filter(info => selectedTravelInfos.includes(info.emailId))
                       .map((info) => (
-                        <Card key={info.emailId} className="border-l-4 border-l-blue-500">
-                          <CardContent className="p-4">
+                        <div key={info.emailId} className="card" style={{borderLeft: '4px solid var(--color-primary)'}}>
+                          <div className="p-4">
                             <h5 className="font-medium mb-2">{info.subject}</h5>
                             <div className="space-y-2 text-sm">
                               {info.departureDate && (
                                 <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                  <div className="w-3 h-3 bg-error rounded-full"></div>
                                   <Plane className="h-4 w-4" />
                                   <span>{info.destination || '목적지'} 출발 - {info.departureDate}</span>
                                 </div>
                               )}
                               {info.returnDate && (
                                 <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                  <div className="w-3 h-3 bg-success rounded-full"></div>
                                   <Plane className="h-4 w-4 rotate-180" />
                                   <span>{info.departure || '출발지'} 귀국 - {info.returnDate}</span>
                                 </div>
                               )}
                               {info.hotelName && info.departureDate && info.returnDate && (
                                 <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                  <div className="w-3 h-3 bg-primary rounded-full"></div>
                                   <Hotel className="h-4 w-4" />
                                   <span>{info.hotelName} - {info.departureDate} ~ {info.returnDate}</span>
                                 </div>
                               )}
                             </div>
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </div>
                       ))}
                   </div>
                 </>
               ) : (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <div className="card">
+                  <div className="p-8 text-center">
+                    <Calendar className="h-16 w-16 text-tertiary mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">미리보기가 없습니다</h3>
-                    <p className="text-muted-foreground">
+                    <p className="text-secondary">
                       동기화할 여행 정보를 선택해주세요.
                     </p>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               )}
             </div>
-          </TabsContent>
-        </Tabs>
+            </div>
+          )}
+        </div>
 
         {/* 에러 메시지 */}
         {error && (
-          <Alert variant="destructive">
+          <div className="alert alert-error">
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+            <p>{error}</p>
+          </div>
         )}
 
         {/* 동기화 결과 */}
         {syncResult && (
-          <Alert className={syncResult.success ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'}>
-            <CheckCircle className={`h-4 w-4 ${syncResult.success ? 'text-green-600' : 'text-yellow-600'}`} />
-            <AlertDescription>
+          <div className={syncResult.success ? 'alert alert-success' : 'alert alert-warning'}>
+            <CheckCircle className="h-4 w-4" />
+            <div>
               <div className="space-y-2">
                 <p className="font-medium">
                   {syncResult.success ? '✅' : '⚠️'} {syncResult.message}
@@ -566,8 +561,8 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                   {syncResult.skipped > 0 && <p>⏭️ 건너뜀: {syncResult.skipped}개 (중복)</p>}
                   {syncResult.errors.length > 0 && (
                     <div>
-                      <p className="text-red-600 font-medium">❌ 오류:</p>
-                      <ul className="list-disc list-inside text-red-600 ml-2">
+                      <p className="text-error font-medium">❌ 오류:</p>
+                      <ul className="list-disc list-inside text-error ml-2">
                         {syncResult.errors.map((error, index) => (
                           <li key={index}>{error}</li>
                         ))}
@@ -577,21 +572,21 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                 </div>
                 {syncResult.success && syncResult.created > 0 && (
                   <div className="flex items-center gap-2 mt-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <button
                       onClick={() => window.open('https://calendar.google.com', '_blank')}
+                      className="btn btn-ghost btn-sm"
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Google Calendar에서 확인
-                    </Button>
+                    </button>
                   </div>
                 )}
               </div>
-            </AlertDescription>
-          </Alert>
+            </div>
+          </div>
         )}
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   )
 }

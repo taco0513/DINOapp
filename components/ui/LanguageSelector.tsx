@@ -23,14 +23,7 @@ export default function LanguageSelector({ className = '' }: LanguageSelectorPro
     <div className="relative">
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className={`flex items-center gap-2 p-2 border-2 border-gray-800 bg-white hover:bg-gray-50 transition-colors ${className}`}
-        style={{
-          border: '2px solid #333',
-          backgroundColor: 'white',
-          cursor: 'pointer',
-          padding: '8px 12px',
-          fontSize: '14px'
-        }}
+        className={`btn btn-ghost btn-sm flex items-center gap-2 ${className}`}
       >
         <span>{currentLanguage?.flag}</span>
         <span>{currentLanguage?.name}</span>
@@ -56,30 +49,43 @@ export default function LanguageSelector({ className = '' }: LanguageSelectorPro
             onClick={() => setShowDropdown(false)}
           />
           <div 
-            className="absolute right-0 mt-2 bg-white border-2 border-gray-800 z-50"
+            className="absolute right-0 z-50 card p-0"
             style={{
-              border: '2px solid #333',
-              backgroundColor: 'white',
-              minWidth: '150px'
+              marginTop: 'var(--space-2)',
+              minWidth: '150px',
+              backgroundColor: 'var(--color-background)',
+              border: '1px solid var(--color-border-strong)'
             }}
           >
             {supportedLocales.map((locale) => (
               <button
                 key={locale.code}
                 onClick={() => handleLanguageChange(locale.code)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-100 transition-colors ${
-                  currentLocale === locale.code ? 'bg-gray-100' : ''
+                className={`w-full flex items-center text-left transition-colors ${
+                  currentLocale === locale.code ? '' : ''
                 }`}
                 style={{
-                  padding: '12px 16px',
-                  borderBottom: '1px solid #ddd',
-                  fontSize: '14px'
+                  padding: 'var(--space-3) var(--space-4)',
+                  borderBottom: '1px solid var(--color-border)',
+                  fontSize: 'var(--text-sm)',
+                  backgroundColor: currentLocale === locale.code ? 'var(--color-surface)' : 'transparent',
+                  color: 'var(--color-text-primary)'
+                }}
+                onMouseEnter={(e) => {
+                  if (currentLocale !== locale.code) {
+                    e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentLocale !== locale.code) {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                  }
                 }}
               >
-                <span>{locale.flag}</span>
+                <span style={{ marginRight: 'var(--space-3)' }}>{locale.flag}</span>
                 <span>{locale.name}</span>
                 {currentLocale === locale.code && (
-                  <span style={{ marginLeft: 'auto', color: '#666' }}>✓</span>
+                  <span style={{ marginLeft: 'auto', color: 'var(--color-text-secondary)' }}>✓</span>
                 )}
               </button>
             ))}

@@ -10,21 +10,22 @@ export default function OfflineIndicator() {
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      right: '0',
-      backgroundColor: '#ffa500',
-      color: '#fff',
-      padding: '8px 20px',
-      textAlign: 'center',
-      fontSize: '14px',
-      fontWeight: '500',
-      zIndex: 9999,
-      animation: 'slideDown 0.3s ease-out'
-    }}>
-      <span style={{ marginRight: '8px' }}>🌐</span>
+    <div 
+      className="alert-warning"
+      style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        padding: 'var(--space-2) var(--space-5)',
+        textAlign: 'center',
+        fontSize: 'var(--text-sm)',
+        fontWeight: 'var(--font-medium)',
+        zIndex: 9999,
+        animation: 'slideDown var(--transition-slow) ease-out'
+      }}
+    >
+      <span style={{ marginRight: 'var(--space-2)' }}>🌐</span>
       오프라인 모드 - 캐시된 데이터를 사용 중입니다
       
       <style jsx>{`

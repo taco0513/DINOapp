@@ -67,7 +67,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
     <div className="relative">
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className={`relative p-2 text-gray-600 hover:text-gray-900 transition-colors ${className}`}
+        className={`relative p-2 text-secondary hover:text-primary transition-colors ${className}`}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path 
@@ -79,7 +79,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
         </svg>
         
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -87,14 +87,14 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
 
       {/* Dropdown */}
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <div className="p-4 border-b border-gray-200">
+        <div className="absolute right-0 mt-2 w-80 card z-50">
+          <div className="p-4 border-b">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">{t('notifications.title')}</h3>
               <Link
                 href="/"
                 onClick={() => setShowDropdown(false)}
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-primary hover:opacity-70"
               >
                 {t('notifications.view_all')}
               </Link>
@@ -103,17 +103,17 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
 
           <div className="max-h-80 overflow-y-auto">
             {recentNotifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-secondary">
                 {t('notifications.empty')}
               </div>
             ) : (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y">
                 {recentNotifications.map(notification => {
                   const priorityColors = {
-                    low: 'text-gray-600',
-                    medium: 'text-blue-600',
-                    high: 'text-orange-600',
-                    critical: 'text-red-600'
+                    low: 'text-secondary',
+                    medium: 'text-primary',
+                    high: 'text-warning',
+                    critical: 'text-error'
                   }
 
                   const typeIcons = {
@@ -126,7 +126,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
                   return (
                     <div
                       key={notification.id}
-                      className="p-4 hover:bg-gray-50 cursor-pointer"
+                      className="p-4 hover:bg-surface cursor-pointer"
                       onClick={() => {
                         markAsRead(notification.id)
                         setShowDropdown(false)
@@ -140,10 +140,10 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
                           <p className={`font-medium text-sm ${priorityColors[notification.priority]}`}>
                             {notification.title}
                           </p>
-                          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                          <p className="text-sm text-secondary mt-1 line-clamp-2">
                             {notification.message}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-tertiary mt-1">
                             {new Date(notification.createdAt).toLocaleDateString('ko-KR')}
                           </p>
                         </div>
@@ -156,11 +156,11 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
           </div>
 
           {recentNotifications.length > 0 && (
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t">
               <Link
                 href="/"
                 onClick={() => setShowDropdown(false)}
-                className="block w-full text-center text-sm text-blue-600 hover:text-blue-700 py-2"
+                className="block w-full text-center text-sm text-primary hover:opacity-70 py-2"
               >
                 {t('notifications.view_all')}
               </Link>

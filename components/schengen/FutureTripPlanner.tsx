@@ -56,18 +56,18 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
   return (
     <div className="space-y-6">
       {/* 미래 여행 계획 검증 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="card">
         <h3 className="text-lg font-semibold mb-4">🔮 미래 여행 계획 검증</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               방문 예정 국가
             </label>
             <select
               value={plannedCountry}
               onChange={(e) => setPlannedCountry(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">국가 선택</option>
               <optgroup label="셰겐 지역">
@@ -88,7 +88,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               입국 예정일
             </label>
             <input
@@ -96,12 +96,12 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               value={entryDate}
               onChange={(e) => setEntryDate(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               출국 예정일
             </label>
             <input
@@ -109,46 +109,46 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               value={exitDate}
               onChange={(e) => setExitDate(e.target.value)}
               min={entryDate || new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>
 
         <button
           onClick={handleValidate}
-          className="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="btn btn-primary"
         >
           여행 계획 검증하기
         </button>
 
         {validation && (
-          <div className={`mt-4 p-4 rounded-lg ${validation.canTravel ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+          <div className={`mt-4 alert ${validation.canTravel ? 'alert-success' : 'alert-error'}`}>
             <div className="space-y-2">
               {validation.warnings.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-red-900 mb-1">경고</h4>
+                  <h4 className="font-medium mb-1">경고</h4>
                   {validation.warnings.map((warning, idx) => (
-                    <p key={idx} className="text-red-800 text-sm">{warning}</p>
+                    <p key={idx} className="text-sm">{warning}</p>
                   ))}
                 </div>
               )}
               
               {validation.suggestions.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-1">제안</h4>
+                  <h4 className="font-medium mb-1">제안</h4>
                   {validation.suggestions.map((suggestion, idx) => (
-                    <p key={idx} className="text-gray-700 text-sm">{suggestion}</p>
+                    <p key={idx} className="text-sm">{suggestion}</p>
                   ))}
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-4 mt-3 pt-3 border-t">
                 <div>
-                  <span className="text-sm text-gray-600">최대 체류 가능일:</span>
+                  <span className="text-sm text-secondary">최대 체류 가능일:</span>
                   <p className="font-semibold">{validation.maxStayDays}일</p>
                 </div>
                 <div>
-                  <span className="text-sm text-gray-600">여행 후 남은 일수:</span>
+                  <span className="text-sm text-secondary">여행 후 남은 일수:</span>
                   <p className="font-semibold">{validation.remainingDaysAfterTrip}일</p>
                 </div>
               </div>
@@ -158,12 +158,12 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
       </div>
 
       {/* 안전한 여행 날짜 찾기 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="card">
         <h3 className="text-lg font-semibold mb-4">📅 안전한 여행 날짜 찾기</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               희망 체류 기간 (일)
             </label>
             <input
@@ -172,14 +172,14 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               onChange={(e) => setDesiredDuration(e.target.value)}
               min="1"
               max="90"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div className="flex items-end">
             <button
               onClick={handleFindSafeDates}
-              className="w-full md:w-auto px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              className="btn btn-primary"
             >
               안전한 날짜 찾기
             </button>
@@ -187,9 +187,9 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
         </div>
 
         {safeDates && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-2">추천 여행 날짜</h4>
-            <p className="text-blue-800">
+          <div className="mt-4 alert">
+            <h4 className="font-medium mb-2">추천 여행 날짜</h4>
+            <p>
               <span className="font-semibold">
                 {safeDates.startDate.toLocaleDateString('ko-KR')}
               </span>
@@ -200,7 +200,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
               {' '}
               ({desiredDuration}일간)
             </p>
-            <p className="text-sm text-blue-700 mt-1">
+            <p className="text-sm mt-1">
               이 날짜로 여행하면 셰겐 90/180일 규칙을 준수할 수 있습니다.
             </p>
           </div>

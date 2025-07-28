@@ -64,8 +64,8 @@ export default function MobileBottomNav() {
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: 'white',
-        border: '3px solid #333',
+        backgroundColor: 'var(--color-background)',
+        border: '1px solid var(--color-border-strong)',
         borderBottom: 'none',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         zIndex: 100,
@@ -88,48 +88,46 @@ export default function MobileBottomNav() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '8px 12px',
+              padding: 'var(--space-2) var(--space-3)',
               textDecoration: 'none',
-              color: '#333',
-              fontSize: '12px',
-              fontWeight: 'medium',
+              color: 'var(--color-text-primary)',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 'var(--font-medium)',
               minWidth: '60px',
               position: 'relative',
-              border: isActive ? '2px solid #333' : '1px solid #666',
-              backgroundColor: isActive ? '#f0f0f0' : 'white',
-              margin: '4px 2px'
+              border: isActive ? '1px solid var(--color-border-strong)' : '1px solid var(--color-border)',
+              backgroundColor: isActive ? 'var(--color-surface)' : 'var(--color-background)',
+              margin: 'var(--space-1)'
             }}
           >
             <div
               style={{
                 fontSize: '18px',
-                marginBottom: '2px'
+                marginBottom: 'var(--space-1)'
               }}
             >
               {item.icon}
             </div>
             
-            <span style={{ fontSize: '10px' }}>
+            <span style={{ fontSize: 'var(--text-xs)' }}>
               {item.label}
             </span>
 
             {/* 배지 */}
             {item.badge && item.badge > 0 && (
               <div
+                className="badge"
                 style={{
                   position: 'absolute',
-                  top: '2px',
-                  right: '8px',
-                  backgroundColor: 'white',
-                  color: '#333',
-                  border: '1px solid #333',
+                  top: 'var(--space-1)',
+                  right: 'var(--space-2)',
                   minWidth: '18px',
                   height: '18px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '10px',
-                  fontWeight: '600'
+                  fontSize: 'var(--text-xs)',
+                  fontWeight: 'var(--font-semibold)'
                 }}
               >
                 {item.badge > 99 ? '99+' : item.badge}

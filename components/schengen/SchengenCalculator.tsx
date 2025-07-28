@@ -308,9 +308,9 @@ export default function SchengenCalculator({ onDataUpdate }: SchengenCalculatorP
       </div>
 
       {/* Tips and Information */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
-        <h4 className="font-semibold text-blue-900 mb-3 text-sm sm:text-base">💡 셰겐 규정 팁</h4>
-        <div className="space-y-2 text-blue-800 text-xs sm:text-sm">
+      <div className="alert">
+        <h4 className="font-semibold mb-3 text-sm sm:text-base">💡 셰겐 규정 팁</h4>
+        <div className="space-y-2 text-xs sm:text-sm">
           <p>• 90일 한도는 연속 체류가 아닌 누적 체류입니다</p>
           <p>• 매일 지난 180일간의 체류 일수를 계산합니다</p>
           <p>• 입국일과 출국일 모두 체류 일수에 포함됩니다</p>

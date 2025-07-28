@@ -12,26 +12,22 @@ export default function PWAInstallButton() {
   return (
     <div style={{
       position: 'fixed',
-      bottom: '20px',
-      right: '20px',
+      bottom: 'var(--space-5)',
+      right: 'var(--space-5)',
       zIndex: 1000,
-      animation: 'slideUp 0.3s ease-out'
+      animation: 'slideUp var(--transition-slow) ease-out'
     }}>
       <button
         onClick={installPrompt}
+        className="btn btn-primary"
         style={{
-          padding: '12px 20px',
-          backgroundColor: '#000',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '8px',
-          fontSize: '14px',
-          fontWeight: '500',
-          cursor: 'pointer',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          padding: 'var(--space-3) var(--space-5)',
+          fontSize: 'var(--text-sm)',
+          fontWeight: 'var(--font-medium)',
+          boxShadow: 'var(--shadow-md)',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px'
+          gap: 'var(--space-2)'
         }}
       >
         <span>📱</span>

@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { PerformanceDashboard } from '@/components/monitoring/PerformanceDashboard'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+// Remove shadcn/ui imports - using minimal design system
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
@@ -33,57 +33,46 @@ export default async function MonitoringPage() {
         </div>
         
         {/* 사용 통계 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>사용 통계</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <h3 className="text-lg font-semibold mb-4">사용 통계</h3>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600">총 사용자 수</p>
+                <p className="text-sm text-secondary">총 사용자 수</p>
                 <p className="text-2xl font-bold">-</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">오늘 활성 사용자</p>
+                <p className="text-sm text-secondary">오늘 활성 사용자</p>
                 <p className="text-2xl font-bold">-</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">총 여행 기록</p>
+                <p className="text-sm text-secondary">총 여행 기록</p>
                 <p className="text-2xl font-bold">-</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
         
         {/* 에러 통계 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>에러 통계</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <h3 className="text-lg font-semibold mb-4">에러 통계</h3>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600">24시간 에러</p>
+                <p className="text-sm text-secondary">24시간 에러</p>
                 <p className="text-2xl font-bold">0</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">에러율</p>
+                <p className="text-sm text-secondary">에러율</p>
                 <p className="text-2xl font-bold">0%</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">평균 응답 시간</p>
+                <p className="text-sm text-secondary">평균 응답 시간</p>
                 <p className="text-2xl font-bold">-ms</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
         
         {/* 인기 기능 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>인기 기능</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <h3 className="text-lg font-semibold mb-4">인기 기능</h3>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-sm">Schengen 계산기</span>
@@ -102,13 +91,12 @@ export default async function MonitoringPage() {
                 <span className="text-sm font-medium">-</span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
       
-      <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+      <div className="mt-8 alert">
         <h2 className="font-semibold mb-2">모니터링 도구 통합 안내</h2>
-        <ul className="space-y-2 text-sm text-gray-600">
+        <ul className="space-y-2 text-sm">
           <li>• <strong>Sentry</strong>: 에러 추적 및 성능 모니터링 (SENTRY_DSN 환경 변수 설정 필요)</li>
           <li>• <strong>Vercel Analytics</strong>: 자동으로 활성화됨 (Vercel 대시보드에서 확인)</li>
           <li>• <strong>Google Analytics</strong>: 사용자 행동 분석 (NEXT_PUBLIC_GA_ID 환경 변수 설정 필요)</li>

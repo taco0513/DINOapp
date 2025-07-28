@@ -71,7 +71,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
     }}>
       <div style={{
         backgroundColor: 'white',
-        border: '3px solid #333',
+        border: '1px solid var(--color-border-strong)',
         maxWidth: '600px',
         width: '100%',
         maxHeight: '90vh',
@@ -84,7 +84,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
           alignItems: 'center',
           marginBottom: '20px',
           paddingBottom: '10px',
-          borderBottom: '2px solid #333'
+          borderBottom: '1px solid var(--color-border-strong)'
         }}>
           <h2 style={{
             fontSize: '20px',
@@ -97,7 +97,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
             onClick={onCancel}
             style={{
               backgroundColor: 'white',
-              border: '2px solid #666',
+              border: '1px solid var(--color-border)',
               padding: '5px 10px',
               cursor: 'pointer',
               fontSize: '14px'
@@ -111,9 +111,9 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
           <div style={{
             marginBottom: '20px',
             padding: '15px',
-            backgroundColor: '#ffe6e6',
-            border: '2px solid #cc0000',
-            color: '#cc0000'
+            backgroundColor: 'rgba(239, 68, 68, 0.05)',
+            border: '1px solid var(--color-error)',
+            color: 'var(--color-error)'
           }}>
             {error}
           </div>
@@ -138,7 +138,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                 style={{
                   width: '100%',
                   padding: '10px',
-                  border: '2px solid #666',
+                  border: '1px solid var(--color-border)',
                   fontSize: '14px',
                   backgroundColor: 'white'
                 }}
@@ -171,7 +171,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   style={{
                     width: '100%',
                     padding: '10px',
-                    border: '2px solid #666',
+                    border: '1px solid var(--color-border)',
                     fontSize: '14px'
                   }}
                 />
@@ -185,7 +185,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   marginBottom: '5px'
                 }}>
                   출국 날짜
-                  <span style={{ fontSize: '10px', color: '#666', fontWeight: 'normal' }}>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', fontWeight: 'normal' }}>
                     {' '}(체류 중이면 비워두세요)
                   </span>
                 </label>
@@ -196,7 +196,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   style={{
                     width: '100%',
                     padding: '10px',
-                    border: '2px solid #666',
+                    border: '1px solid var(--color-border)',
                     fontSize: '14px'
                   }}
                 />
@@ -221,7 +221,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   style={{
                     width: '100%',
                     padding: '10px',
-                    border: '2px solid #666',
+                    border: '1px solid var(--color-border)',
                     fontSize: '14px',
                     backgroundColor: 'white'
                   }}
@@ -251,7 +251,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   style={{
                     width: '100%',
                     padding: '10px',
-                    border: '2px solid #666',
+                    border: '1px solid var(--color-border)',
                     fontSize: '14px'
                   }}
                 />
@@ -275,7 +275,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                 style={{
                   width: '100%',
                   padding: '10px',
-                  border: '2px solid #666',
+                  border: '1px solid var(--color-border)',
                   fontSize: '14px',
                   backgroundColor: 'white'
                 }}
@@ -305,7 +305,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                 style={{
                   width: '100%',
                   padding: '10px',
-                  border: '2px solid #666',
+                  border: '1px solid var(--color-border)',
                   fontSize: '14px',
                   resize: 'none',
                   fontFamily: 'inherit'
@@ -317,7 +317,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
 
           {/* Actions */}
           <div style={{
-            borderTop: '2px solid #333',
+            borderTop: '1px solid var(--color-border-strong)',
             paddingTop: '20px',
             display: 'flex',
             gap: '10px'
@@ -327,10 +327,10 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
               disabled={loading}
               style={{
                 flex: 1,
-                backgroundColor: loading ? '#ccc' : '#333',
+                backgroundColor: loading ? 'var(--color-border-strong)' : 'var(--color-primary)',
                 color: 'white',
                 padding: '12px 20px',
-                border: '2px solid #333',
+                border: '1px solid var(--color-border-strong)',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 fontSize: '14px',
                 fontWeight: 'bold'
@@ -344,9 +344,9 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
               style={{
                 flex: 1,
                 backgroundColor: 'white',
-                color: '#666',
+                color: 'var(--color-text-secondary)',
                 padding: '12px 20px',
-                border: '2px solid #666',
+                border: '1px solid var(--color-border)',
                 cursor: 'pointer',
                 fontSize: '14px',
                 fontWeight: 'bold'

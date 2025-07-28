@@ -20,60 +20,57 @@ export default function WireframeTripCard({ trip, onEdit, onDelete }: WireframeT
   }
 
   return (
-    <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
+    <div className="card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-4)' }}>
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000', marginBottom: '5px' }}>
+          <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--font-bold)', color: 'var(--color-text-primary)', marginBottom: 'var(--space-1)' }}>
             {trip.country}
           </h3>
-          <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-2)' }}>
             {formatDate(trip.entryDate)} - {trip.exitDate ? formatDate(trip.exitDate) : '현재'}
           </p>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-            <span style={{ 
-              padding: '4px 8px', 
-              backgroundColor: trip.visaType === 'schengen' ? '#e6f3ff' : '#f0f0f0', 
-              color: trip.visaType === 'schengen' ? '#0066cc' : '#666', 
-              fontSize: '12px' 
-            }}>
+          <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
+            <span 
+              className={`badge ${trip.visaType === 'schengen' ? 'badge-success' : ''}`}
+              style={{ 
+                padding: 'var(--space-1) var(--space-2)', 
+                fontSize: 'var(--text-xs)' 
+              }}
+            >
               {trip.visaType || '비자면제'}
             </span>
             {!trip.exitDate && (
-              <span style={{ padding: '4px 8px', backgroundColor: '#ffe6e6', color: '#cc0000', fontSize: '12px' }}>
+              <span 
+                className="badge badge-error"
+                style={{ 
+                  padding: 'var(--space-1) var(--space-2)', 
+                  fontSize: 'var(--text-xs)' 
+                }}
+              >
                 체류중
               </span>
             )}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#000' }}>{calculateDays()}일</p>
-          <p style={{ fontSize: '12px', color: '#666' }}>체류</p>
+          <p style={{ fontSize: 'var(--text-xl)', fontWeight: 'var(--font-bold)', color: 'var(--color-text-primary)' }}>{calculateDays()}일</p>
+          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>체류</p>
         </div>
       </div>
       
-      <div style={{ display: 'flex', gap: '8px' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
         <button
           onClick={() => onEdit(trip)}
-          style={{
-            padding: '6px 12px',
-            backgroundColor: '#fff',
-            border: '1px solid #666',
-            color: '#666',
-            fontSize: '12px',
-            cursor: 'pointer'
-          }}
+          className="btn btn-ghost btn-sm"
         >
           수정
         </button>
         <button
           onClick={onDelete}
+          className="btn btn-sm"
           style={{
-            padding: '6px 12px',
-            backgroundColor: '#fff',
-            border: '1px solid #cc0000',
-            color: '#cc0000',
-            fontSize: '12px',
-            cursor: 'pointer'
+            borderColor: 'var(--color-error)',
+            color: 'var(--color-error)'
           }}
         >
           삭제

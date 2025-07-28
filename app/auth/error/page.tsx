@@ -94,22 +94,22 @@ function AuthErrorContent() {
   const errorInfo = getErrorMessage(error)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-100 p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+    <div className="min-h-screen flex items-center justify-center bg-surface p-4">
+      <div className="max-w-md w-full card">
         <div className="text-center mb-8">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-error-light mb-4">
+            <svg className="h-6 w-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-primary mb-2">
             {errorInfo.title}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-secondary">
             {errorInfo.message}
           </p>
           {error && (
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-sm text-tertiary mt-2">
               오류 코드: {error}
             </p>
           )}
@@ -118,23 +118,23 @@ function AuthErrorContent() {
         <div className="space-y-4">
           <Link
             href="/auth/signin"
-            className="w-full flex items-center justify-center gap-3 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full btn btn-primary"
           >
             {errorInfo.action}
           </Link>
           
           <Link
             href="/"
-            className="w-full flex items-center justify-center gap-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+            className="w-full btn btn-ghost"
           >
             홈으로 돌아가기
           </Link>
         </div>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-secondary">
             문제가 계속 발생하면{' '}
-            <a href="mailto:support@dinoapp.net" className="text-blue-600 hover:text-blue-800">
+            <a href="mailto:support@dinoapp.net" className="text-primary hover:opacity-70">
               고객지원
             </a>
             에 문의하세요.
@@ -148,11 +148,11 @@ function AuthErrorContent() {
 export default function AuthErrorPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-100 p-4">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+      <div className="min-h-screen flex items-center justify-center bg-surface p-4">
+        <div className="max-w-md w-full card">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">로딩 중...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-error mx-auto"></div>
+            <p className="mt-4 text-secondary">로딩 중...</p>
           </div>
         </div>
       </div>

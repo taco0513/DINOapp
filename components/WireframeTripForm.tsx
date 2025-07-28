@@ -47,15 +47,15 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
       zIndex: 1000
     }}>
       <div style={{
-        backgroundColor: '#fff',
-        border: '1px solid #e0e0e0',
+        backgroundColor: 'var(--color-background)',
+        border: '1px solid var(--color-border)',
         padding: '30px',
         maxWidth: '500px',
         width: '90%',
         maxHeight: '80vh',
         overflow: 'auto'
       }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>
+        <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 'var(--font-bold)', marginBottom: 'var(--space-5)', color: 'var(--color-text-primary)' }}>
           {trip ? '여행 기록 수정' : '새 여행 추가'}
         </h2>
         
@@ -72,7 +72,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--color-border)',
                 fontSize: '14px'
               }}
             />
@@ -90,7 +90,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--color-border)',
                 fontSize: '14px'
               }}
             />
@@ -107,7 +107,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--color-border)',
                 fontSize: '14px'
               }}
             />
@@ -123,7 +123,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--color-border)',
                 fontSize: '14px'
               }}
             >
@@ -148,7 +148,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #e0e0e0',
+                border: '1px solid var(--color-border)',
                 fontSize: '14px'
               }}
             />
@@ -160,7 +160,7 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
               onClick={onCancel}
               style={{
                 padding: '8px 20px',
-                backgroundColor: '#fff',
+                backgroundColor: 'var(--color-background)',
                 border: '1px solid #666',
                 color: '#666',
                 fontSize: '14px',

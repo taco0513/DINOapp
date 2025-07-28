@@ -18,9 +18,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <OfflineIndicator />
       
       {/* Always show layout with header */}
-      <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', paddingBottom: '60px' }}>
+      <div className="min-h-screen" style={{ paddingBottom: '60px' }}>
         <Header />
-        <main style={{ flex: 1 }}>
+        <main className="flex-1">
           {children}
         </main>
         <MobileBottomNav />

@@ -23,7 +23,7 @@ export default function DebugPage() {
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Debug Information</h1>
       
-      <section className="mb-8 p-4 bg-gray-100 rounded">
+      <section className="mb-8 card">
         <h2 className="text-xl font-semibold mb-2">Session Status</h2>
         <pre className="text-sm overflow-auto">
           Status: {status}
@@ -32,7 +32,7 @@ export default function DebugPage() {
         </pre>
       </section>
 
-      <section className="mb-8 p-4 bg-gray-100 rounded">
+      <section className="mb-8 card">
         <h2 className="text-xl font-semibold mb-2">Current URL</h2>
         <pre className="text-sm overflow-auto">
           Origin: {typeof window !== 'undefined' ? window.location.origin : 'N/A'}
@@ -43,14 +43,14 @@ export default function DebugPage() {
         </pre>
       </section>
 
-      <section className="mb-8 p-4 bg-gray-100 rounded">
+      <section className="mb-8 card">
         <h2 className="text-xl font-semibold mb-2">Environment Variables</h2>
         <pre className="text-sm overflow-auto">
           {JSON.stringify(envVars, null, 2)}
         </pre>
       </section>
 
-      <section className="mb-8 p-4 bg-gray-100 rounded">
+      <section className="mb-8 card">
         <h2 className="text-xl font-semibold mb-2">Cookies</h2>
         <pre className="text-sm overflow-auto">
           {cookies || 'No cookies found'}
@@ -60,15 +60,15 @@ export default function DebugPage() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Test Actions</h2>
         <div className="space-y-2">
-          <a href="/auth/signin" className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          <a href="/auth/signin" className="inline-block btn btn-primary">
             Go to Sign In
           </a>
           <br />
-          <a href="/dashboard" className="inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+          <a href="/dashboard" className="inline-block btn btn-success">
             Go to Dashboard
           </a>
           <br />
-          <a href="/" className="inline-block px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+          <a href="/" className="inline-block btn btn-ghost">
             Go to Home
           </a>
         </div>

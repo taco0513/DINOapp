@@ -97,7 +97,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
 
   if (loading) {
     return (
-      <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${className}`}>
+      <div className={`card ${className}`}>
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div className="h-48 bg-gray-200 rounded"></div>
@@ -107,11 +107,11 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${className}`}>
+    <div className={`card ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">셰겐 사용량 추이</h3>
+        <h3 className="text-lg font-semibold">셰겐 사용량 추이</h3>
         
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+        <div className="flex space-x-1 p-1 rounded-lg" style={{backgroundColor: 'var(--color-surface)'}}>
           {[
             { key: '3m', label: '3개월' },
             { key: '6m', label: '6개월' },
@@ -122,8 +122,8 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
               onClick={() => setTimeRange(key as any)}
               className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
                 timeRange === key
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white shadow-sm'
+                  : 'text-secondary hover:text-primary'
               }`}
             >
               {label}
@@ -134,8 +134,8 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
 
       {chartData.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-gray-400 text-4xl mb-4">📊</div>
-          <p className="text-gray-600">표시할 셰겐 여행 데이터가 없습니다</p>
+          <div className="text-secondary text-4xl mb-4">📊</div>
+          <p className="text-secondary">표시할 셰겐 여행 데이터가 없습니다</p>
         </div>
       ) : (
         <div className="relative">
@@ -154,14 +154,14 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
                     y1={chartHeight - (value / maxValue) * chartHeight + 20}
                     x2={Math.max(chartWidth, chartData.length * 40) - 20}
                     y2={chartHeight - (value / maxValue) * chartHeight + 20}
-                    stroke="#e5e7eb"
+                    stroke="var(--color-border)"
                     strokeWidth="1"
                     strokeDasharray={value === 90 ? "5,5" : "none"}
                   />
                   <text
                     x="35"
                     y={chartHeight - (value / maxValue) * chartHeight + 25}
-                    fill="#6b7280"
+                    fill="var(--color-text-secondary)"
                     fontSize="12"
                     textAnchor="end"
                   >
@@ -178,7 +178,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
                   return `${x},${y}`
                 }).join(' ')}
                 fill="none"
-                stroke="#3b82f6"
+                stroke="var(--color-primary)"
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -195,7 +195,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
                       cx={x}
                       cy={y}
                       r="4"
-                      fill={point.isViolation ? "#ef4444" : "#3b82f6"}
+                      fill={point.isViolation ? "var(--color-error)" : "var(--color-primary)"}
                       stroke="white"
                       strokeWidth="2"
                     />
@@ -227,7 +227,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
                     key={originalIndex}
                     x={x}
                     y={chartHeight + 40}
-                    fill="#6b7280"
+                    fill="var(--color-text-secondary)"
                     fontSize="12"
                     textAnchor="middle"
                   >
@@ -244,12 +244,10 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
           {/* Legend */}
           <div className="flex items-center justify-center mt-4 space-x-6 text-sm">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span className="text-gray-600">규정 준수</span>
+              <span className="badge badge-primary">규정 준수</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span className="text-gray-600">규정 위반</span>
+              <span className="badge badge-error">규정 위반</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-0.5 bg-gray-300 border-dashed border-t"></div>

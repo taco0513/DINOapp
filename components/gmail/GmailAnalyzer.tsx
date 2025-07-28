@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+// UI Components removed - using minimal design system
 import { 
   Mail, 
   Search, 
@@ -231,11 +226,11 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
 
   const getConfidenceBadge = (confidence: number) => {
     if (confidence >= 0.8) {
-      return <Badge className="bg-green-100 text-green-800">높음 {Math.round(confidence * 100)}%</Badge>
+      return <span className="badge badge-success">높음 {Math.round(confidence * 100)}%</span>
     } else if (confidence >= 0.6) {
-      return <Badge className="bg-yellow-100 text-yellow-800">중간 {Math.round(confidence * 100)}%</Badge>
+      return <span className="badge badge-warning">중간 {Math.round(confidence * 100)}%</span>
     } else {
-      return <Badge className="bg-red-100 text-red-800">낮음 {Math.round(confidence * 100)}%</Badge>
+      return <span className="badge badge-error">낮음 {Math.round(confidence * 100)}%</span>
     }
   }
 
@@ -259,17 +254,17 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
   return (
     <div className="space-y-6">
       {/* 분석 설정 및 시작 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <div className="card">
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold flex items-center gap-2 mb-2">
             <Search className="h-5 w-5" />
             Gmail 이메일 분석
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p className="text-secondary">
             Gmail에서 여행 관련 이메일을 찾아 여행 정보를 자동으로 추출합니다
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </p>
+        </div>
+        <div className="space-y-4">
           {/* 분석 설정 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
@@ -277,7 +272,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
               <select
                 value={filters.maxResults}
                 onChange={(e) => setFilters(prev => ({ ...prev, maxResults: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border rounded-md"
                 disabled={isAnalyzing}
               >
                 <option value={20}>20개</option>
@@ -292,7 +287,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
               <select
                 value={filters.dateRange}
                 onChange={(e) => setFilters(prev => ({ ...prev, dateRange: e.target.value as any }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border rounded-md"
                 disabled={isAnalyzing}
               >
                 <option value="week">최근 1주</option>
@@ -308,7 +303,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
               <select
                 value={filters.confidence}
                 onChange={(e) => setFilters(prev => ({ ...prev, confidence: parseFloat(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border rounded-md"
                 disabled={isAnalyzing}
               >
                 <option value={0.3}>30% 이상</option>
@@ -319,10 +314,10 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
             </div>
 
             <div className="flex items-end">
-              <Button
+              <button
                 onClick={startAnalysis}
                 disabled={isAnalyzing}
-                className="w-full"
+                className="btn btn-primary btn-full"
               >
                 {isAnalyzing ? (
                   <>
@@ -335,7 +330,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
                     분석 시작
                   </>
                 )}
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -344,25 +339,27 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{analysisProgress.currentStep}</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-secondary">
                   {analysisProgress.progress}%
                 </span>
               </div>
-              <Progress value={analysisProgress.progress} className="w-full" />
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-primary h-2 rounded-full transition-all" style={{width: `${analysisProgress.progress}%`}} />
+              </div>
               
               {analysisProgress.totalEmails > 0 && (
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div className="text-center">
                     <div className="font-medium">{analysisProgress.totalEmails}</div>
-                    <div className="text-muted-foreground">총 이메일</div>
+                    <div className="text-secondary">총 이메일</div>
                   </div>
                   <div className="text-center">
                     <div className="font-medium">{analysisProgress.processedEmails}</div>
-                    <div className="text-muted-foreground">처리됨</div>
+                    <div className="text-secondary">처리됨</div>
                   </div>
                   <div className="text-center">
                     <div className="font-medium">{analysisProgress.foundTravelEmails}</div>
-                    <div className="text-muted-foreground">여행정보 발견</div>
+                    <div className="text-secondary">여행정보 발견</div>
                   </div>
                 </div>
               )}
@@ -371,32 +368,34 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
 
           {/* 에러 메시지 */}
           {error && (
-            <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="alert alert-error">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                <p>{error}</p>
+              </div>
+            </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* 분석 결과 */}
       {filteredTravelInfos.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+        <div className="card">
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-success" />
                 분석 결과
-              </div>
-              <Badge variant="outline">
-                {filteredTravelInfos.length}개 발견
-              </Badge>
-            </CardTitle>
-            <CardDescription>
+              </h3>
+              <span className="badge">
+                {filteredTravelInfos.length}개 발곮
+              </span>
+            </div>
+            <p className="text-secondary">
               추출된 여행 정보를 확인하고 캘린더에 동기화할 수 있습니다
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </p>
+          </div>
+          <div>
             {/* 필터 및 요약 */}
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-4">
@@ -407,7 +406,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
                 <select
                   value={filters.category}
                   onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value as any }))}
-                  className="px-3 py-1 border border-gray-300 rounded text-sm"
+                  className="px-3 py-1 border rounded text-sm"
                 >
                   <option value="all">모든 카테고리</option>
                   <option value="airline">항공사</option>
@@ -418,50 +417,61 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
 
               {/* 요약 카드 */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-blue-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">{filteredTravelInfos.length}</div>
-                  <div className="text-sm text-blue-800">총 여행정보</div>
+                <div className="card text-center">
+                  <div className="text-2xl font-bold text-primary">{filteredTravelInfos.length}</div>
+                  <div className="text-sm text-secondary">총 여행정보</div>
                 </div>
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className="card text-center">
+                  <div className="text-2xl font-bold text-success">
                     {filteredTravelInfos.filter(info => info.confidence >= 0.8).length}
                   </div>
-                  <div className="text-sm text-green-800">높은 신뢰도</div>
+                  <div className="text-sm text-secondary">높은 신뢰도</div>
                 </div>
-                <div className="bg-purple-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-purple-600">
+                <div className="card text-center">
+                  <div className="text-2xl font-bold text-primary">
                     {new Set(filteredTravelInfos.map(info => info.destination).filter(Boolean)).size}
                   </div>
-                  <div className="text-sm text-purple-800">목적지 수</div>
+                  <div className="text-sm text-secondary">목적지 수</div>
                 </div>
-                <div className="bg-orange-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">
+                <div className="card text-center">
+                  <div className="text-2xl font-bold text-warning">
                     {filteredTravelInfos.filter(info => info.flightNumber).length}
                   </div>
-                  <div className="text-sm text-orange-800">항공편 정보</div>
+                  <div className="text-sm text-secondary">항공편 정보</div>
                 </div>
               </div>
             </div>
 
             {/* 결과 탭 */}
-            <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as any)}>
-              <TabsList>
-                <TabsTrigger value="results" className="flex items-center gap-2">
+            <div className="mb-6">
+              <nav className="nav-menu flex gap-4">
+                <button
+                  onClick={() => setSelectedTab('results')}
+                  className={`btn btn-ghost btn-sm ${
+                    selectedTab === 'results' ? 'active' : ''
+                  }`}
+                >
                   <Eye className="h-4 w-4" />
                   결과 목록
-                </TabsTrigger>
-                <TabsTrigger value="details" className="flex items-center gap-2">
+                </button>
+                <button
+                  onClick={() => setSelectedTab('details')}
+                  className={`btn btn-ghost btn-sm ${
+                    selectedTab === 'details' ? 'active' : ''
+                  }`}
+                >
                   <Download className="h-4 w-4" />
                   상세 정보
-                </TabsTrigger>
-              </TabsList>
+                </button>
+              </nav>
+            </div>
 
-              <TabsContent value="results" className="mt-4">
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {filteredTravelInfos.map((travelInfo, index) => (
-                    <div key={travelInfo.emailId} className="border rounded-lg p-4 hover:bg-gray-50">
+            {selectedTab === 'results' && (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {filteredTravelInfos.map((travelInfo, index) => (
+                  <div key={travelInfo.emailId} className="card">
                       <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-gray-900 flex-1 mr-2">
+                        <h4 className="font-medium flex-1 mr-2">
                           {travelInfo.subject}
                         </h4>
                         <div className="flex items-center gap-2">
@@ -470,47 +480,47 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
                         </div>
                       </div>
 
-                      <p className="text-sm text-gray-600 mb-3">{travelInfo.from}</p>
+                      <p className="text-sm text-secondary mb-3">{travelInfo.from}</p>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                         {travelInfo.departureDate && (
                           <div className="flex items-center gap-2">
-                            <Plane className="h-4 w-4 text-blue-600" />
+                            <Plane className="h-4 w-4 text-primary" />
                             <span className="font-medium">출발:</span>
                             <span>{travelInfo.departureDate}</span>
                           </div>
                         )}
                         {travelInfo.returnDate && (
                           <div className="flex items-center gap-2">
-                            <Plane className="h-4 w-4 text-green-600 rotate-180" />
+                            <Plane className="h-4 w-4 text-success rotate-180" />
                             <span className="font-medium">귀국:</span>
                             <span>{travelInfo.returnDate}</span>
                           </div>
                         )}
                         {travelInfo.destination && (
                           <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-red-600" />
+                            <MapPin className="h-4 w-4 text-error" />
                             <span className="font-medium">목적지:</span>
                             <span>{travelInfo.destination}</span>
                           </div>
                         )}
                         {travelInfo.flightNumber && (
                           <div className="flex items-center gap-2">
-                            <Hash className="h-4 w-4 text-purple-600" />
+                            <Hash className="h-4 w-4 text-primary" />
                             <span className="font-medium">항공편:</span>
                             <span>{travelInfo.flightNumber}</span>
                           </div>
                         )}
                         {travelInfo.hotelName && (
                           <div className="flex items-center gap-2">
-                            <Hotel className="h-4 w-4 text-orange-600" />
+                            <Hotel className="h-4 w-4 text-warning" />
                             <span className="font-medium">호텔:</span>
                             <span>{travelInfo.hotelName}</span>
                           </div>
                         )}
                         {travelInfo.passengerName && (
                           <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-indigo-600" />
+                            <User className="h-4 w-4 text-primary" />
                             <span className="font-medium">승객:</span>
                             <span>{travelInfo.passengerName}</span>
                           </div>
@@ -519,67 +529,53 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
                     </div>
                   ))}
                 </div>
-              </TabsContent>
+              )}
 
-              <TabsContent value="details" className="mt-4">
-                <div className="space-y-4">
-                  <div className="text-sm text-muted-foreground">
-                    상세 분석 정보와 데이터 품질 지표를 확인할 수 있습니다.
-                  </div>
+            {selectedTab === 'details' && (
+              <div className="space-y-4">
+                <div className="text-sm text-secondary">
+                  상세 분석 정보와 데이터 품질 지표를 확인할 수 있습니다.
+                </div>
                   
                   {/* 데이터 품질 분석 */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-green-600">
-                            {Math.round(filteredTravelInfos.reduce((sum, info) => sum + info.confidence, 0) / filteredTravelInfos.length * 100)}%
-                          </div>
-                          <div className="text-sm text-muted-foreground">평균 신뢰도</div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <div className="card text-center">
+                      <div className="text-2xl font-bold text-success">
+                        {Math.round(filteredTravelInfos.reduce((sum, info) => sum + info.confidence, 0) / filteredTravelInfos.length * 100)}%
+                      </div>
+                      <div className="text-sm text-secondary">평균 신뢰도</div>
+                    </div>
                     
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-blue-600">
-                            {filteredTravelInfos.filter(info => info.departureDate && info.returnDate).length}
-                          </div>
-                          <div className="text-sm text-muted-foreground">완전한 여행</div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <div className="card text-center">
+                      <div className="text-2xl font-bold text-primary">
+                        {filteredTravelInfos.filter(info => info.departureDate && info.returnDate).length}
+                      </div>
+                      <div className="text-sm text-secondary">완전한 여행</div>
+                    </div>
                     
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-600">
-                            {filteredTravelInfos.filter(info => info.bookingReference).length}
-                          </div>
-                          <div className="text-sm text-muted-foreground">예약번호 있음</div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <div className="card text-center">
+                      <div className="text-2xl font-bold text-primary">
+                        {filteredTravelInfos.filter(info => info.bookingReference).length}
+                      </div>
+                      <div className="text-sm text-secondary">예약번호 있음</div>
+                    </div>
                   </div>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* 결과가 없을 때 */}
       {!isAnalyzing && travelInfos.length === 0 && !error && (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <Mail className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">분석 준비 완료</h3>
-            <p className="text-muted-foreground">
-              위 설정을 확인하고 "분석 시작" 버튼을 클릭하여 Gmail에서 여행 정보를 추출하세요.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="card p-8 text-center">
+          <Mail className="h-16 w-16 text-secondary mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">분석 준비 완료</h3>
+          <p className="text-secondary">
+            위 설정을 확인하고 "분석 시작" 버튼을 클릭하여 Gmail에서 여햑 정보를 추출하세요.
+          </p>
+        </div>
       )}
     </div>
   )

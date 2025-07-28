@@ -78,27 +78,15 @@ export default function DashboardPage() {
     <main style={{ minHeight: '100vh' }}>
       <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
         
-        {/* Header */}
-        <header className="nav mb-8">
-          <div>
-            <h1 className="nav-brand">
-              {t('nav.dashboard')} - {t('app.title')}
-            </h1>
-            <p className="text-small text-secondary m-0">
-              {t('dashboard.welcome', { name: session.user?.name || '' })}
-            </p>
-          </div>
-          <nav className="nav-menu">
-            <LanguageSelector />
-            <NotificationIcon userId={session.user?.email || ''} />
-            <button 
-              onClick={handleLogout}
-              className="btn btn-sm btn-ghost"
-            >
-              {t('dashboard.logout')}
-            </button>
-          </nav>
-        </header>
+        {/* Page Title */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">
+            {t('nav.dashboard')}
+          </h1>
+          <p className="text-secondary">
+            {t('dashboard.welcome', { name: session.user?.name || '' })}
+          </p>
+        </div>
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

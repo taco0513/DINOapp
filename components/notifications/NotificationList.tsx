@@ -124,8 +124,8 @@ export default function NotificationList({
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <p className="mt-2 text-gray-600">알림을 불러오는 중...</p>
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <p className="mt-2 text-secondary">알림을 불러오는 중...</p>
       </div>
     )
   }
@@ -138,7 +138,7 @@ export default function NotificationList({
           <h3 className="text-lg font-semibold">
             알림
             {unreadCount > 0 && (
-              <span className="ml-2 px-2 py-1 text-xs bg-red-500 text-white rounded-full">
+              <span className="ml-2 px-2 py-1 text-xs bg-error text-white rounded-full">
                 {unreadCount}
               </span>
             )}
@@ -148,20 +148,20 @@ export default function NotificationList({
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
+              className={`btn btn-sm ${
                 filter === 'all' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'btn-primary' 
+                  : 'btn-ghost'
               }`}
             >
               전체
             </button>
             <button
               onClick={() => setFilter('unread')}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
+              className={`btn btn-sm ${
                 filter === 'unread' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'btn-primary' 
+                  : 'btn-ghost'
               }`}
             >
               읽지 않음
@@ -172,7 +172,7 @@ export default function NotificationList({
         {showMarkAllRead && unreadCount > 0 && (
           <button
             onClick={markAllAsRead}
-            className="text-sm text-blue-600 hover:text-blue-700"
+            className="text-sm text-primary hover:opacity-70"
           >
             모두 읽음으로 표시
           </button>
@@ -181,7 +181,7 @@ export default function NotificationList({
 
       {/* Notification List */}
       {displayNotifications.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-secondary">
           {filter === 'unread' ? '읽지 않은 알림이 없습니다' : '알림이 없습니다'}
         </div>
       ) : (
@@ -192,10 +192,10 @@ export default function NotificationList({
             return (
               <div
                 key={notification.id}
-                className={`p-4 rounded-lg border transition-colors ${
+                className={`card transition-colors ${
                   notification.read 
-                    ? 'bg-white border-gray-200' 
-                    : 'bg-blue-50 border-blue-200'
+                    ? '' 
+                    : 'alert'
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -207,17 +207,17 @@ export default function NotificationList({
                         <h4 className={`font-medium ${color}`}>
                           {notification.title}
                         </h4>
-                        <p className="text-sm text-gray-700 mt-1">
+                        <p className="text-sm text-secondary mt-1">
                           {notification.message}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-tertiary mt-1">
                           {formattedTime}
                         </p>
                       </div>
                       
                       <button
                         onClick={() => deleteNotification(notification.id)}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-secondary hover:text-primary"
                         title="삭제"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +231,7 @@ export default function NotificationList({
                         <Link
                           href={notification.actionUrl as any}
                           onClick={() => markAsRead(notification.id)}
-                          className="text-sm text-blue-600 hover:text-blue-700"
+                          className="text-sm text-primary hover:opacity-70"
                         >
                           자세히 보기 →
                         </Link>
@@ -240,7 +240,7 @@ export default function NotificationList({
                       {!notification.read && (
                         <button
                           onClick={() => markAsRead(notification.id)}
-                          className="text-sm text-gray-600 hover:text-gray-700"
+                          className="text-sm text-secondary hover:text-primary"
                         >
                           읽음으로 표시
                         </button>

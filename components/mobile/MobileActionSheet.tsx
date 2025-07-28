@@ -67,12 +67,12 @@ export default function MobileActionSheet({
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: '#fff',
-          borderRadius: '16px 16px 0 0',
+          backgroundColor: 'var(--color-background)',
+          borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
           zIndex: 1001,
           transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
-          transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          paddingBottom: 'env(safe-area-inset-bottom, 20px)'
+          transition: 'transform var(--transition-slow) cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          paddingBottom: 'env(safe-area-inset-bottom, var(--space-5))'
         }}
       >
         {/* 핸들 */}
@@ -80,9 +80,9 @@ export default function MobileActionSheet({
           style={{
             width: '40px',
             height: '4px',
-            backgroundColor: '#ccc',
-            borderRadius: '2px',
-            margin: '12px auto 20px auto'
+            backgroundColor: 'var(--color-border-strong)',
+            borderRadius: 'var(--radius-sm)',
+            margin: 'var(--space-3) auto var(--space-5) auto'
           }}
         />
 
@@ -90,12 +90,12 @@ export default function MobileActionSheet({
         {title && (
           <div
             style={{
-              padding: '0 20px 16px 20px',
-              fontSize: '16px',
-              fontWeight: '600',
-              color: '#333',
+              padding: '0 var(--space-5) var(--space-4) var(--space-5)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--color-text-primary)',
               textAlign: 'center',
-              borderBottom: '1px solid #f0f0f0'
+              borderBottom: '1px solid var(--color-border)'
             }}
           >
             {title}
@@ -113,22 +113,22 @@ export default function MobileActionSheet({
               }}
               style={{
                 width: '100%',
-                padding: '16px 20px',
+                padding: 'var(--space-4) var(--space-5)',
                 backgroundColor: 'transparent',
                 border: 'none',
-                borderBottom: index < options.length - 1 ? '1px solid #f0f0f0' : 'none',
-                fontSize: '16px',
-                color: option.destructive ? '#ff3b30' : '#000',
+                borderBottom: index < options.length - 1 ? '1px solid var(--color-border)' : 'none',
+                fontSize: 'var(--text-base)',
+                color: option.destructive ? 'var(--color-error)' : 'var(--color-text-primary)',
                 textAlign: 'center',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s ease',
+                transition: 'background-color var(--transition-fast)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '10px'
+                gap: 'var(--space-2)'
               }}
               onTouchStart={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
+                e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)'
               }}
               onTouchEnd={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent'
@@ -141,26 +141,20 @@ export default function MobileActionSheet({
         </div>
 
         {/* 취소 버튼 */}
-        <div style={{ padding: '10px 20px 0 20px' }}>
+        <div style={{ padding: 'var(--space-2) var(--space-5) 0 var(--space-5)' }}>
           <button
             onClick={onClose}
+            className="btn btn-full"
             style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: '#fff',
-              border: '1px solid #e0e0e0',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '600',
-              color: '#000',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease'
+              padding: 'var(--space-4)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 'var(--font-semibold)'
             }}
             onTouchStart={(e) => {
-              e.currentTarget.style.backgroundColor = '#f0f0f0'
+              e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)'
             }}
             onTouchEnd={(e) => {
-              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.backgroundColor = 'var(--color-background)'
             }}
           >
             취소

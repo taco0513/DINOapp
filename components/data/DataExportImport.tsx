@@ -157,19 +157,19 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">데이터 내보내기 / 가져오기</h3>
+    <div className="card">
+      <h3 className="text-lg font-semibold mb-6">데이터 내보내기 / 가져오기</h3>
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800">{error}</p>
+        <div className="mb-6 alert alert-error">
+          <p>{error}</p>
         </div>
       )}
 
       {importResult && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <h4 className="font-medium text-green-900 mb-2">가져오기 완료</h4>
-          <div className="text-green-800 text-sm space-y-1">
+        <div className="mb-6 alert alert-success">
+          <h4 className="font-medium mb-2">가져오기 완료</h4>
+          <div className="text-sm space-y-1">
             <p>• 가져온 여행 기록: {importResult.summary.imported}개</p>
             <p>• 건너뛴 기록: {importResult.summary.skipped}개</p>
             <p>• 오류 발생: {importResult.summary.errors}개</p>
@@ -190,8 +190,8 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Export Section */}
         <div>
-          <h4 className="font-medium text-gray-900 mb-4">📤 데이터 내보내기</h4>
-          <p className="text-sm text-gray-600 mb-4">
+          <h4 className="font-medium mb-4">📤 데이터 내보내기</h4>
+          <p className="text-sm text-secondary mb-4">
             여행 기록을 JSON 또는 CSV 형식으로 내보낼 수 있습니다.
           </p>
           
@@ -199,10 +199,10 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
             <button
               onClick={() => handleExport('json')}
               disabled={exportLoading}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2 px-4 rounded-lg transition-colors"
+              className="w-full btn btn-primary"
             >
               {exportLoading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
               ) : (
                 <span>📄</span>
               )}
@@ -212,10 +212,10 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
             <button
               onClick={() => handleExport('csv')}
               disabled={exportLoading}
-              className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white py-2 px-4 rounded-lg transition-colors"
+              className="w-full btn btn-success"
             >
               {exportLoading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
               ) : (
                 <span>📊</span>
               )}
@@ -226,8 +226,8 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
 
         {/* Import Section */}
         <div>
-          <h4 className="font-medium text-gray-900 mb-4">📥 데이터 가져오기</h4>
-          <p className="text-sm text-gray-600 mb-4">
+          <h4 className="font-medium mb-4">📥 데이터 가져오기</h4>
+          <p className="text-sm text-secondary mb-4">
             JSON 또는 CSV 파일에서 여행 기록을 가져올 수 있습니다.
           </p>
 
@@ -237,14 +237,14 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
                 type="file"
                 accept=".json,.csv"
                 onChange={handleFileSelect}
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="w-full text-sm text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-surface file:text-primary hover:file:bg-surface hover:file:opacity-80"
               />
             </div>
 
             {importFile && (
               <div className="space-y-4">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-700">
+                <div className="p-3 bg-surface rounded-lg">
+                  <p className="text-sm">
                     선택된 파일: <span className="font-medium">{importFile.name}</span>
                   </p>
                 </div>
@@ -252,13 +252,13 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
                 <div>
                   <button
                     onClick={() => setShowImportOptions(!showImportOptions)}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-primary hover:opacity-70"
                   >
                     {showImportOptions ? '옵션 숨기기' : '가져오기 옵션 보기'}
                   </button>
 
                   {showImportOptions && (
-                    <div className="mt-3 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <div className="mt-3 p-4 bg-surface rounded-lg space-y-3">
                       <label className="flex items-center">
                         <input
                           type="checkbox"
@@ -269,7 +269,7 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
                           }))}
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">기존 데이터를 모두 삭제하고 가져오기</span>
+                        <span className="text-sm">기존 데이터를 모두 삭제하고 가져오기</span>
                       </label>
 
                       <label className="flex items-center">
@@ -282,7 +282,7 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
                           }))}
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">중복 기록 건너뛰기</span>
+                        <span className="text-sm">중복 기록 건너뛰기</span>
                       </label>
                     </div>
                   )}
@@ -291,10 +291,10 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
                 <button
                   onClick={handleImport}
                   disabled={importLoading}
-                  className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white py-2 px-4 rounded-lg transition-colors"
+                  className="w-full btn btn-primary"
                 >
                   {importLoading ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
                   ) : (
                     <span>📥</span>
                   )}
@@ -306,9 +306,9 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
         </div>
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <h5 className="font-medium text-blue-900 mb-2">💡 사용 팁</h5>
-        <div className="text-blue-800 text-sm space-y-1">
+      <div className="mt-6 alert">
+        <h5 className="font-medium mb-2">💡 사용 팁</h5>
+        <div className="text-sm space-y-1">
           <p>• JSON 형식은 모든 데이터(설정 포함)를 완전히 백업합니다</p>
           <p>• CSV 형식은 여행 기록만 내보내며 다른 앱과 호환됩니다</p>
           <p>• 가져오기 전에 기존 데이터를 백업하는 것을 권장합니다</p>

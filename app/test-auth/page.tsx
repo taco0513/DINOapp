@@ -48,7 +48,7 @@ export default function TestAuthPage() {
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Auth Test Page</h1>
       
-      <div className="mb-8 p-4 bg-gray-100 rounded">
+      <div className="mb-8 card">
         <h2 className="text-lg font-semibold mb-2">Session Status</h2>
         <p>Status: <span className="font-mono">{status}</span></p>
         <p>Session: <pre className="text-xs">{JSON.stringify(session, null, 2)}</pre></p>
@@ -57,28 +57,28 @@ export default function TestAuthPage() {
       <div className="mb-8 space-y-4">
         <button
           onClick={handleSignIn}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="btn btn-primary"
         >
           Sign In with Google (No Redirect)
         </button>
 
         <button
           onClick={() => signIn('google')}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 ml-4"
+          className="btn btn-success ml-4"
         >
           Sign In with Google (With Redirect)
         </button>
 
         <button
           onClick={handleSignOut}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 ml-4"
+          className="btn btn-error ml-4"
         >
           Sign Out
         </button>
 
         <button
           onClick={checkEnvironment}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 ml-4"
+          className="btn btn-ghost ml-4"
         >
           Check Environment
         </button>
@@ -86,7 +86,7 @@ export default function TestAuthPage() {
 
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Logs</h2>
-        <div className="bg-black text-green-400 p-4 rounded font-mono text-xs h-64 overflow-auto">
+        <div className="bg-primary text-white p-4 rounded font-mono text-xs h-64 overflow-auto">
           {logs.map((log, i) => (
             <div key={i}>{log}</div>
           ))}
@@ -95,7 +95,7 @@ export default function TestAuthPage() {
 
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Current URL Info</h2>
-        <div className="bg-gray-100 p-4 rounded">
+        <div className="bg-surface p-4 rounded">
           <p>Origin: {typeof window !== 'undefined' ? window.location.origin : 'N/A'}</p>
           <p>Pathname: {typeof window !== 'undefined' ? window.location.pathname : 'N/A'}</p>
           <p>Search: {typeof window !== 'undefined' ? window.location.search : 'N/A'}</p>

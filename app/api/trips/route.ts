@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getPrismaClient } from '@/lib/database/dev-prisma'
-const prisma = getPrismaClient()
 import { getUserTripsOptimized } from '@/lib/database/query-optimizer'
 import { systemAlert } from '@/lib/notifications/alert-manager'
 import { createTravelManager } from '@/lib/travel-manager'
@@ -74,6 +73,7 @@ export async function GET(request: NextRequest) {
     }
 
     const session = await getServerSession(authOptions)
+    const prisma = await getPrismaClient()
     const user = await prisma.user.findUnique({
       where: { email: session!.user!.email! }
     })
@@ -178,6 +178,7 @@ export async function POST(request: NextRequest) {
 
     // 사용자 확인
     const session = await getServerSession(authOptions)
+    const prisma = await getPrismaClient()
     const user = await prisma.user.findUnique({
       where: { email: session!.user!.email! }
     })

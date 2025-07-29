@@ -7,7 +7,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getPrismaClient } from '@/lib/database/dev-prisma'
-const prisma = getPrismaClient()
 import { calculateSchengenStatus, getSchengenWarnings } from '@/lib/schengen-calculator'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
 
@@ -28,6 +27,7 @@ export async function GET(request: NextRequest) {
       return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
     }
 
+    const prisma = await getPrismaClient()
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {

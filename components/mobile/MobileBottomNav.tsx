@@ -12,6 +12,7 @@ interface NavItem {
   badge?: number
 }
 
+// Primary navigation items for mobile (most important features)
 const navItems: NavItem[] = [
   {
     id: 'dashboard',
@@ -26,16 +27,16 @@ const navItems: NavItem[] = [
     href: '/trips'
   },
   {
-    id: 'visa-check',
-    label: '비자체크',
-    icon: '🌏',
-    href: '/visa-check'
-  },
-  {
     id: 'schengen',
     label: '셰겐',
     icon: '🇪🇺',
     href: '/schengen'
+  },
+  {
+    id: 'more',
+    label: '더보기',
+    icon: '⋯',
+    href: '/more' // 더보기 페이지로 Secondary 기능들 연결
   }
 ]
 
@@ -94,10 +95,12 @@ export default function MobileBottomNav() {
               fontSize: 'var(--text-xs)',
               fontWeight: 'var(--font-medium)',
               minWidth: '60px',
+              minHeight: '44px',
               position: 'relative',
               border: isActive ? '1px solid var(--color-border-strong)' : '1px solid var(--color-border)',
               backgroundColor: isActive ? 'var(--color-surface)' : 'var(--color-background)',
-              margin: 'var(--space-1)'
+              margin: 'var(--space-1)',
+              borderRadius: 'var(--radius-sm)'
             }}
           >
             <div

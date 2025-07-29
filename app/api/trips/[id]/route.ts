@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getPrismaClient } from '@/lib/database/dev-prisma'
-const prisma = getPrismaClient()
 import { createTravelManager } from '@/lib/travel-manager'
 import { csrfProtection } from '@/lib/security/csrf-protection'
 import { z } from 'zod'
@@ -30,6 +29,7 @@ const updateTripSchema = z.object({
 })
 
 async function checkTripOwnership(tripId: string, userEmail: string) {
+  const prisma = await getPrismaClient()
   const trip = await prisma.countryVisit.findFirst({
     where: {
       id: tripId,

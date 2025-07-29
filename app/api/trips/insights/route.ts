@@ -7,7 +7,6 @@ import { applyRateLimit } from '@/lib/security/rate-limiter'
 import { securityMiddleware } from '@/lib/security/auth-middleware'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
 
-const prisma = getPrismaClient()
 
 // GET /api/trips/insights - Get comprehensive travel insights
 export async function GET(request: NextRequest) {
@@ -27,6 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     const session = await getServerSession(authOptions)
+    const prisma = await getPrismaClient()
     const user = await prisma.user.findUnique({
       where: { email: session!.user!.email! }
     })

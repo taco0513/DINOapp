@@ -44,8 +44,8 @@ export default function OnboardingFlow() {
     userProfile: {}
   })
 
-  // 온보딩 단계 정의
-  const steps: OnboardingStep[] = [
+  // Progressive Onboarding: 핵심 2단계 + 선택적 단계
+  const coreSteps: OnboardingStep[] = [
     {
       id: 'welcome',
       title: 'DINOapp에 오신 것을 환영합니다!',
@@ -54,9 +54,19 @@ export default function OnboardingFlow() {
       component: <WelcomeStep />
     },
     {
+      id: 'quick-start',
+      title: '빠른 시작',
+      description: '첫 여행 기록을 추가하고 DINOapp을 체험해보세요',
+      icon: <Plane className="h-8 w-8" />,
+      component: <QuickStartStep onSkip={() => handleComplete()} />
+    }
+  ]
+
+  const optionalSteps: OnboardingStep[] = [
+    {
       id: 'profile',
-      title: '기본 정보 설정',
-      description: '더 나은 서비스를 위해 몇 가지 정보를 알려주세요',
+      title: '프로필 설정',
+      description: '개인화된 서비스를 위한 기본 정보 설정',
       icon: <Globe className="h-8 w-8" />,
       component: <ProfileStep 
         profile={progress.userProfile} 
@@ -66,25 +76,14 @@ export default function OnboardingFlow() {
     {
       id: 'integrations',
       title: '서비스 연동',
-      description: 'Gmail과 Google Calendar 연동으로 자동화된 여행 관리',
+      description: 'Gmail과 Google Calendar 연동으로 자동화',
       icon: <Mail className="h-8 w-8" />,
       component: <IntegrationsStep />
-    },
-    {
-      id: 'first-trip',
-      title: '첫 여행 기록 추가',
-      description: '최근 여행을 추가해서 DINOapp의 기능을 체험해보세요',
-      icon: <Plane className="h-8 w-8" />,
-      component: <FirstTripStep />
-    },
-    {
-      id: 'complete',
-      title: '설정 완료!',
-      description: '이제 DINOapp의 모든 기능을 사용할 수 있습니다',
-      icon: <CheckCircle className="h-8 w-8" />,
-      component: <CompleteStep onComplete={() => handleComplete()} />
     }
   ]
+
+  const [showOptionalSteps, setShowOptionalSteps] = useState(false)
+  const steps = showOptionalSteps ? [...coreSteps, ...optionalSteps] : coreSteps
 
   const currentStepData = steps[progress.currentStep]
 
@@ -545,6 +544,80 @@ function FirstTripStep() {
           className="text-blue-600 hover:text-blue-800"
         >
           건너뛰기
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function QuickStartStep({ onSkip }: { onSkip: () => void }) {
+  const [selectedOption, setSelectedOption] = useState<string>('')
+  const router = useRouter()
+
+  const quickOptions = [
+    {
+      id: 'add-trip',
+      title: '첫 여행 기록 추가',
+      description: '최근 여행을 추가해서 바로 시작하기',
+      icon: <Plane className="h-6 w-6" />,
+      action: () => router.push('/trips')
+    },
+    {
+      id: 'schengen-calc',
+      title: '셰겐 계산기 체험',
+      description: '유럽 여행 계획을 위한 필수 도구',
+      icon: <Shield className="h-6 w-6" />,
+      action: () => router.push('/schengen')
+    },
+    {
+      id: 'explore-dashboard',
+      title: '대시보드 둘러보기',
+      description: '모든 기능을 한눈에 확인하기',
+      icon: <MapPin className="h-6 w-6" />,
+      action: () => router.push('/dashboard')
+    }
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <p className="text-gray-600">
+          어떻게 시작하고 싶으신가요? 바로 체험해보거나 나중에 설정할 수 있습니다.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {quickOptions.map((option) => (
+          <button
+            key={option.id}
+            onClick={() => {
+              setSelectedOption(option.id)
+              option.action()
+            }}
+            className={`w-full p-4 border-2 rounded-lg text-left transition-all hover:border-blue-300 ${
+              selectedOption === option.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+            }`}
+          >
+            <div className="flex items-center">
+              <div className="text-blue-600 mr-4">
+                {option.icon}
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-900">{option.title}</h3>
+                <p className="text-sm text-gray-600">{option.description}</p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-gray-400 ml-auto" />
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="text-center pt-4">
+        <button
+          onClick={onSkip}
+          className="text-blue-600 hover:text-blue-800 text-sm underline"
+        >
+          지금은 건너뛰고 대시보드로 이동
         </button>
       </div>
     </div>

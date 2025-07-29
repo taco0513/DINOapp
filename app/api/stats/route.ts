@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getPrismaClient } from '@/lib/database/dev-prisma'
-const prisma = getPrismaClient()
 
 // GET /api/stats - Get travel statistics for authenticated user
 export async function GET(request: NextRequest) {
@@ -16,6 +15,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    const prisma = await getPrismaClient()
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {

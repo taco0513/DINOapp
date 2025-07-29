@@ -9,7 +9,6 @@ import { securityMiddleware } from '@/lib/security/auth-middleware'
 import { sanitizeRequestBody } from '@/lib/security/input-sanitizer'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError, createValidationError } from '@/lib/api/error-handler'
 
-const prisma = getPrismaClient()
 
 // Validation schema for trip validation request
 const validateTripSchema = z.object({
@@ -52,6 +51,7 @@ export async function POST(request: NextRequest) {
     const validatedData = validateTripSchema.parse(sanitizedBody)
 
     const session = await getServerSession(authOptions)
+    const prisma = await getPrismaClient()
     const user = await prisma.user.findUnique({
       where: { email: session!.user!.email! }
     })

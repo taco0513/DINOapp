@@ -5,14 +5,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-const navigation = [
-  { name: '대시보드', href: '/dashboard' },
-  { name: '여행 기록', href: '/trips' },
-  { name: '셰겐 계산기', href: '/schengen' },
-  { name: 'Gmail 통합', href: '/gmail' },
-  { name: '캘린더', href: '/calendar' },
-  { name: '통계', href: '/analytics' },
+// 우선순위 기반 네비게이션 구조
+const primaryNavigation = [
+  { name: '대시보드', href: '/dashboard', icon: '🏠', priority: 1 },
+  { name: '여행 기록', href: '/trips', icon: '✈️', priority: 1 },
+  { name: '셰겐 계산기', href: '/schengen', icon: '🇪🇺', priority: 1 },
 ];
+
+const secondaryNavigation = [
+  { name: 'Gmail 분석', href: '/gmail', icon: '📧', priority: 2 },
+  { name: '캘린더', href: '/calendar', icon: '📅', priority: 2 },
+  { name: '통계', href: '/analytics', icon: '📊', priority: 2 },
+];
+
+// 반응형 네비게이션: 모바일에서는 primary만, 데스크톱에서는 모두
+const navigation = [...primaryNavigation, ...secondaryNavigation];
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -80,13 +87,34 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav
             className={`nav-menu ${isMobile ? 'hidden' : 'flex'}`}
-            style={{ gap: 'var(--space-6)' }}
+            style={{ gap: 'var(--space-4)' }}
           >
-            {navigation.map(item => (
+            {/* Primary Navigation - 항상 표시 */}
+            {primaryNavigation.map(item => (
               <Link
                 key={item.name}
                 href={item.href as any}
                 className={`nav-link ${isActive(item.href) ? 'active' : ''}`}
+                style={{ fontWeight: 'var(--font-semibold)' }}
+              >
+                {item.name}
+              </Link>
+            ))}
+            
+            {/* Secondary Navigation - 구분선과 함께 */}
+            <div style={{ 
+              width: '1px', 
+              height: '20px', 
+              backgroundColor: 'var(--color-border)', 
+              margin: '0 var(--space-2)' 
+            }} />
+            
+            {secondaryNavigation.map(item => (
+              <Link
+                key={item.name}
+                href={item.href as any}
+                className={`nav-link ${isActive(item.href) ? 'active' : ''}`}
+                style={{ opacity: '0.8', fontSize: 'var(--text-sm)' }}
               >
                 {item.name}
               </Link>
@@ -242,10 +270,11 @@ export default function Header() {
               </div>
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - 44px+ 터치 타겟 */}
             <button
               type='button'
-              className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center btn btn-ghost btn-sm`}
+              className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center btn btn-ghost`}
+              style={{ minWidth: '44px', minHeight: '44px' }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span style={{ display: 'none' }}>메뉴 열기</span>
@@ -277,16 +306,40 @@ export default function Header() {
               className='p-4 border-t'
               style={{ backgroundColor: 'var(--color-surface)' }}
             >
-              {navigation.map(item => (
-                <Link
-                  key={item.name}
-                  href={item.href as any}
-                  className={`block nav-link my-1 ${isActive(item.href) ? 'active' : ''}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {/* 모바일 메뉴 - Primary 먼저, 구분선, Secondary */}
+              <div className="space-y-1">
+                <div className="text-xs font-medium text-secondary px-3 py-1">주요 기능</div>
+                {primaryNavigation.map(item => (
+                  <Link
+                    key={item.name}
+                    href={item.href as any}
+                    className={`flex items-center gap-3 nav-link p-3 my-1 ${isActive(item.href) ? 'active' : ''}`}
+                    style={{ minHeight: '44px' }}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="border-t my-2"></div>
+
+              <div className="space-y-1">
+                <div className="text-xs font-medium text-secondary px-3 py-1">추가 기능</div>
+                {secondaryNavigation.map(item => (
+                  <Link
+                    key={item.name}
+                    href={item.href as any}
+                    className={`flex items-center gap-3 nav-link p-3 my-1 ${isActive(item.href) ? 'active' : ''}`}
+                    style={{ minHeight: '44px', opacity: '0.9' }}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
 
               {/* Mobile user info */}
               {session?.user && (
@@ -323,6 +376,7 @@ export default function Header() {
                     <Link
                       href='/profile'
                       className='flex items-center gap-3 p-3 rounded-md hover:bg-surface transition-colors'
+                      style={{ minHeight: '44px' }}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <svg
@@ -344,6 +398,7 @@ export default function Header() {
                     <Link
                       href='/settings'
                       className='flex items-center gap-3 p-3 rounded-md hover:bg-surface transition-colors'
+                      style={{ minHeight: '44px' }}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <svg
@@ -374,6 +429,7 @@ export default function Header() {
                         handleSignOut();
                       }}
                       className='w-full flex items-center gap-3 p-3 rounded-md hover:bg-surface transition-colors text-red-600'
+                      style={{ minHeight: '44px' }}
                     >
                       <svg
                         className='h-4 w-4'

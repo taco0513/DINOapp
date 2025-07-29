@@ -43,3 +43,36 @@ jest.mock('next-auth/react', () => ({
 // Mock environment variables
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 process.env.NEXTAUTH_SECRET = 'test-secret'
+
+// Polyfill for Next.js Request/Response
+global.Request = global.Request || class Request {
+  constructor(url, init = {}) {
+    this.url = url
+    this.method = init.method || 'GET'
+    this.headers = new Map()
+    if (init.headers) {
+      Object.entries(init.headers).forEach(([key, value]) => {
+        this.headers.set(key.toLowerCase(), value)
+      })
+    }
+    this.body = init.body
+  }
+}
+
+global.Response = global.Response || class Response {
+  constructor(body, init = {}) {
+    this.body = body
+    this.status = init.status || 200
+    this.statusText = init.statusText || 'OK'
+    this.headers = new Map()
+    if (init.headers) {
+      Object.entries(init.headers).forEach(([key, value]) => {
+        this.headers.set(key.toLowerCase(), value)
+      })
+    }
+  }
+  
+  async json() {
+    return JSON.parse(this.body)
+  }
+}

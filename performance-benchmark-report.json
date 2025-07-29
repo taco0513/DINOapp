@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-07-29T04:14:38.500Z",
+  "build": {
+    "staticSize": "1.58 MB",
+    "serverSize": "16.54 MB",
+    "totalSize": "18.13 MB"
+  },
+  "project": {
+    "sourceFiles": 231,
+    "linesOfCode": 46870
+  },
+  "recommendations": []
+}

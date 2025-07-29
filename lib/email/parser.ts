@@ -65,8 +65,8 @@ export class EmailParser {
       if (confidence < this.options.confidenceThreshold!) {
         return {
           success: false,
-          error: `Confidence too low: ${confidence}`,
-          warnings: ['Extracted data may be unreliable']
+          error: 'Confidence too low',
+          warnings: [`Confidence score: ${confidence}`]
         };
       }
 
@@ -239,6 +239,7 @@ export class EmailParser {
     const checkInStr = this.extractFirstMatch(content, pattern.bodyPatterns.checkIn || []);
     const checkOutStr = this.extractFirstMatch(content, pattern.bodyPatterns.checkOut || []);
     const locationStr = this.extractFirstMatch(content, pattern.bodyPatterns.location || []);
+    const nameStr = this.extractFirstMatch(content, pattern.bodyPatterns.name || pattern.bodyPatterns.location || []);
 
     if (!checkInStr || !checkOutStr) return null;
 
@@ -248,7 +249,7 @@ export class EmailParser {
     if (!checkIn || !checkOut) return null;
 
     return {
-      name: locationStr || 'Unknown Hotel',
+      name: nameStr || locationStr || 'Unknown Hotel',
       location: locationStr || 'Unknown Location',
       checkIn,
       checkOut

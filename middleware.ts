@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { CSRFProtection } from '@/lib/security/auth-security';
+import { errorRecoveryMiddleware } from '@/middleware/error-recovery';
+import { httpMetrics } from '@/lib/monitoring/metrics-collector';
 
 /**
- * Enhanced middleware for DiNoCal with security headers and CORS
+ * Enhanced middleware for DiNoCal with comprehensive security
+ * Includes CSRF protection, enhanced rate limiting, and security headers
  */
 
 const ALLOWED_ORIGINS = [
@@ -15,12 +19,55 @@ const ALLOWED_ORIGINS = [
 
 const RATE_LIMIT_MAP = new Map();
 
+// Enhanced rate limit configurations
+const RATE_LIMITS = {
+  general: { requests: 100, windowMs: 60000 }, // 100 requests per minute
+  auth: { requests: 10, windowMs: 900000 }, // 10 auth attempts per 15 minutes
+  mutation: { requests: 50, windowMs: 60000 }, // 50 mutations per minute
+};
+
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+  const start = Date.now();
+  let response = NextResponse.next();
   const { pathname } = request.nextUrl;
+  const method = request.method;
+  
+  // Error recovery middleware (database health, circuit breaker, etc.)
+  const recoveryResponse = await errorRecoveryMiddleware(request, {
+    enableDbHealthCheck: true,
+    enableCircuitBreaker: true,
+    enableGracefulDegradation: true,
+    maintenanceMode: process.env.MAINTENANCE_MODE === 'true'
+  });
+  
+  if (recoveryResponse) {
+    const duration = Date.now() - start;
+    httpMetrics.requestEnd(method, pathname, 503);
+    httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+    httpMetrics.requestError(method, pathname, 'recovery-middleware');
+    return recoveryResponse;
+  }
 
   // Apply security headers to all routes
   applySecurityHeaders(response);
+  
+  // Generate CSRF token for authenticated users
+  if (process.env.ENABLE_CSRF_PROTECTION === 'true') {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    
+    if (token && token.sub) {
+      const csrfToken = CSRFProtection.generateToken(token.sub);
+      response.cookies.set('csrf-token', csrfToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
+    }
+  }
 
   // Handle CORS for API routes
   if (pathname.startsWith('/api/')) {
@@ -29,6 +76,10 @@ export async function middleware(request: NextRequest) {
     // Apply rate limiting for API routes
     const rateLimitResult = await applyRateLimit(request);
     if (!rateLimitResult.allowed) {
+      const duration = Date.now() - start;
+      httpMetrics.requestEnd(method, pathname, 429);
+      httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+      httpMetrics.increment('http.rate_limit.exceeded', 1, { method, path: pathname });
       return new NextResponse('Too Many Requests', {
         status: 429,
         headers: {
@@ -54,6 +105,10 @@ export async function middleware(request: NextRequest) {
 
   // Skip authentication check for auth pages and logout
   if (pathname.startsWith('/auth/') || pathname === '/logout') {
+    // Record metrics before returning
+    const duration = Date.now() - start;
+    httpMetrics.requestEnd(method, pathname, 200);
+    httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
     return response;
   }
 
@@ -78,12 +133,19 @@ export async function middleware(request: NextRequest) {
         // No token, redirecting to signin
         const url = new URL('/auth/signin', request.url);
         url.searchParams.set('callbackUrl', encodeURIComponent(request.url));
+        const duration = Date.now() - start;
+        httpMetrics.requestEnd(method, pathname, 302);
+        httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
         return NextResponse.redirect(url);
       }
     } catch (error) {
       // Error checking token
       const url = new URL('/auth/signin', request.url);
       url.searchParams.set('callbackUrl', encodeURIComponent(request.url));
+      const duration = Date.now() - start;
+      httpMetrics.requestEnd(method, pathname, 302);
+      httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+      httpMetrics.requestError(method, pathname, 'auth-token-error');
       return NextResponse.redirect(url);
     }
   }
@@ -97,6 +159,11 @@ export async function middleware(request: NextRequest) {
   //   }
   // }
 
+  // Record metrics for successful requests
+  const duration = Date.now() - start;
+  httpMetrics.requestEnd(method, pathname, 200);
+  httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+  
   return response;
 }
 
@@ -186,8 +253,6 @@ function handleCORS(request: NextRequest, response: NextResponse) {
   if (request.method === 'OPTIONS') {
     return new NextResponse(null, { status: 200 });
   }
-
-  return response;
 }
 
 /**

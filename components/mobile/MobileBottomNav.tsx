@@ -26,16 +26,16 @@ const navItems: NavItem[] = [
     href: '/trips'
   },
   {
+    id: 'visa-check',
+    label: '비자체크',
+    icon: '🌏',
+    href: '/visa-check'
+  },
+  {
     id: 'schengen',
     label: '셰겐',
     icon: '🇪🇺',
     href: '/schengen'
-  },
-  {
-    id: 'calendar',
-    label: '캘린더',
-    icon: '📅',
-    href: '/calendar'
   }
 ]
 

@@ -5,7 +5,7 @@ import SessionProvider from '@/components/providers/SessionProvider'
 import MainLayout from '@/components/layout/MainLayout'
 import MonitoringProvider from '@/components/providers/MonitoringProvider'
 import PWAInstallButton from '@/components/pwa/PWAInstallButton'
-// import { OfflineIndicator } from '@/components/pwa/OfflineIndicator'
+import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 import Script from 'next/script'
 import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 
@@ -220,6 +220,7 @@ export default function RootLayout({
               <MainLayout>
                 {children}
                 <PWAInstallButton />
+                <OfflineIndicator />
               </MainLayout>
             </AnalyticsWrapper>
           </SessionProvider>

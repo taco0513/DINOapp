@@ -1,9 +1,11 @@
 /**
  * Development Prisma Client for SQLite
  * This file provides a simple Prisma client for local development with SQLite
+ * Enhanced with connection recovery and error handling
  */
 
 import { PrismaClient } from '@prisma/client'
+import { getPrismaClient as getEnhancedClient } from './prisma-client'
 
 const globalForPrisma = globalThis as unknown as {
   devPrisma: PrismaClient | undefined
@@ -22,10 +24,12 @@ if (process.env.NODE_ENV !== 'production') {
 export const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.DATABASE_URL || process.env.DATABASE_URL.includes('file:')
 
 // Export the appropriate client based on environment
-export const getPrismaClient = () => {
+export const getPrismaClient = async () => {
   if (isDevelopment) {
+    // In development, return the simple client without connection recovery
+    // SQLite doesn't need connection recovery
     return devPrisma
   }
-  // In production, use the main prisma client
-  return require('../prisma').prisma
+  // In production, use the enhanced client with connection recovery
+  return getEnhancedClient()
 }

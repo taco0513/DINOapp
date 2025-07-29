@@ -292,8 +292,8 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* 탭 네비게이션 */}
@@ -378,8 +378,8 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                       고급 동기화 옵션들입니다. 대부분의 경우 기본 설정을 사용하는 것을 권장합니다.
                     </div>
                     {/* 추후 고급 옵션들 추가 가능 */}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -475,12 +475,10 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                 </>
               )}
             </button>
-            </div>
-          )}
+          </TabsContent>
 
-          {activeView === 'preview' && (
-            <div className="space-y-4">
-              {selectedTravelInfos.length > 0 ? (
+          <TabsContent value="preview" className="mt-6 space-y-4">
+            {selectedTravelInfos.length > 0 ? (
                 <>
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">생성될 캘린더 이벤트 미리보기</h4>
@@ -534,10 +532,8 @@ export default function CalendarSync({ travelInfos, onSyncComplete }: CalendarSy
                   </div>
                 </div>
               )}
-            </div>
-            </div>
-          )}
-        </div>
+          </TabsContent>
+        </Tabs>
 
         {/* 에러 메시지 */}
         {error && (

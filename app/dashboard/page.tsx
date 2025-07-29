@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import NotificationIcon from '@/components/notifications/NotificationIcon'
+import NotificationSettings from '@/components/notifications/NotificationSettings'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import LanguageTest from '@/components/ui/LanguageTest'
 import { t } from '@/lib/i18n'
+import { Bell, Globe } from 'lucide-react'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -16,6 +18,7 @@ export default function DashboardPage() {
   const [statsData, setStatsData] = useState<any>(null)
   const [schengenData, setSchengenData] = useState<any>(null)
   const [dataLoading, setDataLoading] = useState(true)
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -171,6 +174,27 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+        
+        {/* 빠른 비자 체크 카드 */}
+        <div className="card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800">
+          <div className="card-body">
+            <div className="flex items-center gap-3 mb-4">
+              <Globe className="h-8 w-8 text-blue-600" />
+              <div>
+                <h3 className="text-lg font-semibold">빠른 비자 체크</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  국가를 선택하면 비자 정보를 바로 확인
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => router.push('/visa-check')}
+              className="btn btn-primary w-full"
+            >
+              비자 체크 바로가기
+            </button>
+          </div>
+        </div>
 
         {/* Recent Activity */}
         <div className="card">
@@ -216,6 +240,29 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+      
+      {/* 알림 설정 섹션 */}
+      <div className="card">
+        <div className="card-header flex items-center justify-between">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            알림 설정
+          </h2>
+          <button
+            onClick={() => setShowNotificationSettings(!showNotificationSettings)}
+            className="btn btn-ghost text-sm"
+          >
+            {showNotificationSettings ? '닫기' : '설정'}
+          </button>
+        </div>
+        
+        {showNotificationSettings && (
+          <div className="card-body">
+            <NotificationSettings userId={session?.user?.id || ''} />
+          </div>
+        )}
+      </div>
+      
       <LanguageTest />
     </main>
   )

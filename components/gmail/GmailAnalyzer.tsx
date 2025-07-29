@@ -470,6 +470,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {filteredTravelInfos.map((travelInfo, index) => (
                   <div key={travelInfo.emailId} className="card">
+                    <div className="p-4">
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-medium flex-1 mr-2">
                           {travelInfo.subject}
@@ -527,7 +528,8 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
                         )}
                       </div>
                     </div>
-                  ))}
+                  </div>
+                ))}
                 </div>
               )}
 
@@ -560,9 +562,8 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
                       <div className="text-sm text-secondary">예약번호 있음</div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       )}

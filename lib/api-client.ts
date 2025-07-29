@@ -1,5 +1,6 @@
 import type { CountryVisit, VisaType, PassportCountry } from '@/types/global'
 import { withCache, generateCacheKey, CacheKeys, memoryCache } from '@/lib/cache/memory-cache'
+import { toast } from 'sonner'
 
 // API response types
 export interface ApiResponse<T = any> {
@@ -101,6 +102,25 @@ export class ApiClient {
     } catch (error) {
       // API request failed
       console.error('API request failed:', error)
+      
+      // 오프라인 상태 처리
+      if (!navigator.onLine) {
+        // 오프라인일 때 localStorage에서 데이터 가져오기
+        const offlineData = localStorage.getItem('dinoapp-offline-data')
+        if (offlineData && options.method === 'GET') {
+          const cached = JSON.parse(offlineData)
+          
+          // URL에 따른 캐시 데이터 반환
+          if (url.includes('/api/trips') && cached.trips) {
+            toast.info('오프라인 모드: 캐시된 데이터를 표시합니다')
+            return { success: true, data: cached.trips }
+          } else if (url.includes('/api/schengen-status') && cached.schengenStatus) {
+            return { success: true, data: cached.schengenStatus }
+          } else if (url.includes('/api/user/stats') && cached.stats) {
+            return { success: true, data: cached.stats }
+          }
+        }
+      }
       
       // Return a proper error response instead of throwing
       if (error instanceof Error) {

@@ -158,6 +158,9 @@ const agodaPatterns: EmailPattern[] = [
         /호텔:?\s*([가-힣\s]+)/i,
         /Property:?\s*([A-Za-z\s&-]+)/i
       ],
+      name: [
+        /Property:?\s*([A-Za-z\s&-]+)/i
+      ],
       confirmation: [
         /예약\s*ID:?\s*(\d+)/i,
         /Booking\s*ID:?\s*(\d+)/i

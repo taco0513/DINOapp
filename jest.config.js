@@ -13,6 +13,8 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  moduleDirectories: ['node_modules', '<rootDir>'],
+  roots: ['<rootDir>'],
   transformIgnorePatterns: [
     'node_modules/(?!(jose|openid-client|next-auth|@panva)/)',
   ],

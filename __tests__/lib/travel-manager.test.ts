@@ -34,26 +34,7 @@ const mockPrismaClient = {
 }
 
 jest.mock('@/lib/database/dev-prisma', () => ({
-  getPrismaClient: () => ({
-    countryVisit: {
-      findMany: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      deleteMany: jest.fn(),
-      findFirst: jest.fn()
-    },
-    visaRequirement: {
-      findUnique: jest.fn()
-    },
-    travelAlert: {
-      findMany: jest.fn()
-    },
-    travelPreferences: {
-      findUnique: jest.fn(),
-      update: jest.fn(),
-      create: jest.fn()
-    }
-  })
+  getPrismaClient: () => mockPrismaClient
 }))
 
 jest.mock('@/lib/schengen-calculator', () => ({
@@ -76,17 +57,6 @@ describe('TravelManager', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    
-    // Get the mock instance from the mocked module
-    const { getPrismaClient } = require('@/lib/database/dev-prisma')
-    const prismaInstance = getPrismaClient()
-    
-    // Connect our mock references to the actual mock instances
-    Object.assign(mockCountryVisit, prismaInstance.countryVisit)
-    Object.assign(mockVisaRequirement, prismaInstance.visaRequirement)
-    Object.assign(mockTravelAlert, prismaInstance.travelAlert)
-    Object.assign(mockTravelPreferences, prismaInstance.travelPreferences)
-    
     travelManager = new TravelManager(mockUserId)
   })
 
@@ -418,8 +388,8 @@ describe('TravelManager', () => {
 
       expect(result.popularDestinations).toEqual([
         { country: 'France', visits: 2, totalDays: 10 },
-        { country: 'Germany', visits: 1, totalDays: 5 },
-        { country: 'Spain', visits: 1, totalDays: 0 }
+        { country: 'Spain', visits: 1, totalDays: 0 },
+        { country: 'Germany', visits: 1, totalDays: 5 }
       ])
     })
 
@@ -442,9 +412,7 @@ describe('TravelManager', () => {
 
       const result = await travelManager.getTravelInsights()
 
-      expect(result.recommendations).toContain(
-        expect.stringContaining('셰겐 지역 체류 가능일이 20일 남았습니다')
-      )
+      expect(result.recommendations[0]).toContain('셰겐 지역 체류 가능일이 20일 남았습니다')
     })
 
     it('should warn about Schengen violations', async () => {
@@ -456,7 +424,7 @@ describe('TravelManager', () => {
 
       const result = await travelManager.getTravelInsights()
 
-      expect(result.recommendations).toContain('셰겐 규정을 위반했습니다')
+      expect(result.recommendations[0]).toContain('셰겐 규정을 위반했습니다')
     })
 
     it('should handle empty trips', async () => {

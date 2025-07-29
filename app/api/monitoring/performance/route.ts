@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth/config'
+import { authOptions } from '@/lib/auth'
 import { MetricsCollector } from '@/lib/monitoring/metrics-collector'
 import { apiCache } from '@/lib/performance/api-cache'
 

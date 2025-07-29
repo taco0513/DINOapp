@@ -149,7 +149,7 @@ export default function PerformanceMonitor({
     const reportInterval = setInterval(() => {
       updateMemoryUsage()
       reportMetrics(metricsRef.current)
-    }, reportInterval)
+    }, 30000) // 30 seconds
 
     // Page visibility change handling
     const handleVisibilityChange = () => {

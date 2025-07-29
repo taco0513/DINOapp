@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DINO API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    <style>
+        html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body { margin:0; background: #fafafa; }
+        
+        .swagger-ui .topbar { 
+            background-color: #0066cc; 
+            border-bottom: 3px solid #004499;
+        }
+        .swagger-ui .topbar .download-url-wrapper { display: none; }
+        
+        .swagger-ui .info { margin: 50px 0; }
+        .swagger-ui .info .title { color: #0066cc; }
+        
+        .swagger-ui .opblock.opblock-post { 
+            border-color: #49cc90; 
+            background: rgba(73, 204, 144, 0.1);
+        }
+        .swagger-ui .opblock.opblock-get { 
+            border-color: #61affe; 
+            background: rgba(97, 175, 254, 0.1);
+        }
+        .swagger-ui .opblock.opblock-put { 
+            border-color: #fca130; 
+            background: rgba(252, 161, 48, 0.1);
+        }
+        .swagger-ui .opblock.opblock-delete { 
+            border-color: #f93e3e; 
+            background: rgba(249, 62, 62, 0.1);
+        }
+        
+        .swagger-ui .scheme-container { 
+            background: #fff; 
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);
+            margin: 0 0 20px 0;
+            padding: 30px;
+        }
+        
+        .custom-header {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        .custom-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .custom-header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .api-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .api-stat {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .api-stat .number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .api-stat .label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+        
+        .quick-links {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+        }
+        
+        .quick-links h3 {
+            margin: 0 0 15px 0;
+            color: #0066cc;
+        }
+        
+        .quick-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .quick-links li {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+        }
+        
+        .quick-links a {
+            text-decoration: none;
+            color: #0066cc;
+            font-weight: 500;
+        }
+        
+        .quick-links a:hover {
+            color: #004499;
+        }
+        
+        .feature-highlight {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #0066cc;
+            padding: 15px 20px;
+            margin: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .feature-highlight h4 {
+            margin: 0 0 10px 0;
+            color: #0066cc;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-operational { 
+            background-color: #28a745; 
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .swagger-ui .models { display: none; }
+        
+        @media (max-width: 768px) {
+            .api-stats { flex-direction: column; gap: 15px; }
+            .custom-header h1 { font-size: 2em; }
+            .custom-header p { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-header">
+        <h1>🦕 DINO API</h1>
+        <p>Digital Nomad Travel Management API Documentation</p>
+        <div class="api-stats">
+            <div class="api-stat">
+                <span class="number">25+</span>
+                <span class="label">Endpoints</span>
+            </div>
+            <div class="api-stat">
+                <span class="number">8</span>
+                <span class="label">Categories</span>
+            </div>
+            <div class="api-stat">
+                <span class="number">REST</span>
+                <span class="label">API Style</span>
+            </div>
+            <div class="api-stat">
+                <span class="status-indicator status-operational"></span>
+                <span class="label">Operational</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-links">
+        <h3>🚀 Quick Start</h3>
+        <ul>
+            <li><a href="#/Authentication/get_auth_providers">Authentication</a></li>
+            <li><a href="#/Trips/get_trips">Get Trips</a></li>
+            <li><a href="#/Trips/post_trips">Create Trip</a></li>
+            <li><a href="#/Schengen%20Calculator/get_schengen">Schengen Status</a></li>
+            <li><a href="#/Calendar%20Integration/get_calendar_calendars">Calendar Sync</a></li>
+            <li><a href="#/Statistics/get_stats">Travel Stats</a></li>
+            <li><a href="#/Data%20Management/get_export">Export Data</a></li>
+            <li><a href="#/Admin/get_admin_database">Health Check</a></li>
+        </ul>
+    </div>
+
+    <div class="feature-highlight">
+        <h4>🎯 Key Features</h4>
+        <ul>
+            <li><strong>Schengen Calculator:</strong> Real-time 90/180 rule compliance checking</li>
+            <li><strong>Google Integration:</strong> Calendar sync and Gmail email analysis</li>
+            <li><strong>Travel Analytics:</strong> Comprehensive statistics and insights</li>
+            <li><strong>Data Portability:</strong> Full export/import capabilities</li>
+            <li><strong>Security First:</strong> OAuth 2.0, CSRF protection, and rate limiting</li>
+        </ul>
+    </div>
+
+    <div class="feature-highlight">
+        <h4>🔐 Authentication</h4>
+        <p>
+            The API uses session-based authentication with Google OAuth 2.0. 
+            All requests require a valid session cookie, and mutations require CSRF tokens.
+        </p>
+        <p><strong>Rate Limits:</strong> 100 requests per 15 minutes (general), 20 per 15 minutes (mutations)</p>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function() {
+            // Determine the API spec URL based on environment
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const specUrl = isLocalhost 
+                ? '/docs/api/openapi.yaml'
+                : 'https://raw.githubusercontent.com/yourusername/dinoapp/main/docs/api/openapi.yaml';
+
+            const ui = SwaggerUIBundle({
+                url: specUrl,
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                tryItOutEnabled: true,
+                filter: true,
+                supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+                onComplete: function() {
+                    // Add custom functionality after API loads
+                    console.log('DINO API Documentation loaded successfully');
+                    
+                    // Add environment indicator
+                    const envIndicator = document.createElement('div');
+                    envIndicator.style.cssText = `
+                        position: fixed;
+                        top: 10px;
+                        right: 10px;
+                        background: ${isLocalhost ? '#28a745' : '#17a2b8'};
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 4px;
+                        font-size: 0.8em;
+                        z-index: 1000;
+                    `;
+                    envIndicator.textContent = isLocalhost ? 'Development' : 'Production';
+                    document.body.appendChild(envIndicator);
+                },
+                requestInterceptor: function(request) {
+                    // Add CSRF token to mutation requests if available
+                    if (['POST', 'PUT', 'DELETE'].includes(request.method.toUpperCase())) {
+                        const csrfToken = getCsrfToken();
+                        if (csrfToken) {
+                            request.headers['X-CSRF-Token'] = csrfToken;
+                        }
+                    }
+                    
+                    // Ensure credentials are included for session-based auth
+                    request.credentials = 'include';
+                    
+                    return request;
+                },
+                responseInterceptor: function(response) {
+                    // Handle authentication errors
+                    if (response.status === 401) {
+                        console.warn('Authentication required. Please sign in.');
+                        showAuthWarning();
+                    }
+                    return response;
+                }
+            });
+
+            // Helper function to get CSRF token from meta tag or cookie
+            function getCsrfToken() {
+                // Try to get from meta tag first
+                const metaToken = document.querySelector('meta[name="csrf-token"]');
+                if (metaToken) {
+                    return metaToken.getAttribute('content');
+                }
+                
+                // Try to get from cookie
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'csrf-token') {
+                        return value;
+                    }
+                }
+                
+                return null;
+            }
+
+            // Show authentication warning
+            function showAuthWarning() {
+                const warning = document.createElement('div');
+                warning.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #f8d7da;
+                    color: #721c24;
+                    border: 1px solid #f5c6cb;
+                    border-radius: 8px;
+                    padding: 20px 30px;
+                    z-index: 2000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    text-align: center;
+                `;
+                warning.innerHTML = `
+                    <h4 style="margin: 0 0 10px 0;">Authentication Required</h4>
+                    <p style="margin: 0 0 15px 0;">You need to sign in to test API endpoints.</p>
+                    <button onclick="window.location.href='/api/auth/signin'" style="
+                        background: #0066cc;
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        margin-right: 10px;
+                    ">Sign In</button>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    ">Close</button>
+                `;
+                document.body.appendChild(warning);
+                
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    if (warning.parentElement) {
+                        warning.remove();
+                    }
+                }, 10000);
+            }
+
+            window.ui = ui;
+        };
+    </script>
+</body>
+</html>

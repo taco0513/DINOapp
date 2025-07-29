@@ -16,11 +16,11 @@ const koreanAirPatterns: EmailPattern[] = [
         /항공편\s*(?:번호)?:?\s*KE\s*(\d+)/i
       ],
       departureDate: [
-        /출발\s*(?:일시|날짜)?:?\s*(\d{4}[-년]\d{1,2}[-월]\d{1,2}일?)/i,
+        /출발\s*(?:일시|날짜)?:?\s*(\d{4}[-년]\s*\d{1,2}[-월]\s*\d{1,2}일?)/i,
         /Departure:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i
       ],
       arrivalDate: [
-        /도착\s*(?:일시|날짜)?:?\s*(\d{4}[-년]\d{1,2}[-월]\d{1,2}일?)/i,
+        /도착\s*(?:일시|날짜)?:?\s*(\d{4}[-년]\s*\d{1,2}[-월]\s*\d{1,2}일?)/i,
         /Arrival:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i
       ],
       departure: [
@@ -56,15 +56,23 @@ const asianaPatterns: EmailPattern[] = [
         /항공편:?\s*OZ\s*(\d+)/i
       ],
       departureDate: [
-        /출발\s*(?:일자|날짜)?:?\s*(\d{4}[-\.년]\d{1,2}[-\.월]\d{1,2}일?)/i,
+        /출발\s*(?:일자|날짜)?:?\s*(\d{4}[-\.년]\s*\d{1,2}[-\.월]\s*\d{1,2}일?)/i,
+        /출발날짜:?\s*(\d{4}[-\.]\d{1,2}[-\.]\d{1,2})/i,
         /Departure\s*Date:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i
+      ],
+      arrivalDate: [
+        /도착\s*(?:일자|날짜)?:?\s*(\d{4}[-\.년]\s*\d{1,2}[-\.월]\s*\d{1,2}일?)/i,
+        /도착날짜:?\s*(\d{4}[-\.]\d{1,2}[-\.]\d{1,2})/i,
+        /Arrival\s*Date:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i
       ],
       departure: [
         /출발\s*공항:?\s*([가-힣]+(?:\([A-Z]{3}\))?)/i,
+        /출발공항:?\s*([가-힣]+(?:\([A-Z]{3}\))?)/i,
         /From:?\s*([A-Za-z\s]+\([A-Z]{3}\))/i
       ],
       arrival: [
         /도착\s*공항:?\s*([가-힣]+(?:\([A-Z]{3}\))?)/i,
+        /도착공항:?\s*([가-힣]+(?:\([A-Z]{3}\))?)/i,
         /To:?\s*([A-Za-z\s]+\([A-Z]{3}\))/i
       ],
       confirmation: [
@@ -125,7 +133,12 @@ const bookingPatterns: EmailPattern[] = [
       ],
       location: [
         /호텔\s*위치:?\s*([가-힣\s,]+)/i,
+        /주소:?\s*([가-힣\s\d,.-]+)/i,
         /Address:?\s*([A-Za-z0-9\s,.-]+)/i
+      ],
+      hotelName: [
+        /호텔:?\s*([가-힣\s\w]+)/i,
+        /Property:?\s*([A-Za-z\s]+)/i
       ],
       confirmation: [
         /예약\s*번호:?\s*(\d+)/i,
@@ -148,22 +161,28 @@ const agodaPatterns: EmailPattern[] = [
     bodyPatterns: {
       checkIn: [
         /체크인:?\s*(\d{4}년\s*\d{1,2}월\s*\d{1,2}일)/i,
+        /Check-in:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i,
         /Check-in:?\s*(\d{1,2}\s+\w+\s+\d{4})/i
       ],
       checkOut: [
         /체크아웃:?\s*(\d{4}년\s*\d{1,2}월\s*\d{1,2}일)/i,
+        /Check-out:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i,
         /Check-out:?\s*(\d{1,2}\s+\w+\s+\d{4})/i
       ],
       location: [
         /호텔:?\s*([가-힣\s]+)/i,
-        /Property:?\s*([A-Za-z\s&-]+)/i
+        /Property:?\s*([A-Za-z\s&-]+?)(?:\n|$)/i
+      ],
+      hotelName: [
+        /호텔:?\s*([가-힣\s\w]+)/i,
+        /Property:?\s*([A-Za-z\s&-]+?)(?:\n|$)/i
       ],
       name: [
-        /Property:?\s*([A-Za-z\s&-]+)/i
+        /Property:?\s*([A-Za-z\s&-]+?)(?:\n|$)/i
       ],
       confirmation: [
-        /예약\s*ID:?\s*(\d+)/i,
-        /Booking\s*ID:?\s*(\d+)/i
+        /예약\s*ID:?\s*([A-Z0-9]+)/i,
+        /Booking\s*ID:?\s*([A-Z0-9]+)/i
       ]
     },
     dateFormats: ['YYYY년 MM월 DD일', 'DD MMMM YYYY', 'YYYY-MM-DD']

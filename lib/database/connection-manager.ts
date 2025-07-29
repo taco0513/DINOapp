@@ -85,12 +85,17 @@ export class DatabaseConnectionManager {
         }
       })
 
-      // Set connection pool size
-      await this.prisma.$executeRawUnsafe(`
-        ALTER SYSTEM SET max_connections = ${this.options.poolSize};
-      `).catch(() => {
-        // Ignore if we don't have permissions
-      })
+      // Set connection pool size (PostgreSQL only, skip for SQLite)
+      const databaseUrl = process.env.DATABASE_URL || ''
+      const isSQLite = databaseUrl.includes('sqlite') || databaseUrl.startsWith('file:')
+      
+      if (!isSQLite) {
+        await this.prisma.$executeRawUnsafe(`
+          ALTER SYSTEM SET max_connections = ${this.options.poolSize};
+        `).catch(() => {
+          // Ignore if we don't have permissions
+        })
+      }
 
       // Test connection
       await this.prisma.$connect()
@@ -236,16 +241,30 @@ export class DatabaseConnectionManager {
     try {
       if (!this.prisma) return null
       
-      const result = await this.prisma.$queryRaw<any[]>`
-        SELECT 
-          count(*) as total_connections,
-          count(*) filter (where state = 'active') as active_connections,
-          count(*) filter (where state = 'idle') as idle_connections
-        FROM pg_stat_activity
-        WHERE datname = current_database()
-      `
+      // PostgreSQL specific pool stats
+      const databaseUrl = process.env.DATABASE_URL || ''
+      const isSQLite = databaseUrl.includes('sqlite') || databaseUrl.startsWith('file:')
       
-      return result[0]
+      if (!isSQLite) {
+        const result = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            count(*) as total_connections,
+            count(*) filter (where state = 'active') as active_connections,
+            count(*) filter (where state = 'idle') as idle_connections
+          FROM pg_stat_activity
+          WHERE datname = current_database()
+        `
+        
+        return result[0]
+      } else {
+        // SQLite doesn't have connection pooling stats, return basic info
+        return {
+          total_connections: 1,
+          active_connections: 1,
+          idle_connections: 0,
+          database_type: 'sqlite'
+        }
+      }
     } catch {
       return null
     }

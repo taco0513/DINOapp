@@ -1,0 +1,1530 @@
+openapi: 3.0.0
+info:
+  title: DINO API
+  version: 1.0.0
+  description: |
+    # 🦕 DINO - Digital Nomad Travel Management API
+    
+    REST API for managing digital nomad travel records, visa compliance, and Schengen area calculations.
+    
+    ## Features
+    - ✅ Trip management with CRUD operations
+    - ✅ Real-time Schengen 90/180 rule calculations
+    - ✅ Google Calendar integration
+    - ✅ Gmail email analysis for travel extraction
+    - ✅ Statistical analytics and reporting
+    - ✅ Data export/import capabilities
+    
+    ## Authentication
+    Uses NextAuth.js with Google OAuth 2.0 and session-based authentication.
+    
+    ## Rate Limiting
+    - General API: 100 requests per 15 minutes
+    - Mutations: 20 requests per 15 minutes  
+    - Authentication: 5 requests per 15 minutes
+    - Data Export: 10 requests per hour
+    
+  contact:
+    name: DINO API Support
+    url: https://dinoapp.net/support
+    email: support@dinoapp.net
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://dinoapp.net/terms
+
+servers:
+  - url: https://dinoapp.net/api
+    description: Production server
+  - url: https://staging.dinoapp.net/api
+    description: Staging server
+  - url: http://localhost:3000/api
+    description: Development server
+
+security:
+  - cookieAuth: []
+  - csrfToken: []
+
+paths:
+  # Authentication Endpoints
+  /auth/providers:
+    get:
+      tags: [Authentication]
+      summary: Get authentication providers
+      description: Returns available OAuth providers for authentication
+      security: []
+      responses:
+        '200':
+          description: Available authentication providers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  google:
+                    $ref: '#/components/schemas/AuthProvider'
+              examples:
+                providers:
+                  value:
+                    google:
+                      id: google
+                      name: Google
+                      type: oauth
+                      signinUrl: /api/auth/signin/google
+                      callbackUrl: /api/auth/callback/google
+
+  /auth/session:
+    get:
+      tags: [Authentication]
+      summary: Get current user session
+      description: Returns the authenticated user's session information
+      responses:
+        '200':
+          description: Current user session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Trip Management Endpoints
+  /trips:
+    get:
+      tags: [Trips]
+      summary: Get user trips
+      description: |
+        Retrieve paginated list of user's travel records with optional filtering.
+        
+        ### Query Parameters
+        - `country`: Filter by country name or ISO code
+        - `year`: Filter by year (e.g., 2024)
+        - `visa_type`: Filter by visa type
+        - `page`: Page number (default: 1)
+        - `limit`: Items per page (default: 20, max: 100)
+        - `sort`: Sort field and direction (e.g. "entry_date:desc")
+      parameters:
+        - name: country
+          in: query
+          description: Filter trips by country name or ISO code
+          schema:
+            type: string
+            example: "France"
+        - name: year
+          in: query
+          description: Filter trips by year
+          schema:
+            type: integer
+            example: 2024
+        - name: visa_type
+          in: query
+          description: Filter by visa type
+          schema:
+            type: string
+            enum: [Tourist, Business, Student, Working Holiday, Transit, Medical, Family Visit]
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: sort
+          in: query
+          description: Sort field and direction
+          schema:
+            type: string
+            example: "entry_date:desc"
+      responses:
+        '200':
+          description: List of user trips
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Trips]
+      summary: Create new trip
+      description: |
+        Create a new travel record with automatic visa validation and Schengen calculations.
+        
+        ### Validation Rules
+        - Entry date cannot be in the future beyond 1 year
+        - Exit date must be after entry date (if provided)
+        - Visa type must match passport country eligibility
+        - Country must be a valid ISO country code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripCreateRequest'
+            examples:
+              tourist_trip:
+                summary: Tourist trip to France
+                value:
+                  country: "France"
+                  entryDate: "2024-06-01"
+                  exitDate: "2024-06-15"
+                  visaType: "Tourist"
+                  maxDays: 90
+                  passportCountry: "US"
+                  notes: "Summer vacation in Paris"
+              business_trip:
+                summary: Business trip to Germany
+                value:
+                  country: "Germany"
+                  entryDate: "2024-07-10"
+                  exitDate: "2024-07-12"
+                  visaType: "Business"
+                  maxDays: 90
+                  passportCountry: "US"
+                  notes: "Tech conference in Berlin"
+      responses:
+        '201':
+          description: Trip created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Trip conflicts with existing record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /trips/{tripId}:
+    get:
+      tags: [Trips]
+      summary: Get specific trip
+      description: Retrieve detailed information about a specific trip record
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: Unique trip identifier
+          schema:
+            type: string
+            example: "clp123456789abcdef"
+      responses:
+        '200':
+          description: Trip details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Trips]
+      summary: Update trip
+      description: |
+        Update an existing trip record. Only provided fields will be updated.
+        
+        ### Update Rules
+        - Cannot change entry date if it affects Schengen calculations
+        - Exit date changes trigger recalculation of visa compliance
+        - Country changes require re-validation of visa eligibility
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: Unique trip identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripUpdateRequest'
+      responses:
+        '200':
+          description: Trip updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Trips]
+      summary: Delete trip
+      description: |
+        Permanently delete a trip record. This action cannot be undone.
+        
+        ### Side Effects
+        - Recalculates Schengen status for remaining trips
+        - Updates travel statistics
+        - Removes associated calendar events (if synced)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: Unique trip identifier
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Trip deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Schengen Calculator Endpoints
+  /schengen:
+    get:
+      tags: [Schengen Calculator]
+      summary: Get current Schengen status
+      description: |
+        Calculate the user's current Schengen Area compliance status based on the 90/180 day rule.
+        
+        ### Calculation Method
+        - Uses rolling 180-day window
+        - Counts all days spent in Schengen countries
+        - Provides warnings for approaching limits
+        - Calculates next available entry dates
+      responses:
+        '200':
+          description: Current Schengen status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchengenStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /schengen/simulate:
+    post:
+      tags: [Schengen Calculator]
+      summary: Simulate future trip
+      description: |
+        Simulate a potential future trip to check Schengen compliance without creating a trip record.
+        
+        ### Simulation Features
+        - Validates against current Schengen usage
+        - Calculates remaining days available
+        - Provides warnings for violations
+        - Suggests alternative dates if needed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchengenSimulationRequest'
+            examples:
+              valid_trip:
+                summary: Valid future trip
+                value:
+                  country: "Germany"
+                  entryDate: "2024-06-01"
+                  exitDate: "2024-06-30"
+              risky_trip:
+                summary: Trip approaching limit
+                value:
+                  country: "Spain"
+                  entryDate: "2024-08-01"
+                  exitDate: "2024-09-15"
+      responses:
+        '200':
+          description: Simulation results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchengenSimulationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Calendar Integration Endpoints
+  /calendar/calendars:
+    get:
+      tags: [Calendar Integration]
+      summary: Get user's Google calendars
+      description: |
+        Retrieve list of Google calendars accessible to the authenticated user.
+        Requires Google Calendar API permissions.
+      responses:
+        '200':
+          description: List of user calendars
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Google Calendar permissions not granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /calendar/sync:
+    post:
+      tags: [Calendar Integration]
+      summary: Sync trips with Google Calendar
+      description: |
+        Synchronize travel records with Google Calendar events.
+        
+        ### Sync Options
+        - `import`: Import calendar events as trips
+        - `export`: Export trips as calendar events
+        - `both`: Bidirectional synchronization
+        
+        ### Event Format
+        - Title: "Trip to [Country]"
+        - Location: Country name
+        - Description: Visa type and notes
+        - All-day events for travel dates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalendarSyncRequest'
+      responses:
+        '200':
+          description: Sync completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarSyncResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Insufficient calendar permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Statistics & Analytics
+  /stats:
+    get:
+      tags: [Statistics]
+      summary: Get user travel statistics
+      description: |
+        Comprehensive travel statistics and analytics for the authenticated user.
+        
+        ### Included Metrics
+        - Total trips and countries visited
+        - Annual and monthly breakdowns
+        - Schengen area usage patterns
+        - Most visited destinations
+        - Travel frequency analysis
+      parameters:
+        - name: year
+          in: query
+          description: Filter statistics by specific year
+          schema:
+            type: integer
+            example: 2024
+        - name: country
+          in: query
+          description: Filter statistics by specific country
+          schema:
+            type: string
+            example: "France"
+      responses:
+        '200':
+          description: User travel statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Data Management
+  /export:
+    get:
+      tags: [Data Management]
+      summary: Export user data
+      description: |
+        Export all user data in JSON format for backup or migration purposes.
+        
+        ### Export Contents
+        - User profile information
+        - All trip records
+        - User preferences and settings
+        - Calendar sync configurations
+        
+        ### Export Formats
+        - `json`: Structured JSON format (default)
+        - `csv`: Comma-separated values for trips
+        - `ics`: iCalendar format for calendar import
+      parameters:
+        - name: format
+          in: query
+          description: Export format
+          schema:
+            type: string
+            enum: [json, csv, ics]
+            default: json
+        - name: date_range
+          in: query
+          description: Date range for trip data (YYYY-MM-DD:YYYY-MM-DD)
+          schema:
+            type: string
+            example: "2024-01-01:2024-12-31"
+      responses:
+        '200':
+          description: Exported data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+            text/csv:
+              schema:
+                type: string
+            text/calendar:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          description: Export rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import:
+    post:
+      tags: [Data Management]
+      summary: Import user data
+      description: |
+        Import trip data from various formats.
+        
+        ### Import Modes
+        - `merge`: Merge with existing data (default)
+        - `replace`: Replace existing data
+        - `append`: Add to existing data only
+        
+        ### Supported Formats
+        - DINO JSON export format
+        - CSV with standard columns
+        - iCalendar (.ics) files
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportRequest'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                mode:
+                  type: string
+                  enum: [merge, replace, append]
+                  default: merge
+      responses:
+        '200':
+          description: Import completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '413':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Gmail Integration
+  /gmail/analyze:
+    post:
+      tags: [Gmail Integration]
+      summary: Analyze Gmail for travel information
+      description: |
+        Scan Gmail messages for travel-related information and extract trip data.
+        
+        ### Analysis Features
+        - Flight confirmation emails
+        - Hotel booking confirmations
+        - Visa application receipts
+        - Travel insurance documents
+        
+        ### Privacy & Security
+        - Only reads travel-related emails
+        - No permanent storage of email content
+        - Respects Gmail API rate limits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dateRange:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                      format: date
+                      description: Start date for email analysis
+                    end:
+                      type: string
+                      format: date
+                      description: End date for email analysis
+                autoImport:
+                  type: boolean
+                  default: false
+                  description: Automatically create trips from found data
+              required: [dateRange]
+      responses:
+        '200':
+          description: Analysis completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      analyzed:
+                        type: integer
+                        description: Number of emails analyzed
+                      found:
+                        type: integer
+                        description: Number of travel-related emails found
+                      trips:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Trip'
+                      imported:
+                        type: integer
+                        description: Number of trips automatically imported
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Gmail permissions not granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Admin Endpoints
+  /admin/database:
+    get:
+      tags: [Admin]
+      summary: Database health check
+      description: |
+        Check database health and performance metrics. Admin access required.
+        
+        ### Health Metrics
+        - Connection pool status
+        - Query performance statistics
+        - Storage usage information
+        - Active connection count
+      security:
+        - cookieAuth: []
+        - adminRole: []
+      responses:
+        '200':
+          description: Database health information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseHealthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: next-auth.session-token
+      description: NextAuth.js session cookie
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: CSRF protection token
+    adminRole:
+      type: http
+      scheme: bearer
+      description: Admin role verification
+
+  schemas:
+    # Base Models
+    Trip:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique trip identifier
+          example: "clp123456789abcdef"
+        userId:
+          type: string
+          description: User identifier
+          example: "usr_987654321xyz"
+        country:
+          type: string
+          description: Destination country name
+          example: "France"
+        countryCode:
+          type: string
+          description: ISO country code
+          example: "FR"
+        entryDate:
+          type: string
+          format: date-time
+          description: Entry date and time
+          example: "2024-06-01T00:00:00.000Z"
+        exitDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: Exit date and time (null if still in country)
+          example: "2024-06-15T23:59:59.999Z"
+        visaType:
+          type: string
+          enum: [Tourist, Business, Student, Working Holiday, Transit, Medical, Family Visit]
+          description: Type of visa or entry permission
+          example: "Tourist"
+        maxDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+          description: Maximum allowed days for this visa type
+          example: 90
+        passportCountry:
+          type: string
+          description: Passport issuing country
+          example: "US"
+        notes:
+          type: string
+          nullable: true
+          maxLength: 500
+          description: User notes about the trip
+          example: "Summer vacation in Paris and Nice"
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+          example: "2024-05-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2024-05-16T14:20:00.000Z"
+      required: [id, userId, country, entryDate, visaType, maxDays, passportCountry]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          description: User email address
+        name:
+          type: string
+          description: User display name
+        image:
+          type: string
+          format: uri
+          nullable: true
+          description: Profile image URL
+        passportCountry:
+          type: string
+          description: Primary passport country
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, email, passportCountry]
+
+    AuthProvider:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "google"
+        name:
+          type: string
+          example: "Google"
+        type:
+          type: string
+          example: "oauth"
+        signinUrl:
+          type: string
+          example: "/api/auth/signin/google"
+        callbackUrl:
+          type: string
+          example: "/api/auth/callback/google"
+
+    # Request Schemas
+    TripCreateRequest:
+      type: object
+      properties:
+        country:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: Destination country name
+          example: "France"
+        entryDate:
+          type: string
+          format: date
+          description: Entry date (YYYY-MM-DD)
+          example: "2024-06-01"
+        exitDate:
+          type: string
+          format: date
+          nullable: true
+          description: Exit date (YYYY-MM-DD), optional for ongoing trips
+          example: "2024-06-15"
+        visaType:
+          type: string
+          enum: [Tourist, Business, Student, Working Holiday, Transit, Medical, Family Visit]
+          description: Type of visa or entry permission
+          example: "Tourist"
+        maxDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+          description: Maximum allowed days for this visa type
+          example: 90
+        passportCountry:
+          type: string
+          description: Passport issuing country
+          example: "US"
+        notes:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: Optional notes about the trip
+          example: "Summer vacation in Paris"
+      required: [country, entryDate, visaType, maxDays, passportCountry]
+
+    TripUpdateRequest:
+      type: object
+      properties:
+        country:
+          type: string
+          minLength: 2
+          maxLength: 100
+        entryDate:
+          type: string
+          format: date
+        exitDate:
+          type: string
+          format: date
+          nullable: true
+        visaType:
+          type: string
+          enum: [Tourist, Business, Student, Working Holiday, Transit, Medical, Family Visit]
+        maxDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+        notes:
+          type: string
+          maxLength: 500
+          nullable: true
+      description: All fields are optional for updates
+
+    SchengenSimulationRequest:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Schengen country to visit
+          example: "Germany"
+        entryDate:
+          type: string
+          format: date
+          description: Planned entry date
+          example: "2024-08-01"
+        exitDate:
+          type: string
+          format: date
+          description: Planned exit date
+          example: "2024-08-15"
+      required: [country, entryDate, exitDate]
+
+    CalendarSyncRequest:
+      type: object
+      properties:
+        calendarId:
+          type: string
+          description: Google Calendar ID
+          example: "primary"
+        syncDirection:
+          type: string
+          enum: [import, export, both]
+          default: both
+          description: Direction of synchronization
+        dateRange:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date
+            end:
+              type: string
+              format: date
+          required: [start, end]
+      required: [calendarId, dateRange]
+
+    ImportRequest:
+      type: object
+      properties:
+        data:
+          type: object
+          description: Data to import in DINO export format
+        mode:
+          type: string
+          enum: [merge, replace, append]
+          default: merge
+          description: Import mode
+      required: [data]
+
+    # Response Schemas
+    SessionResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        expires:
+          type: string
+          format: date-time
+          description: Session expiration time
+
+    TripResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            trip:
+              $ref: '#/components/schemas/Trip'
+        message:
+          type: string
+          example: "Trip retrieved successfully"
+
+    TripListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            trips:
+              type: array
+              items:
+                $ref: '#/components/schemas/Trip'
+            pagination:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  example: 1
+                limit:
+                  type: integer
+                  example: 20
+                total:
+                  type: integer
+                  example: 45
+                totalPages:
+                  type: integer
+                  example: 3
+
+    SchengenStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            status:
+              type: object
+              properties:
+                daysUsed:
+                  type: integer
+                  description: Days used in current 180-day period
+                  example: 45
+                daysRemaining:
+                  type: integer
+                  description: Days remaining in current period
+                  example: 45
+                earliestExitDate:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: Earliest required exit date to stay compliant
+                nextAvailableEntry:
+                  type: string
+                  format: date-time
+                  description: Next date when 90 days will be available
+                currentlyInSchengen:
+                  type: boolean
+                  description: Whether user is currently in Schengen area
+                periodStart:
+                  type: string
+                  format: date-time
+                  description: Start of current 180-day calculation period
+                periodEnd:
+                  type: string
+                  format: date-time
+                  description: End of current 180-day calculation period
+            warnings:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [APPROACHING_LIMIT, EXCEEDED_LIMIT, INVALID_STAY]
+                  message:
+                    type: string
+                  severity:
+                    type: string
+                    enum: [info, warning, error]
+                  daysRemaining:
+                    type: integer
+                    nullable: true
+            trips:
+              type: array
+              items:
+                type: object
+                properties:
+                  country:
+                    type: string
+                  entryDate:
+                    type: string
+                    format: date-time
+                  exitDate:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  daysInSchengen:
+                    type: integer
+
+    SchengenSimulationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            simulation:
+              type: object
+              properties:
+                allowed:
+                  type: boolean
+                  description: Whether the trip is allowed under Schengen rules
+                daysAvailable:
+                  type: integer
+                  description: Days available at time of planned entry
+                wouldUse:
+                  type: integer
+                  description: Days the planned trip would use
+                remainingAfter:
+                  type: integer
+                  description: Days remaining after planned trip
+                warnings:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      message:
+                        type: string
+                      severity:
+                        type: string
+
+    CalendarListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            calendars:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  summary:
+                    type: string
+                  primary:
+                    type: boolean
+                  accessRole:
+                    type: string
+
+    CalendarSyncResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            synced:
+              type: object
+              properties:
+                imported:
+                  type: integer
+                  description: Number of calendar events imported as trips
+                exported:
+                  type: integer
+                  description: Number of trips exported as calendar events
+                updated:
+                  type: integer
+                  description: Number of existing records updated
+                skipped:
+                  type: integer
+                  description: Number of records skipped due to conflicts
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  message:
+                    type: string
+                  record:
+                    type: object
+
+    StatsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            stats:
+              type: object
+              properties:
+                totalTrips:
+                  type: integer
+                  example: 45
+                countriesVisited:
+                  type: integer
+                  example: 23
+                totalDaysAbroad:
+                  type: integer
+                  example: 365
+                currentYear:
+                  type: object
+                  properties:
+                    trips:
+                      type: integer
+                    countries:
+                      type: integer
+                    days:
+                      type: integer
+                schengenUsage:
+                  type: object
+                  properties:
+                    current:
+                      type: integer
+                    average:
+                      type: integer
+                    peak:
+                      type: integer
+                favoriteCountries:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      country:
+                        type: string
+                      visits:
+                        type: integer
+
+    ExportResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            export:
+              type: object
+              properties:
+                version:
+                  type: string
+                  example: "1.0"
+                exportDate:
+                  type: string
+                  format: date-time
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    passportCountry:
+                      type: string
+                trips:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Trip'
+                settings:
+                  type: object
+
+    ImportResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            imported:
+              type: object
+              properties:
+                trips:
+                  type: integer
+                  description: Number of trips imported
+                updated:
+                  type: integer
+                  description: Number of existing trips updated
+                skipped:
+                  type: integer
+                  description: Number of records skipped
+                errors:
+                  type: integer
+                  description: Number of errors encountered
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  line:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+
+    DatabaseHealthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            health:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [healthy, degraded, unhealthy]
+                connections:
+                  type: object
+                  properties:
+                    active:
+                      type: integer
+                    idle:
+                      type: integer
+                    total:
+                      type: integer
+                    max:
+                      type: integer
+                performance:
+                  type: object
+                  properties:
+                    avgQueryTime:
+                      type: number
+                      description: Average query time in milliseconds
+                    slowQueries:
+                      type: integer
+                      description: Number of slow queries (>1000ms)
+                    cacheHitRate:
+                      type: number
+                      description: Cache hit rate percentage
+                storage:
+                  type: object
+                  properties:
+                    size:
+                      type: string
+                      description: Database size (human readable)
+                    usage:
+                      type: number
+                      description: Storage usage percentage
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation completed successfully"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              enum: [BAD_REQUEST, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, VALIDATION_ERROR, RATE_LIMIT_ERROR, INTERNAL_SERVER_ERROR, DATABASE_ERROR, EXTERNAL_SERVICE_ERROR]
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: object
+              nullable: true
+              description: Additional error details (validation errors, etc.)
+            requestId:
+              type: string
+              description: Unique request identifier for debugging
+            timestamp:
+              type: string
+              format: date-time
+              description: Error timestamp
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            validation_error:
+              value:
+                success: false
+                error:
+                  code: VALIDATION_ERROR
+                  message: "Validation failed"
+                  details:
+                    country: ["Country is required"]
+                    entryDate: ["Invalid date format"]
+                  requestId: "req_123456789_abc"
+                  timestamp: "2024-01-01T00:00:00.000Z"
+
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            not_authenticated:
+              value:
+                success: false
+                error:
+                  code: UNAUTHORIZED
+                  message: "Authentication required"
+                  requestId: "req_123456789_def"
+                  timestamp: "2024-01-01T00:00:00.000Z"
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            insufficient_permissions:
+              value:
+                success: false
+                error:
+                  code: FORBIDDEN
+                  message: "Insufficient permissions to access this resource"
+                  requestId: "req_123456789_ghi"
+                  timestamp: "2024-01-01T00:00:00.000Z"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            trip_not_found:
+              value:
+                success: false
+                error:
+                  code: NOT_FOUND
+                  message: "Trip not found"
+                  requestId: "req_123456789_jkl"
+                  timestamp: "2024-01-01T00:00:00.000Z"
+
+  examples:
+    # Trip Examples
+    ParisVacation:
+      summary: Tourist trip to Paris
+      value:
+        country: "France"
+        entryDate: "2024-06-01"
+        exitDate: "2024-06-15"
+        visaType: "Tourist"
+        maxDays: 90
+        passportCountry: "US"
+        notes: "Two weeks exploring Paris and the Loire Valley"
+
+    BerlinBusiness:
+      summary: Business trip to Berlin
+      value:
+        country: "Germany"
+        entryDate: "2024-07-10"
+        exitDate: "2024-07-12"
+        visaType: "Business"
+        maxDays: 90
+        passportCountry: "US"
+        notes: "Attending Web Summit conference"
+
+    OngoingStay:
+      summary: Ongoing stay in Spain
+      value:
+        country: "Spain"
+        entryDate: "2024-03-01"
+        exitDate: null
+        visaType: "Tourist"
+        maxDays: 90
+        passportCountry: "US"
+        notes: "Digital nomad stay in Barcelona"
+
+    # Error Examples
+    ValidationError:
+      summary: Validation error example
+      value:
+        success: false
+        error:
+          code: "VALIDATION_ERROR"
+          message: "Validation failed"
+          details:
+            country: ["Country is required"]
+            entryDate: ["Entry date must be a valid date"]
+            exitDate: ["Exit date must be after entry date"]
+          requestId: "req_1234567890abcdef"
+          timestamp: "2024-01-01T12:00:00.000Z"
+
+    RateLimitError:
+      summary: Rate limit exceeded
+      value:
+        success: false
+        error:
+          code: "RATE_LIMIT_ERROR"
+          message: "Rate limit exceeded. Try again in 15 minutes."
+          details:
+            limit: 100
+            window: "15m"
+            retryAfter: 900
+          requestId: "req_1234567890abcdef"
+          timestamp: "2024-01-01T12:00:00.000Z"
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Trips
+    description: Travel record management operations
+  - name: Schengen Calculator
+    description: Schengen area 90/180 rule calculations
+  - name: Calendar Integration
+    description: Google Calendar synchronization
+  - name: Statistics
+    description: Travel analytics and reporting
+  - name: Data Management
+    description: Data import/export operations
+  - name: Gmail Integration
+    description: Gmail email analysis for travel data
+  - name: Admin
+    description: Administrative endpoints (admin access required)
+
+x-tagGroups:
+  - name: Core Features
+    tags: [Trips, Schengen Calculator, Statistics]
+  - name: Integrations
+    tags: [Calendar Integration, Gmail Integration]
+  - name: User Management
+    tags: [Authentication, Data Management]
+  - name: Administration
+    tags: [Admin]

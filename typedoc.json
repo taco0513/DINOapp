@@ -1,0 +1,29 @@
+{
+  "entryPoints": [
+    "./lib",
+    "./types",
+    "./components"
+  ],
+  "out": "docs/code/typedoc",
+  "theme": "default",
+  "readme": "README.md",
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/node_modules/**"
+  ],
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Components",
+    "Hooks",
+    "Utilities",
+    "Types",
+    "API",
+    "*"
+  ]
+}

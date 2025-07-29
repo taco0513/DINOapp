@@ -1,7 +1,13 @@
-// PURPOSE: 여행 관리 핵심 비즈니스 로직 - 여행 CRUD, 솅겐 계산, 분석 기능
-// ARCHITECTURE: Service Layer - 데이터베이스와 UI 사이의 비즈니스 로직 처리
-// RELATED: lib/schengen-calculator.ts, lib/database/dev-prisma.ts, data/countries.ts
-// GOTCHAS: 솅겐 계산시 시간대 처리 주의, 과거 여행 데이터 불일치 가능성
+/**
+ * Travel Management Core Business Logic Module
+ * 
+ * PURPOSE: 여행 관리 핵심 비즈니스 로직 - 여행 CRUD, 솅겐 계산, 분석 기능
+ * ARCHITECTURE: Service Layer - 데이터베이스와 UI 사이의 비즈니스 로직 처리
+ * RELATED: lib/schengen-calculator.ts, lib/database/dev-prisma.ts, data/countries.ts
+ * GOTCHAS: 솅겐 계산시 시간대 처리 주의, 과거 여행 데이터 불일치 가능성
+ * 
+ * @module travel-manager
+ */
 
 import { getPrismaClient } from '@/lib/database/dev-prisma';
 import { CountryVisit } from '@prisma/client';
@@ -12,8 +18,9 @@ import {
 } from '@/lib/schengen-calculator';
 import { COUNTRIES, VISA_TYPES, getCountryByName } from '@/data/countries';
 
-const prisma = getPrismaClient();
-
+/**
+ * Options for filtering and sorting trip queries
+ */
 export interface TravelManagerOptions {
   userId: string;
   includeCompleted?: boolean;
@@ -24,49 +31,108 @@ export interface TravelManagerOptions {
   sortOrder?: 'asc' | 'desc';
 }
 
+/**
+ * Summary statistics for user's travel history
+ */
 export interface TripSummary {
+  /** Total number of trips (all statuses) */
   totalTrips: number;
+  /** Number of completed trips */
   completedTrips: number;
+  /** Number of currently ongoing trips */
   ongoingTrips: number;
+  /** Number of planned future trips */
   plannedTrips: number;
+  /** Number of unique countries visited */
   countriesVisited: number;
+  /** Total days spent abroad */
   totalDaysAbroad: number;
+  /** Days used in Schengen area (180-day window) */
   schengenDaysUsed: number;
+  /** Days remaining for Schengen area */
   schengenDaysRemaining: number;
+  /** Date of the last trip entry */
   lastTripDate?: string;
+  /** Date of the next planned trip */
   nextTripDate?: string;
 }
 
+/**
+ * Comprehensive travel insights and analytics
+ */
 export interface TravelInsights {
+  /** Summary statistics */
   summary: TripSummary;
+  /** Most visited destinations with frequency and duration */
   popularDestinations: Array<{
     country: string;
     visits: number;
     totalDays: number;
   }>;
+  /** Travel behavior patterns */
   travelPatterns: {
+    /** Average trip duration in days */
     averageTripDuration: number;
+    /** Longest trip duration in days */
     longestTrip: number;
+    /** Shortest trip duration in days */
     shortestTrip: number;
+    /** Most frequently used visa type */
     mostCommonVisaType: string;
+    /** Total amount spent on trips (if tracked) */
     totalSpent?: number;
   };
+  /** Upcoming visa/stay expirations */
   upcomingExpirations: Array<{
     country: string;
     exitDate: string;
     daysUntilExit: number;
   }>;
+  /** AI-generated travel recommendations */
   recommendations: string[];
 }
 
+/**
+ * Main travel management service class
+ * Handles all travel-related business logic and database operations
+ * 
+ * @example
+ * ```typescript
+ * const manager = new TravelManager('user123');
+ * const trips = await manager.getTrips();
+ * const insights = await manager.getTravelInsights();
+ * ```
+ */
 export class TravelManager {
   private userId: string;
+  private prisma: any;
 
+  /**
+   * Creates a new TravelManager instance for a specific user
+   * @param userId - The user ID to manage trips for
+   */
   constructor(userId: string) {
     this.userId = userId;
+    this.prisma = getPrismaClient();
   }
 
-  // Get all trips for user with filtering options
+  /**
+   * Retrieves all trips for the user with filtering and sorting options
+   * @param options - Filtering and sorting options
+   * @returns Array of country visits matching the criteria
+   * 
+   * @example
+   * ```typescript
+   * // Get only completed trips, sorted by entry date
+   * const completedTrips = await manager.getTrips({
+   *   includeCompleted: true,
+   *   includePlanned: false,
+   *   includeOngoing: false,
+   *   sortBy: 'entryDate',
+   *   sortOrder: 'desc'
+   * });
+   * ```
+   */
   async getTrips(
     options: Partial<TravelManagerOptions> = {}
   ): Promise<CountryVisit[]> {
@@ -84,7 +150,7 @@ export class TravelManager {
     if (includePlanned) statusFilter.push('planned');
     if (includeOngoing) statusFilter.push('ongoing');
 
-    const trips = await prisma.countryVisit.findMany({
+    const trips = await this.prisma.countryVisit.findMany({
       where: {
         userId: this.userId,
         status: {
@@ -100,7 +166,25 @@ export class TravelManager {
     return trips;
   }
 
-  // Create a new trip
+  /**
+   * Creates a new trip record with validation
+   * @param tripData - Trip information to create
+   * @returns Created trip record
+   * @throws Error if country or visa type is invalid, or dates are illogical
+   * 
+   * @example
+   * ```typescript
+   * const newTrip = await manager.createTrip({
+   *   country: 'France',
+   *   entryDate: '2024-06-01',
+   *   exitDate: '2024-06-15',
+   *   visaType: 'Tourist',
+   *   maxDays: 90,
+   *   passportCountry: 'KR',
+   *   notes: 'Summer vacation in Paris'
+   * });
+   * ```
+   */
   async createTrip(tripData: {
     country: string;
     entryDate: string | Date;
@@ -137,7 +221,7 @@ export class TravelManager {
       throw new Error('Exit date must be after entry date');
     }
 
-    const trip = await prisma.countryVisit.create({
+    const trip = await this.prisma.countryVisit.create({
       data: {
         userId: this.userId,
         country: tripData.country,
@@ -158,7 +242,22 @@ export class TravelManager {
     return trip;
   }
 
-  // Update an existing trip
+  /**
+   * Updates an existing trip record
+   * @param tripId - ID of the trip to update
+   * @param updateData - Partial data to update
+   * @returns Updated trip record
+   * @throws Error if trip not found or unauthorized
+   * 
+   * @example
+   * ```typescript
+   * const updated = await manager.updateTrip('trip123', {
+   *   exitDate: '2024-06-20',
+   *   notes: 'Extended stay',
+   *   cost: 2500
+   * });
+   * ```
+   */
   async updateTrip(
     tripId: string,
     updateData: Partial<{
@@ -177,7 +276,7 @@ export class TravelManager {
     }>
   ): Promise<CountryVisit> {
     // Verify trip belongs to user
-    const existingTrip = await prisma.countryVisit.findFirst({
+    const existingTrip = await this.prisma.countryVisit.findFirst({
       where: {
         id: tripId,
         userId: this.userId,
@@ -208,7 +307,7 @@ export class TravelManager {
       }
     });
 
-    const updatedTrip = await prisma.countryVisit.update({
+    const updatedTrip = await this.prisma.countryVisit.update({
       where: { id: tripId },
       data: updatePayload,
     });
@@ -216,9 +315,21 @@ export class TravelManager {
     return updatedTrip;
   }
 
-  // Delete a trip
+  /**
+   * Deletes a trip record
+   * @param tripId - ID of the trip to delete
+   * @returns true if deleted, false if not found
+   * 
+   * @example
+   * ```typescript
+   * const deleted = await manager.deleteTrip('trip123');
+   * if (deleted) {
+   *   console.log('Trip deleted successfully');
+   * }
+   * ```
+   */
   async deleteTrip(tripId: string): Promise<boolean> {
-    const result = await prisma.countryVisit.deleteMany({
+    const result = await this.prisma.countryVisit.deleteMany({
       where: {
         id: tripId,
         userId: this.userId,
@@ -228,7 +339,20 @@ export class TravelManager {
     return result.count > 0;
   }
 
-  // Get comprehensive travel insights
+  /**
+   * Generates comprehensive travel insights and analytics
+   * Analyzes travel patterns, Schengen compliance, and provides recommendations
+   * 
+   * @returns Complete travel insights including statistics, patterns, and recommendations
+   * 
+   * @example
+   * ```typescript
+   * const insights = await manager.getTravelInsights();
+   * console.log(`Countries visited: ${insights.summary.countriesVisited}`);
+   * console.log(`Schengen days used: ${insights.summary.schengenDaysUsed}/90`);
+   * insights.recommendations.forEach(rec => console.log(rec));
+   * ```
+   */
   async getTravelInsights(): Promise<TravelInsights> {
     const trips = await this.getTrips({
       includeCompleted: true,
@@ -410,7 +534,26 @@ export class TravelManager {
     };
   }
 
-  // Validate a planned trip
+  /**
+   * Validates a planned trip against Schengen rules and other constraints
+   * @param country - Destination country
+   * @param entryDate - Planned entry date
+   * @param exitDate - Planned exit date
+   * @param passportCountry - User's passport country (optional)
+   * @returns Validation result with warnings and suggestions
+   * 
+   * @example
+   * ```typescript
+   * const validation = await manager.validatePlannedTrip(
+   *   'Germany',
+   *   '2024-07-01',
+   *   '2024-07-15'
+   * );
+   * if (!validation.canTravel) {
+   *   console.log('Cannot travel:', validation.warnings);
+   * }
+   * ```
+   */
   async validatePlannedTrip(
     country: string,
     entryDate: string | Date,
@@ -427,10 +570,22 @@ export class TravelManager {
     );
   }
 
-  // Get visa requirements for a country combination
+  /**
+   * Retrieves visa requirements between two countries
+   * @param fromCountry - Origin/passport country
+   * @param toCountry - Destination country
+   * @returns Visa requirements including types, duration, and specific requirements
+   * 
+   * @example
+   * ```typescript
+   * const requirements = await manager.getVisaRequirements('KR', 'US');
+   * console.log(`Visa required: ${requirements.visaRequired}`);
+   * console.log(`Visa-free stay: ${requirements.visaFreeStay} days`);
+   * ```
+   */
   async getVisaRequirements(fromCountry: string, toCountry: string) {
     try {
-      const requirement = await prisma.visaRequirement.findUnique({
+      const requirement = await this.prisma.visaRequirement.findUnique({
         where: {
           fromCountry_toCountry: {
             fromCountry,
@@ -462,9 +617,21 @@ export class TravelManager {
     }
   }
 
-  // Get active travel alerts for a country
+  /**
+   * Retrieves active travel alerts and warnings for a country
+   * @param country - Country to check for alerts
+   * @returns Array of active travel alerts sorted by severity
+   * 
+   * @example
+   * ```typescript
+   * const alerts = await manager.getTravelAlerts('France');
+   * alerts.forEach(alert => {
+   *   console.log(`${alert.severity}: ${alert.title}`);
+   * });
+   * ```
+   */
   async getTravelAlerts(country: string) {
-    const alerts = await prisma.travelAlert.findMany({
+    const alerts = await this.prisma.travelAlert.findMany({
       where: {
         country,
         isActive: true,
@@ -479,9 +646,12 @@ export class TravelManager {
     return alerts;
   }
 
-  // Get user's travel preferences
+  /**
+   * Retrieves user's travel preferences and settings
+   * @returns User preferences or null if not set
+   */
   async getTravelPreferences() {
-    const preferences = await prisma.travelPreferences.findUnique({
+    const preferences = await this.prisma.travelPreferences.findUnique({
       where: { userId: this.userId },
     });
 
@@ -496,7 +666,22 @@ export class TravelManager {
     return null;
   }
 
-  // Update user's travel preferences
+  /**
+   * Updates user's travel preferences
+   * @param preferences - Preferences to update (partial update supported)
+   * @returns Updated preferences record
+   * 
+   * @example
+   * ```typescript
+   * await manager.updateTravelPreferences({
+   *   preferredRegions: ['Europe', 'Asia'],
+   *   budgetRange: 'medium',
+   *   travelStyle: 'cultural',
+   *   languageSpoken: ['en', 'ko', 'ja'],
+   *   emergencyContact: '+82-10-1234-5678'
+   * });
+   * ```
+   */
   async updateTravelPreferences(preferences: {
     preferredRegions?: string[];
     budgetRange?: string;
@@ -535,24 +720,43 @@ export class TravelManager {
     );
 
     if (existingPrefs) {
-      return await prisma.travelPreferences.update({
+      return await this.prisma.travelPreferences.update({
         where: { userId: this.userId },
         data,
       });
     } else {
-      return await prisma.travelPreferences.create({
+      return await this.prisma.travelPreferences.create({
         data: data as any,
       });
     }
   }
 }
 
-// Factory function for creating TravelManager instance
+/**
+ * Factory function for creating TravelManager instances
+ * @param userId - User ID for the travel manager
+ * @returns New TravelManager instance
+ * 
+ * @example
+ * ```typescript
+ * const manager = createTravelManager('user123');
+ * ```
+ */
 export function createTravelManager(userId: string): TravelManager {
   return new TravelManager(userId);
 }
 
-// Utility functions for common operations
+/**
+ * Utility function to get user's travel summary quickly
+ * @param userId - User ID to get summary for
+ * @returns Trip summary statistics
+ * 
+ * @example
+ * ```typescript
+ * const summary = await getUserTravelSummary('user123');
+ * console.log(`Total trips: ${summary.totalTrips}`);
+ * ```
+ */
 export async function getUserTravelSummary(
   userId: string
 ): Promise<TripSummary> {
@@ -561,6 +765,24 @@ export async function getUserTravelSummary(
   return insights.summary;
 }
 
+/**
+ * Utility function to validate a user's planned trip
+ * @param userId - User ID
+ * @param country - Destination country
+ * @param entryDate - Planned entry date
+ * @param exitDate - Planned exit date
+ * @returns Trip validation result
+ * 
+ * @example
+ * ```typescript
+ * const validation = await validateUserTrip(
+ *   'user123',
+ *   'Spain',
+ *   '2024-08-01',
+ *   '2024-08-15'
+ * );
+ * ```
+ */
 export async function validateUserTrip(
   userId: string,
   country: string,

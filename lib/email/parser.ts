@@ -14,6 +14,37 @@ import {
   CONFIRMATION_PATTERNS
 } from './patterns';
 
+/**
+ * Email Parser for Travel Information Extraction
+ * 
+ * Intelligently extracts flight and hotel booking information from email content.
+ * Supports multiple email providers including Korean Air, Asiana, Booking.com, Agoda, etc.
+ * 
+ * Features:
+ * - Multi-language support (Korean and English)
+ * - Pattern-based extraction with confidence scoring
+ * - Airport code normalization
+ * - Flexible date parsing
+ * - Batch processing support
+ * 
+ * @example
+ * ```typescript
+ * const parser = new EmailParser({
+ *   strictMode: false,
+ *   confidenceThreshold: 0.7
+ * });
+ * 
+ * const result = await parser.parseEmail(
+ *   '대한항공 예약 확인',
+ *   '예약번호: ABC123...',
+ *   'noreply@koreanair.com'
+ * );
+ * 
+ * if (result.success) {
+ *   console.log('Flight:', result.data.flightNumber);
+ * }
+ * ```
+ */
 export class EmailParser {
   private providers: EmailProvider[];
   private options: EmailParserOptions;
@@ -29,7 +60,22 @@ export class EmailParser {
   }
 
   /**
+   * Parses an email to extract travel information
    * 이메일을 파싱하여 여행 정보를 추출합니다
+   * 
+   * @param subject - Email subject line
+   * @param body - Email body content (plain text or HTML)
+   * @param senderEmail - Sender's email address for provider identification
+   * @returns Promise resolving to parsed travel data or error
+   * 
+   * @example
+   * ```typescript
+   * const result = await parser.parseEmail(
+   *   'Korean Air Booking Confirmation',
+   *   'Confirmation: ABC123\nFlight: KE123...',
+   *   'booking@koreanair.com'
+   * );
+   * ```
    */
   async parseEmail(
     subject: string,
@@ -93,7 +139,14 @@ export class EmailParser {
   }
 
   /**
+   * Identifies email provider based on sender domain and content patterns
    * 발신자 정보와 내용을 기반으로 이메일 제공업체 식별
+   * 
+   * @param senderEmail - Sender's email address
+   * @param subject - Email subject for pattern matching
+   * @param body - Email body for pattern matching
+   * @returns Identified email provider or null if unknown
+   * @private
    */
   private identifyProvider(
     senderEmail?: string, 
@@ -127,7 +180,14 @@ export class EmailParser {
   }
 
   /**
+   * Extracts travel data using provider-specific patterns
    * 패턴을 사용하여 이메일에서 데이터 추출
+   * 
+   * @param subject - Email subject
+   * @param body - Email body content
+   * @param provider - Identified email provider with patterns
+   * @returns Extracted data or null if no patterns match
+   * @private
    */
   private async extractData(
     subject: string,
@@ -191,7 +251,13 @@ export class EmailParser {
   }
 
   /**
+   * Extracts flight-specific information from email content
    * 항공편 정보 추출
+   * 
+   * @param content - Email body content
+   * @param pattern - Provider-specific patterns for extraction
+   * @returns Object containing flight number, departure, and arrival data
+   * @private
    */
   private extractFlightData(content: string, pattern: any) {
     const result: any = {};
@@ -233,13 +299,19 @@ export class EmailParser {
   }
 
   /**
+   * Extracts hotel booking information from email content
    * 호텔 정보 추출
+   * 
+   * @param content - Email body content
+   * @param pattern - Provider-specific patterns for extraction
+   * @returns Hotel data including name, location, and dates, or null if incomplete
+   * @private
    */
   private extractHotelData(content: string, pattern: any) {
     const checkInStr = this.extractFirstMatch(content, pattern.bodyPatterns.checkIn || []);
     const checkOutStr = this.extractFirstMatch(content, pattern.bodyPatterns.checkOut || []);
     const locationStr = this.extractFirstMatch(content, pattern.bodyPatterns.location || []);
-    const nameStr = this.extractFirstMatch(content, pattern.bodyPatterns.name || pattern.bodyPatterns.location || []);
+    const nameStr = this.extractFirstMatch(content, pattern.bodyPatterns.name || pattern.bodyPatterns.hotelName || pattern.bodyPatterns.location || []);
 
     if (!checkInStr || !checkOutStr) return null;
 
@@ -257,7 +329,13 @@ export class EmailParser {
   }
 
   /**
+   * Extracts first matching result from an array of regex patterns
    * 정규식 배열에서 첫 번째 매칭 결과 추출
+   * 
+   * @param content - Text to search in
+   * @param patterns - Array of regex patterns to try
+   * @returns First captured group or null if no match
+   * @private
    */
   private extractFirstMatch(content: string, patterns: RegExp[]): string | null {
     for (const pattern of patterns) {
@@ -270,7 +348,17 @@ export class EmailParser {
   }
 
   /**
+   * Parses date string in various formats to Date object
    * 날짜 문자열을 Date 객체로 파싱
+   * 
+   * Supports:
+   * - Korean format: 2024년 1월 15일
+   * - ISO format: 2024-01-15
+   * - English format: January 15, 2024
+   * 
+   * @param dateStr - Date string to parse
+   * @returns Parsed Date object or null if parsing fails
+   * @private
    */
   private parseDate(dateStr: string): Date | null {
     try {
@@ -303,7 +391,12 @@ export class EmailParser {
   }
 
   /**
+   * Extracts time information from content
    * 시간 정보 추출
+   * 
+   * @param content - Text content to search for time patterns
+   * @returns Time string (e.g., "14:30", "2:30 PM") or undefined
+   * @private
    */
   private extractTime(content: string): string | undefined {
     for (const pattern of TIME_PATTERNS) {
@@ -316,7 +409,16 @@ export class EmailParser {
   }
 
   /**
+   * Normalizes location information with airport code lookup
    * 위치 정보 정규화 (공항 코드 포함)
+   * 
+   * @param location - Raw location string from email
+   * @returns Normalized location with airport code if found
+   * @private
+   * 
+   * @example
+   * normalizeLocation("Incheon International Airport (ICN)")
+   * // Returns: "인천국제공항 (ICN)"
    */
   private normalizeLocation(location: string): string {
     // 공항 코드 추출
@@ -333,7 +435,19 @@ export class EmailParser {
   }
 
   /**
+   * Calculates confidence score for extracted data
    * 추출된 데이터의 신뢰도 계산
+   * 
+   * Scoring factors:
+   * - Required fields presence (type, confirmation number)
+   * - Type-specific fields (flight number, dates, etc.)
+   * - Date validity
+   * 
+   * @param data - Extracted data to score
+   * @param subject - Email subject (for additional context)
+   * @param body - Email body (for additional context)
+   * @returns Confidence score between 0 and 1
+   * @private
    */
   private calculateConfidence(
     data: Partial<ParsedEmailData>,
@@ -375,7 +489,19 @@ export class EmailParser {
   }
 
   /**
+   * Batch parsing - processes multiple emails concurrently
    * 배치 파싱 - 여러 이메일 동시 처리
+   * 
+   * @param emails - Array of email objects to parse
+   * @returns Array of parsing results in the same order as input
+   * 
+   * @example
+   * ```typescript
+   * const results = await parser.parseEmails([
+   *   { subject: 'Flight 1', body: '...', senderEmail: 'airline@example.com' },
+   *   { subject: 'Hotel 1', body: '...', senderEmail: 'hotel@example.com' }
+   * ]);
+   * ```
    */
   async parseEmails(emails: Array<{
     subject: string;
@@ -390,14 +516,32 @@ export class EmailParser {
   }
 }
 
-// 기본 파서 인스턴스 내보내기
+/**
+ * Default email parser instance with standard configuration
+ * @constant
+ */
 export const defaultEmailParser = new EmailParser({
   strictMode: false,
   includeRawData: false,
   confidenceThreshold: 0.6
 });
 
-// 편의 함수들
+/**
+ * Convenience function for parsing a single email using default parser
+ * @param subject - Email subject line
+ * @param body - Email body content
+ * @param senderEmail - Sender's email address
+ * @returns Promise resolving to parsing result
+ * 
+ * @example
+ * ```typescript
+ * const result = await parseEmail(
+ *   'Flight Confirmation',
+ *   'Your flight KE123...',
+ *   'booking@airline.com'
+ * );
+ * ```
+ */
 export async function parseEmail(
   subject: string,
   body: string,
@@ -406,6 +550,19 @@ export async function parseEmail(
   return defaultEmailParser.parseEmail(subject, body, senderEmail);
 }
 
+/**
+ * Convenience function for batch parsing emails using default parser
+ * @param emails - Array of email objects to parse
+ * @returns Promise resolving to array of parsing results
+ * 
+ * @example
+ * ```typescript
+ * const results = await parseEmails([
+ *   { subject: 'Flight 1', body: '...' },
+ *   { subject: 'Hotel 1', body: '...' }
+ * ]);
+ * ```
+ */
 export async function parseEmails(emails: Array<{
   subject: string;
   body: string;

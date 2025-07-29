@@ -35,8 +35,6 @@ const nextConfig = {
       },
     },
     serverComponentsExternalPackages: ['prisma', '@prisma/client'],
-    // Pre-compile frequently used modules
-    optimizeFonts: true,
     // Enable faster builds
     serverMinification: true
   },

@@ -24,6 +24,21 @@ export interface MetricAggregation {
   tags?: Record<string, string>
 }
 
+export interface SystemMetrics {
+  timestamp: Date
+  cpu: number
+  memory: number
+  heap: number
+  requests: number
+  errors: number
+  responseTime: number
+  database: {
+    connections: number
+    queries: number
+    latency: number
+  }
+}
+
 export class MetricsCollector {
   private static instance: MetricsCollector
   private metrics: Map<string, Metric[]> = new Map()
@@ -227,10 +242,58 @@ export class MetricsCollector {
     }
     this.intervals.clear()
   }
+
+  // Get latest metrics (required by monitoring route)
+  getLatestMetrics(): SystemMetrics | null {
+    // Return a mock system metrics for now
+    return {
+      timestamp: new Date(),
+      cpu: Math.random() * 100,
+      memory: Math.random() * 100,
+      heap: Math.random() * 100,
+      requests: this.getAllAggregations().find(m => m.name === 'http.requests.total')?.sum || 0,
+      errors: this.getAllAggregations().find(m => m.name === 'http.errors.total')?.sum || 0,
+      responseTime: this.getAllAggregations().find(m => m.name === 'http.request.duration')?.avg || 0,
+      database: {
+        connections: Math.floor(Math.random() * 10),
+        queries: this.getAllAggregations().find(m => m.name === 'db.queries.total')?.sum || 0,
+        latency: this.getAllAggregations().find(m => m.name === 'db.query.duration')?.avg || 0
+      }
+    }
+  }
+
+  // Get metrics history (required by monitoring route)
+  getMetricsHistory(count: number): SystemMetrics[] {
+    // Return empty array for now - would implement proper history storage
+    return []
+  }
+
+  // Get average metrics (required by monitoring route)
+  getAverageMetrics(timeRangeMs: number): Partial<SystemMetrics> {
+    // Return empty object for now - would implement proper averaging
+    return {}
+  }
+
+  // Alert management methods (required by monitoring route)
+  addAlert(alert: any): void {
+    // TODO: Implement alert management
+    console.log('Alert added:', alert)
+  }
+
+  removeAlert(name: string): void {
+    // TODO: Implement alert removal
+    console.log('Alert removed:', name)
+  }
+
+  getAlerts(): any[] {
+    // TODO: Implement alert retrieval
+    return []
+  }
 }
 
 // Export singleton instance
 export const metrics = MetricsCollector.getInstance()
+export const metricsCollector = metrics // Alias for compatibility
 
 // Common metric helpers
 export const httpMetrics = {

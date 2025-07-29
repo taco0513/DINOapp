@@ -85,6 +85,12 @@ const translations: Translations = {
     ja: '最初の旅行を追加してビザ追跡を開始しましょう',
     zh: '添加您的第一次旅行以开始跟踪签证'
   },
+  'trips.loading': {
+    ko: '여행 기록을 불러오는 중...',
+    en: 'Loading trips...',
+    ja: '旅行記録を読み込み中...',
+    zh: '正在加载旅行记录...'
+  },
 
   // Schengen Calculator
   'schengen.title': {
@@ -287,23 +293,25 @@ const translations: Translations = {
 
 // Get current locale from localStorage or browser
 export function getCurrentLocale(): Locale {
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('dino-locale')
-    if (stored && ['ko', 'en', 'ja', 'zh'].includes(stored)) {
-      return stored as Locale
-    }
-    
-    // Detect from browser language
-    const browserLang = navigator.language.split('-')[0]
-    switch (browserLang) {
-      case 'ko': return 'ko'
-      case 'en': return 'en'
-      case 'ja': return 'ja'
-      case 'zh': return 'zh'
-      default: return 'ko' // Default to Korean
-    }
+  // Always return 'ko' during SSR to prevent hydration mismatches
+  if (typeof window === 'undefined') {
+    return 'ko'
   }
-  return 'ko'
+  
+  const stored = localStorage.getItem('dino-locale')
+  if (stored && ['ko', 'en', 'ja', 'zh'].includes(stored)) {
+    return stored as Locale
+  }
+  
+  // Detect from browser language
+  const browserLang = navigator.language.split('-')[0]
+  switch (browserLang) {
+    case 'ko': return 'ko'
+    case 'en': return 'en'
+    case 'ja': return 'ja'
+    case 'zh': return 'zh'
+    default: return 'ko' // Default to Korean
+  }
 }
 
 // Set locale and save to localStorage

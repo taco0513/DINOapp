@@ -2,15 +2,54 @@ import { ApiClient, ApiResponse, TripFormData } from './api-client'
 import { offlineStorage } from './offline-storage'
 import type { CountryVisit } from '@/types/global'
 
-// 오프라인 지원 API 클라이언트
+/**
+ * Offline-capable API client for DINO app
+ * Provides seamless offline support with automatic synchronization
+ * 
+ * Features:
+ * - Automatic fallback to offline storage when network is unavailable
+ * - Queue operations for later sync when offline
+ * - Local Schengen calculations without server dependency
+ * - Smart caching with offline persistence
+ * 
+ * @example
+ * ```typescript
+ * // Works seamlessly online or offline
+ * const trips = await OfflineApiClient.getTrips('user123');
+ * 
+ * // Create trip offline - will sync when online
+ * const newTrip = await OfflineApiClient.createTrip(tripData);
+ * ```
+ */
 export class OfflineApiClient {
   
-  // 네트워크 상태 확인
+  /**
+   * Checks if the application is currently online
+   * @returns true if online, false if offline
+   */
   static isOnline(): boolean {
     return navigator.onLine
   }
 
-  // 여행 기록 가져오기 (오프라인 지원)
+  /**
+   * Retrieves trip records with offline support
+   * - When online: Fetches from API and caches for offline use
+   * - When offline: Returns cached data from offline storage
+   * 
+   * @param userId - Optional user ID to filter trips
+   * @returns Promise resolving to trip records (from API or cache)
+   * 
+   * @example
+   * ```typescript
+   * const result = await OfflineApiClient.getTrips('user123');
+   * if (result.success) {
+   *   console.log(`Found ${result.data.length} trips`);
+   *   if (result.message?.includes('오프라인')) {
+   *     console.log('Using offline data');
+   *   }
+   * }
+   * ```
+   */
   static async getTrips(userId?: string): Promise<ApiResponse<CountryVisit[]>> {
     const cacheKey = `trips:${userId || 'all'}`
     
@@ -48,7 +87,31 @@ export class OfflineApiClient {
     }
   }
 
-  // 여행 기록 생성 (오프라인 지원)
+  /**
+   * Creates a new trip with offline support
+   * - When online: Creates immediately via API
+   * - When offline: Queues for later sync and stores temporarily
+   * 
+   * @param data - Trip form data
+   * @param userId - Optional user ID for the trip
+   * @returns Promise resolving to created trip (temporary if offline)
+   * 
+   * @example
+   * ```typescript
+   * const result = await OfflineApiClient.createTrip({
+   *   country: 'FR',
+   *   entryDate: '2024-01-01',
+   *   exitDate: '2024-01-15',
+   *   visaType: 'TOURIST',
+   *   maxDays: 90,
+   *   passportCountry: 'KR'
+   * });
+   * 
+   * if (result.data?._isTemporary) {
+   *   console.log('Trip saved offline, will sync later');
+   * }
+   * ```
+   */
   static async createTrip(data: TripFormData, userId?: string): Promise<ApiResponse<CountryVisit>> {
     try {
       if (this.isOnline()) {
@@ -98,7 +161,24 @@ export class OfflineApiClient {
     }
   }
 
-  // 국가 정보 가져오기 (오프라인 지원)
+  /**
+   * Retrieves country information with offline support
+   * - When online: Fetches from API and caches for offline use
+   * - When offline: Returns cached data or default countries
+   * 
+   * @returns Promise resolving to array of country data
+   * 
+   * @example
+   * ```typescript
+   * const result = await OfflineApiClient.getCountries();
+   * if (result.success) {
+   *   console.log(`Available countries: ${result.data.length}`);
+   *   result.data.forEach(country => {
+   *     console.log(`${country.name} (${country.code})`);
+   *   });
+   * }
+   * ```
+   */
   static async getCountries(): Promise<ApiResponse<any[]>> {
     const cacheKey = 'countries:all'
     
@@ -141,7 +221,25 @@ export class OfflineApiClient {
     }
   }
 
-  // 셰겐 상태 계산 (오프라인 지원)
+  /**
+   * Calculates Schengen zone status with offline support
+   * - When online: Uses server calculation for accuracy
+   * - When offline: Performs local calculation based on cached trips
+   * 
+   * @param userId - Optional user ID to calculate status for
+   * @returns Promise resolving to Schengen status data
+   * 
+   * @example
+   * ```typescript
+   * const result = await OfflineApiClient.getSchengenStatus('user123');
+   * if (result.success) {
+   *   console.log(`Days used: ${result.data.usedDays}/90`);
+   *   console.log(`Days remaining: ${result.data.remainingDays}`);
+   *   console.log(`Compliant: ${result.data.isCompliant}`);
+   *   console.log(`Next reset: ${result.data.nextResetDate}`);
+   * }
+   * ```
+   */
   static async getSchengenStatus(userId?: string): Promise<ApiResponse<any>> {
     try {
       if (this.isOnline()) {
@@ -190,7 +288,22 @@ export class OfflineApiClient {
     }
   }
 
-  // 오프라인 동기화
+  /**
+   * Synchronizes offline data with the server
+   * Processes queued operations (trip creation, updates, etc.) when online
+   * 
+   * @returns Promise that resolves when sync is complete
+   * 
+   * @example
+   * ```typescript
+   * // Typically called when network connection is restored
+   * window.addEventListener('online', async () => {
+   *   console.log('Network restored, syncing offline data...');
+   *   await OfflineApiClient.syncOfflineData();
+   *   console.log('Offline data synced successfully');
+   * });
+   * ```
+   */
   static async syncOfflineData(): Promise<void> {
     if (!this.isOnline()) {
       // Still offline, skipping sync
@@ -222,7 +335,14 @@ export class OfflineApiClient {
     }
   }
 
-  // 캐시 무효화
+  /**
+   * Invalidates offline cache for a specific user
+   * Called after successful data mutations to ensure fresh data
+   * 
+   * @param userId - Optional user ID whose cache should be invalidated
+   * @returns Promise that resolves when cache is cleared
+   * @private
+   */
   private static async invalidateOfflineCache(userId?: string): Promise<void> {
     try {
       await offlineStorage.deleteCachedApiResponse(`trips:${userId || 'all'}`)
@@ -232,17 +352,50 @@ export class OfflineApiClient {
     }
   }
 
-  // 셰겐 국가 확인
-  private static isSchengenCountry(countryCode: string): boolean {
+  /**
+   * Checks if a country is part of the Schengen zone
+   * Supports both country codes (e.g., 'FR') and names (e.g., 'France')
+   * 
+   * @param country - Country code or name to check
+   * @returns true if the country is in the Schengen zone
+   * @private
+   */
+  private static isSchengenCountry(country: string): boolean {
     const schengenCountries = [
       'AT', 'BE', 'CH', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR',
       'GR', 'HU', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL',
       'NO', 'PL', 'PT', 'SE', 'SI', 'SK'
     ]
-    return schengenCountries.includes(countryCode)
+    
+    // 국가명을 국가코드로 매핑
+    const countryNameToCode: Record<string, string> = {
+      'Austria': 'AT', 'Belgium': 'BE', 'Switzerland': 'CH', 'Czech Republic': 'CZ',
+      'Germany': 'DE', 'Denmark': 'DK', 'Estonia': 'EE', 'Spain': 'ES',
+      'Finland': 'FI', 'France': 'FR', 'Greece': 'GR', 'Hungary': 'HU',
+      'Iceland': 'IS', 'Italy': 'IT', 'Liechtenstein': 'LI', 'Lithuania': 'LT',
+      'Luxembourg': 'LU', 'Latvia': 'LV', 'Malta': 'MT', 'Netherlands': 'NL',
+      'Norway': 'NO', 'Poland': 'PL', 'Portugal': 'PT', 'Sweden': 'SE',
+      'Slovenia': 'SI', 'Slovakia': 'SK'
+    }
+    
+    // 직접 코드 매칭 시도
+    if (schengenCountries.includes(country)) {
+      return true
+    }
+    
+    // 국가명으로 매핑 시도
+    const countryCode = countryNameToCode[country]
+    return countryCode ? schengenCountries.includes(countryCode) : false
   }
 
-  // 다음 재설정 날짜 계산
+  /**
+   * Calculates the next date when Schengen days will reset
+   * Based on the 180-day rolling window rule
+   * 
+   * @param trips - Array of trips to analyze
+   * @returns ISO date string (YYYY-MM-DD) for the next reset date
+   * @private
+   */
   private static calculateNextResetDate(trips: CountryVisit[]): string {
     if (trips.length === 0) return new Date().toISOString().split('T')[0]
     
@@ -256,7 +409,13 @@ export class OfflineApiClient {
     return resetDate.toISOString().split('T')[0]
   }
 
-  // 기본 국가 데이터
+  /**
+   * Returns default country data for offline use
+   * Used when no cached data is available
+   * 
+   * @returns Array of commonly visited countries
+   * @private
+   */
   private static getDefaultCountries(): any[] {
     return [
       { code: 'KR', name: '대한민국', continent: 'Asia' },
@@ -272,7 +431,23 @@ export class OfflineApiClient {
     ]
   }
 
-  // 데이터 미리 로드 (앱 시작 시 호출)
+  /**
+   * Preloads essential data for offline use
+   * Should be called during app initialization for better offline experience
+   * 
+   * @returns Promise that resolves when preloading is complete
+   * 
+   * @example
+   * ```typescript
+   * // In your app initialization code
+   * async function initializeApp() {
+   *   // Preload data for offline use
+   *   await OfflineApiClient.preloadOfflineData();
+   *   
+   *   // Rest of app initialization...
+   * }
+   * ```
+   */
   static async preloadOfflineData(): Promise<void> {
     try {
       // 중요한 정적 데이터들을 미리 캐시

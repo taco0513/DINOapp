@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDbHealth } from '@/lib/database/connection-manager'
-import { getPrismaClient } from '@/lib/database/prisma-client'
+import { PrismaClient } from '@prisma/client'
 import { metrics } from '@/lib/monitoring/metrics-collector'
 
 // GET /api/health - Comprehensive health check
@@ -14,29 +13,43 @@ export async function GET(request: NextRequest) {
   }
 
   // Database health
+  let dbClient: PrismaClient | null = null
   try {
-    const dbHealth = getDbHealth()
-    const prisma = await getPrismaClient()
+    const startTime = Date.now()
+    
+    // Create a simple Prisma client for health check
+    dbClient = new PrismaClient({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL || 'file:./prisma/dev.db'
+        }
+      }
+    })
     
     // Try a simple query
-    await prisma.$queryRaw`SELECT 1`
+    await dbClient.$queryRaw`SELECT 1`
+    
+    const latency = Date.now() - startTime
     
     checks.checks.database = {
-      status: dbHealth.isHealthy ? 'healthy' : 'unhealthy',
-      latency: dbHealth.latency,
-      lastCheck: dbHealth.lastCheck,
-      errorCount: dbHealth.errorCount
-    }
-    
-    if (!dbHealth.isHealthy) {
-      checks.status = 'degraded'
+      status: 'healthy',
+      latency: `${latency}ms`,
+      connection: 'active',
+      type: process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'postgresql',
+      url: process.env.DATABASE_URL || 'default'
     }
   } catch (error) {
     checks.checks.database = {
       status: 'unhealthy',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Database operation failed',
+      url: process.env.DATABASE_URL || 'default'
     }
     checks.status = 'unhealthy'
+  } finally {
+    // Clean up the connection
+    if (dbClient) {
+      await dbClient.$disconnect().catch(() => {})
+    }
   }
 
   // Memory usage

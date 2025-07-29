@@ -1,26 +1,84 @@
 import type { CountryVisit, SchengenStatus, SchengenViolation } from '@/types/global'
 import { getSchengenCountries } from '@/data/countries'
 
+/**
+ * Schengen Zone Calculator Module
+ * 
+ * Provides comprehensive calculations and validations for Schengen Area travel compliance.
+ * Implements the 90/180 day rule with support for:
+ * - Current status calculation
+ * - Future trip validation
+ * - Safe travel date suggestions
+ * - Violation detection and warnings
+ * 
+ * @module schengen-calculator
+ */
+
 // Get Schengen country names from the countries data
 const SCHENGEN_COUNTRIES = getSchengenCountries().map(country => country.name)
 
+/**
+ * Represents a visit to a Schengen country with calculated days
+ */
 export interface SchengenVisit {
+  /** Country name */
   country: string
+  /** Entry date to the country */
   entryDate: Date
+  /** Exit date from the country (null if ongoing) */
   exitDate: Date | null
+  /** Number of days spent in the country */
   days: number
 }
 
+/**
+ * Checks if a country is part of the Schengen Area
+ * @param country - Country name to check
+ * @returns true if the country is in the Schengen Area
+ * 
+ * @example
+ * ```typescript
+ * if (isSchengenCountry('France')) {
+ *   console.log('France is in the Schengen Area');
+ * }
+ * ```
+ */
 export function isSchengenCountry(country: string): boolean {
   return SCHENGEN_COUNTRIES.includes(country)
 }
 
-// Helper function to calculate days between two dates (inclusive)
+/**
+ * Calculates the number of days between two dates (inclusive)
+ * @param startDate - Start date
+ * @param endDate - End date
+ * @returns Number of days including both start and end dates
+ * @private
+ */
 function calculateDaysBetween(startDate: Date, endDate: Date): number {
   const diffTime = endDate.getTime() - startDate.getTime()
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
 }
 
+/**
+ * Calculates current Schengen zone compliance status
+ * Implements the 90/180 day rule by analyzing all visits within the last 180 days
+ * 
+ * @param visits - Array of country visits to analyze
+ * @returns SchengenStatus object with usage details and compliance status
+ * 
+ * @example
+ * ```typescript
+ * const visits = [
+ *   { country: 'France', entryDate: '2024-01-01', exitDate: '2024-01-15', ... },
+ *   { country: 'Germany', entryDate: '2024-02-01', exitDate: '2024-02-10', ... }
+ * ];
+ * 
+ * const status = calculateSchengenStatus(visits);
+ * console.log(`Used: ${status.usedDays}/90 days`);
+ * console.log(`Remaining: ${status.remainingDays} days`);
+ * console.log(`Compliant: ${status.isCompliant}`);
+ * ```
+ */
 export function calculateSchengenStatus(visits: CountryVisit[]): SchengenStatus {
   const today = new Date()
   const currentPeriodStart = new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000)
@@ -82,6 +140,19 @@ export function calculateSchengenStatus(visits: CountryVisit[]): SchengenStatus 
   }
 }
 
+/**
+ * Generates user-friendly warnings based on Schengen status
+ * @param status - Current Schengen status
+ * @returns Array of warning messages in Korean
+ * 
+ * @example
+ * ```typescript
+ * const warnings = getSchengenWarnings(status);
+ * if (warnings.length > 0) {
+ *   warnings.forEach(warning => console.log(warning));
+ * }
+ * ```
+ */
 export function getSchengenWarnings(status: SchengenStatus): string[] {
   const warnings: string[] = []
   
@@ -100,6 +171,11 @@ export function getSchengenWarnings(status: SchengenStatus): string[] {
   return warnings
 }
 
+/**
+ * Calculates maximum days that can be stayed in Schengen area
+ * @param status - Current Schengen status
+ * @returns Maximum number of days available for stay (0 if already violated)
+ */
 export function calculateMaxStayDays(status: SchengenStatus): number {
   if (!status.isCompliant) {
     return 0 // Already violated, cannot stay
@@ -108,6 +184,21 @@ export function calculateMaxStayDays(status: SchengenStatus): number {
   return status.remainingDays
 }
 
+/**
+ * Determines the next date when entry to Schengen area will be allowed
+ * @param visits - Array of country visits
+ * @returns Date when entry is allowed, or null if can enter immediately
+ * 
+ * @example
+ * ```typescript
+ * const nextEntry = getNextEntryDate(visits);
+ * if (nextEntry) {
+ *   console.log(`Can enter Schengen area from: ${nextEntry.toLocaleDateString()}`);
+ * } else {
+ *   console.log('Can enter Schengen area immediately');
+ * }
+ * ```
+ */
 export function getNextEntryDate(visits: CountryVisit[]): Date | null {
   const status = calculateSchengenStatus(visits)
   
@@ -118,16 +209,51 @@ export function getNextEntryDate(visits: CountryVisit[]): Date | null {
   return new Date(status.nextResetDate)
 }
 
+/**
+ * Result of future trip validation
+ */
 export interface FutureTripValidation {
+  /** Whether the trip is allowed under Schengen rules */
   canTravel: boolean
+  /** Warning messages about potential issues */
   warnings: string[]
+  /** Helpful suggestions for the traveler */
   suggestions: string[]
+  /** Maximum days that can be stayed on entry date */
   maxStayDays: number
+  /** Whether the trip would violate 90/180 rule */
   violatesRule: boolean
+  /** Total days used after the planned trip */
   daysUsedAfterTrip: number
+  /** Days remaining after the planned trip */
   remainingDaysAfterTrip: number
 }
 
+/**
+ * Validates a future trip against Schengen 90/180 day rule
+ * Provides detailed analysis including warnings and suggestions
+ * 
+ * @param visits - Existing country visits
+ * @param plannedEntry - Planned entry date
+ * @param plannedExit - Planned exit date
+ * @param plannedCountry - Planned destination country
+ * @returns Validation result with warnings and suggestions
+ * 
+ * @example
+ * ```typescript
+ * const validation = validateFutureTrip(
+ *   existingVisits,
+ *   new Date('2024-06-01'),
+ *   new Date('2024-06-15'),
+ *   'France'
+ * );
+ * 
+ * if (!validation.canTravel) {
+ *   console.log('Trip not allowed:', validation.warnings);
+ *   console.log('Suggestions:', validation.suggestions);
+ * }
+ * ```
+ */
 export function validateFutureTrip(
   visits: CountryVisit[],
   plannedEntry: Date,
@@ -217,7 +343,15 @@ export function validateFutureTrip(
   }
 }
 
-// Helper function to calculate status on a specific date
+/**
+ * Calculates Schengen status as of a specific date
+ * Used for future trip planning and historical analysis
+ * 
+ * @param visits - Array of country visits
+ * @param checkDate - Date to calculate status for
+ * @returns Schengen status as of the specified date
+ * @private
+ */
 function calculateSchengenStatusOnDate(visits: CountryVisit[], checkDate: Date): SchengenStatus {
   // Filter visits that are before or on the check date
   const relevantVisits = visits.filter(visit => new Date(visit.entryDate) <= checkDate)
@@ -236,6 +370,25 @@ function calculateSchengenStatusOnDate(visits: CountryVisit[], checkDate: Date):
   return calculateSchengenStatus(adjustedVisits)
 }
 
+/**
+ * Finds the earliest safe travel dates for a desired duration
+ * Searches up to 1 year ahead for compliant travel dates
+ * 
+ * @param visits - Existing country visits
+ * @param desiredDuration - Desired trip duration in days
+ * @param earliestDate - Earliest date to start searching from (default: today)
+ * @returns Object with safe start and end dates, or null if not found within 1 year
+ * 
+ * @example
+ * ```typescript
+ * const safeDates = getSafeTravelDates(visits, 14); // 14-day trip
+ * if (safeDates) {
+ *   console.log(`Safe to travel from ${safeDates.startDate} to ${safeDates.endDate}`);
+ * } else {
+ *   console.log('No safe dates found within the next year');
+ * }
+ * ```
+ */
 export function getSafeTravelDates(
   visits: CountryVisit[],
   desiredDuration: number,

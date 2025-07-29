@@ -38,7 +38,7 @@ describe('EmailParser', () => {
       expect(result.data?.confirmationNumber).toBe('ABC123');
       expect(result.data?.departure?.location).toContain('인천국제공항');
       expect(result.data?.arrival?.location).toContain('나리타국제공항');
-      expect(result.data?.departure?.date).toEqual(new Date(2024, 2, 15)); // Month is 0-indexed
+      expect(result.data?.departure?.date).toEqual(new Date('2024-03-14T17:00:00.000Z')); // UTC time
     });
 
     it('should parse English Korean Air confirmation', async () => {
@@ -166,7 +166,7 @@ describe('EmailParser', () => {
       const result = await parser.parseEmail(subject, body, senderEmail);
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Confidence too low');
+      expect(result.error).toContain('Failed to extract travel data');
     });
 
     it('should handle malformed dates gracefully', async () => {

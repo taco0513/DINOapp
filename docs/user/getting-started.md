@@ -230,4 +230,23 @@ A: 계정 복구 옵션을 이용하거나 고객지원에 문의해 주세요.
 
 ---
 
-**관련 가이드**: [고급 기능](./advanced-features.md) | [모바일 앱](./mobile-app.md) | [문제 해결](./troubleshooting.md)
+## 📖 추가 가이드
+
+### 심화 학습
+- **[고급 기능 가이드](./advanced-features.md)**: API 통합, 개발자 도구, 고급 분석 기능
+- **[모바일 가이드](./mobile-guide.md)**: PWA 설치, 오프라인 기능, 모바일 최적화
+- **[베스트 프랙티스](./best-practices.md)**: 실제 사용 사례, 효율적인 활용법, 사용자 유형별 가이드
+
+### 지원 및 문제 해결
+- **[문제 해결 가이드](./troubleshooting.md)**: 일반적인 문제와 해결 방법
+- **[개발자 API 문서](../api/README.md)**: 기술적인 통합 가이드
+- **[커뮤니티 포럼](https://community.dinoapp.com)**: 사용자 간 정보 공유
+
+### 업데이트 및 소식
+- **[로드맵](../roadmap.md)**: 향후 개발 계획
+- **[릴리스 노트](../CHANGELOG.md)**: 최신 업데이트 내역
+- **[블로그](https://blog.dinoapp.com)**: 여행 팁과 기능 소개
+
+---
+
+🎉 **DINOapp과 함께 스마트한 여행을 시작하세요!**

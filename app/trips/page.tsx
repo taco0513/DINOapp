@@ -6,6 +6,7 @@ import { useEffect, useState, lazy, Suspense } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
 import { t } from '@/lib/i18n'
+import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading'
 
 // Dynamic imports for better code splitting
 const TripForm = lazy(() => import('@/components/trips/TripForm'))
@@ -102,7 +103,7 @@ export default function TripsPage() {
   if (status === 'loading' || !session) {
     return (
       <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
-        <div className="loading">{t('common.loading')}</div>
+        <HydrationSafeLoading />
       </main>
     )
   }
@@ -180,7 +181,7 @@ export default function TripsPage() {
           {/* Content */}
           {loading ? (
             <div className="text-center" style={{ padding: 'var(--space-16) var(--space-5)' }}>
-              <div className="loading">여행 기록을 불러오는 중...</div>
+              <HydrationSafeLoading fallback="Loading trips..." className="loading" translationKey="trips.loading" />
             </div>
           ) : filteredTrips.length === 0 ? (
             <div className="card text-center" style={{ padding: 'var(--space-16) var(--space-10)' }}>
@@ -203,7 +204,7 @@ export default function TripsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Suspense fallback={<div className="loading">Loading trips...</div>}>
+              <Suspense fallback={<HydrationSafeLoading />}>
                 {filteredTrips.map(trip => (
                   <TripCard
                     key={trip.id}
@@ -228,7 +229,7 @@ export default function TripsPage() {
             transform: 'translate(-50%, -50%)' 
           }}>
             <div className="card">
-              <div className="loading">Loading form...</div>
+              <HydrationSafeLoading />
             </div>
           </div>
         }>

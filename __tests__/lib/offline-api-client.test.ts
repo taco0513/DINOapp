@@ -214,12 +214,20 @@ describe('OfflineApiClient Integration Tests', () => {
       })
 
       const { offlineStorage } = require('@/lib/offline-storage')
+      // Use a recent date that's within the last 180 days
+      const recentDate = new Date()
+      recentDate.setDate(recentDate.getDate() - 30) // 30 days ago
+      const entryDate = recentDate.toISOString().split('T')[0]
+      const exitDateObj = new Date(recentDate)
+      exitDateObj.setDate(exitDateObj.getDate() + 14) // 14 day trip
+      const exitDate = exitDateObj.toISOString().split('T')[0]
+
       const schengenTrips = [
         {
           ...mockTrip,
           country: 'France',
-          entryDate: '2024-01-01',
-          exitDate: '2024-01-15'
+          entryDate,
+          exitDate
         }
       ]
 

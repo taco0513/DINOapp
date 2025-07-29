@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { TravelInsightsDashboard } from './TravelInsightsDashboard'
 import { EnhancedTripForm } from './EnhancedTripForm'
-import { CountryVisit } from '@prisma/client'
+import { CountryVisit } from '@/types/database'
 import { getCountryByName } from '@/data/countries'
 
 interface TravelManagementPageProps {

@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   
   // Error recovery middleware (database health, circuit breaker, etc.)
   const recoveryResponse = await errorRecoveryMiddleware(request, {
-    enableDbHealthCheck: true,
+    enableDbHealthCheck: false, // Disabled to prevent Prisma client issues in middleware
     enableCircuitBreaker: true,
     enableGracefulDegradation: true,
     maintenanceMode: process.env.MAINTENANCE_MODE === 'true'
@@ -43,7 +43,7 @@ export async function middleware(request: NextRequest) {
   if (recoveryResponse) {
     const duration = Date.now() - start;
     httpMetrics.requestEnd(method, pathname, 503);
-    httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+    // TODO: Add histogram metric when implemented in httpMetrics
     httpMetrics.requestError(method, pathname, 'recovery-middleware');
     return recoveryResponse;
   }
@@ -78,8 +78,7 @@ export async function middleware(request: NextRequest) {
     if (!rateLimitResult.allowed) {
       const duration = Date.now() - start;
       httpMetrics.requestEnd(method, pathname, 429);
-      httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
-      httpMetrics.increment('http.rate_limit.exceeded', 1, { method, path: pathname });
+      // TODO: Add histogram and increment metrics when implemented in httpMetrics
       return new NextResponse('Too Many Requests', {
         status: 429,
         headers: {
@@ -108,7 +107,7 @@ export async function middleware(request: NextRequest) {
     // Record metrics before returning
     const duration = Date.now() - start;
     httpMetrics.requestEnd(method, pathname, 200);
-    httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+    // TODO: Add histogram metric when implemented in httpMetrics
     return response;
   }
 
@@ -124,7 +123,7 @@ export async function middleware(request: NextRequest) {
       const token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
-        cookieName: '__Secure-next-auth.session-token',
+        cookieName: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
       });
 
       // Checking auth for protected route
@@ -135,7 +134,7 @@ export async function middleware(request: NextRequest) {
         url.searchParams.set('callbackUrl', encodeURIComponent(request.url));
         const duration = Date.now() - start;
         httpMetrics.requestEnd(method, pathname, 302);
-        httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+        // TODO: Add histogram metric when implemented in httpMetrics
         return NextResponse.redirect(url);
       }
     } catch (error) {
@@ -144,7 +143,7 @@ export async function middleware(request: NextRequest) {
       url.searchParams.set('callbackUrl', encodeURIComponent(request.url));
       const duration = Date.now() - start;
       httpMetrics.requestEnd(method, pathname, 302);
-      httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+      // TODO: Add histogram metric when implemented in httpMetrics
       httpMetrics.requestError(method, pathname, 'auth-token-error');
       return NextResponse.redirect(url);
     }
@@ -162,7 +161,7 @@ export async function middleware(request: NextRequest) {
   // Record metrics for successful requests
   const duration = Date.now() - start;
   httpMetrics.requestEnd(method, pathname, 200);
-  httpMetrics.histogram('http.request.duration', duration, { method, path: pathname });
+  // TODO: Add histogram metric when implemented in httpMetrics
   
   return response;
 }

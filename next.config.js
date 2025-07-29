@@ -14,9 +14,31 @@ if (process.env.NODE_ENV === 'development') {
 const nextConfig = {
   experimental: {
     // optimizeCss: true, // Temporarily disabled due to critters error
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-checkbox', '@radix-ui/react-progress'],
+    optimizePackageImports: [
+      'lucide-react', 
+      '@radix-ui/react-checkbox', 
+      '@radix-ui/react-progress',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-select',
+      '@radix-ui/react-toast',
+      'date-fns'
+    ],
     scrollRestoration: true,
-    webVitalsAttribution: ['CLS', 'LCP']
+    webVitalsAttribution: ['CLS', 'LCP', 'FID', 'FCP', 'TTFB'],
+    // Advanced performance features
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+    serverComponentsExternalPackages: ['prisma', '@prisma/client'],
+    // Pre-compile frequently used modules
+    optimizeFonts: true,
+    // Enable faster builds
+    serverMinification: true
   },
   // output: 'standalone', // Temporarily disabled to fix SSR issues
   eslint: {

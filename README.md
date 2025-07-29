@@ -32,10 +32,13 @@
 
 ## 🚀 빠른 시작
 
+> 📚 **전체 가이드**: [개발환경 설정 가이드](docs/development/setup.md) | [사용자 가이드](docs/user/getting-started.md)
+
 ### 필수 요구사항
 - Node.js 18+ 
 - npm 또는 yarn
-- Google OAuth 2.0 앱 등록 ([가이드](https://developers.google.com/identity/protocols/oauth2))
+- PostgreSQL 15+
+- Google OAuth 2.0 앱 등록
 
 ### 설치 및 실행
 
@@ -49,17 +52,19 @@ npm install
 
 # 3. 환경 변수 설정
 cp .env.example .env.local
-# .env.local 파일을 열어 Google OAuth 정보 입력
+# .env.local 파일을 열어 필요한 정보 입력
 
 # 4. 데이터베이스 설정
-npm run db:generate
-npm run db:push
+npx prisma generate
+npx prisma migrate dev
 
 # 5. 개발 서버 시작
 npm run dev
 ```
 
 개발 서버가 [http://localhost:3000](http://localhost:3000)에서 실행됩니다.
+
+> 💡 **온보딩**: 첫 방문 시 자동으로 온보딩 플로우가 시작됩니다.
 
 ### 환경 변수 설정
 
@@ -112,17 +117,29 @@ npm run start           # 프로덕션 서버 시작
 # 코드 품질
 npm run lint            # ESLint 실행
 npm run type-check      # TypeScript 타입 체크
+npm run check:all       # 모든 품질 검사
 
 # 테스트
 npm run test            # 모든 테스트 실행
 npm run test:unit       # 단위 테스트
+npm run test:integration # 통합 테스트
 npm run test:e2e        # E2E 테스트
 npm run test:coverage   # 테스트 커버리지
 
 # 데이터베이스
 npm run db:generate     # Prisma 클라이언트 생성
-npm run db:push         # 스키마를 데이터베이스에 푸시
+npm run db:migrate      # 데이터베이스 마이그레이션
 npm run db:studio       # Prisma Studio 실행
+
+# 백업 & 복구
+npm run backup:db       # 데이터베이스 백업
+npm run backup:files    # 파일 시스템 백업
+npm run backup:test-recovery # 복구 테스트
+
+# 배포 & 모니터링
+npm run deploy:health-check  # 배포 상태 확인
+npm run deploy:monitor      # 배포 모니터링
+npm run deploy:rollback     # 긴급 롤백
 ```
 
 ## 📊 기술 스택

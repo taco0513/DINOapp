@@ -8,6 +8,7 @@ import PWAInstallButton from '@/components/pwa/PWAInstallButton'
 import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 import Script from 'next/script'
 import { AnalyticsWrapper } from '@/lib/analytics/vercel'
+import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -194,22 +195,60 @@ export default function RootLayout({
           }}
         />
         
-        {/* Performance monitoring */}
+        {/* Performance optimizations initialization */}
         <Script
-          id="performance-observer"
+          id="performance-init"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-              if ('PerformanceObserver' in window) {
-                const observer = new PerformanceObserver((list) => {
-                  list.getEntries().forEach((entry) => {
-                    if (entry.entryType === 'largest-contentful-paint') {
-                      localStorage.setItem('dino-lcp', entry.startTime.toString())
-                    }
-                  })
-                })
-                observer.observe({ entryTypes: ['largest-contentful-paint'] })
-              }
+              // Initialize performance optimizations
+              (function() {
+                // Preload critical resources
+                const preloadCritical = () => {
+                  const link1 = document.createElement('link');
+                  link1.rel = 'preconnect';
+                  link1.href = 'https://fonts.googleapis.com';
+                  document.head.appendChild(link1);
+                  
+                  const link2 = document.createElement('link');
+                  link2.rel = 'preconnect';
+                  link2.href = 'https://fonts.gstatic.com';
+                  link2.crossOrigin = 'anonymous';
+                  document.head.appendChild(link2);
+                };
+                
+                // Monitor Web Vitals
+                if ('PerformanceObserver' in window) {
+                  const observer = new PerformanceObserver((list) => {
+                    list.getEntries().forEach((entry) => {
+                      const metric = entry.entryType === 'largest-contentful-paint' ? 'lcp' :
+                                   entry.entryType === 'first-input' ? 'fid' :
+                                   entry.name === 'first-contentful-paint' ? 'fcp' : null;
+                      
+                      if (metric) {
+                        const value = entry.entryType === 'first-input' ? 
+                          entry.processingStart - entry.startTime : entry.startTime;
+                        localStorage.setItem('dino-' + metric, value.toString());
+                        
+                        // Report to analytics if available
+                        if (window.gtag) {
+                          window.gtag('event', 'web_vitals', {
+                            event_category: 'Performance',
+                            event_label: metric.toUpperCase(),
+                            value: Math.round(value)
+                          });
+                        }
+                      }
+                    });
+                  });
+                  
+                  observer.observe({ 
+                    entryTypes: ['largest-contentful-paint', 'first-input', 'paint'] 
+                  });
+                }
+                
+                preloadCritical();
+              })();
             `
           }}
         />
@@ -221,6 +260,10 @@ export default function RootLayout({
                 {children}
                 <PWAInstallButton />
                 <OfflineIndicator />
+                <PerformanceMonitor 
+                  enabled={process.env.NODE_ENV === 'development'} 
+                  debug={false}
+                />
               </MainLayout>
             </AnalyticsWrapper>
           </SessionProvider>

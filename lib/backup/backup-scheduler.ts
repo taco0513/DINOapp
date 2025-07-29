@@ -117,7 +117,7 @@ export class BackupScheduler {
       await this.executeBackup(schedule)
     }, {
       scheduled: true,
-      timezone: process.env.TZ || 'UTC'
+      timezone: 'UTC'
     })
 
     this.schedules.set(schedule.id, task)

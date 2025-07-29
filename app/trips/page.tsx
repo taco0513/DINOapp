@@ -72,7 +72,7 @@ export default function TripsPage() {
   }
 
   const handleDeleteTrip = async (trip: CountryVisit) => {
-    if (confirm('이 여행 기록을 삭제하시겠습니까?')) {
+    if (window.confirm('이 여행 기록을 삭제하시겠습니까?')) {
       try {
         await ApiClient.deleteTrip(trip.id!)
         loadTrips()
@@ -115,7 +115,7 @@ export default function TripsPage() {
       <main style={{ minHeight: '100vh' }}>
         <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
           {/* Header */}
-          <header className="nav mb-8">
+          <header className="mb-8" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
               <h1 className="mb-2">
                 {t('trips.title')}
@@ -127,6 +127,7 @@ export default function TripsPage() {
             <button 
               onClick={handleAddTrip}
               className="btn btn-primary"
+              style={{ flexShrink: 0 }}
             >
               {t('trips.add')}
             </button>

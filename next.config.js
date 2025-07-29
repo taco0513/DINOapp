@@ -52,12 +52,15 @@ const nextConfig = {
   },
   images: {
     domains: ['lh3.googleusercontent.com'],
-    formats: ['image/webp', 'image/avif'],
+    formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year cache
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Performance optimizations
+    loader: 'default',
+    unoptimized: false,
   },
   compress: true,
   poweredByHeader: false,
@@ -131,14 +134,51 @@ const nextConfig = {
         ...config.optimization,
         splitChunks: {
           chunks: 'all',
+          minSize: 20000,
+          maxSize: 244000,
           cacheGroups: {
             default: false,
             vendors: false,
+            // React libraries chunk
+            react: {
+              name: 'react-vendors',
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              chunks: 'all',
+              priority: 30,
+              enforce: true
+            },
+            // UI component libraries
+            ui: {
+              name: 'ui-vendors',
+              test: /[\\/]node_modules[\\/](@radix-ui|lucide-react|class-variance-authority)[\\/]/,
+              chunks: 'all',
+              priority: 25,
+              enforce: true
+            },
+            // Database and auth libraries
+            database: {
+              name: 'database-vendors',
+              test: /[\\/]node_modules[\\/](@prisma|prisma|zod|bcryptjs)[\\/]/,
+              chunks: 'all',
+              priority: 25,
+              enforce: true
+            },
+            // Date and utility libraries
+            utils: {
+              name: 'utils-vendors',
+              test: /[\\/]node_modules[\\/](date-fns|lodash|nanoid)[\\/]/,
+              chunks: 'all',
+              priority: 25,
+              enforce: true
+            },
+            // Large vendor libraries
             vendor: {
               name: 'vendor',
               chunks: 'all',
               test: /node_modules/,
-              priority: 20
+              priority: 20,
+              minChunks: 1,
+              maxSize: 200000
             },
             common: {
               minChunks: 2,
@@ -157,6 +197,37 @@ const nextConfig = {
     if (process.env.NODE_ENV === 'production') {
       config.optimization.usedExports = true
       config.optimization.sideEffects = false
+      config.optimization.innerGraph = true
+      config.optimization.providedExports = true
+      
+      // Tree shaking optimization
+      config.optimization.minimize = true
+      config.optimization.concatenateModules = true
+      
+      // Module resolution optimizations
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Remove heavy polyfills
+        'crypto': false,
+        'stream': false,
+        'assert': false,
+        'http': false,
+        'https': false,
+        'os': false,
+        'url': false,
+        'zlib': false,
+      }
+    }
+    
+    // Ignore heavy dependencies on client side
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      }
     }
 
     return config

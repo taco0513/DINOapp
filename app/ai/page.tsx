@@ -1,13 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AIAssistant from '@/components/ai/AIAssistant';
-import AIPairProgramming from '@/components/ai/AIPairProgramming';
-import CodeGenerator from '@/components/ai/CodeGenerator';
-import ProblemSolver from '@/components/ai/ProblemSolver';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+
+// Dynamic imports for heavy AI components
+const AIAssistant = dynamic(() => import('@/components/ai/AIAssistant'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const AIPairProgramming = dynamic(() => import('@/components/ai/AIPairProgramming'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const CodeGenerator = dynamic(() => import('@/components/ai/CodeGenerator'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const ProblemSolver = dynamic(() => import('@/components/ai/ProblemSolver'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
 import { 
   Sparkles,
   Users,
@@ -108,19 +127,27 @@ export default function AIPage() {
         </TabsList>
 
         <TabsContent value="assistant" className="mt-6">
-          <AIAssistant />
+          <Suspense fallback={<LoadingSpinner />}>
+            <AIAssistant />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="pair" className="mt-6">
-          <AIPairProgramming />
+          <Suspense fallback={<LoadingSpinner />}>
+            <AIPairProgramming />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="generate" className="mt-6">
-          <CodeGenerator />
+          <Suspense fallback={<LoadingSpinner />}>
+            <CodeGenerator />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="solve" className="mt-6">
-          <ProblemSolver />
+          <Suspense fallback={<LoadingSpinner />}>
+            <ProblemSolver />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>

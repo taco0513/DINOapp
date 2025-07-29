@@ -9,7 +9,7 @@ import DOMPurify from 'isomorphic-dompurify'
 // Common validation patterns
 export const validationPatterns = {
   // Safe string - no HTML/Script tags
-  safeString: z.string().transform((val) => {
+  safeString: z.string().min(1).transform((val) => {
     if (typeof window !== 'undefined') {
       return DOMPurify.sanitize(val, { ALLOWED_TAGS: [] })
     }
@@ -89,7 +89,12 @@ export const tripValidation = {
 // User validation schemas
 export const userValidation = {
   update: z.object({
-    name: validationPatterns.safeString.min(1).max(100).optional(),
+    name: z.string().min(1).max(100).transform((val) => {
+      if (typeof window !== 'undefined') {
+        return DOMPurify.sanitize(val, { ALLOWED_TAGS: [] })
+      }
+      return val.replace(/<[^>]*>/g, '').replace(/[<>\"'&]/g, '')
+    }).optional(),
     email: validationPatterns.email.optional(),
     image: validationPatterns.url.optional(),
   }),
@@ -104,8 +109,8 @@ export const userValidation = {
 // API parameter validation
 export const apiValidation = {
   pagination: z.object({
-    page: validationPatterns.positiveInt.optional().default(1),
-    limit: validationPatterns.positiveInt.max(100).optional().default(20),
+    page: z.string().regex(/^\d+$/).transform(Number).or(z.number().int().positive()).optional().default(1),
+    limit: z.string().regex(/^\d+$/).transform(Number).or(z.number().int().positive().max(100)).optional().default(20),
     sort: z.enum(['asc', 'desc']).optional().default('desc'),
     sortBy: z.string().regex(/^[a-zA-Z_]+$/).optional().default('createdAt'),
   }),
@@ -123,7 +128,12 @@ export const apiValidation = {
   }),
   
   search: z.object({
-    query: validationPatterns.safeString.min(1).max(100),
+    query: z.string().min(1).max(100).transform((val) => {
+      if (typeof window !== 'undefined') {
+        return DOMPurify.sanitize(val, { ALLOWED_TAGS: [] })
+      }
+      return val.replace(/<[^>]*>/g, '').replace(/[<>\"'&]/g, '')
+    }),
     fields: z.array(z.string().regex(/^[a-zA-Z_]+$/)).optional(),
   })
 }

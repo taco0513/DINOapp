@@ -1,220 +1,120 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { backupManager } from '@/lib/backup/backup-manager'
-import { applyRateLimit } from '@/lib/security/rate-limiter'
-import { securityMiddleware } from '@/lib/security/auth-middleware'
-import { csrfProtection } from '@/lib/security/csrf-protection'
+import { dbBackupManager } from '@/lib/backup/database-backup'
+import { fileBackupManager } from '@/lib/backup/file-backup'
+import { backupScheduler } from '@/lib/backup/backup-scheduler'
+import { asyncHandler } from '@/lib/error/error-handler'
+import { httpMetrics } from '@/lib/monitoring/metrics-collector'
 
-// GET /api/backup - 백업 목록 조회
-export async function GET(request: NextRequest) {
+// GET /api/backup - List backups and schedules (admin only)
+export const GET = asyncHandler(async (request: NextRequest) => {
+  const endTimer = httpMetrics.requestStart('GET', '/api/backup')
+  
   try {
-    // Rate limiting
-    const rateLimitResponse = await applyRateLimit(request, 'general')
-    if (rateLimitResponse) {
-      return rateLimitResponse
-    }
-
-    // Security middleware
-    const securityResult = await securityMiddleware(request)
-    if (!securityResult.proceed) {
-      return securityResult.response!
-    }
-
-    // 관리자 권한 확인
+    // Check authentication
     const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
+    
+    if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
+      httpMetrics.requestEnd('GET', '/api/backup', 403)
       return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
-
-    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
-    if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
+        { error: 'Forbidden' },
         { status: 403 }
       )
     }
 
+    // Get backup type from query
     const url = new URL(request.url)
-    const action = url.searchParams.get('action')
+    const type = url.searchParams.get('type') || 'all'
 
-    if (action === 'stats') {
-      const stats = await backupManager.getBackupStats()
-      return NextResponse.json({
-        success: true,
-        stats
-      })
+    const response: any = {}
+
+    // Get database backups
+    if (type === 'all' || type === 'database') {
+      response.databaseBackups = await dbBackupManager.listBackups()
     }
 
-    // 백업 목록 조회
-    const backups = await backupManager.listBackups()
+    // Get file backups
+    if (type === 'all' || type === 'files') {
+      response.fileBackups = await fileBackupManager.listBackups()
+    }
+
+    // Get schedules
+    if (type === 'all' || type === 'schedules') {
+      const schedules = backupScheduler.getSchedules()
+      response.schedules = schedules.map(schedule => ({
+        ...schedule,
+        nextRun: backupScheduler.getNextRunTime(schedule.id)
+      }))
+    }
+
+    // Get status summary
+    response.status = backupScheduler.getStatus()
+
+    httpMetrics.requestEnd('GET', '/api/backup', 200)
+    endTimer()
     
-    return NextResponse.json({
-      success: true,
-      backups
-    })
-
+    return NextResponse.json(response)
+    
   } catch (error) {
-    // Error fetching backups
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch backups' },
-      { status: 500 }
-    )
+    httpMetrics.requestEnd('GET', '/api/backup', 500)
+    endTimer()
+    throw error
   }
-}
+})
 
-// POST /api/backup - 새 백업 생성
-export async function POST(request: NextRequest) {
+// POST /api/backup - Create manual backup (admin only)
+export const POST = asyncHandler(async (request: NextRequest) => {
+  const endTimer = httpMetrics.requestStart('POST', '/api/backup')
+  
   try {
-    // Rate limiting (백업은 resource-intensive 작업)
-    const rateLimitResponse = await applyRateLimit(request, 'mutation')
-    if (rateLimitResponse) {
-      return rateLimitResponse
-    }
-
-    // CSRF 보호
-    const csrfResult = await csrfProtection(request, {
-      requireDoubleSubmit: true
-    })
-    if (!csrfResult.protected) {
-      return csrfResult.response!
-    }
-
-    // Security middleware
-    const securityResult = await securityMiddleware(request)
-    if (!securityResult.proceed) {
-      return securityResult.response!
-    }
-
-    // 관리자 권한 확인
+    // Check authentication
     const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
+    
+    if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
+      httpMetrics.requestEnd('POST', '/api/backup', 403)
       return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
-
-    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
-    if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
+        { error: 'Forbidden' },
         { status: 403 }
       )
     }
 
     const body = await request.json()
-    const { 
-      includeUserData = true, 
-      includeSessions = false, 
-      compress = true 
-    } = body
+    const { type, options = {} } = body
 
-    // Backup requested
+    let result
 
-    const result = await backupManager.createBackup({
-      includeUserData,
-      includeSessions,
-      compress
-    })
-
-    if (result.success) {
-      // Backup created successfully
-      return NextResponse.json({
-        success: true,
-        backupId: result.backupId,
-        message: 'Backup created successfully'
-      })
-    } else {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: 500 }
-      )
+    switch (type) {
+      case 'database':
+        result = await dbBackupManager.createBackup(options)
+        break
+        
+      case 'files':
+        result = await fileBackupManager.createBackup(options)
+        break
+        
+      case 'both':
+        const dbResult = await dbBackupManager.createBackup(options)
+        const fileResult = await fileBackupManager.createBackup(options)
+        result = { database: dbResult, files: fileResult }
+        break
+        
+      default:
+        httpMetrics.requestEnd('POST', '/api/backup', 400)
+        return NextResponse.json(
+          { error: 'Invalid backup type' },
+          { status: 400 }
+        )
     }
 
+    httpMetrics.requestEnd('POST', '/api/backup', 201)
+    endTimer()
+    
+    return NextResponse.json(result, { status: 201 })
+    
   } catch (error) {
-    // Error creating backup
-    return NextResponse.json(
-      { success: false, error: 'Failed to create backup' },
-      { status: 500 }
-    )
+    httpMetrics.requestEnd('POST', '/api/backup', 500)
+    endTimer()
+    throw error
   }
-}
-
-// DELETE /api/backup - 백업 삭제
-export async function DELETE(request: NextRequest) {
-  try {
-    // Rate limiting
-    const rateLimitResponse = await applyRateLimit(request, 'mutation')
-    if (rateLimitResponse) {
-      return rateLimitResponse
-    }
-
-    // CSRF 보호
-    const csrfResult = await csrfProtection(request, {
-      requireDoubleSubmit: true
-    })
-    if (!csrfResult.protected) {
-      return csrfResult.response!
-    }
-
-    // Security middleware
-    const securityResult = await securityMiddleware(request)
-    if (!securityResult.proceed) {
-      return securityResult.response!
-    }
-
-    // 관리자 권한 확인
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
-
-    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
-    if (process.env.NODE_ENV === 'production' && !adminEmails.includes(session.user.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
-    }
-
-    const url = new URL(request.url)
-    const backupId = url.searchParams.get('id')
-
-    if (!backupId) {
-      return NextResponse.json(
-        { success: false, error: 'Backup ID required' },
-        { status: 400 }
-      )
-    }
-
-    // Backup deletion requested
-
-    const result = await backupManager.deleteBackup(backupId)
-
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        message: 'Backup deleted successfully'
-      })
-    } else {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: 500 }
-      )
-    }
-
-  } catch (error) {
-    // Error deleting backup
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete backup' },
-      { status: 500 }
-    )
-  }
-}
+})

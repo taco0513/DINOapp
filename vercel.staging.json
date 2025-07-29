@@ -1,0 +1,109 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm ci",
+  "outputDirectory": ".next",
+  "regions": ["icn1"],
+  "env": {
+    "NODE_ENV": "staging",
+    "NEXT_RUNTIME": "nodejs",
+    "NEXTAUTH_SECRET": "@staging-nextauth-secret",
+    "NEXTAUTH_URL": "@staging-nextauth-url",
+    "DATABASE_URL": "@staging-database-url",
+    "GOOGLE_CLIENT_ID": "@staging-google-client-id",
+    "GOOGLE_CLIENT_SECRET": "@staging-google-client-secret",
+    "OPENAI_API_KEY": "@staging-openai-api-key"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "staging",
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "SKIP_ENV_VALIDATION": "true"
+    }
+  },
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    },
+    "app/api/ai/**/*.ts": {
+      "maxDuration": 60
+    },
+    "app/api/backup/**/*.ts": {
+      "maxDuration": 300
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Staging-Environment",
+          "value": "true"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Staging-Environment",
+          "value": "true"
+        },
+        {
+          "key": "X-DNS-Prefetch-Control",
+          "value": "on"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/dashboard"
+    },
+    {
+      "source": "/login",
+      "destination": "/auth/signin"
+    },
+    {
+      "source": "/logout",
+      "destination": "/api/auth/signout"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/healthz",
+      "destination": "/api/health"
+    }
+  ]
+}

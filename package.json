@@ -49,7 +49,15 @@
     "ci:test": "npm run check:all && npm run build",
     "security:audit": "npm audit --audit-level=moderate",
     "lighthouse": "lighthouse http://localhost:3000 --budget-path=./lighthouse-budget.json",
-    "bundle-size": "size-limit"
+    "bundle-size": "size-limit",
+    "backup:db": "node scripts/backup/backup-db.js",
+    "backup:files": "node scripts/backup/backup-files.js",
+    "backup:test-recovery": "node scripts/backup/test-recovery.js",
+    "deploy:health-check": "node scripts/deployment/health-check.js",
+    "deploy:monitor": "node scripts/deployment/monitor.js",
+    "deploy:rollback": "node scripts/deployment/rollback.js",
+    "deploy:rollback:dry-run": "node scripts/deployment/rollback.js --dry-run",
+    "test:e2e:staging": "PLAYWRIGHT_BASE_URL=$STAGING_URL playwright test"
   },
   "keywords": [
     "travel",

@@ -8,6 +8,12 @@
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30
+    },
+    "app/api/ai/**/*.ts": {
+      "maxDuration": 60
+    },
+    "app/api/backup/**/*.ts": {
+      "maxDuration": 300
     }
   },
   "headers": [
@@ -19,7 +25,7 @@
           "value": "nosniff"
         },
         {
-          "key": "X-Frame-Options", 
+          "key": "X-Frame-Options",
           "value": "DENY"
         },
         {
@@ -144,6 +150,10 @@
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
+    },
+    {
+      "source": "/healthz",
+      "destination": "/api/health"
     }
   ],
   "env": {

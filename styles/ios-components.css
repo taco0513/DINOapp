@@ -37,8 +37,8 @@
   --ios-duration: 350ms;
 }
 
-/* iOS Dark Mode */
-@media (prefers-color-scheme: dark) {
+/* iOS Dark Mode - Disabled for now, force light mode */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --ios-bg-primary: #000000;
     --ios-bg-secondary: #1c1c1e;
@@ -52,7 +52,7 @@
     --ios-gray-5: #2c2c2e;
     --ios-gray-6: #1c1c1e;
   }
-}
+} */
 
 /* iOS Button */
 .ios-button {
@@ -134,11 +134,13 @@
 
 /* iOS Card */
 .ios-card {
-  background: var(--ios-bg-primary);
-  border-radius: 10px;
+  background: #ffffff !important;
+  border-radius: 12px;
   padding: 16px;
-  margin: 16px;
+  margin-bottom: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 200ms ease;
+  cursor: pointer;
 }
 
 /* iOS Switch */
@@ -431,16 +433,6 @@
 }
 
 /* Group hover effect for cards */
-.ios-card {
-  background: var(--ios-bg-primary);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
 .ios-card.group:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

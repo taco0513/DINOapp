@@ -85,7 +85,7 @@ export default function IOSDashboard({
   return (
     <div
       className='container mx-auto px-4 py-6 pb-safe min-h-screen'
-      style={{ background: '#f8f9fa' }}
+      style={{ background: '#f0f2f5' }}
     >
       <motion.div
         variants={containerVariants}

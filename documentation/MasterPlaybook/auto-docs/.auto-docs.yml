@@ -1,0 +1,58 @@
+watch:
+  paths:
+    - "**/*.js"
+    - "**/*.ts"
+    - "**/*.jsx"
+    - "**/*.tsx"
+    - "**/*.md"
+    - "**/*.json"
+    - "**/*.yml"
+    - "**/*.yaml"
+  ignore:
+    - "node_modules/**"
+    - ".git/**"
+    - "*.log"
+    - ".DS_Store"
+    - "dist/**"
+    - "build/**"
+    - ".next/**"
+    - ".nuxt/**"
+    - "coverage/**"
+    - "auto-docs/logs/**"
+  debounceMs: 1000
+
+docs:
+  autoGenerate: true
+  autoReview: true
+  aiReview: true
+  templates:
+    readme: true
+    api: false
+    changelog: true
+    progress: true
+  outputFormats:
+    - "md"
+  language: "ko"
+  review:
+    enabled: true
+    schedule: "on-change"  # on-change, daily, weekly
+    aiThreshold: 80       # AI 리뷰 시작 점수
+    reportPath: "docs/review-reports"
+
+git:
+  autoCommit: false
+  commitPrefix: "📝 docs:"
+
+notifications:
+  enabled: true
+  missingDocs: true
+  changes: true
+
+superClaude:
+  enabled: true
+  checkpointIntegration: true
+  mcpServers:
+    context7: true
+    sequential: true
+    magic: false
+    playwright: false

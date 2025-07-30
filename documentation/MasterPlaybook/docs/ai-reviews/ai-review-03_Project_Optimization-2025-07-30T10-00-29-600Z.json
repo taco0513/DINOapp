@@ -1,0 +1,40 @@
+{
+  "path": "MASTER_PLAYBOOK/00_Prompts/03_Project_Optimization.md",
+  "timestamp": "2025-07-30T10:00:29.599Z",
+  "contentAnalysis": {
+    "readabilityScore": 100,
+    "informationDensity": 40,
+    "technicalAccuracy": 80,
+    "completenessScore": 0,
+    "languageQuality": 85,
+    "insights": ["문서 길이가 적절합니다", "기술 용어 설명이 부족합니다"]
+  },
+  "structureAnalysis": {
+    "hierarchyScore": 0,
+    "navigationScore": 0,
+    "organizationScore": 0,
+    "consistencyScore": 0,
+    "structureIssues": [],
+    "suggestions": []
+  },
+  "qualityMetrics": {
+    "comprehensiveness": 0,
+    "accuracy": 0,
+    "usability": 0,
+    "maintainability": 0,
+    "accessibility": 0,
+    "engagement": 0
+  },
+  "recommendations": [
+    {
+      "type": "structure",
+      "priority": "medium",
+      "title": "헤더 구조 개선",
+      "description": "헤더 레벨을 논리적으로 재구성하고 누락된 섹션을 추가하세요.",
+      "impact": "medium",
+      "effort": "low"
+    }
+  ],
+  "mcpInsights": {},
+  "overallScore": 18
+}

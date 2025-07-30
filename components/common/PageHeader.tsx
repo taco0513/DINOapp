@@ -171,6 +171,7 @@ export const PageIcons = {
   Gmail: <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center text-lg">📧</div>,
   Analytics: <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-lg">📊</div>,
   Monitoring: <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center text-lg">🖥️</div>,
+  AI: <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-lg">🤖</div>,
   Settings: <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center"><Settings className="h-4 w-4" /></div>,
   Profile: <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center text-lg">👤</div>,
 }

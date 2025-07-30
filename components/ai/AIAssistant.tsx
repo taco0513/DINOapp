@@ -243,28 +243,28 @@ export default function AIAssistant() {
         </CardContent>
       </Card>
 
-      {/* 실시간 생산성 지표 */}
+      {/* AI 사용 통계 - 실제 사용 데이터 기반 */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">AI 협업 효과</CardTitle>
+          <CardTitle className="text-lg">이번 세션 통계</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-green-600">3x</div>
-              <p className="text-xs text-muted-foreground">코딩 속도</p>
+              <div className="text-2xl font-bold text-green-600">{suggestions.length}</div>
+              <p className="text-xs text-muted-foreground">제안 생성</p>
             </div>
             <div>
-              <div className="text-2xl font-bold text-blue-600">70%</div>
-              <p className="text-xs text-muted-foreground">버그 감소</p>
+              <div className="text-2xl font-bold text-blue-600">{query.length > 0 ? '1' : '0'}</div>
+              <p className="text-xs text-muted-foreground">활성 쿼리</p>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600">95%</div>
-              <p className="text-xs text-muted-foreground">코드 품질</p>
+              <div className="text-2xl font-bold text-purple-600">{activeMode}</div>
+              <p className="text-xs text-muted-foreground">현재 모드</p>
             </div>
             <div>
-              <div className="text-2xl font-bold text-orange-600">5h</div>
-              <p className="text-xs text-muted-foreground">일일 절약</p>
+              <div className="text-2xl font-bold text-orange-600">{context.complexity}</div>
+              <p className="text-xs text-muted-foreground">복잡도</p>
             </div>
           </div>
         </CardContent>

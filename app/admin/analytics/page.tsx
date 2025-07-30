@@ -17,6 +17,14 @@ export default async function AdminAnalyticsPage() {
     redirect('/auth/signin?callbackUrl=/admin/analytics');
   }
 
+  // 관리자 권한 확인 (이메일 기반)
+  const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+  const isAdmin = adminEmails.includes(session.user.email || '');
+  
+  if (!isAdmin) {
+    redirect('/dashboard?error=unauthorized');
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">

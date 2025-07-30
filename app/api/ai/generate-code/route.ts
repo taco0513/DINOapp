@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
 }
 
 async function generateCode(request: CodeGenerationRequest): Promise<GeneratedCode> {
-  // AI 코드 생성 시뮬레이션
+  // AI 코드 생성 시뮬레이션 - 향후 실제 AI 서비스로 교체 예정
+  // TODO: OpenAI Codex, GitHub Copilot API, 또는 기타 코드 생성 AI 연동
   const { prompt, type, framework, includeTests, includeDocs } = request;
 
   // 타입별 코드 생성

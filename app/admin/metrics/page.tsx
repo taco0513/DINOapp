@@ -17,10 +17,13 @@ export default async function AdminMetricsPage() {
     redirect('/auth/signin?callbackUrl=/admin/metrics');
   }
 
-  // 관리자 권한 확인 (옵션 - 추후 구현)
-  // if (session.user.role !== 'ADMIN') {
-  //   redirect('/dashboard');
-  // }
+  // 관리자 권한 확인 (이메일 기반)
+  const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+  const isAdmin = adminEmails.includes(session.user.email || '');
+  
+  if (!isAdmin) {
+    redirect('/dashboard?error=unauthorized');
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

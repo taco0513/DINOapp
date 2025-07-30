@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { PageHeader } from '@/components/common/PageHeader';
+import { PageHeader, PageIcons } from '@/components/common/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -43,21 +43,37 @@ export default function AIPage() {
     <div className="container mx-auto py-6 space-y-6">
       <PageHeader
         title="AI 개발 도구"
-        description="AI와 함께 개발 생산성을 10배 향상시키세요"
+        description="AI와 함께 개발 생산성을 10배 향상시키세요 (데모 버전)"
+        icon={PageIcons.AI}
+        breadcrumbs={[
+          { label: '대시보드', href: '/dashboard' },
+          { label: 'AI 개발 도구' }
+        ]}
       />
 
-      {/* AI 협업 효과 요약 */}
+      {/* 데모 알림 */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+        <div className="flex items-center gap-2">
+          <span className="text-yellow-600">⚠️</span>
+          <p className="text-sm text-yellow-800">
+            <strong>데모 버전:</strong> 현재 AI 기능은 시뮬레이션으로 작동합니다. 
+            실제 AI 서비스 연동은 준비 중입니다.
+          </p>
+        </div>
+      </div>
+
+      {/* AI 도구 기능 소개 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
-              코딩 속도
+              AI 어시스턴트
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3x</div>
-            <p className="text-xs text-muted-foreground">평균 향상률</p>
+            <div className="text-2xl font-bold">💬</div>
+            <p className="text-xs text-muted-foreground">질문과 답변</p>
           </CardContent>
         </Card>
 
@@ -65,12 +81,12 @@ export default function AIPage() {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Shield className="h-4 w-4 text-blue-600" />
-              버그 감소
+              페어 프로그래밍
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">70%</div>
-            <p className="text-xs text-muted-foreground">에러 방지율</p>
+            <div className="text-2xl font-bold">👥</div>
+            <p className="text-xs text-muted-foreground">협업 코딩</p>
           </CardContent>
         </Card>
 
@@ -78,12 +94,12 @@ export default function AIPage() {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Zap className="h-4 w-4 text-purple-600" />
-              코드 품질
+              코드 생성
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">95%</div>
-            <p className="text-xs text-muted-foreground">품질 점수</p>
+            <div className="text-2xl font-bold">⚡</div>
+            <p className="text-xs text-muted-foreground">자동 생성</p>
           </CardContent>
         </Card>
 
@@ -91,12 +107,12 @@ export default function AIPage() {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Clock className="h-4 w-4 text-orange-600" />
-              시간 절약
+              문제 해결
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5h</div>
-            <p className="text-xs text-muted-foreground">일일 절약</p>
+            <div className="text-2xl font-bold">🔧</div>
+            <p className="text-xs text-muted-foreground">버그 수정</p>
           </CardContent>
         </Card>
       </div>

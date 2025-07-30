@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { PageHeader } from '@/components/common/PageHeader';
+import { PageHeader, PageIcons } from '@/components/common/PageHeader';
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading';
 import {
   getCurrentLocale,
@@ -185,8 +185,13 @@ export default function SettingsPage() {
       <div className='container mx-auto px-4 py-8'>
         {/* Header */}
         <PageHeader
-          title='⚙️ 설정'
+          title='설정'
           description='앱 설정과 개인정보를 관리하세요'
+          icon={PageIcons.Settings}
+          breadcrumbs={[
+            { label: '대시보드', href: '/dashboard' },
+            { label: '설정' }
+          ]}
         />
 
         {/* 저장 메시지 */}
@@ -529,15 +534,31 @@ export default function SettingsPage() {
                   </>
                 ) : (
                   <button
-                    onClick={() => {
-                      // Gmail OAuth 플로우 시작
-                      // 실제로는 OAuth 인증 URL로 리다이렉트
-                      saveSettings({
-                        integration: {
-                          gmailConnected: true,
-                          lastSync: new Date().toLocaleString('ko-KR')
+                    onClick={async () => {
+                      // Gmail 연동 상태 확인 및 연결 테스트
+                      try {
+                        const response = await fetch('/api/gmail/check');
+                        const data = await response.json();
+                        
+                        if (data.connected) {
+                          // 이미 연결됨 - 상태 업데이트
+                          saveSettings({
+                            integration: {
+                              gmailConnected: true,
+                              lastSync: new Date().toLocaleString('ko-KR')
+                            }
+                          });
+                        } else {
+                          // 재인증 필요 - Google OAuth로 리다이렉트
+                          window.location.href = '/api/auth/signin?callbackUrl=' + 
+                            encodeURIComponent(window.location.href);
                         }
-                      });
+                      } catch (error) {
+                        console.error('Gmail 연동 확인 실패:', error);
+                        // 오류 시 재인증 시도
+                        window.location.href = '/api/auth/signin?callbackUrl=' + 
+                          encodeURIComponent(window.location.href);
+                      }
                     }}
                     disabled={isLoading}
                     className='w-full btn btn-primary flex items-center justify-center gap-2'

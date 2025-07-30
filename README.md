@@ -81,6 +81,9 @@ NEXTAUTH_SECRET=your_nextauth_secret
 
 # 데이터베이스
 DATABASE_URL="file:./dev.db"
+
+# 관리자 설정 (쉼표로 구분된 관리자 이메일 목록)
+ADMIN_EMAILS="admin@example.com,admin2@example.com"
 ```
 
 자세한 설정 가이드는 [.env.example](.env.example) 파일을 참조하세요.

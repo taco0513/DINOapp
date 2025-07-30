@@ -21,10 +21,10 @@
   --ios-gray-5: #e5e5ea;
   --ios-gray-6: #f2f2f7;
 
-  /* iOS Backgrounds */
-  --ios-bg-primary: #ffffff;
+  /* iOS Backgrounds - Softer tones */
+  --ios-bg-primary: #fbfbfc;
   --ios-bg-secondary: #f2f2f7;
-  --ios-bg-tertiary: #ffffff;
+  --ios-bg-tertiary: #f8f9fa;
   --ios-bg-grouped: #f2f2f7;
 
   /* iOS Typography */
@@ -134,11 +134,12 @@
 
 /* iOS Card */
 .ios-card {
-  background: #ffffff !important;
+  background: #fbfbfc !important;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 200ms ease;
   cursor: pointer;
 }
@@ -421,7 +422,7 @@
   left: 0;
   right: 0;
   height: calc(49px + env(safe-area-inset-bottom));
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(248, 249, 250, 0.95);
   border-top: 0.5px solid var(--ios-gray-4);
   display: flex;
   justify-content: space-around;

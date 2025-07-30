@@ -31,7 +31,8 @@ export default function IOSNavigation({ className = '' }: IOSNavigationProps) {
     <>
       {/* iOS-style Navigation Bar */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200/50 ${className}`}
+        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-200/50 ${className}`}
+        style={{ backgroundColor: 'rgba(248, 249, 250, 0.85)' }}
       >
         <div className='container mx-auto px-4'>
           <div className='flex items-center justify-between h-16'>

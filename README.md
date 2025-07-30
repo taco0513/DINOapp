@@ -11,21 +11,25 @@
 ## ✨ 주요 기능
 
 ### 🌍 **스마트 여행 추적**
+
 - **78개국 비자 규정** 자동 추적 및 체류 한도 관리
 - **14가지 비자 유형** 지원 (관광, 비즈니스, 워킹홀리데이 등)
 - **실시간 알림** - 비자 만료, 체류 한도 초과 경고
 
 ### 🇪🇺 **셰겐 계산기**
+
 - **90/180일 규칙** 자동 계산 및 시각화
 - **미래 여행 계획** - 언제 다시 입국할 수 있는지 정확한 날짜 제공
 - **대화형 차트** - 체류 현황을 직관적으로 확인
 
 ### 📧 **Google 서비스 통합**
+
 - **Gmail 자동 스캔** - 항공권, 호텔 예약 정보 자동 추출
 - **Calendar 동기화** - 여행 일정 양방향 동기화
 - **최소 권한** - 필요한 데이터만 안전하게 접근
 
 ### 📱 **모바일 최적화**
+
 - **PWA 지원** - 앱처럼 설치하여 사용 가능
 - **오프라인 기능** - 인터넷 없이도 기본 기능 사용
 - **반응형 디자인** - 모든 기기에서 완벽한 사용자 경험
@@ -35,7 +39,8 @@
 > 📚 **전체 가이드**: [개발환경 설정 가이드](docs/development/setup.md) | [사용자 가이드](docs/user/getting-started.md)
 
 ### 필수 요구사항
-- Node.js 18+ 
+
+- Node.js 18+
 - npm 또는 yarn
 - PostgreSQL 15+
 - Google OAuth 2.0 앱 등록
@@ -58,10 +63,11 @@ cp .env.example .env.local
 npx prisma generate
 npx prisma migrate dev
 
-# 5. 개발 서버 시작
-npm run dev
+# 5. 개발 서버 시작 (반드시 포트 3000 사용)
+PORT=3000 npm run dev
 ```
 
+**⚠️ 중요**: 개발 서버는 반드시 포트 3000에서 실행해야 합니다.
 개발 서버가 [http://localhost:3000](http://localhost:3000)에서 실행됩니다.
 
 > 💡 **온보딩**: 첫 방문 시 자동으로 온보딩 플로우가 시작됩니다.
@@ -148,18 +154,21 @@ npm run deploy:rollback     # 긴급 롤백
 ## 📊 기술 스택
 
 ### Frontend
+
 - **Next.js 14** - React 프레임워크, App Router 사용
 - **TypeScript** - 타입 안전성 및 개발 생산성
 - **Tailwind CSS** - 유틸리티 우선 CSS 프레임워크
 - **Radix UI** - 접근성을 고려한 헤드리스 UI 컴포넌트
 
 ### Backend
+
 - **Next.js API Routes** - 서버리스 API 엔드포인트
 - **Prisma ORM** - 타입 안전한 데이터베이스 클라이언트
 - **NextAuth.js** - 인증 및 세션 관리
 - **SQLite/PostgreSQL** - 개발/프로덕션 데이터베이스
 
 ### 개발 도구
+
 - **Jest + Testing Library** - 단위 및 통합 테스트
 - **Playwright** - E2E 테스트 및 브라우저 자동화
 - **ESLint + Prettier** - 코드 품질 및 포맷팅
@@ -167,6 +176,7 @@ npm run deploy:rollback     # 긴급 롤백
 ## 📈 로드맵
 
 ### ✅ 완료된 기능
+
 - [x] Google OAuth 인증 시스템
 - [x] 여행 기록 CRUD 작업
 - [x] 셰겐 90/180일 규칙 계산기
@@ -175,11 +185,13 @@ npm run deploy:rollback     # 긴급 롤백
 - [x] 포괄적인 테스트 스위트
 
 ### 🚧 개발 중
+
 - [ ] Calendar 양방향 동기화
 - [ ] 고급 데이터 시각화
 - [ ] 다국어 지원 (i18n)
 
 ### 🎯 계획된 기능
+
 - [ ] 모바일 앱 (React Native)
 - [ ] 팀 여행 관리
 - [ ] 비자 신청 가이드
@@ -195,7 +207,7 @@ npm run test:all
 
 # 특정 테스트 실행
 npm run test:unit        # 단위 테스트
-npm run test:integration # 통합 테스트  
+npm run test:integration # 통합 테스트
 npm run test:e2e         # E2E 테스트
 
 # 테스트 커버리지 확인
@@ -216,15 +228,17 @@ DINO는 사용자 데이터 보안을 최우선으로 합니다:
 
 ## 📝 기여하기
 
-DINO 프로젝트에 기여해주셔서 감사합니다! 
+DINO 프로젝트에 기여해주셔서 감사합니다!
 
 ### 개발 환경 설정
+
 1. 저장소를 포크하고 클론합니다
 2. 의존성을 설치합니다: `npm install`
 3. 환경 변수를 설정합니다: `cp .env.example .env.local`
 4. 데이터베이스를 설정합니다: `npm run db:push`
 
 ### 코드 기여 가이드라인
+
 - TypeScript strict 모드 사용
 - 모든 새 기능에 테스트 추가
 - ESLint 및 Prettier 규칙 준수
@@ -239,7 +253,7 @@ DINO 프로젝트에 기여해주셔서 감사합니다!
 ## 🙏 감사의 말
 
 - [Next.js](https://nextjs.org/) - 훌륭한 React 프레임워크
-- [Vercel](https://vercel.com/) - 간편한 배포 플랫폼  
+- [Vercel](https://vercel.com/) - 간편한 배포 플랫폼
 - [Prisma](https://prisma.io/) - 개발자 친화적인 ORM
 - [Google APIs](https://developers.google.com/) - Gmail/Calendar 통합
 

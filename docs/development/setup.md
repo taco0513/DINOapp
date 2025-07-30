@@ -5,12 +5,14 @@ DINOapp 개발을 위한 완전한 개발 환경 설정 가이드입니다.
 ## 📋 필수 요구사항
 
 ### 시스템 요구사항
+
 - **Node.js**: 18.x 이상
 - **npm**: 9.x 이상 (또는 yarn, pnpm)
 - **PostgreSQL**: 15.x 이상
 - **Git**: 2.30 이상
 
 ### 필수 계정
+
 - **Google Cloud Console**: Gmail, Calendar API 사용
 - **Vercel**: 배포용 (선택사항)
 
@@ -73,8 +75,12 @@ npm run db:seed
 ### 5. 개발 서버 실행
 
 ```bash
+# 반드시 포트 3000에서 실행
 npm run dev
 ```
+
+**⚠️ 중요**: 개발 서버는 반드시 포트 3000에서 실행해야 합니다.
+`package.json`에서 이미 `PORT=3000`으로 설정되어 있습니다.
 
 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
 
@@ -83,6 +89,7 @@ npm run dev
 ### VSCode 설정
 
 권장 확장 프로그램:
+
 - **TypeScript**: TypeScript 지원
 - **Prisma**: 데이터베이스 스키마 하이라이팅
 - **ESLint**: 코드 품질 검사
@@ -90,6 +97,7 @@ npm run dev
 - **Tailwind CSS IntelliSense**: Tailwind 자동완성
 
 `.vscode/settings.json`:
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -110,6 +118,7 @@ npm run prepare
 ```
 
 커밋 전 자동으로 실행되는 검사:
+
 - **ESLint**: 코드 품질 검사
 - **Prettier**: 코드 포맷팅
 - **Type Check**: TypeScript 타입 검사
@@ -140,6 +149,7 @@ dinoapp/
 ## 🧪 테스트 실행
 
 ### 단위 테스트
+
 ```bash
 npm run test
 npm run test:watch     # watch 모드
@@ -147,12 +157,14 @@ npm run test:coverage  # 커버리지 포함
 ```
 
 ### E2E 테스트
+
 ```bash
 npm run test:e2e
 npm run test:e2e:ui    # UI 모드
 ```
 
 ### 전체 테스트
+
 ```bash
 npm run test:all
 ```
@@ -160,17 +172,20 @@ npm run test:all
 ## 🔍 코드 품질 검사
 
 ### 린트 검사
+
 ```bash
 npm run lint
 npm run lint:fix       # 자동 수정
 ```
 
 ### 타입 검사
+
 ```bash
 npm run type-check
 ```
 
 ### 전체 검사
+
 ```bash
 npm run check:all
 ```
@@ -178,12 +193,14 @@ npm run check:all
 ## 🚀 빌드 및 배포
 
 ### 개발 빌드
+
 ```bash
 npm run build
 npm run start          # 프로덕션 모드로 실행
 ```
 
 ### 배포
+
 ```bash
 npm run deploy         # Vercel 배포
 ```
@@ -193,6 +210,7 @@ npm run deploy         # Vercel 배포
 ### 자주 발생하는 문제
 
 #### 1. 데이터베이스 연결 오류
+
 ```bash
 # PostgreSQL 서비스 상태 확인
 sudo service postgresql status
@@ -202,6 +220,7 @@ sudo service postgresql restart
 ```
 
 #### 2. Node.js 버전 불일치
+
 ```bash
 # nvm 사용 (권장)
 nvm use 18
@@ -209,6 +228,7 @@ nvm install 18.x.x
 ```
 
 #### 3. 패키지 설치 오류
+
 ```bash
 # 캐시 정리
 npm cache clean --force
@@ -217,6 +237,7 @@ npm install
 ```
 
 #### 4. Prisma 스키마 동기화 오류
+
 ```bash
 # 스키마 재설정
 npx prisma migrate reset
@@ -234,6 +255,7 @@ npx prisma generate
 ## 🔄 개발 워크플로우
 
 ### 기능 개발 프로세스
+
 1. **브랜치 생성**: `git checkout -b feature/your-feature`
 2. **개발 및 테스트**: 기능 구현 및 테스트 작성
 3. **코드 검토**: 자동 품질 검사 통과 확인
@@ -241,6 +263,7 @@ npx prisma generate
 5. **배포**: 승인 후 메인 브랜치 병합
 
 ### 커밋 컨벤션
+
 ```
 feat: 새로운 기능 추가
 fix: 버그 수정

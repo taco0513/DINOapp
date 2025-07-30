@@ -27,9 +27,19 @@
   --color-text-inverse: #ffffff;
 
   --color-success: #00c853;
+  --color-success-light: #e6ffe6;
+  --color-success-dark: #006600;
   --color-error: #ff3b30;
+  --color-error-light: #ffe6e6;
+  --color-error-dark: #cc0000;
   --color-warning: #ff9500;
+  --color-warning-light: #fffbf0;
   --color-info: #0066ff;
+
+  /* Max widths */
+  --max-width-xs: 400px;
+  --max-width-sm: 500px;
+  --max-width-6xl: 1200px;
 
   /* Typography Scale */
   --font-family:

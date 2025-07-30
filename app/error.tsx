@@ -1,79 +1,87 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
 interface ErrorProps {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }
 
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Application Error:', error)
-  }, [error])
+    console.error('Application Error:', error);
+  }, [error]);
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#ffffff',
-      padding: '20px',
-    }}>
-      <div style={{
-        maxWidth: '500px',
-        textAlign: 'center',
-        padding: '40px',
-        border: '1px solid #e0e0e0',
-        borderRadius: '8px',
-      }}>
-        <h1 style={{
-          fontSize: '24px',
-          fontWeight: 'bold',
-          marginBottom: '16px',
-          color: '#333',
-        }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'var(--color-background)',
+        padding: 'var(--space-5)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 'var(--max-width-sm)',
+          textAlign: 'center',
+          padding: 'var(--space-10)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-base)',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: 'var(--text-2xl)',
+            fontWeight: 'var(--font-bold)',
+            marginBottom: 'var(--space-4)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
           문제가 발생했습니다
         </h1>
-        
-        <p style={{
-          fontSize: '16px',
-          color: '#666',
-          marginBottom: '24px',
-          lineHeight: '1.5',
-        }}>
+
+        <p
+          style={{
+            fontSize: 'var(--text-base)',
+            color: 'var(--color-text-secondary)',
+            marginBottom: 'var(--space-6)',
+            lineHeight: '1.5',
+          }}
+        >
           일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
         </p>
 
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: 'var(--space-4)' }}>
           <button
             onClick={reset}
             style={{
-              backgroundColor: '#000',
-              color: '#fff',
+              backgroundColor: 'var(--color-primary)',
+              color: 'var(--color-text-inverse)',
               border: 'none',
-              padding: '12px 24px',
-              fontSize: '14px',
+              padding: 'var(--space-3) var(--space-6)',
+              fontSize: 'var(--text-sm)',
               cursor: 'pointer',
-              marginRight: '12px',
-              borderRadius: '4px',
+              marginRight: 'var(--space-3)',
+              borderRadius: 'var(--radius-sm)',
             }}
           >
             다시 시도
           </button>
-          
+
           <button
-            onClick={() => window.location.href = '/'}
+            onClick={() => (window.location.href = '/')}
             style={{
-              backgroundColor: '#fff',
-              color: '#000',
-              border: '1px solid #000',
-              padding: '12px 24px',
-              fontSize: '14px',
+              backgroundColor: 'var(--color-background)',
+              color: 'var(--color-text-primary)',
+              border: '1px solid var(--color-primary)',
+              padding: 'var(--space-3) var(--space-6)',
+              fontSize: 'var(--text-sm)',
               cursor: 'pointer',
-              borderRadius: '4px',
+              borderRadius: 'var(--radius-sm)',
             }}
           >
             홈으로 이동
@@ -81,26 +89,32 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         {process.env.NODE_ENV === 'development' && (
-          <details style={{ 
-            marginTop: '20px', 
-            textAlign: 'left',
-            fontSize: '12px',
-            color: '#999',
-          }}>
-            <summary style={{ cursor: 'pointer', marginBottom: '10px' }}>
+          <details
+            style={{
+              marginTop: 'var(--space-5)',
+              textAlign: 'left',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-tertiary)',
+            }}
+          >
+            <summary
+              style={{ cursor: 'pointer', marginBottom: 'var(--space-2)' }}
+            >
               개발 모드 - 오류 세부 정보
             </summary>
-            <pre style={{ 
-              background: '#f5f5f5', 
-              padding: '10px', 
-              overflow: 'auto',
-              borderRadius: '4px',
-            }}>
+            <pre
+              style={{
+                background: 'var(--color-surface-hover)',
+                padding: 'var(--space-2)',
+                overflow: 'auto',
+                borderRadius: 'var(--radius-sm)',
+              }}
+            >
               {error.message}
             </pre>
           </details>
         )}
       </div>
     </div>
-  )
+  );
 }

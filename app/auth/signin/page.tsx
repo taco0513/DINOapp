@@ -48,12 +48,16 @@ function SignInContent() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#ffffff',
+          backgroundColor: 'var(--color-background)',
         }}
       >
         <div style={{ textAlign: 'center' }}>
           <div
-            style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}
+            style={{
+              marginBottom: 'var(--space-5)',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--color-text-secondary)',
+            }}
           >
             잠시만 기다려주세요...
           </div>
@@ -70,33 +74,33 @@ function SignInContent() {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#ffffff',
-        padding: '20px',
+        padding: 'var(--space-5)',
         fontFamily: 'system-ui, -apple-system, sans-serif',
       }}
     >
       <div
         style={{
-          maxWidth: '400px',
+          maxWidth: 'var(--max-width-xs)',
           width: '100%',
-          border: '1px solid #e0e0e0',
-          padding: '40px 30px',
+          border: '1px solid var(--color-border)',
+          padding: 'var(--space-10) var(--space-8)',
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
           <h1
             style={{
-              fontSize: '32px',
-              fontWeight: 'bold',
-              marginBottom: '10px',
-              color: '#000',
+              fontSize: 'var(--text-3xl)',
+              fontWeight: 'var(--font-bold)',
+              marginBottom: 'var(--space-2)',
+              color: 'var(--color-text-primary)',
             }}
           >
             DINO
           </h1>
           <p
             style={{
-              fontSize: '14px',
-              color: '#666',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--color-text-secondary)',
               lineHeight: '1.5',
             }}
           >
@@ -114,7 +118,7 @@ function SignInContent() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '12px',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'var(--color-background)',
               border: '2px solid #000',
               color: '#000',
               padding: '12px 20px',
@@ -172,12 +176,16 @@ export default function SignInPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#ffffff',
+            backgroundColor: 'var(--color-background)',
           }}
         >
           <div style={{ textAlign: 'center' }}>
             <div
-              style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}
+              style={{
+                marginBottom: 'var(--space-5)',
+                fontSize: 'var(--text-sm)',
+                color: 'var(--color-text-secondary)',
+              }}
             >
               로딩 중...
             </div>

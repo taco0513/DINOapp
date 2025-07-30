@@ -1,75 +1,91 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#ffffff',
-      padding: '20px',
-    }}>
-      <div style={{
-        maxWidth: '500px',
-        textAlign: 'center',
-        padding: '40px',
-        border: '1px solid #e0e0e0',
-        borderRadius: '8px',
-      }}>
-        <h1 style={{
-          fontSize: '48px',
-          fontWeight: 'bold',
-          marginBottom: '16px',
-          color: '#333',
-        }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'var(--color-background)',
+        padding: 'var(--space-5)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 'var(--max-width-sm)',
+          textAlign: 'center',
+          padding: 'var(--space-10)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-base)',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: 'var(--text-5xl)',
+            fontWeight: 'var(--font-bold)',
+            marginBottom: 'var(--space-4)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
           404
         </h1>
-        
-        <h2 style={{
-          fontSize: '24px',
-          fontWeight: 'bold',
-          marginBottom: '16px',
-          color: '#333',
-        }}>
+
+        <h2
+          style={{
+            fontSize: 'var(--text-2xl)',
+            fontWeight: 'var(--font-bold)',
+            marginBottom: 'var(--space-4)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
           페이지를 찾을 수 없습니다
         </h2>
-        
-        <p style={{
-          fontSize: '16px',
-          color: '#666',
-          marginBottom: '24px',
-          lineHeight: '1.5',
-        }}>
+
+        <p
+          style={{
+            fontSize: 'var(--text-base)',
+            color: 'var(--color-text-secondary)',
+            marginBottom: 'var(--space-6)',
+            lineHeight: '1.5',
+          }}
+        >
           요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
         </p>
 
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-          <Link 
-            href="/"
+        <div
+          style={{
+            display: 'flex',
+            gap: 'var(--space-3)',
+            justifyContent: 'center',
+          }}
+        >
+          <Link
+            href='/'
             style={{
-              backgroundColor: '#000',
-              color: '#fff',
+              backgroundColor: 'var(--color-primary)',
+              color: 'var(--color-text-inverse)',
               textDecoration: 'none',
-              padding: '12px 24px',
-              fontSize: '14px',
-              borderRadius: '4px',
+              padding: 'var(--space-3) var(--space-6)',
+              fontSize: 'var(--text-sm)',
+              borderRadius: 'var(--radius-sm)',
               display: 'inline-block',
             }}
           >
             홈으로 이동
           </Link>
-          
-          <Link 
-            href="/dashboard"
+
+          <Link
+            href='/dashboard'
             style={{
-              backgroundColor: '#fff',
-              color: '#000',
-              border: '1px solid #000',
+              backgroundColor: 'var(--color-background)',
+              color: 'var(--color-text-primary)',
+              border: '1px solid var(--color-primary)',
               textDecoration: 'none',
-              padding: '12px 24px',
-              fontSize: '14px',
-              borderRadius: '4px',
+              padding: 'var(--space-3) var(--space-6)',
+              fontSize: 'var(--text-sm)',
+              borderRadius: 'var(--radius-sm)',
               display: 'inline-block',
             }}
           >
@@ -77,24 +93,28 @@ export default function NotFound() {
           </Link>
         </div>
 
-        <div style={{ 
-          marginTop: '24px',
-          paddingTop: '24px',
-          borderTop: '1px solid #e0e0e0',
-        }}>
-          <p style={{
-            fontSize: '14px',
-            color: '#999',
-            marginBottom: '8px',
-          }}>
+        <div
+          style={{
+            marginTop: 'var(--space-6)',
+            paddingTop: 'var(--space-6)',
+            borderTop: '1px solid var(--color-border)',
+          }}
+        >
+          <p
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--color-text-tertiary)',
+              marginBottom: 'var(--space-2)',
+            }}
+          >
             도움이 필요하신가요?
           </p>
-          <Link 
-            href="mailto:support@dino-app.com"
+          <Link
+            href='mailto:support@dino-app.com'
             style={{
-              color: '#0066cc',
+              color: 'var(--color-accent)',
               textDecoration: 'none',
-              fontSize: '14px',
+              fontSize: 'var(--text-sm)',
             }}
           >
             고객 지원 문의
@@ -102,5 +122,5 @@ export default function NotFound() {
         </div>
       </div>
     </div>
-  )
+  );
 }

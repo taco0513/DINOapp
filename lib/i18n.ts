@@ -1,5 +1,5 @@
-// Simple i18n system for DINO
-type Locale = 'ko' | 'en' | 'ja' | 'zh';
+// Enhanced i18n system for DINO with expanded language support
+type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'fr';
 
 interface Translations {
   [key: string]: {
@@ -14,30 +14,40 @@ const translations: Translations = {
     en: 'DINO',
     ja: 'DINO',
     zh: 'DINO',
+    es: 'DINO',
+    fr: 'DINO',
   },
   'nav.dashboard': {
     ko: '대시보드',
     en: 'Dashboard',
     ja: 'ダッシュボード',
     zh: '仪表板',
+    es: 'Panel de Control',
+    fr: 'Tableau de Bord',
   },
   'nav.trips': {
     ko: '여행기록',
     en: 'Travel Records',
     ja: '旅行記録',
     zh: '旅行记录',
+    es: 'Registros de Viaje',
+    fr: 'Enregistrements de Voyage',
   },
   'nav.schengen': {
     ko: '셰겐계산기',
     en: 'Schengen Calculator',
     ja: 'シェンゲン計算機',
     zh: '申根计算器',
+    es: 'Calculadora Schengen',
+    fr: 'Calculateur Schengen',
   },
   'nav.calendar': {
     ko: '캘린더',
     en: 'Calendar',
     ja: 'カレンダー',
     zh: '日历',
+    es: 'Calendario',
+    fr: 'Calendrier',
   },
 
   // Dashboard
@@ -46,12 +56,16 @@ const translations: Translations = {
     en: 'Welcome, {name}',
     ja: 'ようこそ、{name}さん',
     zh: '欢迎，{name}',
+    es: 'Bienvenido, {name}',
+    fr: 'Bienvenue, {name}',
   },
   'dashboard.logout': {
     ko: '로그아웃',
     en: 'Logout',
     ja: 'ログアウト',
     zh: '注销',
+    es: 'Cerrar Sesión',
+    fr: 'Déconnexion',
   },
 
   // Travel Records
@@ -218,18 +232,24 @@ const translations: Translations = {
     en: 'Loading...',
     ja: '読み込み中...',
     zh: '加载中...',
+    es: 'Cargando...',
+    fr: 'Chargement...',
   },
   'common.error': {
     ko: '오류가 발생했습니다',
     en: 'An error occurred',
     ja: 'エラーが発生しました',
     zh: '发生错误',
+    es: 'Ocurrió un error',
+    fr: "Une erreur s'est produite",
   },
   'common.retry': {
     ko: '다시 시도',
     en: 'Retry',
     ja: '再試行',
     zh: '重试',
+    es: 'Reintentar',
+    fr: 'Réessayer',
   },
   'common.days': {
     ko: '일',
@@ -288,18 +308,51 @@ const translations: Translations = {
     en: 'Loading recent activity...',
     ja: '最近の活動を読み込み中...',
     zh: '正在加载最近活动...',
+    es: 'Cargando actividad reciente...',
+    fr: "Chargement de l'activité récente...",
+  },
+
+  // New internationalization-specific translations
+  'language.change_note': {
+    ko: '언어가 즉시 변경됩니다.',
+    en: 'Language changes immediately.',
+    ja: '言語がすぐに変更されます。',
+    zh: '语言立即更改。',
+    es: 'El idioma cambia inmediatamente.',
+    fr: 'La langue change immédiatement.',
+  },
+  'language.auto_detect': {
+    ko: '자동 감지됨',
+    en: 'Auto-detected',
+    ja: '自動検出',
+    zh: '自动检测',
+    es: 'Detectado automáticamente',
+    fr: 'Détecté automatiquement',
   },
 };
 
 // Get current locale from localStorage or browser
 export function getCurrentLocale(): Locale {
-  // Always return 'ko' during SSR to prevent hydration mismatches
+  // Return 'ko' during SSR to prevent hydration mismatches
   if (typeof window === 'undefined') {
     return 'ko';
   }
 
-  // Always return 'ko' for consistency until we implement proper client-side locale switching
-  // This prevents hydration mismatches while maintaining Korean as the primary language
+  // Get locale from localStorage or detect from browser
+  const stored = localStorage.getItem('dino-locale') as Locale;
+  if (stored && getSupportedLocales().some(l => l.code === stored)) {
+    return stored;
+  }
+
+  // Detect from browser language
+  const browserLang = navigator.language.toLowerCase();
+  if (browserLang.startsWith('en')) return 'en';
+  if (browserLang.startsWith('ja')) return 'ja';
+  if (browserLang.startsWith('zh')) return 'zh';
+  if (browserLang.startsWith('es')) return 'es';
+  if (browserLang.startsWith('fr')) return 'fr';
+
+  // Default to Korean
   return 'ko';
 }
 
@@ -323,6 +376,8 @@ export function getSupportedLocales(): Array<{
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
     { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
   ];
 }
 

@@ -1,0 +1,210 @@
+/**
+ * Unified Design System
+ * iOS 스타일과 기존 디자인 토큰 통합
+ */
+
+/* ===== 통합 색상 시스템 ===== */
+:root {
+  /* Primary Colors - iOS Blue 기반 */
+  --color-primary: var(--ios-blue, #007aff);
+  --color-primary-hover: #0051d5;
+  --color-primary-light: var(--ios-blue-light, #e6f0ff);
+
+  /* Text Colors - iOS 계층 구조 */
+  --color-text-primary: var(--ios-label-primary, #000000);
+  --color-text-secondary: var(--ios-gray, #8e8e93);
+  --color-text-tertiary: var(--ios-gray-2, #aeaeb2);
+
+  /* Background Colors - iOS 스타일 */
+  --color-background: var(--ios-bg-primary, #ffffff);
+  --color-surface: var(--ios-bg-secondary, #f2f2f7);
+  --color-surface-hover: var(--ios-gray-6, #f2f2f7);
+
+  /* Semantic Colors */
+  --color-success: var(--ios-green, #34c759);
+  --color-warning: var(--ios-orange, #ff9500);
+  --color-error: var(--ios-red, #ff3b30);
+  --color-info: var(--ios-blue, #007aff);
+
+  /* Border Colors */
+  --color-border: var(--ios-gray-4, #d1d1d6);
+  --color-border-light: var(--ios-gray-5, #e5e5ea);
+
+  /* ===== 타이포그래피 - SF Pro 기반 ===== */
+  --font-family: var(
+    --ios-font,
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Display',
+    'SF Pro Text',
+    'Helvetica Neue',
+    sans-serif
+  );
+
+  /* Font Sizes - iOS 기준 */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.8125rem; /* 13px - iOS Caption */
+  --text-base: 1.0625rem; /* 17px - iOS Body */
+  --text-lg: 1.25rem; /* 20px - iOS Title 3 */
+  --text-xl: 1.375rem; /* 22px - iOS Title 2 */
+  --text-2xl: 1.75rem; /* 28px - iOS Title 1 */
+  --text-3xl: 2.125rem; /* 34px - iOS Large Title */
+  --text-4xl: 2.5rem; /* 40px */
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ===== 간격 시스템 ===== */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+
+  /* ===== Border Radius - iOS 기준 ===== */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-base: 0.625rem; /* 10px - iOS Default */
+  --radius-md: 0.75rem; /* 12px */
+  --radius-lg: 0.875rem; /* 14px - iOS Modal */
+  --radius-xl: 1.25rem; /* 20px */
+  --radius-full: 9999px; /* Pills */
+
+  /* ===== 그림자 시스템 - iOS 스타일 ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.18);
+
+  /* ===== 애니메이션 - iOS 기준 ===== */
+  --duration-fast: 150ms;
+  --duration-base: var(--ios-duration, 350ms);
+  --duration-slow: 500ms;
+  --easing: var(--ios-spring, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* ===== 다크모드 지원 ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary: #ffffff;
+    --color-text-secondary: var(--ios-gray, #8e8e93);
+    --color-text-tertiary: var(--ios-gray-2, #636366);
+
+    --color-background: var(--ios-bg-primary, #000000);
+    --color-surface: var(--ios-bg-secondary, #1c1c1e);
+    --color-surface-hover: var(--ios-bg-tertiary, #2c2c2e);
+
+    --color-border: var(--ios-gray-4, #3a3a3c);
+    --color-border-light: var(--ios-gray-5, #2c2c2e);
+  }
+}
+
+/* ===== 통합 컴포넌트 클래스 ===== */
+
+/* Buttons - iOS 스타일 적용 */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-base);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  transition: all var(--duration-base) var(--easing);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Cards - iOS 스타일 */
+.card {
+  background: var(--color-background);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-base) var(--easing);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-base);
+  border-color: var(--color-border);
+}
+
+/* Lists - iOS 스타일 */
+.list {
+  background: var(--color-background);
+  border-radius: var(--radius-base);
+  overflow: hidden;
+}
+
+.list-item {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 0.5px solid var(--color-border);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color var(--duration-fast) ease;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:active {
+  background-color: var(--color-surface);
+}
+
+/* Typography Classes */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-large-title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  letter-spacing: -0.4px;
+}
+
+.text-title-1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+}
+
+.text-body {
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+}
+
+.text-caption {
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--color-text-secondary);
+}
+
+/* ===== 반응형 유틸리티 ===== */
+@media (max-width: 768px) {
+  :root {
+    --text-3xl: 1.875rem; /* 30px on mobile */
+    --text-2xl: 1.5rem; /* 24px on mobile */
+  }
+}

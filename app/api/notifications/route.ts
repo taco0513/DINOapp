@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user notification preferences (use defaults if not set)
-    let preferences: NotificationPreferences = {
+    const preferences: NotificationPreferences = {
       ...DEFAULT_PREFERENCES,
       userId: user.id
     }

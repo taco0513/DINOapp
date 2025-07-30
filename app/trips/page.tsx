@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
+import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { t } from '@/lib/i18n'
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading'
-import { HelpCircle } from 'lucide-react'
+import { HelpCircle, Plus, Filter } from 'lucide-react'
 import { MobileModal } from '@/components/mobile/MobileModal'
 
 // Dynamic imports for better code splitting
@@ -131,36 +132,27 @@ export default function TripsPage() {
     <>
       <main style={{ minHeight: '100vh' }}>
         <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
-          {/* Header */}
-          <header className="mb-8" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <h1 className="mb-2">
-                {t('trips.title')}
-              </h1>
-              <p className="text-small text-secondary">
-                {t('trips.description')}
-              </p>
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-              {trips.length > 0 && (
-                <button 
-                  onClick={() => setShowHelp(!showHelp)}
-                  className="btn btn-ghost"
-                  style={{ flexShrink: 0 }}
-                  title="도움말 보기"
-                >
-                  <HelpCircle className="h-5 w-5" />
-                </button>
-              )}
+          <PageHeader
+            title={t('trips.title')}
+            description={t('trips.description')}
+            icon={PageIcons.Trips}
+            showHelp={trips.length > 0}
+            onHelpClick={() => setShowHelp(!showHelp)}
+            breadcrumbs={[
+              { label: t('nav.dashboard'), href: '/dashboard' },
+              { label: t('nav.trips') }
+            ]}
+            action={
               <button 
                 onClick={handleAddTrip}
                 className="btn btn-primary"
                 style={{ flexShrink: 0 }}
               >
+                <Plus className="h-4 w-4 mr-2" />
                 {t('trips.add')}
               </button>
-            </div>
-          </header>
+            }
+          />
 
           {/* Filter Tabs */}
           <div className="mb-8">

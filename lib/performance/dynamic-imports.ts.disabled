@@ -1,0 +1,78 @@
+/**
+ * Dynamic imports for code splitting and performance optimization
+ * Lazy loading components to reduce initial bundle size
+ */
+
+import dynamic from 'next/dynamic'
+import { ComponentType } from 'react'
+
+// Loading component for better UX during lazy loading
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center p-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+  </div>
+)
+
+// Dashboard components (heavy, load on demand)
+export const DynamicSchengenCalculator = dynamic(
+  () => import('@/components/schengen/SchengenCalculator'),
+  {
+    loading: LoadingSpinner,
+    ssr: false // Client-side only for complex calculations
+  }
+)
+
+export const DynamicTravelRecordsTable = dynamic(
+  () => import('@/components/trips/TravelRecordsTable'),
+  {
+    loading: LoadingSpinner,
+    ssr: true // SEO-friendly
+  }
+)
+
+export const DynamicGmailAnalyzer = dynamic(
+  () => import('@/components/gmail/GmailAnalyzer'),
+  {
+    loading: LoadingSpinner,
+    ssr: false // Requires browser APIs
+  }
+)
+
+export const DynamicCalendarSync = dynamic(
+  () => import('@/components/calendar/CalendarSync'),
+  {
+    loading: LoadingSpinner,
+    ssr: false // Google Calendar APIs
+  }
+)
+
+// Higher-order component for dynamic imports with error boundary
+interface DynamicComponentOptions {
+  loading?: ComponentType
+  error?: ComponentType<{ error: Error; retry: () => void }>
+  ssr?: boolean
+}
+
+export function createDynamicComponent<T = {}>(
+  importFn: () => Promise<{ default: ComponentType<T> }>,
+  options: DynamicComponentOptions = {}
+) {
+  const {
+    loading = LoadingSpinner,
+    ssr = true
+  } = options
+
+  return dynamic(importFn, {
+    loading,
+    ssr
+  })
+}
+
+// Preload critical components for better performance
+export const preloadCriticalComponents = () => {
+  if (typeof window !== 'undefined') {
+    // Preload commonly used components
+    import('@/components/trips/TravelRecordsTable')
+    import('@/components/schengen/SchengenCalculator')
+  }
+}

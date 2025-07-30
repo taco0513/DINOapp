@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+import { RefreshCw, Settings } from 'lucide-react'
 
 // Gmail Integration 인라인 컴포넌트
 function WireframeGmailIntegration() {
@@ -425,17 +427,28 @@ export default function GmailPage() {
       fontFamily: 'system-ui, -apple-system, sans-serif'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ 
-          marginBottom: '40px',
-          paddingBottom: '20px',
-          borderBottom: '1px solid #e0e0e0'
-        }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#000', marginBottom: '10px' }}>Gmail 통합</h1>
-          <p style={{ fontSize: '16px', color: '#666', lineHeight: '1.5' }}>
-            Gmail에서 여행 관련 이메일을 자동으로 분석하여 여행 기록을 간편하게 추가할 수 있습니다.
-          </p>
-        </div>
+        <PageHeader
+          title="Gmail 통합"
+          description="Gmail에서 여행 관련 이메일을 자동으로 분석하여 여행 기록을 간편하게 추가할 수 있습니다."
+          icon={PageIcons.Gmail}
+          breadcrumbs={[
+            { label: '대시보드', href: '/dashboard' },
+            { label: 'Gmail 통합' }
+          ]}
+          action={
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={checkConnection}
+                disabled={isLoading}
+                className="btn btn-outline btn-sm"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                연결 상태 확인
+              </button>
+            </div>
+          }
+        />
         
         <WireframeGmailIntegration />
         

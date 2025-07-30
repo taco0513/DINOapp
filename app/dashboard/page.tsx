@@ -8,6 +8,7 @@ import NotificationIcon from '@/components/notifications/NotificationIcon'
 import NotificationSettings from '@/components/notifications/NotificationSettings'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import LanguageTest from '@/components/ui/LanguageTest'
+import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { t } from '@/lib/i18n'
 import { Bell, Globe, Plus, Plane, Calculator, BarChart } from 'lucide-react'
 
@@ -84,15 +85,18 @@ export default function DashboardPage() {
     <main style={{ minHeight: '100vh' }}>
       <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
         
-        {/* Page Title */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            {t('nav.dashboard')}
-          </h1>
-          <p className="text-secondary">
-            {t('dashboard.welcome', { name: session.user?.name || '' })}
-          </p>
-        </div>
+        <PageHeader
+          title={t('nav.dashboard')}
+          subtitle={t('dashboard.welcome', { name: session.user?.name || '' })}
+          description="여행 통계, 셰겐 계산, 그리고 최신 알림을 한눈에 확인하세요."
+          icon={PageIcons.Dashboard}
+          action={
+            <div className="flex items-center space-x-3">
+              <LanguageSelector />
+              <NotificationIcon onClick={() => setShowNotificationSettings(true)} />
+            </div>
+          }
+        />
 
         {/* Error Display */}
         {dataError && (

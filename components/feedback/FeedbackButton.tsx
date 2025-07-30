@@ -27,7 +27,7 @@ export default function FeedbackButton() {
 
     try {
       // 스크린샷 자동 캡처 (선택적)
-      let screenshot = '';
+      const screenshot = '';
       if (typeof window !== 'undefined' && 'html2canvas' in window) {
         // html2canvas가 있다면 스크린샷 캡처
         // 실제로는 html2canvas를 설치해야 함

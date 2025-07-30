@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
+import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { t } from '@/lib/i18n'
 import SchengenUsageChart from '@/components/schengen/SchengenUsageChart'
 import { PullToRefresh } from '@/components/mobile/PullToRefresh'
 import { SwipeableCard } from '@/components/mobile/SwipeableCard'
+import { Calculator, TrendingUp } from 'lucide-react'
 
 export default function SchengenPage() {
   const { data: session, status } = useSession()
@@ -154,15 +156,25 @@ export default function SchengenPage() {
           </ul>
         </nav>
 
-        {/* Header */}
-        <header className="mb-10">
-          <h1 className="mb-2">
-            {t('schengen.title')}
-          </h1>
-          <p className="text-secondary">
-            {t('schengen.description')}
-          </p>
-        </header>
+        <PageHeader
+          title={t('schengen.title')}
+          description={t('schengen.description')}
+          icon={PageIcons.Schengen}
+          breadcrumbs={[
+            { label: t('nav.dashboard'), href: '/dashboard' },
+            { label: t('nav.schengen') }
+          ]}
+          action={
+            <div className="flex items-center space-x-2">
+              {hasTrips && (
+                <Link href="/trips" className="btn btn-outline btn-sm">
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  여행 기록 보기
+                </Link>
+              )}
+            </div>
+          }
+        />
 
         {loading ? (
           <div className="text-center" style={{ padding: 'var(--space-20) 0' }}>

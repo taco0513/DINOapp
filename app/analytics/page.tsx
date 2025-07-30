@@ -7,7 +7,8 @@ import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
 import { TravelStatsWidget } from '@/components/dashboard/TravelStatsWidget'
 import { PullToRefresh } from '@/components/mobile/PullToRefresh'
-import { BarChart3 } from 'lucide-react'
+import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+import { BarChart3, Download, RefreshCw } from 'lucide-react'
 
 export default function AnalyticsPage() {
   const { data: session, status } = useSession()
@@ -64,18 +65,27 @@ export default function AnalyticsPage() {
 
   const pageContent = (
     <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
-        {/* Header */}
-        <header className="nav mb-8">
-          <div>
-            <h1 className="mb-2 flex items-center gap-3">
-              <BarChart3 className="h-8 w-8 text-primary" />
-              여행 분석
-            </h1>
-            <p className="text-small text-secondary">
-              당신의 여행 패턴과 통계를 자세히 분석해보세요
-            </p>
-          </div>
-        </header>
+        <PageHeader
+          title="여행 분석"
+          description="당신의 여행 패턴과 통계를 자세히 분석해보세요"
+          icon={PageIcons.Analytics}
+          breadcrumbs={[
+            { label: '대시보드', href: '/dashboard' },
+            { label: '여행 분석' }
+          ]}
+          action={
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={loadStats}
+                disabled={loading}
+                className="btn btn-outline btn-sm"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                새로고침
+              </button>
+            </div>
+          }
+        />
 
         {loading ? (
           <div className="text-center" style={{ padding: 'var(--space-16) var(--space-5)' }}>

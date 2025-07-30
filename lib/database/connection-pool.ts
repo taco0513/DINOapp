@@ -7,7 +7,7 @@ import { PrismaClient } from '@prisma/client'
 
 // Global declaration for Prisma client
 declare global {
-  var __prisma: PrismaClient | undefined
+  let __prisma: PrismaClient | undefined
 }
 
 interface ConnectionPoolConfig {

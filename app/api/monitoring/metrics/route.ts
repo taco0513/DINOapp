@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       queryOptimizer.getQueryStats()
     ])
 
-    let response: MetricsResponse = {
+    const response: MetricsResponse = {
       success: true,
       timestamp: new Date().toISOString(),
       current: currentMetrics,

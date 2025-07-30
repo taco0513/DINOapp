@@ -552,9 +552,11 @@ describe('API Cache Performance Module', () => {
       expect(Object.keys(monitor.getMetrics())).toHaveLength(0);
     });
 
-    it.skip('should integrate with global metrics collector', () => {
-      // Skip this test as it has complex environment dependencies
-      expect(true).toBe(true);
+    it('should integrate with global metrics collector', () => {
+      // This test verifies basic integration - more complex testing would require environment setup
+      expect(apiMonitor).toBeDefined();
+      expect(apiMonitor.getMetrics).toBeDefined();
+      expect(typeof apiMonitor.getMetrics()).toBe('object');
     });
   });
 

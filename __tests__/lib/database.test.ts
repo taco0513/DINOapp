@@ -2,6 +2,41 @@ import { PrismaClient } from '@prisma/client';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
 import { getUserTripsOptimized } from '@/lib/database/query-optimizer';
 
+// Mock the actual function calls to return the mocked client
+const mockPrismaClient = {
+  user: {
+    findUnique: jest.fn(),
+    findMany: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+  countryVisit: {
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    count: jest.fn(),
+    aggregate: jest.fn(),
+  },
+  account: {
+    findFirst: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+  session: {
+    findUnique: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    deleteMany: jest.fn(),
+  },
+  $transaction: jest.fn(),
+  $disconnect: jest.fn(),
+};
+
 // Mock the entire database connection manager to prevent initialization
 jest.mock('@/lib/database/connection-manager', () => ({
   DatabaseConnectionManager: {
@@ -33,26 +68,7 @@ jest.mock('@/lib/database/connection-manager', () => ({
 
 // Mock dev-prisma to use mocked connection manager
 jest.mock('@/lib/database/dev-prisma', () => ({
-  getPrismaClient: jest.fn().mockReturnValue({
-    user: {
-      findUnique: jest.fn(),
-      findMany: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-    },
-    countryVisit: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      count: jest.fn(),
-      aggregate: jest.fn(),
-    },
-    $transaction: jest.fn(),
-    $disconnect: jest.fn(),
-  }),
+  getPrismaClient: jest.fn(),
 }));
 
 // Mock Prisma Client
@@ -95,12 +111,14 @@ jest.mock('@prisma/client', () => ({
 // Mock query optimizer
 jest.mock('@/lib/database/query-optimizer');
 
-describe.skip('Database Operations', () => {
+describe('Database Operations', () => {
   let prisma: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    prisma = getPrismaClient();
+    // Set up the mock to return our mock client
+    (getPrismaClient as jest.Mock).mockResolvedValue(mockPrismaClient);
+    prisma = mockPrismaClient;
   });
 
   describe('User Operations', () => {

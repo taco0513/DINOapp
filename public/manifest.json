@@ -10,7 +10,7 @@
   "scope": "/",
   "lang": "ko",
   "categories": ["travel", "productivity", "lifestyle"],
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "edge_side_panel": {
     "preferred_width": 400
   },
@@ -32,6 +32,37 @@
       }
     }
   ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "application/pdf"]
+        }
+      ]
+    }
+  },
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "DINO 대시보드"
+    },
+    {
+      "src": "/screenshots/schengen.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "셰겐 계산기"
+    }
+  ],
+  "related_applications": [],
   "icons": [
     {
       "src": "/icons/icon-72x72.png",

@@ -4,8 +4,7 @@ import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
-import PWAInstallButton from '@/components/pwa/PWAInstallButton';
-import OfflineIndicator from '@/components/pwa/OfflineIndicator';
+import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
 import FeedbackButton from '@/components/feedback/FeedbackButton';
 
 interface MainLayoutProps {
@@ -32,7 +31,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
         {/* Always show footer */}
         <Footer />
 
-        <PWAInstallButton />
         <FeedbackButton />
       </div>
     </>

@@ -4,8 +4,9 @@ import '../styles/mobile-touch.css'
 import SessionProvider from '@/components/providers/SessionProvider'
 import MainLayout from '@/components/layout/MainLayout'
 import MonitoringProvider from '@/components/providers/MonitoringProvider'
-import PWAInstallButton from '@/components/pwa/PWAInstallButton'
-import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
+import { InstallPrompt } from '@/components/pwa/InstallPrompt'
+import { UpdatePrompt } from '@/components/pwa/UpdatePrompt'
+import { OfflineIndicator } from '@/components/pwa/OfflineIndicator'
 import Script from 'next/script'
 import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
@@ -187,10 +188,42 @@ export default function RootLayout({
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js')
+                  navigator.serviceWorker.register('/sw-v2.js')
                     .then(registration => console.log('SW registered'))
                     .catch(error => console.log('SW registration failed'))
                 })
+              }
+            `
+          }}
+        />
+        
+        {/* Web Vitals and Performance Monitoring */}
+        <Script
+          id="web-vitals"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Report Web Vitals
+              if (typeof window !== 'undefined') {
+                import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
+                  const sendToAnalytics = ({ name, delta, value, id }) => {
+                    if (window.gtag) {
+                      window.gtag('event', name, {
+                        value: Math.round(name === 'CLS' ? value * 1000 : value),
+                        metric_id: id,
+                        metric_delta: delta,
+                        metric_value: value,
+                        event_category: 'Web Vitals',
+                        event_label: navigator.connection ? navigator.connection.effectiveType : 'unknown'
+                      })
+                    }
+                  }
+                  onCLS(sendToAnalytics)
+                  onFID(sendToAnalytics)
+                  onFCP(sendToAnalytics)
+                  onLCP(sendToAnalytics)
+                  onTTFB(sendToAnalytics)
+                }).catch(() => {})
               }
             `
           }}
@@ -262,7 +295,8 @@ export default function RootLayout({
                 <main id="main-content" tabIndex={-1}>
                   {children}
                 </main>
-                <PWAInstallButton />
+                <InstallPrompt />
+                <UpdatePrompt />
                 <OfflineIndicator />
                 <PerformanceMonitor 
                   enabled={process.env.NODE_ENV === 'development'} 

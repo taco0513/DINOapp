@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -14,11 +14,24 @@ import {
   Camera,
   Save,
   ArrowLeft,
+  Phone,
+  Shield,
+  Lock,
+  Download,
+  Trash2,
+  Bell,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+  Upload,
+  X,
 } from 'lucide-react';
 
 interface UserProfile {
   name: string;
   email: string;
+  phone: string;
   bio: string;
   location: string;
   nationality: string;
@@ -33,13 +46,31 @@ interface UserProfile {
     passportExpiry: string;
     preferredLanguage: string;
   };
+  emergencyContact: {
+    name: string;
+    relationship: string;
+    phone: string;
+    email: string;
+  };
+  privacy: {
+    profileVisibility: 'public' | 'friends' | 'private';
+    showEmail: boolean;
+    showPhone: boolean;
+  };
+  notifications: {
+    tripReminders: boolean;
+    visaAlerts: boolean;
+    promotions: boolean;
+  };
 }
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
     email: '',
+    phone: '',
     bio: '',
     location: '',
     nationality: '',
@@ -54,11 +85,38 @@ export default function ProfilePage() {
       passportExpiry: '',
       preferredLanguage: 'ko',
     },
+    emergencyContact: {
+      name: '',
+      relationship: '',
+      phone: '',
+      email: '',
+    },
+    privacy: {
+      profileVisibility: 'friends',
+      showEmail: false,
+      showPhone: false,
+    },
+    notifications: {
+      tripReminders: true,
+      visaAlerts: true,
+      promotions: false,
+    },
   });
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const [activeTab, setActiveTab] = useState<'profile' | 'travel' | 'account' | 'privacy'>('profile');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [travelStats, setTravelStats] = useState({
+    totalTrips: 0,
+    countriesVisited: 0,
+    daysAbroad: 0,
+    nextTrip: null as any,
+  });
 
   // 프로필 로드
   useEffect(() => {
@@ -79,8 +137,30 @@ export default function ProfilePage() {
           console.error('Failed to load profile:', error);
         }
       }
+
+      // 아바타 URL 로드
+      const savedAvatar = localStorage.getItem('dino-user-avatar');
+      if (savedAvatar) {
+        setAvatarUrl(savedAvatar);
+      }
+
+      // 여행 통계 로드
+      loadTravelStats();
     }
   }, [session]);
+
+  // 여행 통계 로드
+  const loadTravelStats = async () => {
+    try {
+      const response = await fetch('/api/stats');
+      if (response.ok) {
+        const data = await response.json();
+        setTravelStats(data);
+      }
+    } catch (error) {
+      console.error('Failed to load travel stats:', error);
+    }
+  };
 
   // 프로필 저장
   const saveProfile = async () => {
@@ -105,13 +185,17 @@ export default function ProfilePage() {
     const fields = [
       profile.name,
       profile.email,
+      profile.phone,
       profile.bio,
       profile.location,
       profile.nationality,
+      profile.dateOfBirth,
       profile.travelPreferences.travelStyle,
       profile.travelPreferences.groupSize,
       profile.visaInfo.passportCountry,
       profile.visaInfo.passportExpiry,
+      profile.emergencyContact.name,
+      profile.emergencyContact.phone,
     ];
     
     const filledFields = fields.filter(field => field && field.length > 0).length;
@@ -133,23 +217,91 @@ export default function ProfilePage() {
 
   // 입력 핸들러
   const handleInputChange = (field: string, value: any) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
+    const keys = field.split('.');
+    if (keys.length === 1) {
+      setProfile(prev => ({ ...prev, [field]: value }));
+    } else if (keys.length === 2) {
       setProfile(prev => ({
         ...prev,
-        [parent]: {
-          ...prev[parent as keyof UserProfile],
-          [child]: value,
+        [keys[0]]: {
+          ...prev[keys[0] as keyof UserProfile],
+          [keys[1]]: value,
         },
       }));
-    } else {
-      setProfile(prev => ({ ...prev, [field]: value }));
+    } else if (keys.length === 3) {
+      setProfile(prev => ({
+        ...prev,
+        [keys[0]]: {
+          ...prev[keys[0] as keyof UserProfile],
+          [keys[1]]: {
+            ...(prev[keys[0] as keyof UserProfile] as any)[keys[1]],
+            [keys[2]]: value,
+          },
+        },
+      }));
+    }
+  };
+
+  // 아바타 업로드
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setAvatarUrl(result);
+        localStorage.setItem('dino-user-avatar', result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 데이터 내보내기
+  const exportData = () => {
+    const dataToExport = {
+      profile,
+      travelStats,
+      exportDate: new Date().toISOString(),
+    };
+    
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dino-profile-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    setSaveMessage('프로필 데이터를 다운로드했습니다.');
+    setTimeout(() => setSaveMessage(''), 3000);
+  };
+
+  // 계정 삭제
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== '계정 삭제 동의') {
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      // 실제로는 API 호출
+      localStorage.removeItem('dino-user-profile');
+      localStorage.removeItem('dino-user-avatar');
+      setSaveMessage('계정이 삭제되었습니다. 로그아웃됩니다...');
+      setTimeout(() => {
+        window.location.href = '/api/auth/signout';
+      }, 2000);
+    } catch (error) {
+      setSaveMessage('계정 삭제에 실패했습니다.');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (status === 'loading') {
     return (
-      <main className='min-h-screen flex items-center justify-center bg-background'>
+      <main className='min-h-screen flex items-center justify-center bg-gray-50'>
         <HydrationSafeLoading fallback='Loading...' />
       </main>
     );
@@ -157,14 +309,14 @@ export default function ProfilePage() {
 
   if (!session) {
     return (
-      <main className='min-h-screen flex items-center justify-center bg-background'>
-        <div className='card p-16 text-center max-w-md'>
+      <main className='min-h-screen flex items-center justify-center bg-gray-50'>
+        <div className='bg-white rounded-lg shadow-md p-16 text-center max-w-md'>
           <div className='text-5xl mb-5'>👤</div>
           <h3 className='text-lg font-bold mb-2'>로그인이 필요합니다</h3>
-          <p className='text-sm text-secondary mb-8'>
+          <p className='text-sm text-gray-600 mb-8'>
             프로필을 관리하려면 먼저 로그인해주세요.
           </p>
-          <Link href='/auth/signin' className='btn btn-primary'>
+          <Link href='/auth/signin' className='bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors'>
             로그인하기
           </Link>
         </div>
@@ -173,29 +325,38 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className='min-h-screen bg-background'>
+    <main className='min-h-screen bg-gray-50'>
       <div className='container mx-auto px-4 py-8'>
         {/* Header */}
         <div className='flex items-center justify-between mb-8'>
           <div className='flex items-center gap-4'>
-            <Link href='/settings' className='btn btn-ghost btn-sm'>
-              <ArrowLeft className='h-4 w-4 mr-2' />
-              설정으로 돌아가기
+            <Link href='/dashboard' className='text-gray-600 hover:text-gray-900 transition-colors'>
+              <ArrowLeft className='h-6 w-6' />
             </Link>
+            <h1 className='text-2xl font-bold'>프로필 관리</h1>
           </div>
           <div className='flex items-center gap-2'>
             {!isEditing ? (
-              <button
-                onClick={() => setIsEditing(true)}
-                className='btn btn-primary btn-sm'
-              >
-                프로필 수정
-              </button>
+              <>
+                <button
+                  onClick={exportData}
+                  className='px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2'
+                >
+                  <Download className='h-4 w-4' />
+                  내보내기
+                </button>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'
+                >
+                  프로필 수정
+                </button>
+              </>
             ) : (
               <div className='flex gap-2'>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className='btn btn-ghost btn-sm'
+                  className='px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors'
                   disabled={isLoading}
                 >
                   취소
@@ -203,7 +364,7 @@ export default function ProfilePage() {
                 <button
                   onClick={saveProfile}
                   disabled={isLoading}
-                  className='btn btn-primary btn-sm flex items-center gap-2'
+                  className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2'
                 >
                   <Save className='h-4 w-4' />
                   {isLoading ? '저장 중...' : '저장'}
@@ -213,16 +374,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <PageHeader
-          title='👤 프로필'
-          description='개인 정보와 여행 선호도를 관리하세요'
-        />
-
         {/* 프로필 완성도 섹션 */}
-        <div className='card p-6 mb-8' style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white'
-        }}>
+        <div className='bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 mb-8 text-white'>
           <div className='flex items-center justify-between mb-4'>
             <div>
               <h3 className='text-xl font-bold mb-2'>프로필 완성도</h3>
@@ -234,30 +387,6 @@ export default function ProfilePage() {
               <div className='text-4xl mb-1'>{reward.level}</div>
               <p className='text-xs'>{reward.message}</p>
             </div>
-          </div>
-
-          {/* 섹션별 완성 뱃지 */}
-          <div className='flex gap-2 mb-4'>
-            {profile.name && profile.email && (
-              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
-                ✅ 기본정보
-              </span>
-            )}
-            {profile.bio && profile.location && profile.nationality && (
-              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
-                ✅ 개인정보
-              </span>
-            )}
-            {profile.travelPreferences.travelStyle && profile.travelPreferences.groupSize && (
-              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
-                ✅ 여행스타일
-              </span>
-            )}
-            {profile.visaInfo.passportCountry && profile.visaInfo.passportExpiry && (
-              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
-                ✅ 비자정보
-              </span>
-            )}
           </div>
           
           <div className='mb-4'>
@@ -272,14 +401,8 @@ export default function ProfilePage() {
             </div>
             <div className='w-full bg-white/20 rounded-full h-3'>
               <div 
-                className='h-3 rounded-full transition-all duration-500'
-                style={{
-                  width: `${completionPercentage}%`,
-                  background: completionPercentage >= 100 ? '#ffd700' : 
-                            completionPercentage >= 80 ? '#c0c0c0' :
-                            completionPercentage >= 60 ? '#cd7f32' :
-                            '#4299e1'
-                }}
+                className='h-3 rounded-full transition-all duration-500 bg-white'
+                style={{ width: `${completionPercentage}%` }}
               />
             </div>
           </div>
@@ -310,36 +433,6 @@ export default function ProfilePage() {
                   <span>프리미엄 기능 모두 해제!</span>
                 </div>
               </div>
-              
-              {/* 아직 입력하지 않은 항목 */}
-              {completionPercentage < 100 && (
-                <div className='mt-4 pt-3 border-t border-white/20'>
-                  <p className='text-xs font-bold mb-2'>📝 아직 입력하지 않은 항목:</p>
-                  <div className='text-xs space-y-1'>
-                    {!profile.name && <div>• 이름</div>}
-                    {!profile.bio && <div>• 자기소개</div>}
-                    {!profile.location && <div>• 거주지</div>}
-                    {!profile.nationality && <div>• 국적</div>}
-                    {!profile.visaInfo.passportCountry && <div>• 여권 발급국</div>}
-                    {!profile.visaInfo.passportExpiry && <div>• 여권 만료일</div>}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 빠른 팁 */}
-          {completionPercentage < 100 && (
-            <div className='mt-4 flex items-start gap-2'>
-              <span className='text-yellow-300'>💡</span>
-              <p className='text-sm'>
-                {!profile.name && "이름을 추가하면 개인화된 인사를 받을 수 있어요!"}
-                {profile.name && !profile.bio && "자기소개를 추가하면 다른 여행자들과 연결될 수 있어요!"}
-                {profile.name && profile.bio && !profile.location && "거주지를 추가하면 주변 여행 정보를 받을 수 있어요!"}
-                {profile.name && profile.bio && profile.location && !profile.visaInfo.passportExpiry && "여권 만료일을 등록하면 갱신 알림을 받을 수 있어요!"}
-                {profile.name && profile.bio && profile.location && profile.visaInfo.passportExpiry && !profile.nationality && "국적 정보를 추가하면 비자 요구사항을 자동으로 확인할 수 있어요!"}
-                {profile.name && profile.bio && profile.location && profile.visaInfo.passportExpiry && profile.nationality && !profile.visaInfo.passportCountry && "여권 발급국을 추가하면 정확한 비자 정보를 확인할 수 있어요!"}
-              </p>
             </div>
           )}
         </div>
@@ -347,16 +440,25 @@ export default function ProfilePage() {
         {/* 저장 메시지 */}
         {saveMessage && (
           <div
-            className={`alert ${saveMessage.includes('실패') ? 'alert-error' : 'alert-success'} mb-6`}
+            className={`rounded-lg p-4 mb-6 flex items-center gap-2 ${
+              saveMessage.includes('실패') 
+                ? 'bg-red-100 text-red-700' 
+                : 'bg-green-100 text-green-700'
+            }`}
           >
+            {saveMessage.includes('실패') ? (
+              <AlertCircle className='h-5 w-5' />
+            ) : (
+              <CheckCircle className='h-5 w-5' />
+            )}
             {saveMessage}
           </div>
         )}
 
-        <div className='grid lg:grid-cols-3 gap-8'>
+        <div className='grid lg:grid-cols-4 gap-8'>
           {/* 프로필 카드 */}
           <div className='lg:col-span-1'>
-            <div className='card p-6 text-center relative'>
+            <div className='bg-white rounded-lg shadow-md p-6 text-center relative'>
               {/* 완성도 뱃지 */}
               {completionPercentage >= 100 && (
                 <div className='absolute top-4 right-4 text-2xl' title='프로필 완성!'>
@@ -365,299 +467,739 @@ export default function ProfilePage() {
               )}
               
               <div className='relative inline-block mb-4'>
-                {session.user?.image ? (
+                {avatarUrl || session.user?.image ? (
                   <img
-                    src={session.user.image}
+                    src={avatarUrl || session.user.image!}
                     alt={profile.name || 'User'}
-                    className='w-24 h-24 rounded-full border-4 border-surface'
+                    className='w-24 h-24 rounded-full border-4 border-gray-200 object-cover'
                   />
                 ) : (
-                  <div className='w-24 h-24 rounded-full bg-surface border-4 border-border flex items-center justify-center'>
-                    <User className='h-12 w-12 text-secondary' />
+                  <div className='w-24 h-24 rounded-full bg-gray-100 border-4 border-gray-200 flex items-center justify-center'>
+                    <User className='h-12 w-12 text-gray-400' />
                   </div>
                 )}
                 {isEditing && (
-                  <button className='absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full'>
-                    <Camera className='h-4 w-4' />
-                  </button>
+                  <>
+                    <button 
+                      onClick={() => fileInputRef.current?.click()}
+                      className='absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors'
+                    >
+                      <Camera className='h-4 w-4' />
+                    </button>
+                    {avatarUrl && (
+                      <button 
+                        onClick={() => {
+                          setAvatarUrl('');
+                          localStorage.removeItem('dino-user-avatar');
+                        }}
+                        className='absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors'
+                      >
+                        <X className='h-3 w-3' />
+                      </button>
+                    )}
+                  </>
                 )}
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/*'
+                  onChange={handleAvatarUpload}
+                  className='hidden'
+                />
               </div>
 
               <h2 className='text-xl font-bold mb-2'>
                 {profile.name || 'Unknown User'}
               </h2>
-              <p className='text-sm text-secondary mb-4'>{profile.email}</p>
+              <p className='text-sm text-gray-600 mb-4'>{profile.email}</p>
 
-              {profile.bio && (
-                <p className='text-sm border-t pt-4'>{profile.bio}</p>
-              )}
-
-              <div className='mt-6 space-y-2 text-sm'>
-                {profile.location && (
-                  <div className='flex items-center justify-center gap-2 text-secondary'>
-                    <MapPin className='h-4 w-4' />
-                    {profile.location}
-                  </div>
-                )}
-                {profile.nationality && (
-                  <div className='flex items-center justify-center gap-2 text-secondary'>
-                    <Globe className='h-4 w-4' />
-                    {profile.nationality}
+              {/* 여행 통계 */}
+              <div className='border-t pt-4 space-y-3'>
+                <div className='flex justify-between text-sm'>
+                  <span className='text-gray-600'>총 여행</span>
+                  <span className='font-medium'>{travelStats.totalTrips}회</span>
+                </div>
+                <div className='flex justify-between text-sm'>
+                  <span className='text-gray-600'>방문 국가</span>
+                  <span className='font-medium'>{travelStats.countriesVisited}개국</span>
+                </div>
+                <div className='flex justify-between text-sm'>
+                  <span className='text-gray-600'>해외 체류</span>
+                  <span className='font-medium'>{travelStats.daysAbroad}일</span>
+                </div>
+                {travelStats.nextTrip && (
+                  <div className='mt-4 p-3 bg-blue-50 rounded-md'>
+                    <p className='text-xs text-blue-600 mb-1'>다음 여행</p>
+                    <p className='text-sm font-medium'>{travelStats.nextTrip.country}</p>
+                    <p className='text-xs text-gray-600'>{travelStats.nextTrip.date}</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* 상세 정보 */}
-          <div className='lg:col-span-2 space-y-6'>
-            {/* 기본 정보 */}
-            <div className='card p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <User className='h-5 w-5 text-primary' />
-                <h3 className='text-lg font-semibold'>기본 정보</h3>
+          {/* 상세 정보 탭 */}
+          <div className='lg:col-span-3'>
+            {/* 탭 네비게이션 */}
+            <div className='bg-white rounded-lg shadow-md mb-6'>
+              <div className='flex border-b'>
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'profile'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  기본 정보
+                </button>
+                <button
+                  onClick={() => setActiveTab('travel')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'travel'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  여행 정보
+                </button>
+                <button
+                  onClick={() => setActiveTab('account')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'account'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  계정 설정
+                </button>
+                <button
+                  onClick={() => setActiveTab('privacy')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'privacy'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  개인정보
+                </button>
               </div>
+            </div>
 
-              <div className='grid md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
-                    이름
-                    {!profile.name && <span className='text-orange-500 text-xs'>⚠️ 필수</span>}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type='text'
-                      value={profile.name}
-                      onChange={e => handleInputChange('name', e.target.value)}
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                      placeholder='이름을 입력하세요'
-                    />
-                  ) : (
-                    <p className={`px-3 py-2 rounded-md ${profile.name ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
-                      {profile.name || '입력 필요'}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium mb-2'>
-                    이메일
-                  </label>
-                  <p className='px-3 py-2 bg-surface rounded-md text-secondary'>
-                    {profile.email}
-                  </p>
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
-                    거주지
-                    {!profile.location && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type='text'
-                      value={profile.location}
-                      onChange={e =>
-                        handleInputChange('location', e.target.value)
-                      }
-                      placeholder='예: 서울, 대한민국'
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    />
-                  ) : (
-                    <p className={`px-3 py-2 rounded-md ${profile.location ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
-                      {profile.location || '입력 필요'}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
-                    국적
-                    {!profile.nationality && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type='text'
-                      value={profile.nationality}
-                      onChange={e =>
-                        handleInputChange('nationality', e.target.value)
-                      }
-                      placeholder='예: 대한민국'
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    />
-                  ) : (
-                    <p className={`px-3 py-2 rounded-md ${profile.nationality ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
-                      {profile.nationality || '입력 필요'}
-                    </p>
-                  )}
-                </div>
-
-                <div className='md:col-span-2'>
-                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
-                    자기소개
-                    {!profile.bio && <span className='text-blue-600 text-xs'>💬 추천</span>}
-                  </label>
-                  {isEditing ? (
-                    <textarea
-                      value={profile.bio}
-                      onChange={e => handleInputChange('bio', e.target.value)}
-                      placeholder='자신을 간단히 소개해보세요. 여행 스타일이나 관심사를 적어보세요!'
-                      rows={3}
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    />
-                  ) : (
-                    <div className={`px-3 py-2 rounded-md min-h-[80px] ${profile.bio ? 'bg-surface' : 'bg-blue-50 border border-blue-200'}`}>
-                      {profile.bio || (
-                        <span className='text-blue-600 text-sm'>
-                          🌟 자기소개를 추가하면 다른 디지털 노마드들과 연결될 수 있어요!
-                        </span>
-                      )}
+            {/* 탭 콘텐츠 */}
+            <div className='space-y-6'>
+              {/* 기본 정보 탭 */}
+              {activeTab === 'profile' && (
+                <>
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <User className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>개인 정보</h3>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
 
-            {/* 여행 선호도 */}
-            <div className='card p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <Globe className='h-5 w-5 text-primary' />
-                <h3 className='text-lg font-semibold'>여행 선호도</h3>
-              </div>
+                    <div className='grid md:grid-cols-2 gap-4'>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          이름
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='text'
+                            value={profile.name}
+                            onChange={e => handleInputChange('name', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            placeholder='이름을 입력하세요'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.name || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
 
-              <div className='grid md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='block text-sm font-medium mb-2'>
-                    여행 스타일
-                  </label>
-                  {isEditing ? (
-                    <select
-                      value={profile.travelPreferences.travelStyle}
-                      onChange={e =>
-                        handleInputChange(
-                          'travelPreferences.travelStyle',
-                          e.target.value
-                        )
-                      }
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    >
-                      <option value='budget'>예산 여행</option>
-                      <option value='comfort'>편안한 여행</option>
-                      <option value='luxury'>럭셔리 여행</option>
-                    </select>
-                  ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.travelPreferences.travelStyle === 'budget'
-                        ? '예산 여행'
-                        : profile.travelPreferences.travelStyle === 'comfort'
-                          ? '편안한 여행'
-                          : '럭셔리 여행'}
-                    </p>
-                  )}
-                </div>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          전화번호
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='tel'
+                            value={profile.phone}
+                            onChange={e => handleInputChange('phone', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            placeholder='예: 010-1234-5678'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.phone || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
 
-                <div>
-                  <label className='block text-sm font-medium mb-2'>
-                    동반 유형
-                  </label>
-                  {isEditing ? (
-                    <select
-                      value={profile.travelPreferences.groupSize}
-                      onChange={e =>
-                        handleInputChange(
-                          'travelPreferences.groupSize',
-                          e.target.value
-                        )
-                      }
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    >
-                      <option value='solo'>혼자 여행</option>
-                      <option value='couple'>커플 여행</option>
-                      <option value='group'>그룹 여행</option>
-                    </select>
-                  ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.travelPreferences.groupSize === 'solo'
-                        ? '혼자 여행'
-                        : profile.travelPreferences.groupSize === 'couple'
-                          ? '커플 여행'
-                          : '그룹 여행'}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          생년월일
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='date'
+                            value={profile.dateOfBirth}
+                            onChange={e => handleInputChange('dateOfBirth', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.dateOfBirth || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
 
-            {/* 비자 정보 */}
-            <div className='card p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <Calendar className='h-5 w-5 text-primary' />
-                <h3 className='text-lg font-semibold'>비자 정보</h3>
-              </div>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          거주지
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='text'
+                            value={profile.location}
+                            onChange={e => handleInputChange('location', e.target.value)}
+                            placeholder='예: 서울, 대한민국'
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.location || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
 
-              <div className='grid md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
-                    여권 발급국
-                    {!profile.visaInfo.passportCountry && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type='text'
-                      value={profile.visaInfo.passportCountry}
-                      onChange={e =>
-                        handleInputChange(
-                          'visaInfo.passportCountry',
-                          e.target.value
-                        )
-                      }
-                      placeholder='예: 대한민국'
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    />
-                  ) : (
-                    <p className={`px-3 py-2 rounded-md ${profile.visaInfo.passportCountry ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
-                      {profile.visaInfo.passportCountry || '입력 필요'}
-                    </p>
-                  )}
-                </div>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          국적
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='text'
+                            value={profile.nationality}
+                            onChange={e => handleInputChange('nationality', e.target.value)}
+                            placeholder='예: 대한민국'
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.nationality || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
 
-                <div>
-                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
-                    여권 만료일
-                    {!profile.visaInfo.passportExpiry && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type='date'
-                      value={profile.visaInfo.passportExpiry}
-                      onChange={e =>
-                        handleInputChange(
-                          'visaInfo.passportExpiry',
-                          e.target.value
-                        )
-                      }
-                      className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
-                    />
-                  ) : (
-                    <p className={`px-3 py-2 rounded-md ${profile.visaInfo.passportExpiry ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
-                      {profile.visaInfo.passportExpiry ? (
-                        <>
-                          {profile.visaInfo.passportExpiry}
-                          {(() => {
-                            const expiry = new Date(profile.visaInfo.passportExpiry);
-                            const today = new Date();
-                            const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                            if (daysUntilExpiry < 180) {
-                              return <span className='text-red-500 text-xs ml-2'>⚠️ {daysUntilExpiry}일 남음</span>;
-                            }
-                            return null;
-                          })()}
-                        </>
-                      ) : '입력 필요'}
-                    </p>
-                  )}
-                </div>
-              </div>
+                      <div className='md:col-span-2'>
+                        <label className='block text-sm font-medium mb-2'>
+                          자기소개
+                        </label>
+                        {isEditing ? (
+                          <textarea
+                            value={profile.bio}
+                            onChange={e => handleInputChange('bio', e.target.value)}
+                            placeholder='자신을 간단히 소개해보세요. 여행 스타일이나 관심사를 적어보세요!'
+                            rows={3}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          />
+                        ) : (
+                          <div className='px-3 py-2 bg-gray-50 rounded-md min-h-[80px]'>
+                            {profile.bio || '입력 필요'}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 비상 연락처 */}
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Phone className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>비상 연락처</h3>
+                    </div>
+
+                    <div className='grid md:grid-cols-2 gap-4'>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          이름
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='text'
+                            value={profile.emergencyContact.name}
+                            onChange={e => handleInputChange('emergencyContact.name', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            placeholder='비상 연락처 이름'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.emergencyContact.name || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          관계
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='text'
+                            value={profile.emergencyContact.relationship}
+                            onChange={e => handleInputChange('emergencyContact.relationship', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            placeholder='예: 부모님, 배우자'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.emergencyContact.relationship || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          전화번호
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='tel'
+                            value={profile.emergencyContact.phone}
+                            onChange={e => handleInputChange('emergencyContact.phone', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            placeholder='예: 010-1234-5678'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.emergencyContact.phone || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          이메일
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='email'
+                            value={profile.emergencyContact.email}
+                            onChange={e => handleInputChange('emergencyContact.email', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            placeholder='예: emergency@example.com'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.emergencyContact.email || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* 여행 정보 탭 */}
+              {activeTab === 'travel' && (
+                <>
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Globe className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>여행 선호도</h3>
+                    </div>
+
+                    <div className='grid md:grid-cols-2 gap-4'>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          여행 스타일
+                        </label>
+                        {isEditing ? (
+                          <select
+                            value={profile.travelPreferences.travelStyle}
+                            onChange={e => handleInputChange('travelPreferences.travelStyle', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          >
+                            <option value='budget'>예산 여행</option>
+                            <option value='comfort'>편안한 여행</option>
+                            <option value='luxury'>럭셔리 여행</option>
+                          </select>
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.travelPreferences.travelStyle === 'budget'
+                              ? '예산 여행'
+                              : profile.travelPreferences.travelStyle === 'comfort'
+                                ? '편안한 여행'
+                                : '럭셔리 여행'}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          동반 유형
+                        </label>
+                        {isEditing ? (
+                          <select
+                            value={profile.travelPreferences.groupSize}
+                            onChange={e => handleInputChange('travelPreferences.groupSize', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          >
+                            <option value='solo'>혼자 여행</option>
+                            <option value='couple'>커플 여행</option>
+                            <option value='group'>그룹 여행</option>
+                          </select>
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.travelPreferences.groupSize === 'solo'
+                              ? '혼자 여행'
+                              : profile.travelPreferences.groupSize === 'couple'
+                                ? '커플 여행'
+                                : '그룹 여행'}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Calendar className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>비자 정보</h3>
+                    </div>
+
+                    <div className='grid md:grid-cols-2 gap-4'>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          여권 발급국
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='text'
+                            value={profile.visaInfo.passportCountry}
+                            onChange={e => handleInputChange('visaInfo.passportCountry', e.target.value)}
+                            placeholder='예: 대한민국'
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.visaInfo.passportCountry || '입력 필요'}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          여권 만료일
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type='date'
+                            value={profile.visaInfo.passportExpiry}
+                            onChange={e => handleInputChange('visaInfo.passportExpiry', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          />
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.visaInfo.passportExpiry ? (
+                              <>
+                                {profile.visaInfo.passportExpiry}
+                                {(() => {
+                                  const expiry = new Date(profile.visaInfo.passportExpiry);
+                                  const today = new Date();
+                                  const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                                  if (daysUntilExpiry < 180) {
+                                    return <span className='text-red-500 text-xs ml-2'>⚠️ {daysUntilExpiry}일 남음</span>;
+                                  }
+                                  return null;
+                                })()}
+                              </>
+                            ) : '입력 필요'}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          선호 언어
+                        </label>
+                        {isEditing ? (
+                          <select
+                            value={profile.visaInfo.preferredLanguage}
+                            onChange={e => handleInputChange('visaInfo.preferredLanguage', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          >
+                            <option value='ko'>한국어</option>
+                            <option value='en'>English</option>
+                            <option value='ja'>日本語</option>
+                            <option value='zh'>中文</option>
+                            <option value='es'>Español</option>
+                            <option value='fr'>Français</option>
+                          </select>
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.visaInfo.preferredLanguage === 'ko' ? '한국어' :
+                             profile.visaInfo.preferredLanguage === 'en' ? 'English' :
+                             profile.visaInfo.preferredLanguage === 'ja' ? '日本語' :
+                             profile.visaInfo.preferredLanguage === 'zh' ? '中文' :
+                             profile.visaInfo.preferredLanguage === 'es' ? 'Español' : 'Français'}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* 계정 설정 탭 */}
+              {activeTab === 'account' && (
+                <>
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Lock className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>보안 설정</h3>
+                    </div>
+
+                    <div className='space-y-4'>
+                      <div>
+                        <h4 className='font-medium mb-2'>비밀번호 변경</h4>
+                        <p className='text-sm text-gray-600 mb-3'>
+                          Google 계정으로 로그인하셨습니다. Google 계정 설정에서 비밀번호를 변경하세요.
+                        </p>
+                        <a
+                          href='https://myaccount.google.com/security'
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='text-blue-600 hover:text-blue-700 text-sm'
+                        >
+                          Google 계정 보안 설정으로 이동 →
+                        </a>
+                      </div>
+
+                      <div className='border-t pt-4'>
+                        <h4 className='font-medium mb-2'>2단계 인증</h4>
+                        <p className='text-sm text-gray-600 mb-3'>
+                          계정 보안을 강화하려면 2단계 인증을 활성화하세요.
+                        </p>
+                        <div className='flex items-center gap-2'>
+                          <Shield className='h-5 w-5 text-green-600' />
+                          <span className='text-sm text-green-600'>Google 2단계 인증 사용 중</span>
+                        </div>
+                      </div>
+
+                      <div className='border-t pt-4'>
+                        <h4 className='font-medium mb-2'>연결된 기기</h4>
+                        <p className='text-sm text-gray-600 mb-3'>
+                          현재 로그인된 기기: 1개
+                        </p>
+                        <button className='text-blue-600 hover:text-blue-700 text-sm'>
+                          모든 기기에서 로그아웃 →
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Bell className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>알림 설정</h3>
+                    </div>
+
+                    <div className='space-y-4'>
+                      <label className='flex items-center justify-between'>
+                        <span className='text-sm font-medium'>여행 리마인더</span>
+                        {isEditing ? (
+                          <input
+                            type='checkbox'
+                            checked={profile.notifications.tripReminders}
+                            onChange={e => handleInputChange('notifications.tripReminders', e.target.checked)}
+                            className='w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                          />
+                        ) : (
+                          <span className={`text-sm ${profile.notifications.tripReminders ? 'text-green-600' : 'text-gray-400'}`}>
+                            {profile.notifications.tripReminders ? '활성' : '비활성'}
+                          </span>
+                        )}
+                      </label>
+
+                      <label className='flex items-center justify-between'>
+                        <span className='text-sm font-medium'>비자 만료 알림</span>
+                        {isEditing ? (
+                          <input
+                            type='checkbox'
+                            checked={profile.notifications.visaAlerts}
+                            onChange={e => handleInputChange('notifications.visaAlerts', e.target.checked)}
+                            className='w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                          />
+                        ) : (
+                          <span className={`text-sm ${profile.notifications.visaAlerts ? 'text-green-600' : 'text-gray-400'}`}>
+                            {profile.notifications.visaAlerts ? '활성' : '비활성'}
+                          </span>
+                        )}
+                      </label>
+
+                      <label className='flex items-center justify-between'>
+                        <span className='text-sm font-medium'>프로모션 및 뉴스레터</span>
+                        {isEditing ? (
+                          <input
+                            type='checkbox'
+                            checked={profile.notifications.promotions}
+                            onChange={e => handleInputChange('notifications.promotions', e.target.checked)}
+                            className='w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                          />
+                        ) : (
+                          <span className={`text-sm ${profile.notifications.promotions ? 'text-green-600' : 'text-gray-400'}`}>
+                            {profile.notifications.promotions ? '활성' : '비활성'}
+                          </span>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* 개인정보 탭 */}
+              {activeTab === 'privacy' && (
+                <>
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Eye className='h-5 w-5 text-blue-600' />
+                      <h3 className='text-lg font-semibold'>프라이버시 설정</h3>
+                    </div>
+
+                    <div className='space-y-4'>
+                      <div>
+                        <label className='block text-sm font-medium mb-2'>
+                          프로필 공개 범위
+                        </label>
+                        {isEditing ? (
+                          <select
+                            value={profile.privacy.profileVisibility}
+                            onChange={e => handleInputChange('privacy.profileVisibility', e.target.value)}
+                            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          >
+                            <option value='public'>모든 사용자</option>
+                            <option value='friends'>친구만</option>
+                            <option value='private'>비공개</option>
+                          </select>
+                        ) : (
+                          <p className='px-3 py-2 bg-gray-50 rounded-md'>
+                            {profile.privacy.profileVisibility === 'public' ? '모든 사용자' :
+                             profile.privacy.profileVisibility === 'friends' ? '친구만' : '비공개'}
+                          </p>
+                        )}
+                      </div>
+
+                      <label className='flex items-center justify-between'>
+                        <span className='text-sm font-medium'>이메일 공개</span>
+                        {isEditing ? (
+                          <input
+                            type='checkbox'
+                            checked={profile.privacy.showEmail}
+                            onChange={e => handleInputChange('privacy.showEmail', e.target.checked)}
+                            className='w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                          />
+                        ) : (
+                          <span className={`text-sm ${profile.privacy.showEmail ? 'text-green-600' : 'text-gray-400'}`}>
+                            {profile.privacy.showEmail ? '공개' : '비공개'}
+                          </span>
+                        )}
+                      </label>
+
+                      <label className='flex items-center justify-between'>
+                        <span className='text-sm font-medium'>전화번호 공개</span>
+                        {isEditing ? (
+                          <input
+                            type='checkbox'
+                            checked={profile.privacy.showPhone}
+                            onChange={e => handleInputChange('privacy.showPhone', e.target.checked)}
+                            className='w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                          />
+                        ) : (
+                          <span className={`text-sm ${profile.privacy.showPhone ? 'text-green-600' : 'text-gray-400'}`}>
+                            {profile.privacy.showPhone ? '공개' : '비공개'}
+                          </span>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className='bg-white rounded-lg shadow-md p-6'>
+                    <div className='flex items-center gap-3 mb-6'>
+                      <Trash2 className='h-5 w-5 text-red-600' />
+                      <h3 className='text-lg font-semibold'>데이터 관리</h3>
+                    </div>
+
+                    <div className='space-y-4'>
+                      <div>
+                        <h4 className='font-medium mb-2'>데이터 내보내기</h4>
+                        <p className='text-sm text-gray-600 mb-3'>
+                          모든 프로필 데이터를 JSON 형식으로 다운로드합니다.
+                        </p>
+                        <button
+                          onClick={exportData}
+                          className='px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2'
+                        >
+                          <Download className='h-4 w-4' />
+                          데이터 내보내기
+                        </button>
+                      </div>
+
+                      <div className='border-t pt-4'>
+                        <h4 className='font-medium mb-2 text-red-600'>계정 삭제</h4>
+                        <p className='text-sm text-gray-600 mb-3'>
+                          계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+                        </p>
+                        {!showDeleteConfirm ? (
+                          <button
+                            onClick={() => setShowDeleteConfirm(true)}
+                            className='px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors'
+                          >
+                            계정 삭제
+                          </button>
+                        ) : (
+                          <div className='space-y-3'>
+                            <div className='p-3 bg-red-50 border border-red-200 rounded-md'>
+                              <p className='text-sm text-red-700 mb-2'>
+                                정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+                              </p>
+                              <p className='text-sm text-red-700'>
+                                계속하려면 아래 입력란에 <strong>"계정 삭제 동의"</strong>를 입력하세요.
+                              </p>
+                            </div>
+                            <input
+                              type='text'
+                              value={deleteConfirmText}
+                              onChange={e => setDeleteConfirmText(e.target.value)}
+                              placeholder='계정 삭제 동의'
+                              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500'
+                            />
+                            <div className='flex gap-2'>
+                              <button
+                                onClick={() => {
+                                  setShowDeleteConfirm(false);
+                                  setDeleteConfirmText('');
+                                }}
+                                className='px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors'
+                              >
+                                취소
+                              </button>
+                              <button
+                                onClick={handleDeleteAccount}
+                                disabled={deleteConfirmText !== '계정 삭제 동의' || isLoading}
+                                className='px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                              >
+                                {isLoading ? '삭제 중...' : '영구 삭제'}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -1,509 +1,381 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { TravelInfo } from '@/lib/gmail';
-import StayVisualizationCalendar from '@/components/calendar/StayVisualizationCalendar';
-import CalendarSync from '@/components/calendar/CalendarSync';
-import { TravelCalendarView } from '@/components/calendar/TravelCalendarView';
-import { Trip } from '@/types/database';
-import { Calendar, ExternalLink, RefreshCw } from 'lucide-react';
-import { PageHeader } from '@/components/common/PageHeader';
-import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading';
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isWithinInterval, differenceInDays } from 'date-fns'
+import { ko } from 'date-fns/locale'
 
-interface CalendarStats {
-  totalEvents: number;
-  upcomingEvents: number;
-  pastEvents: number;
-  lastSyncDate?: string;
+interface Trip {
+  id: string
+  country: string
+  city: string
+  startDate: string
+  endDate: string
+  purpose: string
+  isSchengen?: boolean
+}
+
+interface CalendarDay {
+  date: Date
+  isCurrentMonth: boolean
+  trips: Trip[]
+  isToday: boolean
+  schengenDays?: number
 }
 
 export default function CalendarPage() {
-  const { data: session, status } = useSession();
-  const [travelInfos, setTravelInfos] = useState<TravelInfo[]>([]);
-  const [trips, setTrips] = useState<Trip[]>([]);
-  const [calendarStats, setCalendarStats] = useState<CalendarStats>({
-    totalEvents: 0,
-    upcomingEvents: 0,
-    pastEvents: 0,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<
-    'overview' | 'sync' | 'visualization' | 'schedule' | 'manage'
-  >('schedule');
-
-  // Gmail에서 여행 정보 가져오기
-  const loadTravelInfos = async () => {
-    if (!session) return;
-
-    try {
-      setIsLoading(true);
-      setError('');
-
-      const response = await fetch('/api/gmail/analyze');
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to load travel information');
-      }
-
-      if (data.success && data.travelInfos) {
-        setTravelInfos(data.travelInfos);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 캘린더 통계 가져오기
-  const loadCalendarStats = async () => {
-    if (!session) return;
-
-    try {
-      const response = await fetch('/api/calendar/check');
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setCalendarStats(
-          data.stats || {
-            totalEvents: 0,
-            upcomingEvents: 0,
-            pastEvents: 0,
-          }
-        );
-      }
-    } catch (err) {
-      // Failed to load calendar stats
-    }
-  };
-
-  // 여행 기록 가져오기
-  const loadTrips = async () => {
-    if (!session) return;
-
-    try {
-      const response = await fetch('/api/trips');
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setTrips(data.data || []);
-      }
-    } catch (err) {
-      console.error('Failed to load trips:', err);
-    }
-  };
-
-  // 동기화 완료 후 콜백
-  const handleSyncComplete = (result: any) => {
-    if (result.success) {
-      loadCalendarStats();
-    }
-  };
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const [currentDate, setCurrentDate] = useState(new Date())
+  const [trips, setTrips] = useState<Trip[]>([])
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [viewMode, setViewMode] = useState<'month' | 'year'>('month')
+  const [showSchengenInfo, setShowSchengenInfo] = useState(true)
 
   useEffect(() => {
-    if (session) {
-      loadTravelInfos();
-      loadCalendarStats();
-      loadTrips();
+    if (status === 'unauthenticated') {
+      router.push('/login')
     }
-  }, [session]);
+  }, [status, router])
 
-  if (status === 'loading') {
-    return (
-      <main className='min-h-screen flex items-center justify-center bg-background'>
-        <div className='text-center'>
-          <HydrationSafeLoading
-            fallback='Loading...'
-            className='mb-4 text-sm text-secondary'
-            translationKey='common.loading'
-          />
-        </div>
-      </main>
-    );
+  // 로컬 스토리지에서 여행 데이터 로드
+  useEffect(() => {
+    const loadTrips = () => {
+      const saved = localStorage.getItem('dino-trips')
+      if (saved) {
+        const parsedTrips = JSON.parse(saved)
+        setTrips(parsedTrips)
+      } else {
+        // 샘플 데이터
+        const sampleTrips: Trip[] = [
+          {
+            id: '1',
+            country: '태국',
+            city: '방콕',
+            startDate: '2024-02-15',
+            endDate: '2024-02-20',
+            purpose: '관광',
+            isSchengen: false
+          },
+          {
+            id: '2',
+            country: '프랑스',
+            city: '파리',
+            startDate: '2024-03-10',
+            endDate: '2024-03-17',
+            purpose: '출장',
+            isSchengen: true
+          },
+          {
+            id: '3',
+            country: '스페인',
+            city: '바르셀로나',
+            startDate: '2024-03-18',
+            endDate: '2024-03-25',
+            purpose: '관광',
+            isSchengen: true
+          },
+          {
+            id: '4',
+            country: '일본',
+            city: '도쿄',
+            startDate: '2024-04-05',
+            endDate: '2024-04-12',
+            purpose: '관광',
+            isSchengen: false
+          }
+        ]
+        setTrips(sampleTrips)
+        localStorage.setItem('dino-trips', JSON.stringify(sampleTrips))
+      }
+    }
+    loadTrips()
+  }, [])
+
+  // 캘린더 데이터 생성
+  const generateCalendarDays = (): CalendarDay[] => {
+    const start = startOfMonth(currentDate)
+    const end = endOfMonth(currentDate)
+    const days = eachDayOfInterval({ start, end })
+    
+    // 첫 주의 빈 날짜 채우기
+    const startDay = start.getDay()
+    const previousMonthDays = []
+    for (let i = startDay - 1; i >= 0; i--) {
+      previousMonthDays.push(subMonths(start, 1))
+    }
+    
+    const calendarDays: CalendarDay[] = days.map(date => {
+      const dayTrips = trips.filter(trip => {
+        const tripStart = new Date(trip.startDate)
+        const tripEnd = new Date(trip.endDate)
+        return isWithinInterval(date, { start: tripStart, end: tripEnd })
+      })
+      
+      return {
+        date,
+        isCurrentMonth: true,
+        trips: dayTrips,
+        isToday: isSameDay(date, new Date()),
+        schengenDays: dayTrips.filter(t => t.isSchengen).length > 0 ? 1 : 0
+      }
+    })
+    
+    return calendarDays
   }
 
-  if (!session) {
-    return (
-      <main className='min-h-screen flex items-center justify-center bg-background'>
-        <div className='card p-16 text-center max-w-md'>
-          <div className='text-5xl mb-5'>📅</div>
-          <h3 className='text-lg font-bold mb-2'>로그인이 필요합니다</h3>
-          <p className='text-sm text-secondary mb-8'>
-            Google Calendar 통합을 사용하려면 먼저 로그인해주세요.
-          </p>
-          <Link href='/auth/signin' className='btn btn-primary'>
-            로그인하기
-          </Link>
-        </div>
-      </main>
-    );
+  const monthlySchengenDays = () => {
+    const days = generateCalendarDays()
+    return days.reduce((sum, day) => sum + (day.schengenDays || 0), 0)
   }
+
+  const handlePreviousMonth = () => {
+    setCurrentDate(prev => subMonths(prev, 1))
+  }
+
+  const handleNextMonth = () => {
+    setCurrentDate(prev => addMonths(prev, 1))
+  }
+
+  const handleToday = () => {
+    setCurrentDate(new Date())
+  }
+
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date)
+  }
+
+  const getTripsForDate = (date: Date) => {
+    return trips.filter(trip => {
+      const tripStart = new Date(trip.startDate)
+      const tripEnd = new Date(trip.endDate)
+      return isWithinInterval(date, { start: tripStart, end: tripEnd })
+    })
+  }
+
+  const calendarDays = generateCalendarDays()
+  const weekDays = ['일', '월', '화', '수', '목', '금', '토']
 
   return (
-    <main className='min-h-screen bg-background'>
-      <div className='container mx-auto px-4 py-8'>
-        {/* Header */}
-        <PageHeader
-          title='📅 여행 캘린더'
-          description='여행 일정을 캘린더 뷰로 확인하고 Gmail 연동으로 자동 동기화하세요'
-        />
-
-        {/* Action Button */}
-        <div className='flex justify-end mb-8'>
-          <button
-            onClick={() => window.open('https://calendar.google.com', '_blank')}
-            className='btn btn-ghost flex items-center gap-2'
-          >
-            <ExternalLink className='h-4 w-4' />
-            Google Calendar 열기
-          </button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        {/* 헤더 */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">여행 캘린더 📅</h1>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setViewMode(viewMode === 'month' ? 'year' : 'month')}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                {viewMode === 'month' ? '연간 보기' : '월간 보기'}
+              </button>
+              <button
+                onClick={() => setShowSchengenInfo(!showSchengenInfo)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                셰겐 {showSchengenInfo ? '숨기기' : '보기'}
+              </button>
+            </div>
+          </div>
+          <p className="text-gray-600">
+            여행 일정을 한눈에 확인하고 관리하세요
+          </p>
         </div>
 
-        {/* Statistics Cards */}
-        <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-8'>
-          <div className='card p-5'>
-            <div className='text-2xl font-bold mb-1'>
-              {calendarStats.totalEvents}
+        {/* 캘린더 네비게이션 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handlePreviousMonth}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div className="flex items-center space-x-4">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {format(currentDate, 'yyyy년 M월', { locale: ko })}
+              </h2>
+              <button
+                onClick={handleToday}
+                className="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                오늘
+              </button>
             </div>
-            <div className='text-sm text-secondary'>전체 이벤트</div>
-          </div>
-
-          <div className='card p-5'>
-            <div className='text-2xl font-bold mb-1'>
-              {calendarStats.upcomingEvents}
-            </div>
-            <div className='text-sm text-secondary'>예정된 여행</div>
-          </div>
-
-          <div className='card p-5'>
-            <div className='text-2xl font-bold mb-1'>
-              {calendarStats.pastEvents}
-            </div>
-            <div className='text-sm text-secondary'>지난 여행</div>
-          </div>
-
-          <div className='card p-5'>
-            <div className='text-2xl font-bold mb-1'>{travelInfos.length}</div>
-            <div className='text-sm text-secondary'>Gmail 분석</div>
-          </div>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className='alert alert-error mb-8'>
-            <span>⚠️ {error}</span>
-          </div>
-        )}
-
-        {/* Tab Navigation */}
-        <div className='border-b border-border mb-8'>
-          <div className='flex gap-0 overflow-x-auto'>
+            
             <button
-              onClick={() => setActiveTab('schedule')}
-              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === 'schedule'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-secondary hover:text-primary'
-              }`}
+              onClick={handleNextMonth}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              📅 일정
-            </button>
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === 'overview'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-secondary hover:text-primary'
-              }`}
-            >
-              👁️ 개요
-            </button>
-            <button
-              onClick={() => setActiveTab('sync')}
-              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === 'sync'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-secondary hover:text-primary'
-              }`}
-            >
-              🔄 동기화
-            </button>
-            <button
-              onClick={() => setActiveTab('visualization')}
-              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === 'visualization'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-secondary hover:text-primary'
-              }`}
-            >
-              📊 시각화
-            </button>
-            <button
-              onClick={() => setActiveTab('manage')}
-              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === 'manage'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-secondary hover:text-primary'
-              }`}
-            >
-              ⚙️ 관리
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === 'schedule' && (
-          <div>
-            <TravelCalendarView
-              onEventClick={(event) => {
-                console.log('Event clicked:', event);
-              }}
-              onDateClick={(date) => {
-                console.log('Date clicked:', date);
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'overview' && (
-          <div className='space-y-8'>
-            {/* Overview Section */}
-            <div className='card p-8'>
-              <h3 className='text-lg font-bold mb-2'>
-                Google Calendar 통합 개요
-              </h3>
-              <p className='text-sm text-secondary mb-8'>
-                DINO는 Gmail에서 추출한 여행 정보를 Google Calendar와 자동으로
-                동기화합니다
-              </p>
-
-              <div className='grid md:grid-cols-2 gap-8'>
-                <div>
-                  <h4 className='text-base font-bold mb-4'>✅ 지원되는 기능</h4>
-                  <div className='text-sm text-secondary space-y-2'>
-                    <div>• 항공편 예약 자동 추가</div>
-                    <div>• 호텔 예약 일정 동기화</div>
-                    <div>• 여행 기간 자동 계산</div>
-                    <div>• 중복 이벤트 자동 방지</div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className='text-base font-bold mb-4'>⚙️ 사용 방법</h4>
-                  <div className='text-sm text-secondary space-y-2'>
-                    <div>1. Gmail 연결 및 이메일 분석</div>
-                    <div>2. 동기화할 캘린더 선택</div>
-                    <div>3. 여행 정보 선택 및 동기화</div>
-                    <div>4. Google Calendar에서 확인</div>
-                  </div>
-                </div>
+          
+          {showSchengenInfo && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">이번 달 셰겐 체류일수</span>
+                <span className="font-semibold text-blue-600">{monthlySchengenDays()}일</span>
               </div>
-
-              {travelInfos.length === 0 && (
-                <div className='alert alert-warning mt-8'>
-                  ⚠️ 아직 Gmail에서 여행 정보를 분석하지 않았습니다.
-                  <Link href='/gmail' className='underline ml-1'>
-                    Gmail 페이지
-                  </Link>
-                  에서 먼저 이메일을 분석해주세요.
-                </div>
-              )}
             </div>
+          )}
+        </div>
 
-            {/* Travel Info Preview */}
-            {travelInfos.length > 0 && (
-              <div className='card p-8'>
-                <div className='flex justify-between items-center mb-5'>
-                  <div>
-                    <h3 className='text-lg font-bold mb-1'>분석된 여행 정보</h3>
-                    <p className='text-sm text-secondary'>
-                      Gmail에서 추출된 여행 정보들입니다
-                    </p>
+        {/* 캘린더 그리드 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          {/* 요일 헤더 */}
+          <div className="grid grid-cols-7 mb-2">
+            {weekDays.map((day, index) => (
+              <div
+                key={day}
+                className={`text-center text-sm font-medium py-2 ${
+                  index === 0 ? 'text-red-600' : index === 6 ? 'text-blue-600' : 'text-gray-700'
+                }`}
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+          
+          {/* 날짜 그리드 */}
+          <div className="grid grid-cols-7 gap-1">
+            {calendarDays.map((day, index) => {
+              const dayTrips = day.trips
+              const isSelected = selectedDate && isSameDay(day.date, selectedDate)
+              
+              return (
+                <div
+                  key={index}
+                  onClick={() => handleDateClick(day.date)}
+                  className={`min-h-[100px] p-2 border rounded-lg cursor-pointer transition-all ${
+                    day.isToday
+                      ? 'bg-blue-50 border-blue-500'
+                      : isSelected
+                      ? 'bg-gray-100 border-gray-400'
+                      : 'border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-1">
+                    <span className={`text-sm font-medium ${
+                      day.isToday ? 'text-blue-600' : 'text-gray-700'
+                    }`}>
+                      {format(day.date, 'd')}
+                    </span>
+                    {day.schengenDays > 0 && showSchengenInfo && (
+                      <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                        셰겐
+                      </span>
+                    )}
                   </div>
-                  <div className='badge'>{travelInfos.length}개 발견</div>
-                </div>
-
-                <div className='space-y-4'>
-                  {travelInfos.slice(0, 3).map(info => (
-                    <div key={info.emailId} className='card p-5'>
-                      <div className='flex justify-between items-center mb-2'>
-                        <h4 className='text-sm font-medium truncate'>
-                          {info.subject}
-                        </h4>
-                        <div
-                          className={`badge ${
-                            info.confidence >= 0.7
-                              ? 'badge-success'
-                              : 'badge-warning'
-                          }`}
-                        >
-                          신뢰도 {Math.round(info.confidence * 100)}%
-                        </div>
-                      </div>
-                      <div className='grid grid-cols-2 gap-2 text-xs text-secondary'>
-                        {info.departureDate && (
-                          <div>✈️ 출발: {info.departureDate}</div>
-                        )}
-                        {info.destination && (
-                          <div>📍 목적지: {info.destination}</div>
-                        )}
-                        {info.hotelName && <div>🏨 숙소: {info.hotelName}</div>}
-                      </div>
-                    </div>
-                  ))}
-
-                  {travelInfos.length > 3 && (
-                    <div className='text-center pt-5'>
-                      <button
-                        onClick={() => setActiveTab('sync')}
-                        className='btn btn-ghost'
+                  
+                  {/* 여행 표시 */}
+                  <div className="space-y-1">
+                    {dayTrips.slice(0, 2).map((trip, tripIndex) => (
+                      <div
+                        key={trip.id}
+                        className={`text-xs p-1 rounded truncate ${
+                          trip.isSchengen
+                            ? 'bg-purple-100 text-purple-700'
+                            : 'bg-green-100 text-green-700'
+                        }`}
+                        title={`${trip.country} - ${trip.city}`}
                       >
-                        모든 여행 정보 보기 ({travelInfos.length - 3}개 더)
+                        {trip.city}
+                      </div>
+                    ))}
+                    {dayTrips.length > 2 && (
+                      <div className="text-xs text-gray-500 text-center">
+                        +{dayTrips.length - 2}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* 선택된 날짜 상세 정보 */}
+        {selectedDate && (
+          <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 여행 정보
+            </h3>
+            
+            {getTripsForDate(selectedDate).length > 0 ? (
+              <div className="space-y-3">
+                {getTripsForDate(selectedDate).map(trip => {
+                  const tripStart = new Date(trip.startDate)
+                  const tripEnd = new Date(trip.endDate)
+                  const duration = differenceInDays(tripEnd, tripStart) + 1
+                  
+                  return (
+                    <div
+                      key={trip.id}
+                      className="flex items-start justify-between p-4 rounded-lg border border-gray-200 hover:bg-gray-50"
+                    >
+                      <div>
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h4 className="font-medium text-gray-900">
+                            {trip.country} - {trip.city}
+                          </h4>
+                          {trip.isSchengen && (
+                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                              셰겐
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          {format(tripStart, 'M월 d일')} - {format(tripEnd, 'M월 d일')} ({duration}일)
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          목적: {trip.purpose}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => router.push(`/trips/${trip.id}`)}
+                        className="text-sm text-blue-600 hover:text-blue-700"
+                      >
+                        상세보기
                       </button>
                     </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'sync' && (
-          <div>
-            {travelInfos.length > 0 ? (
-              <CalendarSync
-                travelInfos={travelInfos}
-                onSyncComplete={handleSyncComplete}
-              />
-            ) : (
-              <div className='card p-16 text-center'>
-                <div className='text-5xl mb-5'>📄</div>
-                <h3 className='text-lg font-bold mb-2'>
-                  동기화할 여행 정보가 없습니다
-                </h3>
-                <p className='text-sm text-secondary mb-8'>
-                  먼저 Gmail에서 여행 이메일을 분석해주세요.
-                </p>
-                <div className='flex gap-4 justify-center'>
-                  <Link href='/gmail' className='btn btn-primary'>
-                    Gmail 분석하기
-                  </Link>
-                  <button
-                    onClick={loadTravelInfos}
-                    disabled={isLoading}
-                    className='btn btn-ghost'
-                  >
-                    {isLoading ? (
-                      <>
-                        <RefreshCw className='h-4 w-4 mr-2 animate-spin' />
-                        로딩중...
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw className='h-4 w-4 mr-2' />
-                        새로고침
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'visualization' && (
-          <div>
-            <StayVisualizationCalendar
-              trips={trips}
-              currentCountry='KR'
-              onDateClick={(date, dayTrips) => {
-                console.log('Selected date:', date, 'Trips:', dayTrips);
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'manage' && (
-          <div className='grid md:grid-cols-2 gap-8'>
-            {/* Calendar Settings */}
-            <div className='card p-8'>
-              <h3 className='text-lg font-bold mb-2'>캘린더 설정</h3>
-              <p className='text-sm text-secondary mb-8'>
-                Google Calendar 연결 및 설정을 관리합니다
-              </p>
-
-              <div className='flex justify-between items-center mb-5'>
-                <div>
-                  <p className='text-sm font-medium mb-1'>
-                    Google Calendar 연결
-                  </p>
-                  <p className='text-xs text-secondary'>
-                    {session?.user?.email || '연결된 계정 없음'}
-                  </p>
-                </div>
-                <div className='badge badge-success'>연결됨</div>
-              </div>
-
-              <button
-                onClick={() =>
-                  window.open(
-                    'https://calendar.google.com/calendar/u/0/r/settings',
-                    '_blank'
                   )
-                }
-                className='btn btn-ghost w-full'
-              >
-                <ExternalLink className='h-4 w-4 mr-2' />
-                Google Calendar 설정
-              </button>
-            </div>
-
-            {/* Sync History */}
-            <div className='card p-8'>
-              <h3 className='text-lg font-bold mb-2'>동기화 내역</h3>
-              <p className='text-sm text-secondary mb-8'>
-                최근 동기화 활동을 확인합니다
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-8">
+                이 날짜에 예정된 여행이 없습니다
               </p>
-
-              {calendarStats.lastSyncDate ? (
-                <div className='mb-5'>
-                  <div className='flex justify-between mb-2'>
-                    <span className='text-sm'>마지막 동기화</span>
-                    <span className='text-sm text-secondary'>
-                      {calendarStats.lastSyncDate}
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span className='text-sm'>총 이벤트</span>
-                    <span className='text-sm font-medium'>
-                      {calendarStats.totalEvents}개
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div className='text-center py-5 mb-5'>
-                  <div className='text-3xl mb-2'>🕒</div>
-                  <p className='text-sm text-secondary'>
-                    아직 동기화 내역이 없습니다
-                  </p>
-                </div>
-              )}
-
-              <button
-                onClick={loadCalendarStats}
-                className='btn btn-ghost w-full'
-              >
-                <RefreshCw className='h-4 w-4 mr-2' />
-                내역 새로고침
-              </button>
-            </div>
+            )}
           </div>
         )}
+
+        {/* 범례 */}
+        <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">범례</h3>
+          <div className="flex items-center space-x-6 text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-blue-50 border border-blue-500 rounded"></div>
+              <span className="text-gray-600">오늘</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-green-100 rounded"></div>
+              <span className="text-gray-600">일반 여행</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-purple-100 rounded"></div>
+              <span className="text-gray-600">셰겐 지역</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </main>
-  );
+    </div>
+  )
 }

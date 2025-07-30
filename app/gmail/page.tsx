@@ -3,496 +3,508 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { PageHeader, PageIcons } from '@/components/common/PageHeader'
-import { RefreshCw, Settings } from 'lucide-react'
 
-// Gmail Integration 인라인 컴포넌트
-function WireframeGmailIntegration() {
-  const { data: session } = useSession()
-  const [connectionStatus, setConnectionStatus] = useState<any>(null)
-  const [travelEmails, setTravelEmails] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string>('')
-  const [activeTab, setActiveTab] = useState<'analysis' | 'stats'>('analysis')
-
-  // Gmail 연결 상태 확인
-  const checkConnection = async () => {
-    if (!session) return
-
-    try {
-      setIsLoading(true)
-      setError('')
-      
-      const response = await fetch('/api/gmail/check')
-      const data = await response.json()
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to check Gmail connection')
-      }
-      
-      setConnectionStatus(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred')
-      setConnectionStatus({ connected: false, message: '연결 확인 실패' })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // 여행 이메일 분석
-  const analyzeTravelEmails = async (maxResults: number = 20) => {
-    if (!session) return
-
-    try {
-      setIsLoading(true)
-      setError('')
-      
-      const response = await fetch(`/api/gmail/analyze?maxResults=${maxResults}`)
-      const data = await response.json()
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to analyze travel emails')
-      }
-      
-      const emails = data.travelInfos || []
-      setTravelEmails(emails)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // 컴포넌트 마운트 시 연결 상태 확인
-  useEffect(() => {
-    if (session) {
-      checkConnection()
-    }
-  }, [session])
-
-  if (!session) {
-    return (
-      <div style={{ backgroundColor: '#fffbf0', border: '1px solid #e0e0e0', padding: '20px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#000' }}>Gmail 통합</h3>
-        <p style={{ color: '#666' }}>Gmail 통합을 사용하려면 먼저 로그인해주세요.</p>
-      </div>
-    )
-  }
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '30px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#000', marginBottom: '20px' }}>
-          📧 Gmail 여행 이메일 분석
-        </h2>
-        <p style={{ color: '#666', marginBottom: '30px' }}>
-          Gmail에서 여행 관련 이메일을 자동으로 찾아 분석합니다.
-        </p>
-        
-        {/* 연결 상태 */}
-        <div style={{ marginBottom: '30px' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '15px' }}>연결 상태</h3>
-          
-          {connectionStatus && (
-            <div style={{
-              padding: '15px',
-              border: '1px solid #e0e0e0',
-              backgroundColor: connectionStatus.connected ? '#f0fff0' : '#fff0f0',
-              marginBottom: '15px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  backgroundColor: connectionStatus.connected ? '#00aa00' : '#aa0000',
-                  marginRight: '12px'
-                }} />
-                <span style={{
-                  fontWeight: '500',
-                  color: connectionStatus.connected ? '#006600' : '#660000'
-                }}>
-                  {connectionStatus.message}
-                </span>
-              </div>
-            </div>
-          )}
-          
-          <button
-            onClick={checkConnection}
-            disabled={isLoading}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#0066cc',
-              color: '#fff',
-              border: 'none',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-              opacity: isLoading ? 0.6 : 1
-            }}
-          >
-            {isLoading ? '확인 중...' : '연결 상태 확인'}
-          </button>
-        </div>
-
-        {/* 이메일 분석 컨트롤 */}
-        {connectionStatus?.connected && (
-          <div style={{ marginBottom: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333' }}>여행 이메일 분석</h3>
-              {travelEmails.length > 0 && (
-                <span style={{ 
-                  padding: '4px 12px', 
-                  backgroundColor: '#e6f3ff', 
-                  color: '#0066cc', 
-                  fontSize: '12px',
-                  border: '1px solid #cce6ff'
-                }}>
-                  {travelEmails.length}개 발견
-                </span>
-              )}
-            </div>
-            
-            <div style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => analyzeTravelEmails(10)}
-                disabled={isLoading}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#009900',
-                  color: '#fff',
-                  border: 'none',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  opacity: isLoading ? 0.6 : 1
-                }}
-              >
-                {isLoading ? '분석 중...' : '🔍 최근 10개 분석'}
-              </button>
-              
-              <button
-                onClick={() => analyzeTravelEmails(20)}
-                disabled={isLoading}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#0066cc',
-                  color: '#fff',
-                  border: 'none',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  opacity: isLoading ? 0.6 : 1
-                }}
-              >
-                {isLoading ? '분석 중...' : '🔍 최근 20개 분석'}
-              </button>
-              
-              <button
-                onClick={() => analyzeTravelEmails(50)}
-                disabled={isLoading}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#6600cc',
-                  color: '#fff',
-                  border: 'none',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  opacity: isLoading ? 0.6 : 1
-                }}
-              >
-                {isLoading ? '분석 중...' : '📊 전체 분석 (50개)'}
-              </button>
-            </div>
-
-            {/* 에러 메시지 */}
-            {error && (
-              <div style={{ 
-                marginBottom: '20px', 
-                padding: '15px', 
-                backgroundColor: '#fff0f0', 
-                border: '1px solid #ffcccc' 
-              }}>
-                <p style={{ color: '#cc0000' }}>❌ {error}</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* 분석 결과 탭 */}
-        {travelEmails.length > 0 && (
-          <div style={{ width: '100%' }}>
-            <div style={{ borderBottom: '1px solid #e0e0e0', marginBottom: '30px' }}>
-              <div style={{ display: 'flex', gap: '30px' }}>
-                <button
-                  onClick={() => setActiveTab('analysis')}
-                  style={{
-                    padding: '10px 0',
-                    borderBottom: activeTab === 'analysis' ? '2px solid #0066cc' : '2px solid transparent',
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    color: activeTab === 'analysis' ? '#0066cc' : '#666',
-                    cursor: 'pointer'
-                  }}
-                >
-                  🔍 분석결과
-                </button>
-                <button
-                  onClick={() => setActiveTab('stats')}
-                  style={{
-                    padding: '10px 0',
-                    borderBottom: activeTab === 'stats' ? '2px solid #0066cc' : '2px solid transparent',
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    color: activeTab === 'stats' ? '#0066cc' : '#666',
-                    cursor: 'pointer'
-                  }}
-                >
-                  📊 통계
-                </button>
-              </div>
-            </div>
-            
-            {activeTab === 'analysis' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxHeight: '400px', overflowY: 'auto' }}>
-                {travelEmails.map((email, index) => (
-                  <div key={email.emailId} style={{ backgroundColor: '#f8f9fa', border: '1px solid #e0e0e0', padding: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                      <h5 style={{ fontWeight: '500', color: '#000', flex: 1, marginRight: '10px' }}>
-                        {email.subject}
-                      </h5>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        {email.category && (
-                          <span style={{ 
-                            padding: '4px 8px', 
-                            fontSize: '11px', 
-                            backgroundColor: '#f0e6ff', 
-                            color: '#6600cc',
-                            border: '1px solid #e0ccff'
-                          }}>
-                            {email.category === 'airline' ? '항공사' :
-                             email.category === 'hotel' ? '호텔' :
-                             email.category === 'travel_agency' ? '여행사' :
-                             email.category === 'rental' ? '렌터카' :
-                             email.category === 'booking_platform' ? '예약사이트' : email.category}
-                          </span>
-                        )}
-                        <span style={{
-                          padding: '4px 8px',
-                          fontSize: '11px',
-                          backgroundColor: email.confidence >= 0.7 ? '#e6ffe6' : 
-                                          email.confidence >= 0.5 ? '#fffde6' : '#ffe6e6',
-                          color: email.confidence >= 0.7 ? '#006600' : 
-                                email.confidence >= 0.5 ? '#cc9900' : '#cc0000',
-                          border: '1px solid #e0e0e0'
-                        }}>
-                          신뢰도 {Math.round(email.confidence * 100)}%
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <p style={{ fontSize: '13px', color: '#666', marginBottom: '15px' }}>{email.from}</p>
-                    
-                    <div style={{ 
-                      display: 'grid', 
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-                      gap: '10px', 
-                      fontSize: '13px', 
-                      marginBottom: '15px' 
-                    }}>
-                      {email.departureDate && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>✈️</span>
-                          <span style={{ fontWeight: '500', color: '#333' }}>출발:</span>
-                          <span style={{ color: '#666' }}>{email.departureDate}</span>
-                        </div>
-                      )}
-                      {email.returnDate && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>🏠</span>
-                          <span style={{ fontWeight: '500', color: '#333' }}>귀국:</span>
-                          <span style={{ color: '#666' }}>{email.returnDate}</span>
-                        </div>
-                      )}
-                      {email.departure && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>📍</span>
-                          <span style={{ fontWeight: '500', color: '#333' }}>출발지:</span>
-                          <span style={{ color: '#666' }}>{email.departure}</span>
-                        </div>
-                      )}
-                      {email.destination && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>🎯</span>
-                          <span style={{ fontWeight: '500', color: '#333' }}>목적지:</span>
-                          <span style={{ color: '#666' }}>{email.destination}</span>
-                        </div>
-                      )}
-                      {email.flightNumber && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>✈️</span>
-                          <span style={{ fontWeight: '500', color: '#333' }}>항공편:</span>
-                          <span style={{ color: '#666' }}>{email.flightNumber}</span>
-                        </div>
-                      )}
-                      {email.bookingReference && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>📋</span>
-                          <span style={{ fontWeight: '500', color: '#333' }}>예약번호:</span>
-                          <span style={{ color: '#666' }}>{email.bookingReference}</span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {email.confidence >= 0.5 && (
-                      <button
-                        style={{
-                          padding: '8px 15px',
-                          backgroundColor: '#0066cc',
-                          color: '#fff',
-                          fontSize: '13px',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => {
-                          // TODO: Add travel record
-                        }}
-                      >
-                        📅 여행 기록 추가
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {activeTab === 'stats' && (
-              <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-                <div style={{ fontSize: '48px', marginBottom: '20px' }}>📊</div>
-                <p style={{ color: '#666' }}>분석된 이메일 통계가 표시됩니다</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {travelEmails.length === 0 && !isLoading && !error && connectionStatus?.connected && (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: '#666' }}>
-            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🔍</div>
-            <p>분석할 여행 이메일을 찾지 못했습니다.</p>
-            <p style={{ fontSize: '13px', marginTop: '5px' }}>다른 검색 범위로 시도해보세요.</p>
-          </div>
-        )}
-      </div>
-      
-      {/* 개인정보 보호 안내 */}
-      <div style={{ backgroundColor: '#f0f8ff', border: '1px solid #cce6ff', padding: '20px' }}>
-        <h4 style={{ fontWeight: '500', color: '#004499', marginBottom: '10px' }}>🔒 개인정보 보호</h4>
-        <ul style={{ fontSize: '13px', color: '#0066cc', lineHeight: '1.6', paddingLeft: '20px' }}>
-          <li>이메일 내용은 로컬에서만 처리되며 외부로 전송되지 않습니다</li>
-          <li>읽기 전용 권한만 사용하여 이메일을 수정할 수 없습니다</li>
-          <li>분석된 정보는 사용자 승인 후에만 저장됩니다</li>
-          <li>언제든지 Gmail 연동을 해제할 수 있습니다</li>
-        </ul>
-      </div>
-    </div>
-  )
+interface EmailPattern {
+  id: string
+  name: string
+  description: string
+  patterns: string[]
+  icon: string
+  enabled: boolean
 }
 
-export default function GmailPage() {
+interface ExtractedTrip {
+  id: string
+  type: 'flight' | 'hotel' | 'car' | 'activity'
+  title: string
+  provider: string
+  bookingRef: string
+  startDate: string
+  endDate?: string
+  location: string
+  details: any
+  emailId: string
+  emailDate: string
+  status: 'pending' | 'imported' | 'ignored'
+}
+
+export default function GmailIntegrationPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [isConnected, setIsConnected] = useState(false)
+  const [isScanning, setIsScanning] = useState(false)
+  const [scanProgress, setScanProgress] = useState(0)
+  const [extractedTrips, setExtractedTrips] = useState<ExtractedTrip[]>([])
+  const [selectedTrips, setSelectedTrips] = useState<Set<string>>(new Set())
+  const [emailPatterns, setEmailPatterns] = useState<EmailPattern[]>([
+    {
+      id: 'flight',
+      name: '항공편',
+      description: '항공사 예약 확인 이메일',
+      patterns: ['flight confirmation', 'booking reference', 'e-ticket'],
+      icon: '✈️',
+      enabled: true
+    },
+    {
+      id: 'hotel',
+      name: '호텔',
+      description: '호텔 예약 확인 이메일',
+      patterns: ['hotel reservation', 'accommodation', 'check-in'],
+      icon: '🏨',
+      enabled: true
+    },
+    {
+      id: 'car',
+      name: '렌터카',
+      description: '렌터카 예약 확인 이메일',
+      patterns: ['car rental', 'vehicle reservation', 'pickup location'],
+      icon: '🚗',
+      enabled: true
+    },
+    {
+      id: 'activity',
+      name: '액티비티',
+      description: '투어, 액티비티 예약 확인',
+      patterns: ['tour booking', 'activity confirmation', 'experience'],
+      icon: '🎫',
+      enabled: true
+    }
+  ])
 
-  if (status === 'loading') {
-    return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>로딩 중...</div>
-        </div>
-      </main>
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
+
+  // 로컬 스토리지에서 연결 상태 확인
+  useEffect(() => {
+    const gmailConnected = localStorage.getItem('dino-gmail-connected')
+    if (gmailConnected === 'true') {
+      setIsConnected(true)
+      // 저장된 추출 데이터 로드
+      const saved = localStorage.getItem('dino-extracted-trips')
+      if (saved) {
+        setExtractedTrips(JSON.parse(saved))
+      }
+    }
+  }, [])
+
+  const handleConnect = async () => {
+    try {
+      // Gmail OAuth 연결 시뮬레이션
+      const mockAuth = await new Promise(resolve => {
+        setTimeout(() => resolve(true), 1500)
+      })
+      
+      if (mockAuth) {
+        setIsConnected(true)
+        localStorage.setItem('dino-gmail-connected', 'true')
+      }
+    } catch (error) {
+      console.error('Gmail 연결 실패:', error)
+    }
+  }
+
+  const handleDisconnect = () => {
+    setIsConnected(false)
+    localStorage.removeItem('dino-gmail-connected')
+    localStorage.removeItem('dino-extracted-trips')
+    setExtractedTrips([])
+  }
+
+  const handleScan = async () => {
+    setIsScanning(true)
+    setScanProgress(0)
+    
+    // 이메일 스캔 시뮬레이션
+    const mockTrips: ExtractedTrip[] = [
+      {
+        id: '1',
+        type: 'flight',
+        title: '서울 → 방콕 항공편',
+        provider: '대한항공',
+        bookingRef: 'KE653-ABC123',
+        startDate: '2024-02-15',
+        location: 'Bangkok, Thailand',
+        details: {
+          departure: 'ICN 10:30',
+          arrival: 'BKK 14:25',
+          flightNumber: 'KE653',
+          class: 'Economy'
+        },
+        emailId: 'email-1',
+        emailDate: '2024-01-20',
+        status: 'pending'
+      },
+      {
+        id: '2',
+        type: 'hotel',
+        title: 'Marriott Bangkok Sukhumvit',
+        provider: 'Booking.com',
+        bookingRef: '2024021534567',
+        startDate: '2024-02-15',
+        endDate: '2024-02-20',
+        location: 'Bangkok, Thailand',
+        details: {
+          roomType: 'Deluxe King',
+          guests: 2,
+          nights: 5,
+          address: '2 Sukhumvit Soi 57'
+        },
+        emailId: 'email-2',
+        emailDate: '2024-01-22',
+        status: 'pending'
+      },
+      {
+        id: '3',
+        type: 'flight',
+        title: '방콕 → 푸켓 항공편',
+        provider: 'Thai Airways',
+        bookingRef: 'TG205-XYZ789',
+        startDate: '2024-02-20',
+        location: 'Phuket, Thailand',
+        details: {
+          departure: 'BKK 15:30',
+          arrival: 'HKT 16:55',
+          flightNumber: 'TG205'
+        },
+        emailId: 'email-3',
+        emailDate: '2024-01-25',
+        status: 'pending'
+      },
+      {
+        id: '4',
+        type: 'activity',
+        title: '피피 아일랜드 당일 투어',
+        provider: 'Viator',
+        bookingRef: 'VTR-2024-98765',
+        startDate: '2024-02-22',
+        location: 'Phuket, Thailand',
+        details: {
+          pickup: '08:00 호텔 로비',
+          duration: '8시간',
+          includes: '점심, 스노클링 장비'
+        },
+        emailId: 'email-4',
+        emailDate: '2024-02-01',
+        status: 'pending'
+      }
+    ]
+    
+    // 프로그레스 시뮬레이션
+    for (let i = 0; i <= 100; i += 10) {
+      setScanProgress(i)
+      await new Promise(resolve => setTimeout(resolve, 200))
+    }
+    
+    setExtractedTrips(mockTrips)
+    localStorage.setItem('dino-extracted-trips', JSON.stringify(mockTrips))
+    setIsScanning(false)
+  }
+
+  const handleTogglePattern = (patternId: string) => {
+    setEmailPatterns(patterns =>
+      patterns.map(p =>
+        p.id === patternId ? { ...p, enabled: !p.enabled } : p
+      )
     )
   }
 
-  if (!session) {
-    router.push('/auth/signin')
-    return null
+  const handleSelectTrip = (tripId: string) => {
+    setSelectedTrips(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(tripId)) {
+        newSet.delete(tripId)
+      } else {
+        newSet.add(tripId)
+      }
+      return newSet
+    })
   }
 
+  const handleSelectAll = () => {
+    if (selectedTrips.size === extractedTrips.filter(t => t.status === 'pending').length) {
+      setSelectedTrips(new Set())
+    } else {
+      setSelectedTrips(new Set(extractedTrips.filter(t => t.status === 'pending').map(t => t.id)))
+    }
+  }
+
+  const handleImportSelected = async () => {
+    // 선택된 여행 가져오기
+    const tripsToImport = extractedTrips.filter(t => selectedTrips.has(t.id))
+    
+    // 여행 기록에 추가 (시뮬레이션)
+    console.log('Importing trips:', tripsToImport)
+    
+    // 상태 업데이트
+    setExtractedTrips(trips =>
+      trips.map(t =>
+        selectedTrips.has(t.id) ? { ...t, status: 'imported' as const } : t
+      )
+    )
+    
+    // 선택 초기화
+    setSelectedTrips(new Set())
+    
+    // 성공 메시지
+    alert(`${tripsToImport.length}개의 여행 기록을 가져왔습니다!`)
+  }
+
+  const handleIgnoreSelected = () => {
+    setExtractedTrips(trips =>
+      trips.map(t =>
+        selectedTrips.has(t.id) ? { ...t, status: 'ignored' as const } : t
+      )
+    )
+    setSelectedTrips(new Set())
+  }
+
+  const pendingTrips = extractedTrips.filter(t => t.status === 'pending')
+  const importedTrips = extractedTrips.filter(t => t.status === 'imported')
+
   return (
-    <main style={{ 
-      minHeight: '100vh', 
-      padding: '20px',
-      backgroundColor: '#ffffff',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <PageHeader
-          title="Gmail 통합"
-          description="Gmail에서 여행 관련 이메일을 자동으로 분석하여 여행 기록을 간편하게 추가할 수 있습니다."
-          icon={PageIcons.Gmail}
-          breadcrumbs={[
-            { label: '대시보드', href: '/dashboard' },
-            { label: 'Gmail 통합' }
-          ]}
-          action={
-            <div className="flex items-center space-x-2">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gmail 연동 📧</h1>
+          <p className="text-gray-600">
+            이메일에서 여행 예약 정보를 자동으로 추출합니다
+          </p>
+        </div>
+
+        {/* 연결 상태 카드 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-4">
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                isConnected ? 'bg-green-100' : 'bg-gray-100'
+              }`}>
+                <svg className={`w-6 h-6 ${isConnected ? 'text-green-600' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Gmail 계정
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {isConnected 
+                    ? `${session?.user?.email || 'user@gmail.com'}과 연결됨`
+                    : 'Gmail 계정을 연결하여 예약 확인 이메일을 자동으로 가져오세요'
+                  }
+                </p>
+                {isConnected && (
+                  <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                    <span>마지막 스캔: 2시간 전</span>
+                    <span>•</span>
+                    <span>발견된 예약: {extractedTrips.length}개</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {isConnected ? (
               <button
-                onClick={checkConnection}
-                disabled={isLoading}
-                className="btn btn-outline btn-sm"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                onClick={handleDisconnect}
+                className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700"
               >
-                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-                연결 상태 확인
+                연결 해제
               </button>
-            </div>
-          }
-        />
-        
-        <WireframeGmailIntegration />
-        
-        {/* 사용 가이드 */}
-        <div style={{ marginTop: '40px', backgroundColor: '#f8f9fa', border: '1px solid #e0e0e0', padding: '30px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#000', marginBottom: '20px' }}>사용 가이드</h2>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '8px' }}>1. Gmail 연결 확인</h3>
-              <p style={{ color: '#666', lineHeight: '1.5' }}>
-                먼저 Gmail 연결 상태를 확인합니다. 연결이 되지 않았다면 Google 계정 재로그인이 필요할 수 있습니다.
-              </p>
-            </div>
-            
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '8px' }}>2. 여행 이메일 분석</h3>
-              <p style={{ color: '#666', lineHeight: '1.5' }}>
-                "최근 10개 분석" 또는 "최근 20개 분석" 버튼을 클릭하여 여행 관련 이메일을 분석합니다.
-                항공권, 호텔 예약, 여행 일정 등의 이메일을 자동으로 찾아 분석합니다.
-              </p>
-            </div>
-            
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '8px' }}>3. 분석 결과 확인</h3>
-              <p style={{ color: '#666', lineHeight: '1.5' }}>
-                분석된 결과에서 출발일, 도착일, 목적지 등의 정보를 확인하고, 
-                신뢰도가 높은 결과는 "여행 기록 추가" 버튼으로 바로 여행 기록에 추가할 수 있습니다.
-              </p>
-            </div>
-            
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '8px' }}>4. 지원하는 이메일 유형</h3>
-              <ul style={{ color: '#666', lineHeight: '1.6', paddingLeft: '20px' }}>
-                <li>항공권 예약 이메일 (항공사, 여행사)</li>
-                <li>호텔 예약 이메일 (Booking.com, Expedia, Agoda 등)</li>
-                <li>렌터카 예약 이메일</li>
-                <li>여행 일정 이메일</li>
-                <li>전자티켓 및 보딩패스</li>
-              </ul>
-            </div>
+            ) : (
+              <button
+                onClick={handleConnect}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+              >
+                Gmail 연결
+              </button>
+            )}
           </div>
         </div>
+
+        {isConnected && (
+          <>
+            {/* 이메일 패턴 설정 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                스캔할 이메일 유형
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {emailPatterns.map(pattern => (
+                  <label
+                    key={pattern.id}
+                    className="flex items-start space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={pattern.enabled}
+                      onChange={() => handleTogglePattern(pattern.id)}
+                      className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">{pattern.icon}</span>
+                        <span className="font-medium text-gray-900">{pattern.name}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">{pattern.description}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              
+              <button
+                onClick={handleScan}
+                disabled={isScanning || !emailPatterns.some(p => p.enabled)}
+                className="mt-4 w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isScanning ? '스캔 중...' : '이메일 스캔 시작'}
+              </button>
+              
+              {isScanning && (
+                <div className="mt-4">
+                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                    <span>스캔 진행률</span>
+                    <span>{scanProgress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${scanProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 추출된 여행 목록 */}
+            {pendingTrips.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    발견된 예약 ({pendingTrips.length}개)
+                  </h3>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={handleSelectAll}
+                      className="text-sm text-blue-600 hover:text-blue-700"
+                    >
+                      {selectedTrips.size === pendingTrips.length ? '선택 해제' : '모두 선택'}
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="space-y-3 mb-4">
+                  {pendingTrips.map(trip => (
+                    <label
+                      key={trip.id}
+                      className={`block p-4 rounded-lg border cursor-pointer transition-colors ${
+                        selectedTrips.has(trip.id)
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-start">
+                        <input
+                          type="checkbox"
+                          checked={selectedTrips.has(trip.id)}
+                          onChange={() => handleSelectTrip(trip.id)}
+                          className="mt-1 mr-3 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <div className="flex items-center space-x-2">
+                                <span className="text-lg">
+                                  {trip.type === 'flight' && '✈️'}
+                                  {trip.type === 'hotel' && '🏨'}
+                                  {trip.type === 'car' && '🚗'}
+                                  {trip.type === 'activity' && '🎫'}
+                                </span>
+                                <h4 className="font-semibold text-gray-900">{trip.title}</h4>
+                              </div>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {trip.provider} • 예약번호: {trip.bookingRef}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {new Date(trip.startDate).toLocaleDateString('ko-KR')}
+                                {trip.endDate && ` - ${new Date(trip.endDate).toLocaleDateString('ko-KR')}`}
+                              </p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                {trip.location}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-gray-500">
+                                이메일 날짜
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {new Date(trip.emailDate).toLocaleDateString('ko-KR')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+                
+                {selectedTrips.size > 0 && (
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                    <button
+                      onClick={handleIgnoreSelected}
+                      className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    >
+                      무시하기 ({selectedTrips.size}개)
+                    </button>
+                    <button
+                      onClick={handleImportSelected}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      가져오기 ({selectedTrips.size}개)
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 가져온 예약 */}
+            {importedTrips.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  가져온 예약 ({importedTrips.length}개)
+                </h3>
+                <div className="space-y-2">
+                  {importedTrips.map(trip => (
+                    <div
+                      key={trip.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-lg">
+                          {trip.type === 'flight' && '✈️'}
+                          {trip.type === 'hotel' && '🏨'}
+                          {trip.type === 'car' && '🚗'}
+                          {trip.type === 'activity' && '🎫'}
+                        </span>
+                        <div>
+                          <p className="font-medium text-gray-900">{trip.title}</p>
+                          <p className="text-sm text-gray-600">
+                            {new Date(trip.startDate).toLocaleDateString('ko-KR')} • {trip.location}
+                          </p>
+                        </div>
+                      </div>
+                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
-    </main>
+    </div>
   )
 }

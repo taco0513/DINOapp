@@ -58,6 +58,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
 
   // 프로필 로드
   useEffect(() => {
@@ -98,6 +99,37 @@ export default function ProfilePage() {
       setIsLoading(false);
     }
   };
+
+  // 프로필 완성도 계산
+  const calculateCompletion = () => {
+    const fields = [
+      profile.name,
+      profile.email,
+      profile.bio,
+      profile.location,
+      profile.nationality,
+      profile.travelPreferences.travelStyle,
+      profile.travelPreferences.groupSize,
+      profile.visaInfo.passportCountry,
+      profile.visaInfo.passportExpiry,
+    ];
+    
+    const filledFields = fields.filter(field => field && field.length > 0).length;
+    return Math.round((filledFields / fields.length) * 100);
+  };
+
+  const completionPercentage = calculateCompletion();
+
+  // 완성도에 따른 보상 레벨
+  const getRewardLevel = () => {
+    if (completionPercentage >= 100) return { level: '🏆', message: '프로필 마스터!', color: 'gold' };
+    if (completionPercentage >= 80) return { level: '🥈', message: '거의 다 완성!', color: 'silver' };
+    if (completionPercentage >= 60) return { level: '🥉', message: '좋은 시작!', color: 'bronze' };
+    if (completionPercentage >= 40) return { level: '⭐', message: '계속 진행해보세요!', color: 'blue' };
+    return { level: '🌱', message: '프로필을 시작해보세요!', color: 'green' };
+  };
+
+  const reward = getRewardLevel();
 
   // 입력 핸들러
   const handleInputChange = (field: string, value: any) => {
@@ -186,6 +218,132 @@ export default function ProfilePage() {
           description='개인 정보와 여행 선호도를 관리하세요'
         />
 
+        {/* 프로필 완성도 섹션 */}
+        <div className='card p-6 mb-8' style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white'
+        }}>
+          <div className='flex items-center justify-between mb-4'>
+            <div>
+              <h3 className='text-xl font-bold mb-2'>프로필 완성도</h3>
+              <p className='text-sm opacity-90'>
+                프로필을 완성하면 더 정확한 맞춤 추천을 받을 수 있어요!
+              </p>
+            </div>
+            <div className='text-center'>
+              <div className='text-4xl mb-1'>{reward.level}</div>
+              <p className='text-xs'>{reward.message}</p>
+            </div>
+          </div>
+
+          {/* 섹션별 완성 뱃지 */}
+          <div className='flex gap-2 mb-4'>
+            {profile.name && profile.email && (
+              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
+                ✅ 기본정보
+              </span>
+            )}
+            {profile.bio && profile.location && profile.nationality && (
+              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
+                ✅ 개인정보
+              </span>
+            )}
+            {profile.travelPreferences.travelStyle && profile.travelPreferences.groupSize && (
+              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
+                ✅ 여행스타일
+              </span>
+            )}
+            {profile.visaInfo.passportCountry && profile.visaInfo.passportExpiry && (
+              <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>
+                ✅ 비자정보
+              </span>
+            )}
+          </div>
+          
+          <div className='mb-4'>
+            <div className='flex justify-between items-center mb-2'>
+              <span className='text-sm font-medium'>{completionPercentage}% 완성</span>
+              <button
+                onClick={() => setShowRewards(!showRewards)}
+                className='text-xs underline opacity-75 hover:opacity-100'
+              >
+                보상 보기
+              </button>
+            </div>
+            <div className='w-full bg-white/20 rounded-full h-3'>
+              <div 
+                className='h-3 rounded-full transition-all duration-500'
+                style={{
+                  width: `${completionPercentage}%`,
+                  background: completionPercentage >= 100 ? '#ffd700' : 
+                            completionPercentage >= 80 ? '#c0c0c0' :
+                            completionPercentage >= 60 ? '#cd7f32' :
+                            '#4299e1'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* 보상 시스템 설명 */}
+          {showRewards && (
+            <div className='mt-4 p-4 bg-white/10 rounded-lg'>
+              <h4 className='font-bold mb-3'>🎁 프로필 완성 보상</h4>
+              <div className='space-y-2 text-sm'>
+                <div className='flex items-center gap-3'>
+                  <span>🌱 0-39%</span>
+                  <span>기본 기능 사용</span>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <span>⭐ 40-59%</span>
+                  <span>개인화된 여행 추천</span>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <span>🥉 60-79%</span>
+                  <span>고급 통계 및 인사이트</span>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <span>🥈 80-99%</span>
+                  <span>AI 여행 어시스턴트 활성화</span>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <span>🏆 100%</span>
+                  <span>프리미엄 기능 모두 해제!</span>
+                </div>
+              </div>
+              
+              {/* 아직 입력하지 않은 항목 */}
+              {completionPercentage < 100 && (
+                <div className='mt-4 pt-3 border-t border-white/20'>
+                  <p className='text-xs font-bold mb-2'>📝 아직 입력하지 않은 항목:</p>
+                  <div className='text-xs space-y-1'>
+                    {!profile.name && <div>• 이름</div>}
+                    {!profile.bio && <div>• 자기소개</div>}
+                    {!profile.location && <div>• 거주지</div>}
+                    {!profile.nationality && <div>• 국적</div>}
+                    {!profile.visaInfo.passportCountry && <div>• 여권 발급국</div>}
+                    {!profile.visaInfo.passportExpiry && <div>• 여권 만료일</div>}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 빠른 팁 */}
+          {completionPercentage < 100 && (
+            <div className='mt-4 flex items-start gap-2'>
+              <span className='text-yellow-300'>💡</span>
+              <p className='text-sm'>
+                {!profile.name && "이름을 추가하면 개인화된 인사를 받을 수 있어요!"}
+                {profile.name && !profile.bio && "자기소개를 추가하면 다른 여행자들과 연결될 수 있어요!"}
+                {profile.name && profile.bio && !profile.location && "거주지를 추가하면 주변 여행 정보를 받을 수 있어요!"}
+                {profile.name && profile.bio && profile.location && !profile.visaInfo.passportExpiry && "여권 만료일을 등록하면 갱신 알림을 받을 수 있어요!"}
+                {profile.name && profile.bio && profile.location && profile.visaInfo.passportExpiry && !profile.nationality && "국적 정보를 추가하면 비자 요구사항을 자동으로 확인할 수 있어요!"}
+                {profile.name && profile.bio && profile.location && profile.visaInfo.passportExpiry && profile.nationality && !profile.visaInfo.passportCountry && "여권 발급국을 추가하면 정확한 비자 정보를 확인할 수 있어요!"}
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* 저장 메시지 */}
         {saveMessage && (
           <div
@@ -198,7 +356,14 @@ export default function ProfilePage() {
         <div className='grid lg:grid-cols-3 gap-8'>
           {/* 프로필 카드 */}
           <div className='lg:col-span-1'>
-            <div className='card p-6 text-center'>
+            <div className='card p-6 text-center relative'>
+              {/* 완성도 뱃지 */}
+              {completionPercentage >= 100 && (
+                <div className='absolute top-4 right-4 text-2xl' title='프로필 완성!'>
+                  {reward.level}
+                </div>
+              )}
+              
               <div className='relative inline-block mb-4'>
                 {session.user?.image ? (
                   <img
@@ -255,17 +420,21 @@ export default function ProfilePage() {
 
               <div className='grid md:grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-sm font-medium mb-2'>이름</label>
+                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
+                    이름
+                    {!profile.name && <span className='text-orange-500 text-xs'>⚠️ 필수</span>}
+                  </label>
                   {isEditing ? (
                     <input
                       type='text'
                       value={profile.name}
                       onChange={e => handleInputChange('name', e.target.value)}
                       className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
+                      placeholder='이름을 입력하세요'
                     />
                   ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.name || '-'}
+                    <p className={`px-3 py-2 rounded-md ${profile.name ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
+                      {profile.name || '입력 필요'}
                     </p>
                   )}
                 </div>
@@ -280,8 +449,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className='block text-sm font-medium mb-2'>
+                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
                     거주지
+                    {!profile.location && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
                   </label>
                   {isEditing ? (
                     <input
@@ -294,14 +464,17 @@ export default function ProfilePage() {
                       className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                     />
                   ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.location || '-'}
+                    <p className={`px-3 py-2 rounded-md ${profile.location ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
+                      {profile.location || '입력 필요'}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className='block text-sm font-medium mb-2'>국적</label>
+                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
+                    국적
+                    {!profile.nationality && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
+                  </label>
                   {isEditing ? (
                     <input
                       type='text'
@@ -313,28 +486,33 @@ export default function ProfilePage() {
                       className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                     />
                   ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.nationality || '-'}
+                    <p className={`px-3 py-2 rounded-md ${profile.nationality ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
+                      {profile.nationality || '입력 필요'}
                     </p>
                   )}
                 </div>
 
                 <div className='md:col-span-2'>
-                  <label className='block text-sm font-medium mb-2'>
+                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
                     자기소개
+                    {!profile.bio && <span className='text-blue-600 text-xs'>💬 추천</span>}
                   </label>
                   {isEditing ? (
                     <textarea
                       value={profile.bio}
                       onChange={e => handleInputChange('bio', e.target.value)}
-                      placeholder='자신을 간단히 소개해보세요'
+                      placeholder='자신을 간단히 소개해보세요. 여행 스타일이나 관심사를 적어보세요!'
                       rows={3}
                       className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                     />
                   ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md min-h-[80px]'>
-                      {profile.bio || '-'}
-                    </p>
+                    <div className={`px-3 py-2 rounded-md min-h-[80px] ${profile.bio ? 'bg-surface' : 'bg-blue-50 border border-blue-200'}`}>
+                      {profile.bio || (
+                        <span className='text-blue-600 text-sm'>
+                          🌟 자기소개를 추가하면 다른 디지털 노마드들과 연결될 수 있어요!
+                        </span>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -419,8 +597,9 @@ export default function ProfilePage() {
 
               <div className='grid md:grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-sm font-medium mb-2'>
+                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
                     여권 발급국
+                    {!profile.visaInfo.passportCountry && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
                   </label>
                   {isEditing ? (
                     <input
@@ -436,15 +615,16 @@ export default function ProfilePage() {
                       className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                     />
                   ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.visaInfo.passportCountry || '-'}
+                    <p className={`px-3 py-2 rounded-md ${profile.visaInfo.passportCountry ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
+                      {profile.visaInfo.passportCountry || '입력 필요'}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className='block text-sm font-medium mb-2'>
+                  <label className='block text-sm font-medium mb-2 flex items-center gap-2'>
                     여권 만료일
+                    {!profile.visaInfo.passportExpiry && <span className='text-orange-500 text-xs'>⚠️ 중요</span>}
                   </label>
                   {isEditing ? (
                     <input
@@ -459,8 +639,21 @@ export default function ProfilePage() {
                       className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                     />
                   ) : (
-                    <p className='px-3 py-2 bg-surface rounded-md'>
-                      {profile.visaInfo.passportExpiry || '-'}
+                    <p className={`px-3 py-2 rounded-md ${profile.visaInfo.passportExpiry ? 'bg-surface' : 'bg-orange-50 border border-orange-200'}`}>
+                      {profile.visaInfo.passportExpiry ? (
+                        <>
+                          {profile.visaInfo.passportExpiry}
+                          {(() => {
+                            const expiry = new Date(profile.visaInfo.passportExpiry);
+                            const today = new Date();
+                            const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                            if (daysUntilExpiry < 180) {
+                              return <span className='text-red-500 text-xs ml-2'>⚠️ {daysUntilExpiry}일 남음</span>;
+                            }
+                            return null;
+                          })()}
+                        </>
+                      ) : '입력 필요'}
                     </p>
                   )}
                 </div>

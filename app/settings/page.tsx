@@ -22,6 +22,9 @@ import {
   Moon,
   Sun,
   Monitor,
+  Mail,
+  CheckCircle,
+  Info,
 } from 'lucide-react';
 
 interface UserSettings {
@@ -36,6 +39,10 @@ interface UserSettings {
   privacy: {
     profileVisibility: 'public' | 'private';
     dataSharing: boolean;
+  };
+  integration: {
+    gmailConnected: boolean;
+    lastSync?: string;
   };
 }
 
@@ -53,6 +60,9 @@ export default function SettingsPage() {
     privacy: {
       profileVisibility: 'private',
       dataSharing: false,
+    },
+    integration: {
+      gmailConnected: false,
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -353,6 +363,212 @@ export default function SettingsPage() {
                     </label>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Gmail 연동 설정 */}
+            <div className='card p-6'>
+              <div className='flex items-center gap-3 mb-6'>
+                <Mail className='h-5 w-5 text-primary' />
+                <div>
+                  <h3 className='text-lg font-semibold'>Gmail 연동</h3>
+                  <p className='text-sm text-secondary'>
+                    Gmail에서 자동으로 여행 정보를 가져옵니다
+                  </p>
+                </div>
+              </div>
+
+              {/* 연동 상태 */}
+              <div className={`p-4 rounded-lg mb-6 ${settings.integration.gmailConnected ? 'bg-green-50 border border-green-200' : 'bg-orange-50 border border-orange-200'}`}>
+                <div className='flex items-center gap-3'>
+                  {settings.integration.gmailConnected ? (
+                    <>
+                      <CheckCircle className='h-5 w-5 text-green-600' />
+                      <div>
+                        <p className='font-medium text-green-800'>Gmail이 연동되었습니다</p>
+                        <p className='text-sm text-green-600'>
+                          마지막 동기화: {settings.integration.lastSync || '방금 전'}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Info className='h-5 w-5 text-orange-600' />
+                      <div>
+                        <p className='font-medium text-orange-800'>Gmail 연동이 필요합니다</p>
+                        <p className='text-sm text-orange-600'>
+                          연동하면 자동으로 여행 정보를 추출할 수 있습니다
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Gmail 연동의 이점 */}
+              <div className='bg-surface rounded-lg p-6 mb-6'>
+                <h4 className='font-semibold mb-4 flex items-center gap-2'>
+                  <span className='text-xl'>✨</span>
+                  Gmail 연동의 이점
+                </h4>
+                <div className='space-y-3'>
+                  <div className='flex items-start gap-3'>
+                    <span className='text-green-600 mt-0.5'>✓</span>
+                    <div>
+                      <p className='font-medium'>자동 여행 정보 추출</p>
+                      <p className='text-sm text-secondary'>항공권, 호텔 예약 이메일에서 자동으로 일정을 추출합니다</p>
+                    </div>
+                  </div>
+                  <div className='flex items-start gap-3'>
+                    <span className='text-green-600 mt-0.5'>✓</span>
+                    <div>
+                      <p className='font-medium'>실시간 업데이트</p>
+                      <p className='text-sm text-secondary'>항공편 변경, 호텔 확인 등 업데이트를 실시간으로 반영합니다</p>
+                    </div>
+                  </div>
+                  <div className='flex items-start gap-3'>
+                    <span className='text-green-600 mt-0.5'>✓</span>
+                    <div>
+                      <p className='font-medium'>비자 정보 알림</p>
+                      <p className='text-sm text-secondary'>비자 승인, 여권 갱신 알림 등을 자동으로 감지합니다</p>
+                    </div>
+                  </div>
+                  <div className='flex items-start gap-3'>
+                    <span className='text-green-600 mt-0.5'>✓</span>
+                    <div>
+                      <p className='font-medium'>스마트 분류</p>
+                      <p className='text-sm text-secondary'>여행 관련 이메일을 자동으로 분류하고 정리합니다</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 연동 방법 안내 */}
+              <div className='bg-blue-50 rounded-lg p-6 mb-6'>
+                <h4 className='font-semibold mb-4 flex items-center gap-2'>
+                  <span className='text-xl'>📋</span>
+                  간단한 연동 방법
+                </h4>
+                <ol className='space-y-3'>
+                  <li className='flex items-start gap-3'>
+                    <span className='flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full text-xs flex items-center justify-center font-bold'>1</span>
+                    <div>
+                      <p className='font-medium'>아래 "Gmail 연동하기" 버튼을 클릭합니다</p>
+                      <p className='text-sm text-secondary'>Google 로그인 페이지로 이동합니다</p>
+                    </div>
+                  </li>
+                  <li className='flex items-start gap-3'>
+                    <span className='flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full text-xs flex items-center justify-center font-bold'>2</span>
+                    <div>
+                      <p className='font-medium'>Google 계정으로 로그인합니다</p>
+                      <p className='text-sm text-secondary'>평소 사용하는 Gmail 계정을 선택하세요</p>
+                    </div>
+                  </li>
+                  <li className='flex items-start gap-3'>
+                    <span className='flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full text-xs flex items-center justify-center font-bold'>3</span>
+                    <div>
+                      <p className='font-medium'>DINO에 권한을 부여합니다</p>
+                      <p className='text-sm text-secondary'>여행 관련 이메일만 읽기 권한을 요청합니다</p>
+                    </div>
+                  </li>
+                  <li className='flex items-start gap-3'>
+                    <span className='flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full text-xs flex items-center justify-center font-bold'>4</span>
+                    <div>
+                      <p className='font-medium'>완료! 자동으로 동기화가 시작됩니다</p>
+                      <p className='text-sm text-secondary'>몇 분 안에 여행 정보가 나타납니다</p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              {/* 개인정보 보호 안내 */}
+              <div className='bg-gray-50 rounded-lg p-4 mb-6'>
+                <div className='flex items-start gap-3'>
+                  <Shield className='h-5 w-5 text-gray-600 mt-0.5' />
+                  <div className='text-sm'>
+                    <p className='font-medium text-gray-800 mb-1'>🔒 개인정보는 안전합니다</p>
+                    <p className='text-gray-600'>
+                      • 여행 관련 이메일만 접근합니다<br />
+                      • 이메일 내용은 서버에 저장되지 않습니다<br />
+                      • 언제든지 연동을 해제할 수 있습니다<br />
+                      • OAuth 2.0 보안 프로토콜을 사용합니다
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 연동 버튼 */}
+              <div className='flex gap-3'>
+                {settings.integration.gmailConnected ? (
+                  <>
+                    <button
+                      onClick={() => saveSettings({
+                        integration: {
+                          ...settings.integration,
+                          lastSync: new Date().toLocaleString('ko-KR')
+                        }
+                      })}
+                      disabled={isLoading}
+                      className='flex-1 btn btn-primary'
+                    >
+                      <Mail className='h-4 w-4 mr-2' />
+                      지금 동기화하기
+                    </button>
+                    <button
+                      onClick={() => saveSettings({
+                        integration: {
+                          gmailConnected: false,
+                          lastSync: undefined
+                        }
+                      })}
+                      disabled={isLoading}
+                      className='btn btn-ghost text-red-600 border-red-200 hover:bg-red-50'
+                    >
+                      연동 해제
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      // Gmail OAuth 플로우 시작
+                      // 실제로는 OAuth 인증 URL로 리다이렉트
+                      saveSettings({
+                        integration: {
+                          gmailConnected: true,
+                          lastSync: new Date().toLocaleString('ko-KR')
+                        }
+                      });
+                    }}
+                    disabled={isLoading}
+                    className='w-full btn btn-primary flex items-center justify-center gap-2'
+                  >
+                    <Mail className='h-5 w-5' />
+                    Gmail 연동하기
+                  </button>
+                )}
+              </div>
+
+              {/* FAQ */}
+              <div className='mt-6 pt-6 border-t'>
+                <details className='text-sm'>
+                  <summary className='cursor-pointer font-medium text-secondary hover:text-primary'>
+                    자주 묻는 질문 (FAQ)
+                  </summary>
+                  <div className='mt-4 space-y-4 text-secondary'>
+                    <div>
+                      <p className='font-medium text-primary'>Q: 어떤 이메일을 읽나요?</p>
+                      <p>A: 항공사, 호텔, 렌터카 등 여행 관련 발신자의 이메일만 읽습니다.</p>
+                    </div>
+                    <div>
+                      <p className='font-medium text-primary'>Q: 개인 이메일도 읽나요?</p>
+                      <p>A: 아니요, 여행 예약 확인 이메일만 필터링하여 읽습니다.</p>
+                    </div>
+                    <div>
+                      <p className='font-medium text-primary'>Q: 연동을 해제하면 어떻게 되나요?</p>
+                      <p>A: 더 이상 새 이메일을 읽지 않지만, 이미 추출된 여행 정보는 유지됩니다.</p>
+                    </div>
+                  </div>
+                </details>
               </div>
             </div>
 

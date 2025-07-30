@@ -44,6 +44,61 @@ jest.mock('next-auth/react', () => ({
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 process.env.NEXTAUTH_SECRET = 'test-secret'
 
+// Mock localStorage
+Object.defineProperty(window, 'localStorage', {
+  value: (() => {
+    let store = {}
+    return {
+      getItem: (key) => store[key] || null,
+      setItem: (key, value) => {
+        store[key] = value
+      },
+      removeItem: (key) => {
+        delete store[key]
+      },
+      clear: () => {
+        store = {}
+      }
+    }
+  })(),
+  writable: true
+})
+
+// Mock sessionStorage
+Object.defineProperty(window, 'sessionStorage', {
+  value: (() => {
+    let store = {}
+    return {
+      getItem: (key) => store[key] || null,
+      setItem: (key, value) => {
+        store[key] = value
+      },
+      removeItem: (key) => {
+        delete store[key]
+      },
+      clear: () => {
+        store = {}
+      }
+    }
+  })(),
+  writable: true
+})
+
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+})
+
 // Polyfill for Next.js Request/Response
 global.Request = global.Request || class Request {
   constructor(url, init = {}) {

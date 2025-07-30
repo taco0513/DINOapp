@@ -9,6 +9,7 @@ import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 import Script from 'next/script'
 import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
+import { SkipLink } from '@/components/ui/SkipLink'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -253,11 +254,14 @@ export default function RootLayout({
           }}
         />
 
+        <SkipLink />
         <MonitoringProvider>
           <SessionProvider>
             <AnalyticsWrapper>
               <MainLayout>
-                {children}
+                <main id="main-content" tabIndex={-1}>
+                  {children}
+                </main>
                 <PWAInstallButton />
                 <OfflineIndicator />
                 <PerformanceMonitor 

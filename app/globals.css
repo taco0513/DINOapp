@@ -2,6 +2,7 @@
 @import '../styles/base.css';
 @import '../styles/components.css';
 @import '../styles/mobile-touch.css';
+@import '../styles/mobile.css';
 
 /* Keep Tailwind for now - will gradually phase out */
 @tailwind base;
@@ -50,5 +51,57 @@ body {
 @media (max-width: 480px) {
   .container {
     padding: 0 12px;
+  }
+}
+
+/* 스피너 애니메이션 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 접근성을 위한 스크린 리더 전용 클래스 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* 포커스 표시 개선 */
+*:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 모션 감소 선호 사용자를 위한 설정 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

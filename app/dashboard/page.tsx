@@ -298,31 +298,31 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-      </div>
-      
-      {/* 알림 설정 섹션 */}
-      <div className="card">
-        <div className="card-header flex items-center justify-between">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            알림 설정
-          </h2>
-          <button
-            onClick={() => setShowNotificationSettings(!showNotificationSettings)}
-            className="btn btn-ghost text-sm"
-          >
-            {showNotificationSettings ? '닫기' : '설정'}
-          </button>
+
+        {/* 알림 설정 섹션 */}
+        <div className="card">
+          <div className="card-header flex items-center justify-between">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Bell className="h-5 w-5" />
+              알림 설정
+            </h2>
+            <button
+              onClick={() => setShowNotificationSettings(!showNotificationSettings)}
+              className="btn btn-ghost text-sm"
+            >
+              {showNotificationSettings ? '닫기' : '설정'}
+            </button>
+          </div>
+          
+          {showNotificationSettings && (
+            <div className="card-body">
+              <NotificationSettings userId={session?.user?.id || ''} />
+            </div>
+          )}
         </div>
         
-        {showNotificationSettings && (
-          <div className="card-body">
-            <NotificationSettings userId={session?.user?.id || ''} />
-          </div>
-        )}
+        <LanguageTest />
       </div>
-      
-      <LanguageTest />
     </main>
   )
 }

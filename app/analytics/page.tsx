@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
+import { TravelStatsWidget } from '@/components/dashboard/TravelStatsWidget'
+import { PullToRefresh } from '@/components/mobile/PullToRefresh'
+import { BarChart3 } from 'lucide-react'
 
 export default function AnalyticsPage() {
   const { data: session, status } = useSession()
@@ -12,6 +15,7 @@ export default function AnalyticsPage() {
   
   const [statsData, setStatsData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -23,6 +27,18 @@ export default function AnalyticsPage() {
 
     loadStats()
   }, [session, status, router])
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const loadStats = async () => {
     setLoading(true)
@@ -46,17 +62,17 @@ export default function AnalyticsPage() {
     )
   }
 
-  return (
-    <main style={{ minHeight: '100vh' }}>
-      <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
+  const pageContent = (
+    <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
         {/* Header */}
         <header className="nav mb-8">
           <div>
-            <h1 className="mb-2">
-              통계
+            <h1 className="mb-2 flex items-center gap-3">
+              <BarChart3 className="h-8 w-8 text-primary" />
+              여행 분석
             </h1>
             <p className="text-small text-secondary">
-              여행 패턴과 체류 일수를 분석해보세요
+              당신의 여행 패턴과 통계를 자세히 분석해보세요
             </p>
           </div>
         </header>
@@ -67,6 +83,10 @@ export default function AnalyticsPage() {
           </div>
         ) : statsData ? (
           <div className="flex flex-col gap-10">
+            {/* Travel Statistics Widget */}
+            <TravelStatsWidget />
+            
+            {/* Existing Analytics */}
             {/* Overview Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
               <div className="stat">
@@ -217,6 +237,17 @@ export default function AnalyticsPage() {
           </div>
         )}
       </div>
+    )
+
+  return (
+    <main style={{ minHeight: '100vh' }}>
+      {isMobile ? (
+        <PullToRefresh onRefresh={loadStats}>
+          {pageContent}
+        </PullToRefresh>
+      ) : (
+        pageContent
+      )}
     </main>
   )
 }

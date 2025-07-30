@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { TravelInfo } from '@/lib/gmail';
 import StayVisualizationCalendar from '@/components/calendar/StayVisualizationCalendar';
 import CalendarSync from '@/components/calendar/CalendarSync';
+import { TravelCalendarView } from '@/components/calendar/TravelCalendarView';
 import { Trip } from '@/types/database';
 import { Calendar, ExternalLink, RefreshCw } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -30,8 +31,8 @@ export default function CalendarPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'sync' | 'visualization' | 'manage'
-  >('overview');
+    'overview' | 'sync' | 'visualization' | 'schedule' | 'manage'
+  >('schedule');
 
   // Gmail에서 여행 정보 가져오기
   const loadTravelInfos = async () => {
@@ -147,8 +148,8 @@ export default function CalendarPage() {
       <div className='container mx-auto px-4 py-8'>
         {/* Header */}
         <PageHeader
-          title='📅 Calendar 통합'
-          description='Gmail에서 추출한 여행 정보를 Google Calendar와 동기화하세요'
+          title='📅 여행 캘린더'
+          description='여행 일정을 캘린더 뷰로 확인하고 Gmail 연동으로 자동 동기화하세요'
         />
 
         {/* Action Button */}
@@ -200,10 +201,20 @@ export default function CalendarPage() {
 
         {/* Tab Navigation */}
         <div className='border-b border-border mb-8'>
-          <div className='flex gap-0'>
+          <div className='flex gap-0 overflow-x-auto'>
+            <button
+              onClick={() => setActiveTab('schedule')}
+              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'schedule'
+                  ? 'border-primary text-primary font-medium'
+                  : 'border-transparent text-secondary hover:text-primary'
+              }`}
+            >
+              📅 일정
+            </button>
             <button
               onClick={() => setActiveTab('overview')}
-              className={`px-5 py-3 border-b-2 transition-colors ${
+              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === 'overview'
                   ? 'border-primary text-primary font-medium'
                   : 'border-transparent text-secondary hover:text-primary'
@@ -213,7 +224,7 @@ export default function CalendarPage() {
             </button>
             <button
               onClick={() => setActiveTab('sync')}
-              className={`px-5 py-3 border-b-2 transition-colors ${
+              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === 'sync'
                   ? 'border-primary text-primary font-medium'
                   : 'border-transparent text-secondary hover:text-primary'
@@ -223,7 +234,7 @@ export default function CalendarPage() {
             </button>
             <button
               onClick={() => setActiveTab('visualization')}
-              className={`px-5 py-3 border-b-2 transition-colors ${
+              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === 'visualization'
                   ? 'border-primary text-primary font-medium'
                   : 'border-transparent text-secondary hover:text-primary'
@@ -233,7 +244,7 @@ export default function CalendarPage() {
             </button>
             <button
               onClick={() => setActiveTab('manage')}
-              className={`px-5 py-3 border-b-2 transition-colors ${
+              className={`px-5 py-3 border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === 'manage'
                   ? 'border-primary text-primary font-medium'
                   : 'border-transparent text-secondary hover:text-primary'
@@ -245,6 +256,19 @@ export default function CalendarPage() {
         </div>
 
         {/* Tab Content */}
+        {activeTab === 'schedule' && (
+          <div>
+            <TravelCalendarView
+              onEventClick={(event) => {
+                console.log('Event clicked:', event);
+              }}
+              onDateClick={(date) => {
+                console.log('Date clicked:', date);
+              }}
+            />
+          </div>
+        )}
+
         {activeTab === 'overview' && (
           <div className='space-y-8'>
             {/* Overview Section */}

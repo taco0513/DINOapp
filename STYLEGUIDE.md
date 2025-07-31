@@ -4,62 +4,92 @@
 
 "Less is More" - 미니멀리즘으로 본질에 집중
 
+### 기술 스택
+
+- **UI Framework**: shadcn/ui (Radix UI + Tailwind CSS)
+- **Styling**: Tailwind CSS v3.4
+- **Theme System**: CSS Variables
+- **Component Pattern**: Copy-paste components
+
 ### 핵심 원칙
 
 1. **Simplicity**: 불필요한 장식 제거
 2. **Clarity**: 명확한 정보 전달
 3. **Consistency**: 일관된 디자인 언어
-4. **Accessibility**: 모든 사용자를 위한 디자인
+4. **Accessibility**: 모든 사용자를 위한 디자인 (Radix UI)
 
 ## 🎯 디자인 토큰 사용법
 
-### 색상 시스템
+### 색상 시스템 (shadcn/ui + Tailwind)
 
-#### Primary Colors
+#### Tailwind CSS Classes 사용
 
-```css
-/* 기본 색상 - 하드코딩 금지! */
-color: var(--color-primary); /* #000000 */
-color: var(--color-primary-hover); /* #1a1a1a */
-color: var(--color-primary-light); /* #f5f5f5 */
+```tsx
+/* 올바른 사용법 - Tailwind 클래스 ✅ */
+<div className="bg-background text-foreground">
+  <h1 className="text-primary">제목</h1>
+  <p className="text-muted-foreground">설명</p>
+  <button className="bg-primary text-primary-foreground hover:bg-primary/90">
+    버튼
+  </button>
+</div>
 
-/* 잘못된 예 ❌ */
-color: #000;
-color: black;
-color: #000000;
-
-/* 올바른 예 ✅ */
-color: var(--color-primary);
+/* 잘못된 예 - 하드코딩된 색상 ❌ */
+<div className="bg-white text-black">
+  <h1 className="text-blue-600">제목</h1>
+  <p className="text-gray-600">설명</p>
+  <button className="bg-blue-500 text-white">버튼</button>
+</div>
 ```
 
-#### Accent Colors
+#### CSS Variables (테마 토큰)
 
 ```css
-/* 강조 색상 */
-color: var(--color-accent); /* #0066ff */
-color: var(--color-accent-hover); /* #0052cc */
-color: var(--color-accent-light); /* #e6f0ff */
+/* shadcn/ui 디자인 토큰 */
+:root {
+  --background: 0 0% 100%; /* hsl(0 0% 100%) */
+  --foreground: 0 0% 3.9%; /* hsl(0 0% 3.9%) */
+  --primary: 221.2 83.2% 53.3%; /* hsl(221.2 83.2% 53.3%) */
+  --muted: 240 4.8% 95.9%; /* hsl(240 4.8% 95.9%) */
+  --muted-foreground: 240 3.8% 46.1%; /* hsl(240 3.8% 46.1%) */
+  --border: 240 5.9% 90%; /* hsl(240 5.9% 90%) */
+  --ring: 221.2 83.2% 53.3%; /* hsl(221.2 83.2% 53.3%) */
+}
 
-/* 잘못된 예 ❌ */
-color: #0066ff;
-color: blue;
-
-/* 올바른 예 ✅ */
-color: var(--color-accent);
+/* Tailwind 클래스로 사용 */
+.text-primary {
+  color: hsl(var(--primary));
+}
+.bg-background {
+  background-color: hsl(var(--background));
+}
+.border-border {
+  border-color: hsl(var(--border));
+}
 ```
 
-#### Text Colors
+#### 색상 팔레트
 
-```css
-/* 텍스트 색상 */
-color: var(--color-text-primary); /* #000000 */
-color: var(--color-text-secondary); /* #666666 */
-color: var(--color-text-tertiary); /* #999999 */
+```tsx
+/* 주요 색상 클래스 */
+// 배경
+bg-background       // 기본 배경
+bg-card            // 카드 배경
+bg-muted           // 보조 배경
 
-/* 잘못된 예 ❌ */
-color: #666;
-color: #999;
-color: gray;
+// 텍스트
+text-foreground    // 기본 텍스트
+text-muted-foreground // 보조 텍스트
+text-primary       // 강조 텍스트
+
+// 테두리
+border-border      // 기본 테두리
+border-input       // 입력 필드 테두리
+
+// 버튼
+bg-primary         // 주요 버튼
+bg-secondary       // 보조 버튼
+bg-destructive     // 위험 액션
 
 /* 올바른 예 ✅ */
 color: var(--color-text-secondary);

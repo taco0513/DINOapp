@@ -86,7 +86,7 @@ export default function PageHeader({
               {showBackButton && (
                 <button
                   onClick={handleBackClick}
-                  className='mt-2 p-2 rounded-lg hover:bg-gray-100 transition-colors'
+                  className='mt-2 p-2 rounded-lg hover:bg-muted transition-colors'
                 >
                   <ArrowLeft className='h-4 w-4' />
                 </button>
@@ -113,8 +113,7 @@ export default function PageHeader({
                   {showHelp && onHelpClick && (
                     <button
                       onClick={onHelpClick}
-                      className='p-1 rounded-lg hover:bg-gray-100 transition-colors'
-                      style={{ color: 'var(--color-text-secondary)' }}
+                      className='p-1 rounded-lg hover:bg-muted transition-colors text-muted-foreground'
                     >
                       <HelpCircle className='h-4 w-4' />
                     </button>
@@ -208,7 +207,7 @@ export const PageIcons = {
     </div>
   ),
   Settings: (
-    <div className='w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center'>
+    <div className='w-8 h-8 bg-muted rounded-lg flex items-center justify-center'>
       <Settings className='h-4 w-4' />
     </div>
   ),

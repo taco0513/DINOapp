@@ -210,14 +210,20 @@ export default function VisaPage() {
 
   return (
     <main style={{ minHeight: '100vh' }}>
-      <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
+      <div
+        className='container'
+        style={{
+          paddingTop: 'var(--space-6)',
+          paddingBottom: 'var(--space-6)',
+        }}
+      >
         <PageHeader
-          title="Visa Information"
-          description="Comprehensive visa requirements and travel information for digital nomads and travelers"
+          title='Visa Information'
+          description='Comprehensive visa requirements and travel information for digital nomads and travelers'
           icon={PageIcons.Globe}
           breadcrumbs={[
             { label: '대시보드', href: '/dashboard' },
-            { label: 'Visa Information' }
+            { label: 'Visa Information' },
           ]}
         />
         {/* Search and Filters */}
@@ -617,14 +623,14 @@ export default function VisaPage() {
                           <div className='space-y-4'>
                             <div>
                               <h4 className='font-semibold'>Address</h4>
-                              <p className='text-gray-600'>
+                              <p className='text-muted-foreground'>
                                 {selectedCountryData.embassy.address}
                               </p>
                             </div>
                             {selectedCountryData.embassy.phone && (
                               <div>
                                 <h4 className='font-semibold'>Phone</h4>
-                                <p className='text-gray-600'>
+                                <p className='text-muted-foreground'>
                                   {selectedCountryData.embassy.phone}
                                 </p>
                               </div>
@@ -644,7 +650,7 @@ export default function VisaPage() {
                             )}
                           </div>
                         ) : (
-                          <p className='text-gray-600'>
+                          <p className='text-muted-foreground'>
                             Embassy information not available
                           </p>
                         )}
@@ -690,7 +696,7 @@ export default function VisaPage() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className='text-gray-600'>
+                          <p className='text-muted-foreground'>
                             Varies by region and purpose of travel. Research
                             seasonal weather patterns and local events.
                           </p>

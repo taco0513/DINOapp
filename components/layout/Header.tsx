@@ -122,9 +122,9 @@ export default function Header() {
                     ? 'bg-blue-100 text-blue-700'
                     : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                 }`}
-                aria-label="추가 메뉴"
+                aria-label='추가 메뉴'
                 aria-expanded={moreMenuOpen}
-                aria-haspopup="true"
+                aria-haspopup='true'
               >
                 <span className='mr-2'>⚡</span>
                 More
@@ -145,7 +145,11 @@ export default function Header() {
 
               {/* More Dropdown */}
               {moreMenuOpen && (
-                <div className='absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50' role="menu" aria-labelledby="more-menu-button">
+                <div
+                  className='absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50'
+                  role='menu'
+                  aria-labelledby='more-menu-button'
+                >
                   <div className='py-2'>
                     {moreNavigation.map(item => (
                       <Link
@@ -157,7 +161,7 @@ export default function Header() {
                             : 'text-gray-700 hover:text-blue-600'
                         }`}
                         onClick={() => setMoreMenuOpen(false)}
-                        role="menuitem"
+                        role='menuitem'
                       >
                         <span className='text-base'>{item.icon}</span>
                         <span className='text-sm font-medium'>{item.name}</span>
@@ -178,9 +182,9 @@ export default function Header() {
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className='flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px]'
-                  aria-label="사용자 메뉴"
+                  aria-label='사용자 메뉴'
                   aria-expanded={userMenuOpen}
-                  aria-haspopup="true"
+                  aria-haspopup='true'
                 >
                   {session.user.image ? (
                     <img
@@ -189,8 +193,8 @@ export default function Header() {
                       className='h-8 w-8 rounded-full border'
                     />
                   ) : (
-                    <div className='h-8 w-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center'>
-                      <span className='text-sm font-medium text-gray-600'>
+                    <div className='h-8 w-8 rounded-full bg-muted border border-border flex items-center justify-center'>
+                      <span className='text-sm font-medium text-muted-foreground'>
                         {session.user.name?.charAt(0) || 'U'}
                       </span>
                     </div>
@@ -215,7 +219,11 @@ export default function Header() {
 
                 {/* 드롭다운 메뉴 */}
                 {userMenuOpen && (
-                  <div className='absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50' role="menu" aria-labelledby="user-menu-button">
+                  <div
+                    className='absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50'
+                    role='menu'
+                    aria-labelledby='user-menu-button'
+                  >
                     <div className='p-4 border-b border-gray-200'>
                       <div className='flex items-center gap-3'>
                         {session.user.image ? (
@@ -247,7 +255,7 @@ export default function Header() {
                         href='/profile'
                         className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px]'
                         onClick={() => setUserMenuOpen(false)}
-                        role="menuitem"
+                        role='menuitem'
                       >
                         <svg
                           className='h-4 w-4'
@@ -269,7 +277,7 @@ export default function Header() {
                         href='/settings'
                         className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px]'
                         onClick={() => setUserMenuOpen(false)}
-                        role="menuitem"
+                        role='menuitem'
                       >
                         <svg
                           className='h-4 w-4'
@@ -301,7 +309,7 @@ export default function Header() {
                           handleSignOut();
                         }}
                         className='w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600 min-h-[44px]'
-                        role="menuitem"
+                        role='menuitem'
                       >
                         <svg
                           className='h-4 w-4'
@@ -329,9 +337,11 @@ export default function Header() {
               type='button'
               className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors touch-action-manipulation`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? '모바일 메뉴 닫기' : '모바일 메뉴 열기'}
+              aria-label={
+                mobileMenuOpen ? '모바일 메뉴 닫기' : '모바일 메뉴 열기'
+              }
               aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-navigation"
+              aria-controls='mobile-navigation'
             >
               <svg
                 className='h-6 w-6'
@@ -339,7 +349,7 @@ export default function Header() {
                 viewBox='0 0 24 24'
                 strokeWidth='1.5'
                 stroke='currentColor'
-                aria-hidden="true"
+                aria-hidden='true'
               >
                 <path
                   strokeLinecap='round'
@@ -357,7 +367,12 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && isMobile && (
-          <div className='md:hidden' id="mobile-navigation" role="navigation" aria-label="모바일 네비게이션">
+          <div
+            className='md:hidden'
+            id='mobile-navigation'
+            role='navigation'
+            aria-label='모바일 네비게이션'
+          >
             <div className='px-4 py-4 bg-white border-t border-gray-200'>
               {/* 모바일 메뉴 - Core 먼저, 구분선, More */}
               <div className='space-y-1'>
@@ -415,8 +430,8 @@ export default function Header() {
                         className='h-10 w-10 rounded-full border'
                       />
                     ) : (
-                      <div className='h-10 w-10 rounded-full bg-white border border-gray-200 flex items-center justify-center'>
-                        <span className='text-sm font-medium text-gray-600'>
+                      <div className='h-10 w-10 rounded-full bg-background border border-border flex items-center justify-center'>
+                        <span className='text-sm font-medium text-muted-foreground'>
                           {session.user.name?.charAt(0) || 'U'}
                         </span>
                       </div>

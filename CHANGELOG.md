@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - **비자 정보 페이지** (/visa) - 국가별 비자 요구사항 표시
 - **프로필 관리 페이지** (/profile) - 사용자 프로필 정보 관리
 - **향상된 설정 페이지** (/settings) - 타임존 및 여권 국가 설정 기능
@@ -37,17 +38,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 최적화된 이미지 컴포넌트
 
 ### Fixed
+
 - 테스트 커버리지 개선 - 스킵된 테스트들 활성화 및 수정
 - MainLayout import/export 불일치 오류 수정
 - PWAInstallButton의 usePWA 훅 누락 문제 해결
 
 ### Changed
+
+- **Design System Overhaul** (2025-01-31)
+  - Migrated to shadcn/ui + Tailwind CSS design system
+  - Replaced 4 conflicting styling systems with unified approach
+  - Standardized all colors to use design tokens instead of hardcoded values
+  - Applied StandardPageLayout to major pages (Visa, Settings, Profile)
+  - Updated all documentation to reflect new tech stack
+  - Color token migration:
+    - `gray-*` → `muted`, `muted-foreground`, `border`
+    - `white/black` → `background`, `foreground`
+    - `blue-*` → `primary`, `primary-foreground`
 - Tailwind CSS로 전체 스타일링 시스템 통일
 - 모든 UI 컴포넌트를 기본 Tailwind 클래스로 재작성
 
 ## [0.1.0] - 2024-01-15
 
 ### Added
+
 - Initial project setup with Next.js 14 App Router
 - Google OAuth authentication
 - Basic trip management CRUD

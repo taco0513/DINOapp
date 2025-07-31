@@ -2,16 +2,27 @@
 
 ## 🎨 Component Design System
 
+### Design Stack
+
+- **UI Framework**: shadcn/ui (Radix UI + Tailwind CSS)
+- **Styling**: Tailwind CSS v3.4 with CSS Variables
+- **Components**: Copy-paste component pattern
+- **Theme System**: CSS Variables for light/dark mode
+- **Utils**: cn() helper (clsx + tailwind-merge)
+
 ### Design Principles
+
 1. **Atomic Design**: Build from atoms to organisms
 2. **Composition over Inheritance**: Use compound components
-3. **Accessibility First**: WCAG 2.1 AA compliance
+3. **Accessibility First**: WCAG 2.1 AA compliance via Radix UI
 4. **Performance Optimized**: Lazy loading and code splitting
 5. **Type Safety**: Full TypeScript coverage
+6. **Theme Consistency**: CSS Variables for design tokens
 
 ## 🧩 Component Hierarchy
 
 ### Level 1: Atomic Components (UI Primitives)
+
 ```
 ui/
 ├── button.tsx          # Base button with variants
@@ -25,6 +36,7 @@ ui/
 ```
 
 ### Level 2: Molecular Components
+
 ```
 components/
 ├── forms/
@@ -45,6 +57,7 @@ components/
 ```
 
 ### Level 3: Organism Components
+
 ```
 features/
 ├── trips/
@@ -67,6 +80,7 @@ features/
 ## 📐 Component Specifications
 
 ### Base Component Template
+
 ```typescript
 // Component: Button
 // Location: /components/ui/button.tsx
@@ -126,6 +140,7 @@ export { Button, buttonVariants }
 ```
 
 ### Complex Component Example: TripCard
+
 ```typescript
 // Component: TripCard
 // Location: /components/features/trips/TripCard.tsx
@@ -139,15 +154,15 @@ interface TripCardProps {
   variant?: 'default' | 'compact'
 }
 
-export const TripCard = ({ 
-  trip, 
-  onEdit, 
-  onDelete, 
+export const TripCard = ({
+  trip,
+  onEdit,
+  onDelete,
   showActions = true,
-  variant = 'default' 
+  variant = 'default'
 }: TripCardProps) => {
   const schengenStatus = useSchengenStatus(trip)
-  
+
   return (
     <Card className={cn(
       'transition-all hover:shadow-md',
@@ -160,7 +175,7 @@ export const TripCard = ({
             <CardTitle className="text-lg">{trip.country}</CardTitle>
           </div>
           {showActions && (
-            <TripActions 
+            <TripActions
               trip={trip}
               onEdit={onEdit}
               onDelete={onDelete}
@@ -168,15 +183,15 @@ export const TripCard = ({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div className="space-y-2">
-          <TripDates 
-            entry={trip.entryDate} 
+          <TripDates
+            entry={trip.entryDate}
             exit={trip.exitDate}
             variant={variant}
           />
-          
+
           <div className="flex items-center space-x-4">
             <Badge variant={getVisaVariant(trip.visaType)}>
               {trip.visaType}
@@ -185,11 +200,11 @@ export const TripCard = ({
               Max {trip.maxDays} days
             </span>
           </div>
-          
+
           {schengenStatus && (
             <SchengenIndicator status={schengenStatus} />
           )}
-          
+
           {trip.notes && variant === 'default' && (
             <p className="text-sm text-muted-foreground mt-2">
               {trip.notes}
@@ -215,7 +230,7 @@ const TripActions = ({ trip, onEdit, onDelete }) => (
         Edit
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem 
+      <DropdownMenuItem
         onClick={() => onDelete?.(trip)}
         className="text-destructive"
       >
@@ -248,6 +263,7 @@ const TripDates = ({ entry, exit, variant }) => (
 ## 🎯 Component Patterns
 
 ### 1. Compound Components Pattern
+
 ```typescript
 // Usage example
 <TripForm>
@@ -260,6 +276,7 @@ const TripDates = ({ entry, exit, variant }) => (
 ```
 
 ### 2. Render Props Pattern
+
 ```typescript
 <DataProvider
   render={({ data, loading, error }) => (
@@ -271,6 +288,7 @@ const TripDates = ({ entry, exit, variant }) => (
 ```
 
 ### 3. Custom Hooks Pattern
+
 ```typescript
 // useTripFilters.ts
 export const useTripFilters = () => {
@@ -278,26 +296,27 @@ export const useTripFilters = () => {
     country: null,
     dateRange: null,
     visaType: null,
-  })
-  
+  });
+
   const filteredTrips = useMemo(() => {
     return trips.filter(trip => {
       // Apply filters
-    })
-  }, [trips, filters])
-  
+    });
+  }, [trips, filters]);
+
   return {
     filters,
     setFilters,
     filteredTrips,
     resetFilters: () => setFilters({}),
-  }
-}
+  };
+};
 ```
 
 ## 🌈 Styling System
 
 ### Design Tokens
+
 ```css
 /* CSS Variables */
 :root {
@@ -306,22 +325,22 @@ export const useTripFilters = () => {
   --secondary: 200 20% 95%;
   --destructive: 0 84% 60%;
   --muted: 210 40% 96%;
-  
+
   /* Spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
-  
+
   /* Typography */
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'Fira Code', monospace;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  
+
   /* Animations */
   --animation-fast: 150ms;
   --animation-base: 300ms;
@@ -330,6 +349,7 @@ export const useTripFilters = () => {
 ```
 
 ### Responsive Design
+
 ```typescript
 // Breakpoint utilities
 const breakpoints = {
@@ -351,18 +371,21 @@ const breakpoints = {
 ## ♿ Accessibility Guidelines
 
 ### Required Attributes
+
 - All interactive elements must have accessible labels
 - Form inputs must have associated labels
 - Images must have alt text
 - Color contrast must meet WCAG AA standards
 
 ### Keyboard Navigation
+
 - All interactive elements must be keyboard accessible
 - Focus indicators must be visible
 - Tab order must be logical
 - Skip links for main content
 
 ### ARIA Implementation
+
 ```typescript
 <Button
   aria-label="Delete trip"
@@ -379,6 +402,7 @@ const breakpoints = {
 ## 🧪 Component Testing
 
 ### Unit Testing Template
+
 ```typescript
 // TripCard.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react'
@@ -393,19 +417,19 @@ describe('TripCard', () => {
     visaType: 'Tourist',
     maxDays: 90,
   }
-  
+
   it('renders trip information correctly', () => {
     render(<TripCard trip={mockTrip} />)
-    
+
     expect(screen.getByText('France')).toBeInTheDocument()
     expect(screen.getByText('Tourist')).toBeInTheDocument()
     expect(screen.getByText('Max 90 days')).toBeInTheDocument()
   })
-  
+
   it('calls onEdit when edit button is clicked', () => {
     const handleEdit = jest.fn()
     render(<TripCard trip={mockTrip} onEdit={handleEdit} />)
-    
+
     fireEvent.click(screen.getByLabelText('Edit trip'))
     expect(handleEdit).toHaveBeenCalledWith(mockTrip)
   })
@@ -415,10 +439,11 @@ describe('TripCard', () => {
 ## 📦 Component Documentation
 
 ### Storybook Integration
+
 ```typescript
 // TripCard.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react'
-import { TripCard } from './TripCard'
+import type { Meta, StoryObj } from '@storybook/react';
+import { TripCard } from './TripCard';
 
 const meta: Meta<typeof TripCard> = {
   title: 'Features/Trips/TripCard',
@@ -427,10 +452,10 @@ const meta: Meta<typeof TripCard> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -443,29 +468,30 @@ export const Default: Story = {
       maxDays: 90,
     },
   },
-}
+};
 
 export const Compact: Story = {
   args: {
     ...Default.args,
     variant: 'compact',
   },
-}
+};
 
 export const WithoutActions: Story = {
   args: {
     ...Default.args,
     showActions: false,
   },
-}
+};
 ```
 
 ## 🚀 Performance Optimization
 
 ### Code Splitting
+
 ```typescript
 // Lazy load heavy components
-const SchengenCalculator = lazy(() => 
+const SchengenCalculator = lazy(() =>
   import('@/components/features/schengen/SchengenCalculator')
 )
 
@@ -476,18 +502,20 @@ const SchengenCalculator = lazy(() =>
 ```
 
 ### Memoization
+
 ```typescript
 // Memoize expensive computations
 const SchengenStatus = memo(({ trips }: { trips: Trip[] }) => {
-  const status = useMemo(() => 
+  const status = useMemo(() =>
     calculateSchengenStatus(trips), [trips]
   )
-  
+
   return <StatusDisplay status={status} />
 })
 ```
 
 ### Virtual Scrolling
+
 ```typescript
 // For large lists
 import { FixedSizeList } from 'react-window'

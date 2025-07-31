@@ -5,6 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8)](https://tailwindcss.com/)
+[![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-latest-000)](https://ui.shadcn.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.12-2d3748)](https://prisma.io/)
 [![Vercel](https://img.shields.io/badge/Deploy-Vercel-black)](https://vercel.com/)
 
@@ -105,7 +106,8 @@ ADMIN_EMAILS="admin@example.com,admin2@example.com"
 ├── components/            # 재사용 가능한 UI 컴포넌트
 │   ├── schengen/         # 셰겐 계산기 컴포넌트
 │   ├── trips/            # 여행 관리 컴포넌트
-│   └── ui/               # 기본 UI 컴포넌트
+│   ├── ui/               # shadcn/ui 기반 UI 컴포넌트
+│   └── layout/           # 표준 레이아웃 컴포넌트
 ├── lib/                   # 핵심 비즈니스 로직
 │   ├── schengen/         # 셰겐 계산 엔진
 │   ├── gmail/            # Gmail API 연동

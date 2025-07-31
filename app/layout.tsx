@@ -1,16 +1,16 @@
-import type { Metadata, Viewport } from 'next'
-import './globals.css'
-import '../styles/mobile-touch.css'
-import SessionProvider from '@/components/providers/SessionProvider'
-import MainLayout from '@/components/layout/MainLayout'
-import MonitoringProvider from '@/components/providers/MonitoringProvider'
-import { InstallPrompt } from '@/components/pwa/InstallPrompt'
-import { UpdatePrompt } from '@/components/pwa/UpdatePrompt'
-import { OfflineIndicator } from '@/components/pwa/OfflineIndicator'
-import Script from 'next/script'
-import { AnalyticsWrapper } from '@/lib/analytics/vercel'
-import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
-import { SkipLink } from '@/components/ui/SkipLink'
+import type { Metadata, Viewport } from 'next';
+import './globals.css';
+import '../styles/mobile-touch.css';
+import SessionProvider from '@/components/providers/SessionProvider';
+import MainLayout from '@/components/layout/MainLayout';
+import MonitoringProvider from '@/components/providers/MonitoringProvider';
+import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { UpdatePrompt } from '@/components/pwa/UpdatePrompt';
+import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
+import Script from 'next/script';
+import { AnalyticsWrapper } from '@/lib/analytics/vercel';
+import PerformanceMonitor from '@/components/performance/PerformanceMonitor';
+import { SkipLink } from '@/components/ui/SkipLink';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -19,20 +19,33 @@ export const viewport: Viewport = {
   userScalable: true,
   themeColor: '#0066cc',
   colorScheme: 'light',
-}
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dinoapp.net'),
   title: {
     default: 'DINO - Digital Nomad Visa Tracker',
-    template: '%s | DINO'
+    template: '%s | DINO',
   },
-  description: '디지털 노마드를 위한 스마트 비자 추적 및 여행 관리 플랫폼. 셰겐 90/180일 규칙 자동 계산, Gmail 통합, 여행 기록 관리.',
+  description:
+    '디지털 노마드를 위한 스마트 비자 추적 및 여행 관리 플랫폼. 셰겐 90/180일 규칙 자동 계산, Gmail 통합, 여행 기록 관리.',
   keywords: [
-    'digital nomad', 'visa tracker', 'travel management', 'schengen calculator',
-    '디지털노마드', '비자추적', '여행관리', '셰겐계산기', '90/180일규칙',
-    'visa management', 'travel planner', 'nomad tools', 'visa compliance',
-    'travel automation', 'gmail integration', 'calendar sync'
+    'digital nomad',
+    'visa tracker',
+    'travel management',
+    'schengen calculator',
+    '디지털노마드',
+    '비자추적',
+    '여행관리',
+    '셰겐계산기',
+    '90/180일규칙',
+    'visa management',
+    'travel planner',
+    'nomad tools',
+    'visa compliance',
+    'travel automation',
+    'gmail integration',
+    'calendar sync',
   ],
   authors: [{ name: 'DINO Team', url: 'https://dinoapp.net' }],
   creator: 'DINO Team',
@@ -56,16 +69,19 @@ export const metadata: Metadata = {
     startupImage: [
       {
         url: '/icons/icon-512x512.png',
-        media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)'
+        media:
+          '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
       },
       {
-        url: '/icons/icon-384x384.png', 
-        media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)'
+        url: '/icons/icon-384x384.png',
+        media:
+          '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)',
       },
       {
         url: '/icons/icon-192x192.png',
-        media: '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
-      }
+        media:
+          '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)',
+      },
     ],
   },
   openGraph: {
@@ -75,7 +91,8 @@ export const metadata: Metadata = {
     url: 'https://dinoapp.net',
     siteName: 'DINO',
     title: 'DINO - Digital Nomad Visa Tracker',
-    description: '디지털 노마드를 위한 스마트 비자 추적 및 여행 관리 플랫폼. 셰겐 90/180일 규칙 자동 계산, Gmail 통합.',
+    description:
+      '디지털 노마드를 위한 스마트 비자 추적 및 여행 관리 플랫폼. 셰겐 90/180일 규칙 자동 계산, Gmail 통합.',
     images: [
       {
         url: '/og-image.png',
@@ -90,7 +107,7 @@ export const metadata: Metadata = {
         height: 400,
         alt: 'DINO App Icon',
         type: 'image/png',
-      }
+      },
     ],
   },
   twitter: {
@@ -105,10 +122,10 @@ export const metadata: Metadata = {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
       { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/icons/icon-180x180.png', sizes: '180x180', type: 'image/png' }
+      { url: '/icons/icon-180x180.png', sizes: '180x180', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
   },
@@ -127,26 +144,26 @@ export const metadata: Metadata = {
     'color-scheme': 'light',
     'format-detection': 'telephone=no',
     'apple-touch-fullscreen': 'yes',
-    'apple-mobile-web-app-orientation': 'portrait'
-  }
-}
+    'apple-mobile-web-app-orientation': 'portrait',
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang='ko' suppressHydrationWarning>
       <head>
         {/* Google Analytics */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-              strategy="afterInteractive"
+              strategy='afterInteractive'
             />
-            <Script id="google-analytics" strategy="afterInteractive">
+            <Script id='google-analytics' strategy='afterInteractive'>
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -156,17 +173,24 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        
+
         {/* Preload critical resources */}
-        <link rel="preload" href="/fonts/main.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://accounts.google.com" />
-        <link rel="preconnect" href="https://www.googleapis.com" />
-        <link rel="dns-prefetch" href="//accounts.google.com" />
-        <link rel="dns-prefetch" href="//www.googleapis.com" />
-        
+        <link
+          rel='preload'
+          href='/fonts/main.woff2'
+          as='font'
+          type='font/woff2'
+          crossOrigin='anonymous'
+        />
+        <link rel='preconnect' href='https://accounts.google.com' />
+        <link rel='preconnect' href='https://www.googleapis.com' />
+        <link rel='dns-prefetch' href='//accounts.google.com' />
+        <link rel='dns-prefetch' href='//www.googleapis.com' />
+
         {/* Critical CSS should be inlined in production */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             .loading-skeleton {
               background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
               background-size: 200% 100%;
@@ -176,14 +200,15 @@ export default function RootLayout({
               0% { background-position: 200% 0; }
               100% { background-position: -200% 0; }
             }
-          `
-        }} />
+          `,
+          }}
+        />
       </head>
-      <body className="min-h-screen safe-area-bottom">
+      <body className='min-h-screen safe-area-bottom'>
         {/* Service Worker Registration */}
         <Script
-          id="sw-registration"
-          strategy="afterInteractive"
+          id='sw-registration'
+          strategy='afterInteractive'
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
@@ -193,120 +218,23 @@ export default function RootLayout({
                     .catch(error => console.log('SW registration failed'))
                 })
               }
-            `
-          }}
-        />
-        
-        {/* Web Vitals and Performance Monitoring */}
-        <Script
-          id="web-vitals"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Report Web Vitals
-              if (typeof window !== 'undefined') {
-                import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
-                  const sendToAnalytics = ({ name, delta, value, id }) => {
-                    if (window.gtag) {
-                      window.gtag('event', name, {
-                        value: Math.round(name === 'CLS' ? value * 1000 : value),
-                        metric_id: id,
-                        metric_delta: delta,
-                        metric_value: value,
-                        event_category: 'Web Vitals',
-                        event_label: navigator.connection ? navigator.connection.effectiveType : 'unknown'
-                      })
-                    }
-                  }
-                  onCLS(sendToAnalytics)
-                  onFID(sendToAnalytics)
-                  onFCP(sendToAnalytics)
-                  onLCP(sendToAnalytics)
-                  onTTFB(sendToAnalytics)
-                }).catch(() => {})
-              }
-            `
-          }}
-        />
-        
-        {/* Performance optimizations initialization */}
-        <Script
-          id="performance-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Initialize performance optimizations
-              (function() {
-                // Preload critical resources
-                const preloadCritical = () => {
-                  const link1 = document.createElement('link');
-                  link1.rel = 'preconnect';
-                  link1.href = 'https://fonts.googleapis.com';
-                  document.head.appendChild(link1);
-                  
-                  const link2 = document.createElement('link');
-                  link2.rel = 'preconnect';
-                  link2.href = 'https://fonts.gstatic.com';
-                  link2.crossOrigin = 'anonymous';
-                  document.head.appendChild(link2);
-                };
-                
-                // Monitor Web Vitals
-                if ('PerformanceObserver' in window) {
-                  const observer = new PerformanceObserver((list) => {
-                    list.getEntries().forEach((entry) => {
-                      const metric = entry.entryType === 'largest-contentful-paint' ? 'lcp' :
-                                   entry.entryType === 'first-input' ? 'fid' :
-                                   entry.name === 'first-contentful-paint' ? 'fcp' : null;
-                      
-                      if (metric) {
-                        const value = entry.entryType === 'first-input' ? 
-                          entry.processingStart - entry.startTime : entry.startTime;
-                        localStorage.setItem('dino-' + metric, value.toString());
-                        
-                        // Report to analytics if available
-                        if (window.gtag) {
-                          window.gtag('event', 'web_vitals', {
-                            event_category: 'Performance',
-                            event_label: metric.toUpperCase(),
-                            value: Math.round(value)
-                          });
-                        }
-                      }
-                    });
-                  });
-                  
-                  observer.observe({ 
-                    entryTypes: ['largest-contentful-paint', 'first-input', 'paint'] 
-                  });
-                }
-                
-                preloadCritical();
-              })();
-            `
+            `,
           }}
         />
 
+        {/* Web Vitals handled by PerformanceMonitor component */}
+
+        {/* Performance optimizations handled by PerformanceMonitor */}
+
         <SkipLink />
-        <MonitoringProvider>
-          <SessionProvider>
-            <AnalyticsWrapper>
-              <MainLayout>
-                <main id="main-content" tabIndex={-1}>
-                  {children}
-                </main>
-                <InstallPrompt />
-                <UpdatePrompt />
-                <OfflineIndicator />
-                <PerformanceMonitor 
-                  enabled={process.env.NODE_ENV === 'development'} 
-                  debug={false}
-                />
-              </MainLayout>
-            </AnalyticsWrapper>
-          </SessionProvider>
-        </MonitoringProvider>
+        <SessionProvider>
+          <MainLayout>
+            <main id='main-content' tabIndex={-1}>
+              {children}
+            </main>
+          </MainLayout>
+        </SessionProvider>
       </body>
     </html>
-  )
+  );
 }

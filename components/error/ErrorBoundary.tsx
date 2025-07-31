@@ -55,10 +55,74 @@ export class ErrorBoundary extends Component<Props, State> {
       this.props.onError(error, errorInfo)
     }
     
-    // Send to error monitoring (Sentry, etc.)
-    if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_SENTRY_DSN) {
-      // Sentry error logging would go here
-      console.log('Sending error to monitoring service...')
+    // Enhanced error reporting
+    this.reportError(error, errorInfo)
+    
+    // Attempt recovery after critical errors
+    if (this.state.errorCount > 2) {
+      this.attemptRecovery()
+    }
+  }
+
+  private reportError(error: Error, errorInfo: ErrorInfo) {
+    const errorReport = {
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      timestamp: new Date().toISOString(),
+      url: typeof window !== 'undefined' ? window.location.href : 'unknown',
+      userAgent: typeof window !== 'undefined' ? navigator.userAgent : 'unknown',
+      errorCount: this.state.errorCount + 1
+    }
+
+    // Send to monitoring service in production
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+      // Store in localStorage as fallback
+      try {
+        const existingErrors = JSON.parse(localStorage.getItem('dino-errors') || '[]')
+        existingErrors.push(errorReport)
+        // Keep only last 10 errors
+        if (existingErrors.length > 10) {
+          existingErrors.splice(0, existingErrors.length - 10)
+        }
+        localStorage.setItem('dino-errors', JSON.stringify(existingErrors))
+      } catch (e) {
+        console.warn('Failed to store error report:', e)
+      }
+
+      // Send to API endpoint for server-side logging
+      fetch('/api/errors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(errorReport)
+      }).catch(() => {
+        // Silently fail if error reporting fails
+      })
+    }
+  }
+
+  private attemptRecovery() {
+    // Clear potentially corrupted localStorage data
+    if (typeof window !== 'undefined') {
+      try {
+        const keysToPreserve = ['dino-auth-token', 'dino-user-preferences']
+        const preservedData = keysToPreserve.reduce((acc, key) => {
+          const value = localStorage.getItem(key)
+          if (value) acc[key] = value
+          return acc
+        }, {} as Record<string, string>)
+        
+        localStorage.clear()
+        
+        // Restore preserved data
+        Object.entries(preservedData).forEach(([key, value]) => {
+          localStorage.setItem(key, value)
+        })
+        
+        console.log('Attempted recovery: cleared corrupted localStorage data')
+      } catch (e) {
+        console.warn('Recovery attempt failed:', e)
+      }
     }
   }
 
@@ -112,13 +176,24 @@ export class ErrorBoundary extends Component<Props, State> {
               </Alert>
               
               {errorCount > 2 && (
-                <Alert>
+                <Alert variant="destructive">
                   <AlertTitle>Persistent Issue Detected</AlertTitle>
                   <AlertDescription>
-                    This error has occurred multiple times. You may want to try refreshing the page or contacting support.
+                    This error has occurred {errorCount} times. The app has attempted automatic recovery. 
+                    If the issue persists, please refresh the page or contact support.
                   </AlertDescription>
                 </Alert>
               )}
+              
+              <Alert>
+                <AlertTitle>What you can do:</AlertTitle>
+                <AlertDescription className="space-y-2">
+                  <p>• Try the "Try Again" button to reload just this component</p>
+                  <p>• Use "Reload Page" if the error persists</p>
+                  <p>• Your data is automatically saved and will be preserved</p>
+                  <p>• Contact support if you continue experiencing issues</p>
+                </AlertDescription>
+              </Alert>
               
               {isDevelopment && error && (
                 <details className="mt-4">

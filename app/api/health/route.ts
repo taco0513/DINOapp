@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { metrics } from '@/lib/monitoring/metrics-collector'
+import { dbManager, getDbHealth, isDbHealthy } from '@/lib/database/connection-manager'
+import { loggers } from '@/lib/monitoring/logger'
 
 // GET /api/health - Comprehensive health check
 export async function GET(request: NextRequest) {
@@ -12,44 +14,68 @@ export async function GET(request: NextRequest) {
     checks: {} as Record<string, any>
   }
 
-  // Database health
-  let dbClient: PrismaClient | null = null
+  // Database health using connection manager
+  const logger = loggers.api
   try {
     const startTime = Date.now()
+    const dbHealth = getDbHealth()
     
-    // Create a simple Prisma client for health check
-    dbClient = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL || 'file:./prisma/dev.db'
+    if (!isDbHealthy()) {
+      // Try to get a fresh health check
+      try {
+        const client = await dbManager.getClient()
+        await client.$queryRaw`SELECT 1 as health_check`
+        const latency = Date.now() - startTime
+        
+        checks.checks.database = {
+          status: 'healthy',
+          latency: `${latency}ms`,
+          connection: 'active',
+          type: process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'postgresql',
+          lastCheck: dbHealth.lastCheck,
+          errorCount: dbHealth.errorCount,
+          details: dbHealth.details
         }
+      } catch (reconnectError) {
+        checks.checks.database = {
+          status: 'unhealthy',
+          error: reconnectError instanceof Error ? reconnectError.message : 'Database connection failed',
+          lastCheck: dbHealth.lastCheck,
+          errorCount: dbHealth.errorCount,
+          connectionAttempts: 'Failed to reconnect'
+        }
+        checks.status = 'unhealthy'
       }
-    })
-    
-    // Try a simple query
-    await dbClient.$queryRaw`SELECT 1`
-    
-    const latency = Date.now() - startTime
-    
-    checks.checks.database = {
-      status: 'healthy',
-      latency: `${latency}ms`,
-      connection: 'active',
-      type: process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'postgresql',
-      url: process.env.DATABASE_URL || 'default'
+    } else {
+      // Database is healthy according to connection manager
+      const latency = dbHealth.latency || 0
+      
+      checks.checks.database = {
+        status: 'healthy',
+        latency: `${latency}ms`,
+        connection: 'active',
+        type: process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'postgresql',
+        lastCheck: dbHealth.lastCheck,
+        errorCount: dbHealth.errorCount,
+        details: dbHealth.details
+      }
+      
+      // Mark as degraded if latency is high
+      if (latency > 1000) {
+        checks.checks.database.warning = 'High database latency'
+        checks.status = 'degraded'
+      }
     }
   } catch (error) {
+    logger.error('Health check database error', {
+      error: error instanceof Error ? error.message : error
+    })
+    
     checks.checks.database = {
       status: 'unhealthy',
-      error: error instanceof Error ? error.message : 'Database operation failed',
-      url: process.env.DATABASE_URL || 'default'
+      error: error instanceof Error ? error.message : 'Database health check failed'
     }
     checks.status = 'unhealthy'
-  } finally {
-    // Clean up the connection
-    if (dbClient) {
-      await dbClient.$disconnect().catch(() => {})
-    }
   }
 
   // Memory usage
@@ -78,21 +104,59 @@ export async function GET(request: NextRequest) {
   }
 
   // Metrics summary
-  const metricsAggregations = metrics.getAllAggregations()
-  const requestMetrics = metricsAggregations.filter(m => m.name === 'http.requests.total')
-  const errorMetrics = metricsAggregations.filter(m => m.name === 'http.errors.total')
-  
-  checks.checks.metrics = {
-    status: 'healthy',
-    totalRequests: requestMetrics.reduce((sum, m) => sum + m.sum, 0),
-    totalErrors: errorMetrics.reduce((sum, m) => sum + m.sum, 0),
-    errorRate: calculateErrorRate(requestMetrics, errorMetrics)
+  try {
+    const metricsAggregations = metrics.getAllAggregations()
+    const requestMetrics = metricsAggregations.filter(m => m.name === 'http.requests.total')
+    const errorMetrics = metricsAggregations.filter(m => m.name === 'http.errors.total')
+    
+    const totalRequests = requestMetrics.reduce((sum, m) => sum + m.sum, 0)
+    const totalErrors = errorMetrics.reduce((sum, m) => sum + m.sum, 0)
+    const errorRate = calculateErrorRate(requestMetrics, errorMetrics)
+    
+    checks.checks.metrics = {
+      status: 'healthy',
+      totalRequests,
+      totalErrors,
+      errorRate
+    }
+    
+    // Mark as degraded if error rate is high
+    const errorRateNum = parseFloat(errorRate.replace('%', ''))
+    if (errorRateNum > 5) {
+      checks.checks.metrics.status = 'degraded'
+      checks.checks.metrics.warning = 'High error rate'
+      if (checks.status === 'healthy') {
+        checks.status = 'degraded'
+      }
+    }
+  } catch (error) {
+    checks.checks.metrics = {
+      status: 'unhealthy',
+      error: 'Failed to collect metrics'
+    }
   }
+  
+  // External services health (if any)
+  checks.checks.services = {
+    status: 'healthy',
+    gmail: process.env.GOOGLE_CLIENT_ID ? 'configured' : 'not-configured',
+    analytics: process.env.NEXT_PUBLIC_GA_ID ? 'configured' : 'not-configured',
+    monitoring: process.env.SENTRY_DSN ? 'configured' : 'not-configured'
+  }
+
+  // Log health check results
+  logger.info('Health check completed', {
+    status: checks.status,
+    databaseHealthy: checks.checks.database?.status === 'healthy',
+    memoryUsage: checks.checks.memory?.heapUsed,
+    uptime: checks.checks.uptime?.seconds
+  })
 
   // Response headers
   const headers = {
     'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'X-Health-Status': checks.status
+    'X-Health-Status': checks.status,
+    'X-Health-Timestamp': checks.timestamp
   }
 
   // Return appropriate status code

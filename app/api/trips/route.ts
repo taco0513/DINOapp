@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
-import { getUserTripsOptimized } from '@/lib/database/query-optimizer';
+import { queryOptimizer } from '@/lib/performance/query-optimizer';
 import { systemAlert } from '@/lib/notifications/alert-manager';
 import { createTravelManager } from '@/lib/travel-manager';
 import { z } from 'zod';
@@ -159,17 +159,67 @@ export async function GET(request: NextRequest) {
     const sortOrder =
       (url.searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
 
-    // Track database query
-    const endDbTimer = dbMetrics.queryStart('findMany', 'Trip');
-    const trips = await travelManager.getTrips({
-      includeCompleted,
-      includePlanned,
-      includeOngoing,
-      limit,
-      sortBy,
-      sortOrder,
-    });
-    endDbTimer();
+    // Parse additional query parameters for optimization
+    const startDate = url.searchParams.get('startDate') ? new Date(url.searchParams.get('startDate')!) : undefined;
+    const endDate = url.searchParams.get('endDate') ? new Date(url.searchParams.get('endDate')!) : undefined;
+    const countryCode = url.searchParams.get('countryCode') || undefined;
+    const status = url.searchParams.get('status') as 'PLANNED' | 'COMPLETED' | 'CANCELLED' | undefined;
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+
+    // Use optimized query
+    const endDbTimer = dbMetrics.queryStart('optimized-trips', 'Trip');
+    try {
+      const trips = await queryOptimizer.getTripsOptimized({
+        userId: user.id,
+        startDate,
+        endDate,
+        status,
+        countryCode,
+        limit,
+        offset
+      });
+      endDbTimer();
+      
+      // Log performance metrics
+      const stats = queryOptimizer.getPerformanceStats();
+      logger.info('Optimized trips query completed', {
+        tripCount: trips.length,
+        performanceStats: stats
+      });
+      
+      return NextResponse.json({
+        success: true,
+        data: trips,
+        count: trips.length,
+        performance: {
+          cached: stats.cacheHitRate > 0,
+          queryTime: `${stats.averageDuration}ms`
+        }
+      });
+      
+    } catch (queryError) {
+      endDbTimer();
+      // Fallback to original method if optimized query fails
+      logger.warn('Optimized query failed, using fallback', {
+        error: queryError instanceof Error ? queryError.message : queryError
+      });
+      
+      const trips = await travelManager.getTrips({
+        includeCompleted,
+        includePlanned,
+        includeOngoing,
+        limit,
+        sortBy,
+        sortOrder,
+      });
+      
+      return NextResponse.json({
+        success: true,
+        data: trips,
+        count: trips.length,
+        fallback: true
+      });
+    }
 
     // Log successful response
     logger.info('Trips retrieved successfully', { count: trips.length });

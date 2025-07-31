@@ -4,7 +4,8 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { AppError, ErrorCode, ErrorSeverity } from '@/lib/error/error-handler'
+import { AppError, ErrorCode, ErrorSeverity, errors } from '@/lib/error/error-handler'
+import { loggers } from '@/lib/monitoring/logger'
 
 export interface ConnectionOptions {
   maxRetries?: number
@@ -72,7 +73,14 @@ export class DatabaseConnectionManager {
   }
 
   private async connect(): Promise<void> {
+    const logger = loggers.db
+    
     try {
+      logger.info('Attempting database connection', {
+        attempt: this.retryAttempts + 1,
+        maxRetries: this.options.maxRetries
+      })
+
       // Create new PrismaClient with optimized settings
       this.prisma = new PrismaClient({
         log: process.env.NODE_ENV === 'development' 
@@ -82,6 +90,43 @@ export class DatabaseConnectionManager {
           db: {
             url: process.env.DATABASE_URL
           }
+        },
+        errorFormat: 'pretty'
+      })
+
+      // Add query timeout and retry middleware
+      this.prisma.$use(async (params, next) => {
+        const before = Date.now()
+        
+        try {
+          const result = await Promise.race([
+            next(params),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Query timeout')), this.options.queryTimeout)
+            )
+          ])
+          
+          const after = Date.now()
+          const duration = after - before
+          
+          if (duration > 5000) { // Log slow queries
+            logger.warn('Slow query detected', {
+              model: params.model,
+              action: params.action,
+              duration
+            })
+          }
+          
+          return result
+        } catch (error) {
+          const after = Date.now()
+          logger.error('Query failed', {
+            model: params.model,
+            action: params.action,
+            duration: after - before,
+            error: error instanceof Error ? error.message : error
+          })
+          throw error
         }
       })
 
@@ -90,50 +135,77 @@ export class DatabaseConnectionManager {
       const isSQLite = databaseUrl.includes('sqlite') || databaseUrl.startsWith('file:')
       
       if (!isSQLite) {
-        await this.prisma.$executeRawUnsafe(`
-          ALTER SYSTEM SET max_connections = ${this.options.poolSize};
-        `).catch(() => {
-          // Ignore if we don't have permissions
-        })
+        try {
+          // Try to optimize connection settings for PostgreSQL
+          await this.prisma.$executeRaw`SELECT set_config('max_connections', ${this.options.poolSize}::text, false)`
+        } catch (configError) {
+          // Ignore configuration errors - we might not have permissions
+          logger.warn('Could not optimize connection settings', {
+            error: configError instanceof Error ? configError.message : configError
+          })
+        }
       }
 
-      // Test connection
-      await this.prisma.$connect()
+      // Test connection with timeout
+      const connectionPromise = this.prisma.$connect()
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Connection timeout')), this.options.connectionTimeout)
+      )
+      
+      await Promise.race([connectionPromise, timeoutPromise])
       
       // Verify connection with a simple query
-      await this.prisma.$queryRaw`SELECT 1`
+      await this.prisma.$queryRaw`SELECT 1 as test`
       
       this.health.isHealthy = true
       this.health.errorCount = 0
+      this.health.lastCheck = new Date()
       this.retryAttempts = 0
       
-      console.log('✅ Database connection established')
+      logger.info('Database connection established successfully', {
+        poolSize: this.options.poolSize,
+        databaseType: isSQLite ? 'sqlite' : 'postgresql'
+      })
+      
     } catch (error) {
       this.health.isHealthy = false
       this.health.errorCount++
+      this.health.lastCheck = new Date()
       
-      throw new AppError(
-        ErrorCode.DATABASE_ERROR,
+      logger.error('Database connection failed', {
+        attempt: this.retryAttempts + 1,
+        errorCount: this.health.errorCount,
+        error: error instanceof Error ? error.message : error
+      })
+      
+      throw errors.database(
         'Failed to connect to database',
-        500,
-        ErrorSeverity.CRITICAL,
-        { error: error instanceof Error ? error.message : error }
+        { 
+          error: error instanceof Error ? error.message : error,
+          attempt: this.retryAttempts + 1,
+          maxRetries: this.options.maxRetries
+        }
       )
     }
   }
 
   async getClient(): Promise<PrismaClient> {
+    const logger = loggers.db
+    
     // Check if we have a healthy connection
     if (!this.prisma || !this.health.isHealthy) {
+      logger.warn('Database connection unhealthy, attempting reconnection')
       await this.reconnect()
     }
 
     if (!this.prisma) {
-      throw new AppError(
-        ErrorCode.DATABASE_ERROR,
+      logger.error('Database client unavailable after reconnection attempt')
+      throw errors.database(
         'Database connection not available',
-        500,
-        ErrorSeverity.CRITICAL
+        { 
+          health: this.health,
+          retryAttempts: this.retryAttempts
+        }
       )
     }
 
@@ -141,32 +213,64 @@ export class DatabaseConnectionManager {
   }
 
   private async reconnect(): Promise<void> {
+    const logger = loggers.db
+    
     if (this.retryAttempts >= this.options.maxRetries) {
-      throw new AppError(
-        ErrorCode.DATABASE_ERROR,
+      logger.error('Maximum reconnection attempts exceeded', {
+        maxRetries: this.options.maxRetries,
+        errorCount: this.health.errorCount
+      })
+      
+      throw errors.database(
         `Failed to reconnect after ${this.options.maxRetries} attempts`,
-        500,
-        ErrorSeverity.CRITICAL
+        { 
+          attempts: this.retryAttempts,
+          maxRetries: this.options.maxRetries,
+          health: this.health
+        }
       )
     }
 
     this.retryAttempts++
-    console.log(`🔄 Attempting to reconnect (${this.retryAttempts}/${this.options.maxRetries})...`)
+    logger.info('Attempting database reconnection', {
+      attempt: this.retryAttempts,
+      maxRetries: this.options.maxRetries
+    })
 
     try {
-      // Disconnect existing connection
+      // Disconnect existing connection gracefully
       if (this.prisma) {
-        await this.prisma.$disconnect().catch(() => {})
+        try {
+          await Promise.race([
+            this.prisma.$disconnect(),
+            new Promise(resolve => setTimeout(resolve, 5000)) // 5s timeout for disconnect
+          ])
+        } catch (disconnectError) {
+          logger.warn('Error during disconnect', {
+            error: disconnectError instanceof Error ? disconnectError.message : disconnectError
+          })
+        }
         this.prisma = null
       }
 
-      // Wait before reconnecting
-      await this.delay(this.options.retryDelay * this.retryAttempts)
+      // Exponential backoff with jitter
+      const baseDelay = this.options.retryDelay * Math.pow(2, this.retryAttempts - 1)
+      const jitter = Math.random() * 1000 // Add up to 1s jitter
+      const delay = Math.min(baseDelay + jitter, 30000) // Cap at 30s
+      
+      logger.info('Waiting before reconnection attempt', { delay: Math.round(delay) })
+      await this.delay(delay)
 
       // Attempt to connect
       await this.connect()
+      
+      logger.info('Database reconnection successful')
+      
     } catch (error) {
-      console.error(`Reconnection attempt ${this.retryAttempts} failed:`, error)
+      logger.error('Reconnection attempt failed', {
+        attempt: this.retryAttempts,
+        error: error instanceof Error ? error.message : error
+      })
       
       if (this.retryAttempts < this.options.maxRetries) {
         // Schedule another reconnect
@@ -276,21 +380,55 @@ export class DatabaseConnectionManager {
       maxRetries?: number
       retryDelay?: number
       onRetry?: (attempt: number, error: Error) => void
+      operationName?: string
     }
   ): Promise<T> {
+    const logger = loggers.db
     const maxRetries = options?.maxRetries ?? this.options.maxRetries
     const retryDelay = options?.retryDelay ?? this.options.retryDelay
+    const operationName = options?.operationName || 'Database operation'
     let lastError: Error | null = null
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
-        return await operation()
+        const startTime = Date.now()
+        const result = await operation()
+        const duration = Date.now() - startTime
+        
+        if (attempt > 0) {
+          logger.info('Database operation succeeded after retry', {
+            operationName,
+            attempt: attempt + 1,
+            duration
+          })
+        }
+        
+        return result
+        
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error))
         
+        logger.warn('Database operation failed', {
+          operationName,
+          attempt: attempt + 1,
+          totalAttempts: maxRetries + 1,
+          error: lastError.message
+        })
+        
         // Don't retry on certain errors
         if (this.isNonRetryableError(lastError)) {
+          logger.error('Non-retryable database error', {
+            operationName,
+            error: lastError.message
+          })
           throw lastError
+        }
+
+        // Check if this is a connection issue and attempt reconnection
+        if (this.isConnectionError(lastError)) {
+          logger.warn('Connection error detected, marking connection as unhealthy')
+          this.health.isHealthy = false
+          this.health.errorCount++
         }
 
         if (attempt < maxRetries) {
@@ -298,39 +436,71 @@ export class DatabaseConnectionManager {
             options.onRetry(attempt + 1, lastError)
           }
           
-          console.warn(
-            `Database operation failed (attempt ${attempt + 1}/${maxRetries + 1}):`,
-            lastError.message
-          )
+          const delay = retryDelay * Math.pow(2, attempt)
+          logger.info('Retrying database operation', {
+            operationName,
+            nextAttempt: attempt + 2,
+            delay
+          })
           
-          await this.delay(retryDelay * Math.pow(2, attempt))
+          await this.delay(delay)
         }
       }
     }
 
-    throw new AppError(
-      ErrorCode.DATABASE_ERROR,
-      `Operation failed after ${maxRetries + 1} attempts`,
-      500,
-      ErrorSeverity.HIGH,
-      { lastError: lastError?.message }
+    logger.error('Database operation failed after all retry attempts', {
+      operationName,
+      attempts: maxRetries + 1,
+      lastError: lastError?.message
+    })
+
+    throw errors.database(
+      `${operationName} failed after ${maxRetries + 1} attempts`,
+      { 
+        lastError: lastError?.message,
+        attempts: maxRetries + 1
+      }
     )
   }
 
   private isNonRetryableError(error: Error): boolean {
     const message = error.message.toLowerCase()
     
-    // Don't retry on these errors
+    // Don't retry on these errors - they indicate data/logic issues, not infrastructure
     const nonRetryablePatterns = [
       'unique constraint',
-      'foreign key constraint',
+      'foreign key constraint', 
       'check constraint',
       'invalid input syntax',
       'permission denied',
-      'does not exist'
+      'does not exist',
+      'validation failed',
+      'p2002', // Prisma unique constraint
+      'p2003', // Prisma foreign key constraint
+      'p2025'  // Prisma record not found
     ]
     
     return nonRetryablePatterns.some(pattern => message.includes(pattern))
+  }
+
+  private isConnectionError(error: Error): boolean {
+    const message = error.message.toLowerCase()
+    
+    // These errors indicate connection issues that might be resolved with retry
+    const connectionErrorPatterns = [
+      'connection refused',
+      'connection reset',
+      'connection timeout',
+      'server closed the connection',
+      'connection lost',
+      'connection aborted',
+      'enotfound',
+      'econnrefused',
+      'econnreset',
+      'timeout'
+    ]
+    
+    return connectionErrorPatterns.some(pattern => message.includes(pattern))
   }
 
   private delay(ms: number): Promise<void> {

@@ -167,42 +167,42 @@ export { PageHeader };
 // 미리 정의된 페이지별 아이콘들
 export const PageIcons = {
   Dashboard: (
-    <div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       🏠
     </div>
   ),
   Trips: (
-    <div className='w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       ✈️
     </div>
   ),
   Schengen: (
-    <div className='w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       🇪🇺
     </div>
   ),
   Calendar: (
-    <div className='w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       📅
     </div>
   ),
   Gmail: (
-    <div className='w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       📧
     </div>
   ),
   Analytics: (
-    <div className='w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       📊
     </div>
   ),
   Monitoring: (
-    <div className='w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       🖥️
     </div>
   ),
   AI: (
-    <div className='w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       🤖
     </div>
   ),
@@ -212,7 +212,7 @@ export const PageIcons = {
     </div>
   ),
   Profile: (
-    <div className='w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center text-lg'>
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       👤
     </div>
   ),

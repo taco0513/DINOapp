@@ -216,8 +216,8 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                     status === 'completed'
                       ? 'bg-green-500 text-white'
                       : status === 'current'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-500'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground'
                   }`}
                 >
                   {status === 'completed' ? (
@@ -229,7 +229,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                 {step < 4 && (
                   <div
                     className={`w-16 h-0.5 mx-2 ${
-                      step < currentStep ? 'bg-green-500' : 'bg-gray-200'
+                      step < currentStep ? 'bg-green-500' : 'bg-muted'
                     }`}
                   />
                 )}
@@ -245,7 +245,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
             {currentStep === 3 && '비자 정보'}
             {currentStep === 4 && '추가 정보'}
           </h3>
-          <p className='text-sm text-gray-600'>
+          <p className='text-sm text-muted-foreground'>
             {currentStep === 1 && '어느 나라로 여행하셨나요?'}
             {currentStep === 2 && '입국과 출국 날짜를 입력해주세요'}
             {currentStep === 3 && '비자 유형과 여권 정보를 입력해주세요'}
@@ -259,7 +259,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
       <div className='mb-6 flex justify-end'>
         <button
           onClick={() => setShowHelp(!showHelp)}
-          className='flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
+          className='flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-accent rounded-lg transition-colors'
         >
           <HelpCircle className='w-4 h-4' />
           {showHelp ? '도움말 숨기기' : '도움말 보기'}
@@ -268,35 +268,35 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
 
       {/* Help Section */}
       {showHelp && (
-        <div className='mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200'>
-          <h4 className='font-semibold mb-3 text-blue-900'>
+        <div className='mb-8 p-6 bg-accent/20 rounded-lg border border-accent'>
+          <h4 className='font-semibold mb-3 text-foreground'>
             💡 여행 추가 가이드
           </h4>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
             <div>
-              <h5 className='font-medium mb-2 text-blue-800'>📍 국가 선택</h5>
-              <p className='text-blue-700'>
+              <h5 className='font-medium mb-2 text-foreground'>📍 국가 선택</h5>
+              <p className='text-muted-foreground'>
                 셰겐 지역 국가는 자동으로 90/180일 규칙이 적용됩니다. 국가 옆에
                 🇪🇺 표시를 확인하세요.
               </p>
             </div>
             <div>
-              <h5 className='font-medium mb-2 text-blue-800'>📅 날짜 입력</h5>
-              <p className='text-blue-700'>
+              <h5 className='font-medium mb-2 text-foreground'>📅 날짜 입력</h5>
+              <p className='text-muted-foreground'>
                 현재 체류 중이면 출국 날짜를 비워두세요. 체류 일수가 자동으로
                 계산됩니다.
               </p>
             </div>
             <div>
-              <h5 className='font-medium mb-2 text-blue-800'>🛂 비자 정보</h5>
-              <p className='text-blue-700'>
+              <h5 className='font-medium mb-2 text-foreground'>🛂 비자 정보</h5>
+              <p className='text-muted-foreground'>
                 무비자 입국은 'Tourist'를 선택하세요. 비자 유형에 따라 체류 가능
                 일수가 다릅니다.
               </p>
             </div>
             <div>
-              <h5 className='font-medium mb-2 text-blue-800'>📝 추가 정보</h5>
-              <p className='text-blue-700'>
+              <h5 className='font-medium mb-2 text-foreground'>📝 추가 정보</h5>
+              <p className='text-muted-foreground'>
                 숙소와 여행 목적은 선택사항이지만, 나중에 여행 기록을 관리할 때
                 유용합니다.
               </p>
@@ -307,9 +307,9 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
 
       {/* General Error */}
       {errors.general && (
-        <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3'>
-          <AlertCircle className='w-5 h-5 text-red-500 flex-shrink-0 mt-0.5' />
-          <div className='text-red-700'>{errors.general}</div>
+        <div className='mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3'>
+          <AlertCircle className='w-5 h-5 text-destructive flex-shrink-0 mt-0.5' />
+          <div className='text-destructive'>{errors.general}</div>
         </div>
       )}
 
@@ -319,19 +319,19 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         {currentStep === 1 && (
           <div className='card' style={{ padding: 'var(--space-8)' }}>
             <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold'>
+              <div className='w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold'>
                 1
               </div>
               <div>
                 <h3 className='text-xl font-semibold'>
                   어느 나라로 여행하셨나요?
                 </h3>
-                <p className='text-gray-600'>방문한 국가를 선택해주세요</p>
+                <p className='text-muted-foreground'>방문한 국가를 선택해주세요</p>
               </div>
             </div>
 
             <div>
-              <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+              <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                 <MapPin className='w-4 h-4' />
                 방문 국가
               </label>
@@ -340,8 +340,8 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                 onChange={e => handleChange('country', e.target.value)}
                 className={`w-full p-4 border rounded-lg text-base transition-colors ${
                   errors.country
-                    ? 'border-red-300 bg-red-50'
-                    : 'border-gray-300 hover:border-blue-400 focus:border-blue-500'
+                    ? 'border-destructive/30 bg-destructive/10'
+                    : 'border-input hover:border-primary/40 focus:border-primary'
                 }`}
                 style={{ fontSize: '16px' }} // Prevent zoom on iOS
               >
@@ -354,7 +354,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                 ))}
               </select>
               {errors.country && (
-                <p className='mt-2 text-sm text-red-600 flex items-center gap-1'>
+                <p className='mt-2 text-sm text-destructive flex items-center gap-1'>
                   <AlertCircle className='w-4 h-4' />
                   {errors.country}
                 </p>
@@ -362,8 +362,8 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
               {formData.country &&
                 COUNTRIES.find(c => c.name === formData.country)
                   ?.isSchengen && (
-                  <div className='mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg'>
-                    <p className='text-sm text-blue-800 flex items-center gap-2'>
+                  <div className='mt-3 p-3 bg-accent/20 border border-accent rounded-lg'>
+                    <p className='text-sm text-foreground flex items-center gap-2'>
                       <Info className='w-4 h-4' />
                       <strong>셰겐 지역</strong> - 180일 중 90일 규칙이 자동으로
                       적용됩니다
@@ -378,18 +378,18 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         {currentStep === 2 && (
           <div className='card' style={{ padding: 'var(--space-8)' }}>
             <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold'>
+              <div className='w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold'>
                 2
               </div>
               <div>
                 <h3 className='text-xl font-semibold'>언제 여행하셨나요?</h3>
-                <p className='text-gray-600'>입국과 출국 날짜를 입력해주세요</p>
+                <p className='text-muted-foreground'>입국과 출국 날짜를 입력해주세요</p>
               </div>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <Calendar className='w-4 h-4' />
                   입국 날짜
                 </label>
@@ -399,12 +399,12 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   onChange={e => handleChange('entryDate', e.target.value)}
                   className={`w-full p-4 border rounded-lg text-base transition-colors ${
                     errors.entryDate
-                      ? 'border-red-300 bg-red-50'
-                      : 'border-gray-300 hover:border-blue-400 focus:border-blue-500'
+                      ? 'border-destructive/30 bg-destructive/10'
+                      : 'border-input hover:border-primary/40 focus:border-primary'
                   }`}
                 />
                 {errors.entryDate && (
-                  <p className='mt-2 text-sm text-red-600 flex items-center gap-1'>
+                  <p className='mt-2 text-sm text-destructive flex items-center gap-1'>
                     <AlertCircle className='w-4 h-4' />
                     {errors.entryDate}
                   </p>
@@ -412,7 +412,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
               </div>
 
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <Calendar className='w-4 h-4' />
                   출국 날짜 (선택사항)
                 </label>
@@ -424,15 +424,15 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   }
                   className={`w-full p-4 border rounded-lg text-base transition-colors ${
                     errors.exitDate
-                      ? 'border-red-300 bg-red-50'
-                      : 'border-gray-300 hover:border-blue-400 focus:border-blue-500'
+                      ? 'border-destructive/30 bg-destructive/10'
+                      : 'border-input hover:border-primary/40 focus:border-primary'
                   }`}
                 />
-                <p className='mt-2 text-sm text-gray-500'>
+                <p className='mt-2 text-sm text-muted-foreground'>
                   현재 체류 중이면 비워두세요
                 </p>
                 {errors.exitDate && (
-                  <p className='mt-2 text-sm text-red-600 flex items-center gap-1'>
+                  <p className='mt-2 text-sm text-destructive flex items-center gap-1'>
                     <AlertCircle className='w-4 h-4' />
                     {errors.exitDate}
                   </p>
@@ -466,20 +466,20 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         {currentStep === 3 && (
           <div className='card' style={{ padding: 'var(--space-8)' }}>
             <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold'>
+              <div className='w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold'>
                 3
               </div>
               <div>
                 <h3 className='text-xl font-semibold'>
                   비자 정보를 입력해주세요
                 </h3>
-                <p className='text-gray-600'>비자 유형과 여권 정보</p>
+                <p className='text-muted-foreground'>비자 유형과 여권 정보</p>
               </div>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <Shield className='w-4 h-4' />
                   비자 유형
                 </label>
@@ -488,8 +488,8 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   onChange={e => handleChange('visaType', e.target.value)}
                   className={`w-full p-4 border rounded-lg text-base transition-colors ${
                     errors.visaType
-                      ? 'border-red-300 bg-red-50'
-                      : 'border-gray-300 hover:border-blue-400 focus:border-blue-500'
+                      ? 'border-destructive/30 bg-destructive/10'
+                      : 'border-input hover:border-primary/40 focus:border-primary'
                   }`}
                 >
                   {VISA_TYPES.map(type => (
@@ -499,7 +499,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   ))}
                 </select>
                 {errors.visaType && (
-                  <p className='mt-2 text-sm text-red-600 flex items-center gap-1'>
+                  <p className='mt-2 text-sm text-destructive flex items-center gap-1'>
                     <AlertCircle className='w-4 h-4' />
                     {errors.visaType}
                   </p>
@@ -507,7 +507,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
               </div>
 
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <FileText className='w-4 h-4' />
                   최대 체류 일수
                 </label>
@@ -519,13 +519,13 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   onChange={e =>
                     handleChange('maxDays', parseInt(e.target.value))
                   }
-                  className='w-full p-4 border border-gray-300 rounded-lg text-base hover:border-blue-400 focus:border-blue-500 transition-colors'
+                  className='w-full p-4 border border-input rounded-lg text-base hover:border-primary/40 focus:border-primary transition-colors'
                 />
               </div>
             </div>
 
             <div className='mb-6'>
-              <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+              <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                 <Shield className='w-4 h-4' />
                 여권 국가
               </label>
@@ -545,7 +545,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                 ))}
               </select>
               {errors.passportCountry && (
-                <p className='mt-2 text-sm text-red-600 flex items-center gap-1'>
+                <p className='mt-2 text-sm text-destructive flex items-center gap-1'>
                   <AlertCircle className='w-4 h-4' />
                   {errors.passportCountry}
                 </p>
@@ -566,12 +566,12 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         {currentStep === 4 && (
           <div className='card' style={{ padding: 'var(--space-8)' }}>
             <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold'>
+              <div className='w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold'>
                 4
               </div>
               <div>
                 <h3 className='text-xl font-semibold'>추가 정보 (선택사항)</h3>
-                <p className='text-gray-600'>
+                <p className='text-muted-foreground'>
                   여행에 대한 세부 정보를 입력해주세요
                 </p>
               </div>
@@ -579,7 +579,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
 
             <div className='space-y-6'>
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <Target className='w-4 h-4' />
                   여행 목적
                 </label>
@@ -588,12 +588,12 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   value={formData.purpose || ''}
                   onChange={e => handleChange('purpose', e.target.value)}
                   placeholder='예: 관광, 출장, 친구 방문...'
-                  className='w-full p-4 border border-gray-300 rounded-lg text-base hover:border-blue-400 focus:border-blue-500 transition-colors'
+                  className='w-full p-4 border border-input rounded-lg text-base hover:border-primary/40 focus:border-primary transition-colors'
                 />
               </div>
 
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <Home className='w-4 h-4' />
                   숙소 정보
                 </label>
@@ -602,12 +602,12 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   value={formData.accommodation || ''}
                   onChange={e => handleChange('accommodation', e.target.value)}
                   placeholder='예: 호텔, 에어비앤비, 친구 집...'
-                  className='w-full p-4 border border-gray-300 rounded-lg text-base hover:border-blue-400 focus:border-blue-500 transition-colors'
+                  className='w-full p-4 border border-input rounded-lg text-base hover:border-primary/40 focus:border-primary transition-colors'
                 />
               </div>
 
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <DollarSign className='w-4 h-4' />
                   여행 비용 (USD)
                 </label>
@@ -622,12 +622,12 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                     )
                   }
                   placeholder='예: 1500'
-                  className='w-full p-4 border border-gray-300 rounded-lg text-base hover:border-blue-400 focus:border-blue-500 transition-colors'
+                  className='w-full p-4 border border-input rounded-lg text-base hover:border-primary/40 focus:border-primary transition-colors'
                 />
               </div>
 
               <div>
-                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-gray-700'>
+                <label className='flex items-center gap-2 text-sm font-medium mb-3 text-foreground'>
                   <FileText className='w-4 h-4' />
                   메모
                 </label>
@@ -650,7 +650,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
           {currentStep > 1 && (
             <button
               onClick={() => setCurrentStep(currentStep - 1)}
-              className='px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
+              className='px-6 py-3 text-muted-foreground border border-input rounded-lg hover:bg-accent transition-colors'
             >
               이전
             </button>
@@ -660,7 +660,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         <div className='flex gap-3'>
           <button
             onClick={onCancel}
-            className='px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
+            className='px-6 py-3 text-muted-foreground border border-input rounded-lg hover:bg-accent transition-colors'
           >
             취소
           </button>
@@ -671,8 +671,8 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
               disabled={!isStepValid(currentStep)}
               className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                 isStepValid(currentStep)
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
             >
               다음
@@ -704,8 +704,8 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
       </div>
 
       {/* Save Notice */}
-      <div className='mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center'>
-        <p className='text-sm text-blue-800'>
+      <div className='mt-6 p-4 bg-accent/20 border border-accent rounded-lg text-center'>
+        <p className='text-sm text-foreground'>
           💾 저장하면 자동으로 셰겐 규정과 비자 상태가 계산됩니다
         </p>
       </div>

@@ -13,21 +13,21 @@ export default function HomePage() {
   return (
     <>
       <SessionCheck />
-      <main className='min-h-screen bg-gray-50'>
+      <main className='min-h-screen bg-muted'>
         {/* Hero Section */}
         <section className='relative overflow-hidden'>
           <div className='container mx-auto px-4 pt-20 pb-16 md:pt-32 md:pb-24'>
             <div className='max-w-4xl mx-auto text-center'>
               {/* Large title */}
-              <h1 className='text-6xl md:text-7xl font-bold mb-4 text-gray-900'>DINO</h1>
+              <h1 className='text-6xl md:text-7xl font-bold mb-4 text-foreground'>DINO</h1>
 
               {/* Subtitle */}
-              <p className='text-xl md:text-2xl text-gray-600 mb-6 font-medium'>
+              <p className='text-xl md:text-2xl text-muted-foreground mb-6 font-medium'>
                 Digital Nomad Visa Tracker
               </p>
 
               {/* Description */}
-              <p className='text-lg text-gray-600 mb-10 max-w-2xl mx-auto'>
+              <p className='text-lg text-muted-foreground mb-10 max-w-2xl mx-auto'>
                 비자 규정을 자동으로 추적하고 여행 기록을 관리하는 가장 스마트한
                 방법
               </p>
@@ -50,13 +50,13 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className='py-16 md:py-24 bg-white'>
+        <section className='py-16 md:py-24 bg-card'>
           <div className='container mx-auto px-4'>
             <div className='max-w-3xl mx-auto text-center mb-12'>
-              <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
+              <h2 className='text-3xl md:text-4xl font-bold text-foreground mb-4'>
                 필요한 모든 기능
               </h2>
-              <p className='text-lg text-gray-600'>
+              <p className='text-lg text-muted-foreground'>
                 복잡한 비자 관리를 단순하게 만들어드립니다
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function HomePage() {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto'>
               {/* Feature Cards */}
               <StandardCard className='hover:shadow-lg transition-shadow duration-200'>
-                <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4 shadow-sm'>
+                <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center mb-4 shadow-sm'>
                   <svg
                     className='w-6 h-6 text-white'
                     fill='none'
@@ -79,17 +79,17 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className='text-xl font-semibold text-gray-900 mb-2'>
+                <h3 className='text-xl font-semibold text-foreground mb-2'>
                   실시간 추적
                 </h3>
-                <p className='text-gray-600'>
+                <p className='text-muted-foreground'>
                   비자 만료일과 체류 기간을 자동으로 계산하여 실시간으로
                   모니터링합니다
                 </p>
               </StandardCard>
 
               <StandardCard className='hover:shadow-lg transition-shadow duration-200'>
-                <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4 shadow-sm'>
+                <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 flex items-center justify-center mb-4 shadow-sm'>
                   <svg
                     className='w-6 h-6 text-white'
                     fill='none'
@@ -104,17 +104,17 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className='text-xl font-semibold text-gray-900 mb-2'>
+                <h3 className='text-xl font-semibold text-foreground mb-2'>
                   규정 준수
                 </h3>
-                <p className='text-gray-600'>
+                <p className='text-muted-foreground'>
                   셰겐 90/180일 규칙을 정확하게 계산하여 완벽한 컴플라이언스를
                   보장합니다
                 </p>
               </StandardCard>
 
               <StandardCard className='hover:shadow-lg transition-shadow duration-200'>
-                <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 shadow-sm'>
+                <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center mb-4 shadow-sm'>
                   <svg
                     className='w-6 h-6 text-white'
                     fill='none'
@@ -129,10 +129,10 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className='text-xl font-semibold text-gray-900 mb-2'>
+                <h3 className='text-xl font-semibold text-foreground mb-2'>
                   자동화
                 </h3>
-                <p className='text-gray-600'>
+                <p className='text-muted-foreground'>
                   Gmail과 Calendar를 통해 여행을 자동 감지하여 편리하게 기록을
                   관리합니다
                 </p>
@@ -142,45 +142,45 @@ export default function HomePage() {
         </section>
 
         {/* Stats Section */}
-        <section className='py-16 md:py-20 bg-gray-50'>
+        <section className='py-16 md:py-20 bg-muted'>
           <div className='container mx-auto px-4'>
             <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto'>
               <div className='text-center p-4'>
-                <div className='text-3xl md:text-4xl font-bold text-blue-600 mb-1'>
+                <div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
                   99.9%
                 </div>
-                <div className='text-sm text-gray-600'>정확성</div>
+                <div className='text-sm text-muted-foreground'>정확성</div>
               </div>
               <div className='text-center p-4'>
-                <div className='text-3xl md:text-4xl font-bold text-blue-600 mb-1'>
+                <div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
                   195+
                 </div>
-                <div className='text-sm text-gray-600'>지원 국가</div>
+                <div className='text-sm text-muted-foreground'>지원 국가</div>
               </div>
               <div className='text-center p-4'>
-                <div className='text-3xl md:text-4xl font-bold text-blue-600 mb-1'>
+                <div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
                   50K+
                 </div>
-                <div className='text-sm text-gray-600'>관리된 여행</div>
+                <div className='text-sm text-muted-foreground'>관리된 여행</div>
               </div>
               <div className='text-center p-4'>
-                <div className='text-3xl md:text-4xl font-bold text-blue-600 mb-1'>
+                <div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
                   24/7
                 </div>
-                <div className='text-sm text-gray-600'>모니터링</div>
+                <div className='text-sm text-muted-foreground'>모니터링</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Testimonials */}
-        <section className='py-16 md:py-24 bg-white'>
+        <section className='py-16 md:py-24 bg-card'>
           <div className='container mx-auto px-4'>
             <div className='max-w-3xl mx-auto text-center mb-12'>
-              <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
+              <h2 className='text-3xl md:text-4xl font-bold text-foreground mb-4'>
                 사용자 후기
               </h2>
-              <p className='text-lg text-gray-600'>
+              <p className='text-lg text-muted-foreground'>
                 전 세계 디지털 노마드들이 DINO를 신뢰합니다
               </p>
             </div>
@@ -205,14 +205,14 @@ export default function HomePage() {
                   수 있게 되었어요!"
                 </p>
                 <div className='flex items-center gap-3'>
-                  <div className='w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center font-semibold text-blue-700'>
+                  <div className='w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/30 rounded-full flex items-center justify-center font-semibold text-primary'>
                     김
                   </div>
                   <div>
-                    <div className='text-sm font-medium text-gray-900'>
+                    <div className='text-sm font-medium text-foreground'>
                       김민수
                     </div>
-                    <div className='text-xs text-gray-600'>
+                    <div className='text-xs text-muted-foreground'>
                       디지털 노마드
                     </div>
                   </div>
@@ -237,14 +237,14 @@ export default function HomePage() {
                   자동으로 업데이트돼요."
                 </p>
                 <div className='flex items-center gap-3'>
-                  <div className='w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center font-semibold text-green-700'>
+                  <div className='w-10 h-10 bg-gradient-to-br from-secondary/20 to-secondary/30 rounded-full flex items-center justify-center font-semibold text-secondary-foreground'>
                     박
                   </div>
                   <div>
-                    <div className='text-sm font-medium text-gray-900'>
+                    <div className='text-sm font-medium text-foreground'>
                       박지영
                     </div>
-                    <div className='text-xs text-gray-600'>백패커</div>
+                    <div className='text-xs text-muted-foreground'>백패커</div>
                   </div>
                 </div>
               </StandardCard>
@@ -267,14 +267,14 @@ export default function HomePage() {
                   걱정이 사라졌습니다."
                 </p>
                 <div className='flex items-center gap-3'>
-                  <div className='w-10 h-10 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center font-semibold text-purple-700'>
+                  <div className='w-10 h-10 bg-gradient-to-br from-accent/20 to-accent/30 rounded-full flex items-center justify-center font-semibold text-accent-foreground'>
                     이
                   </div>
                   <div>
-                    <div className='text-sm font-medium text-gray-900'>
+                    <div className='text-sm font-medium text-foreground'>
                       이현우
                     </div>
-                    <div className='text-xs text-gray-600'>프리랜서</div>
+                    <div className='text-xs text-muted-foreground'>프리랜서</div>
                   </div>
                 </div>
               </StandardCard>
@@ -283,13 +283,13 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className='py-16 md:py-20 bg-gray-50'>
+        <section className='py-16 md:py-20 bg-muted'>
           <div className='container mx-auto px-4'>
             <div className='max-w-3xl mx-auto text-center'>
-              <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
+              <h2 className='text-3xl md:text-4xl font-bold text-foreground mb-4'>
                 지금 시작하세요
               </h2>
-              <p className='text-lg text-gray-600 mb-8'>
+              <p className='text-lg text-muted-foreground mb-8'>
                 무료로 시작하고 언제든지 업그레이드할 수 있습니다
               </p>
               <div className='flex flex-col sm:flex-row gap-4 justify-center mb-6'>
@@ -304,7 +304,7 @@ export default function HomePage() {
                   </Link>
                 </Button>
               </div>
-              <p className='text-sm text-gray-500'>
+              <p className='text-sm text-muted-foreground/70'>
                 신용카드 불필요 • 언제든 취소 가능 • 즉시 사용 가능
               </p>
             </div>

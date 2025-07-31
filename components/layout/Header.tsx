@@ -77,7 +77,7 @@ export default function Header() {
   }
 
   return (
-    <header className='bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm'>
+    <header className='bg-card border-b border-border sticky top-0 z-50 shadow-sm'>
       <div className='container mx-auto px-4 h-16 flex items-center'>
         <div className='flex justify-between items-center w-full'>
           {/* Logo */}
@@ -86,10 +86,10 @@ export default function Header() {
               href={'/dashboard' as any}
               className='flex items-center space-x-2 no-underline'
             >
-              <div className='w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center'>
+              <div className='w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center'>
                 <span className='text-white font-bold text-sm'>🦕</span>
               </div>
-              <h1 className='text-xl font-bold text-gray-900'>DINO</h1>
+              <h1 className='text-xl font-bold text-foreground'>DINO</h1>
             </Link>
           </div>
 
@@ -104,8 +104,8 @@ export default function Header() {
                 href={item.href as any}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive(item.href)
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:text-primary hover:bg-muted/50'
                 }`}
               >
                 <span className='mr-2'>{item.icon}</span>
@@ -119,8 +119,8 @@ export default function Header() {
                 onClick={() => setMoreMenuOpen(!moreMenuOpen)}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center min-h-[44px] ${
                   moreNavigation.some(item => isActive(item.href))
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:text-primary hover:bg-muted/50'
                 }`}
                 aria-label='추가 메뉴'
                 aria-expanded={moreMenuOpen}
@@ -146,7 +146,7 @@ export default function Header() {
               {/* More Dropdown */}
               {moreMenuOpen && (
                 <div
-                  className='absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50'
+                  className='absolute left-0 mt-2 w-48 bg-card rounded-lg shadow-lg border border-border z-50'
                   role='menu'
                   aria-labelledby='more-menu-button'
                 >
@@ -155,10 +155,10 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href as any}
-                        className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors min-h-[44px] ${
+                        className={`flex items-center gap-3 px-4 py-2 hover:bg-muted/50 transition-colors min-h-[44px] ${
                           isActive(item.href)
-                            ? 'bg-blue-50 text-blue-700'
-                            : 'text-gray-700 hover:text-blue-600'
+                            ? 'bg-primary/10 text-primary'
+                            : 'text-muted-foreground hover:text-primary'
                         }`}
                         onClick={() => setMoreMenuOpen(false)}
                         role='menuitem'
@@ -181,7 +181,7 @@ export default function Header() {
               >
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className='flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px]'
+                  className='flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors min-h-[44px]'
                   aria-label='사용자 메뉴'
                   aria-expanded={userMenuOpen}
                   aria-haspopup='true'
@@ -220,11 +220,11 @@ export default function Header() {
                 {/* 드롭다운 메뉴 */}
                 {userMenuOpen && (
                   <div
-                    className='absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50'
+                    className='absolute right-0 mt-2 w-64 bg-card rounded-lg shadow-lg border border-border z-50'
                     role='menu'
                     aria-labelledby='user-menu-button'
                   >
-                    <div className='p-4 border-b border-gray-200'>
+                    <div className='p-4 border-b border-border'>
                       <div className='flex items-center gap-3'>
                         {session.user.image ? (
                           <img
@@ -233,8 +233,8 @@ export default function Header() {
                             className='h-12 w-12 rounded-full border'
                           />
                         ) : (
-                          <div className='h-12 w-12 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center'>
-                            <span className='text-lg font-medium text-gray-600'>
+                          <div className='h-12 w-12 rounded-full bg-muted border border-border flex items-center justify-center'>
+                            <span className='text-lg font-medium text-muted-foreground'>
                               {session.user.name?.charAt(0) || 'U'}
                             </span>
                           </div>
@@ -243,7 +243,7 @@ export default function Header() {
                           <div className='font-medium truncate'>
                             {session.user.name}
                           </div>
-                          <div className='text-sm text-gray-500 truncate'>
+                          <div className='text-sm text-muted-foreground truncate'>
                             {session.user.email}
                           </div>
                         </div>
@@ -253,7 +253,7 @@ export default function Header() {
                     <div className='py-2'>
                       <Link
                         href='/profile'
-                        className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px]'
+                        className='flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors min-h-[44px]'
                         onClick={() => setUserMenuOpen(false)}
                         role='menuitem'
                       >
@@ -275,7 +275,7 @@ export default function Header() {
 
                       <Link
                         href='/settings'
-                        className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px]'
+                        className='flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors min-h-[44px]'
                         onClick={() => setUserMenuOpen(false)}
                         role='menuitem'
                       >
@@ -301,14 +301,14 @@ export default function Header() {
                         설정
                       </Link>
 
-                      <div className='border-t border-gray-200 my-2'></div>
+                      <div className='border-t border-border my-2'></div>
 
                       <button
                         onClick={() => {
                           setUserMenuOpen(false);
                           handleSignOut();
                         }}
-                        className='w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600 min-h-[44px]'
+                        className='w-full flex items-center gap-3 px-4 py-3 hover:bg-destructive/10 transition-colors text-destructive min-h-[44px]'
                         role='menuitem'
                       >
                         <svg
@@ -335,7 +335,7 @@ export default function Header() {
             {/* Mobile menu button - 44px 터치 타겟 보장 */}
             <button
               type='button'
-              className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors touch-action-manipulation`}
+              className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors touch-action-manipulation`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={
                 mobileMenuOpen ? '모바일 메뉴 닫기' : '모바일 메뉴 열기'
@@ -373,10 +373,10 @@ export default function Header() {
             role='navigation'
             aria-label='모바일 네비게이션'
           >
-            <div className='px-4 py-4 bg-white border-t border-gray-200'>
+            <div className='px-4 py-4 bg-card border-t border-border'>
               {/* 모바일 메뉴 - Core 먼저, 구분선, More */}
               <div className='space-y-1'>
-                <div className='text-xs font-medium text-gray-500 px-3 py-1'>
+                <div className='text-xs font-medium text-muted-foreground px-3 py-1'>
                   핵심 기능
                 </div>
                 {coreNavigation.map(item => (
@@ -385,8 +385,8 @@ export default function Header() {
                     href={item.href as any}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
                       isActive(item.href)
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:text-primary hover:bg-muted/50'
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -396,10 +396,10 @@ export default function Header() {
                 ))}
               </div>
 
-              <div className='border-t border-gray-200 my-3'></div>
+              <div className='border-t border-border my-3'></div>
 
               <div className='space-y-1'>
-                <div className='text-xs font-medium text-gray-500 px-3 py-1'>
+                <div className='text-xs font-medium text-muted-foreground px-3 py-1'>
                   추가 기능
                 </div>
                 {moreNavigation.map(item => (
@@ -408,8 +408,8 @@ export default function Header() {
                     href={item.href as any}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
                       isActive(item.href)
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:text-primary hover:bg-muted/50'
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -421,8 +421,8 @@ export default function Header() {
 
               {/* Mobile user info */}
               {session?.user && (
-                <div className='border-t border-gray-200 pt-4 mt-4'>
-                  <div className='flex items-center p-3 mb-4 bg-gray-50 rounded-lg border border-gray-200'>
+                <div className='border-t border-border pt-4 mt-4'>
+                  <div className='flex items-center p-3 mb-4 bg-muted rounded-lg border border-border'>
                     {session.user.image ? (
                       <img
                         src={session.user.image}
@@ -440,7 +440,7 @@ export default function Header() {
                       <div className='text-base font-medium'>
                         {session.user.name}
                       </div>
-                      <div className='text-sm font-medium text-gray-600'>
+                      <div className='text-sm font-medium text-muted-foreground'>
                         {session.user.email}
                       </div>
                     </div>
@@ -450,7 +450,7 @@ export default function Header() {
                   <div className='space-y-1'>
                     <Link
                       href='/profile'
-                      className='flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors'
+                      className='flex items-center gap-3 p-3 rounded-md hover:bg-muted/50 transition-colors'
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <svg
@@ -471,7 +471,7 @@ export default function Header() {
 
                     <Link
                       href='/settings'
-                      className='flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors'
+                      className='flex items-center gap-3 p-3 rounded-md hover:bg-muted/50 transition-colors'
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <svg
@@ -501,7 +501,7 @@ export default function Header() {
                         setMobileMenuOpen(false);
                         handleSignOut();
                       }}
-                      className='w-full flex items-center gap-3 p-3 rounded-md hover:bg-red-50 transition-colors text-red-600'
+                      className='w-full flex items-center gap-3 p-3 rounded-md hover:bg-destructive/10 transition-colors text-destructive'
                     >
                       <svg
                         className='h-4 w-4'

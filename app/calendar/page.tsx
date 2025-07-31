@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isWithinInterval, differenceInDays } from 'date-fns'
 import { ko } from 'date-fns/locale'
+import { StandardPageLayout, PageIcons } from '@/components/layout/StandardPageLayout'
 
 interface Trip {
   id: string
@@ -158,38 +159,34 @@ export default function CalendarPage() {
   const weekDays = ['일', '월', '화', '수', '목', '금', '토']
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* 헤더 */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">여행 캘린더 📅</h1>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setViewMode(viewMode === 'month' ? 'year' : 'month')}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                {viewMode === 'month' ? '연간 보기' : '월간 보기'}
-              </button>
-              <button
-                onClick={() => setShowSchengenInfo(!showSchengenInfo)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                셰겐 {showSchengenInfo ? '숨기기' : '보기'}
-              </button>
-            </div>
-          </div>
-          <p className="text-gray-600">
-            여행 일정을 한눈에 확인하고 관리하세요
-          </p>
+    <StandardPageLayout
+      title="여행 캘린더"
+      description="여행 일정을 한눈에 확인하고 관리하세요"
+      icon="Calendar"
+      headerActions={
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setViewMode(viewMode === 'month' ? 'year' : 'month')}
+            className="px-4 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted/50"
+          >
+            {viewMode === 'month' ? '연간 보기' : '월간 보기'}
+          </button>
+          <button
+            onClick={() => setShowSchengenInfo(!showSchengenInfo)}
+            className="px-4 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted/50"
+          >
+            셰겐 {showSchengenInfo ? '숨기기' : '보기'}
+          </button>
         </div>
+      }
+    >
 
         {/* 캘린더 네비게이션 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-4 mb-6">
           <div className="flex items-center justify-between">
             <button
               onClick={handlePreviousMonth}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-muted/50 rounded-lg transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -197,12 +194,12 @@ export default function CalendarPage() {
             </button>
             
             <div className="flex items-center space-x-4">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold text-foreground">
                 {format(currentDate, 'yyyy년 M월', { locale: ko })}
               </h2>
               <button
                 onClick={handleToday}
-                className="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                className="px-3 py-1 text-sm font-medium text-primary hover:text-primary/90"
               >
                 오늘
               </button>
@@ -210,7 +207,7 @@ export default function CalendarPage() {
             
             <button
               onClick={handleNextMonth}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-muted/50 rounded-lg transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -219,24 +216,24 @@ export default function CalendarPage() {
           </div>
           
           {showSchengenInfo && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t border-border">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">이번 달 셰겐 체류일수</span>
-                <span className="font-semibold text-blue-600">{monthlySchengenDays()}일</span>
+                <span className="text-muted-foreground">이번 달 셰겐 체류일수</span>
+                <span className="font-semibold text-primary">{monthlySchengenDays()}일</span>
               </div>
             </div>
           )}
         </div>
 
         {/* 캘린더 그리드 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           {/* 요일 헤더 */}
           <div className="grid grid-cols-7 mb-2">
             {weekDays.map((day, index) => (
               <div
                 key={day}
                 className={`text-center text-sm font-medium py-2 ${
-                  index === 0 ? 'text-red-600' : index === 6 ? 'text-blue-600' : 'text-gray-700'
+                  index === 0 ? 'text-destructive' : index === 6 ? 'text-primary' : 'text-foreground/80'
                 }`}
               >
                 {day}
@@ -256,20 +253,20 @@ export default function CalendarPage() {
                   onClick={() => handleDateClick(day.date)}
                   className={`min-h-[100px] p-2 border rounded-lg cursor-pointer transition-all ${
                     day.isToday
-                      ? 'bg-blue-50 border-blue-500'
+                      ? 'bg-primary/10 border-primary'
                       : isSelected
-                      ? 'bg-gray-100 border-gray-400'
-                      : 'border-gray-200 hover:bg-gray-50'
+                      ? 'bg-muted border-muted-foreground'
+                      : 'border-border hover:bg-muted/50'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-1">
                     <span className={`text-sm font-medium ${
-                      day.isToday ? 'text-blue-600' : 'text-gray-700'
+                      day.isToday ? 'text-primary' : 'text-foreground/80'
                     }`}>
                       {format(day.date, 'd')}
                     </span>
                     {day.schengenDays > 0 && showSchengenInfo && (
-                      <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                      <span className="text-xs bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded">
                         셰겐
                       </span>
                     )}
@@ -282,8 +279,8 @@ export default function CalendarPage() {
                         key={trip.id}
                         className={`text-xs p-1 rounded truncate ${
                           trip.isSchengen
-                            ? 'bg-purple-100 text-purple-700'
-                            : 'bg-green-100 text-green-700'
+                            ? 'bg-secondary text-secondary-foreground'
+                            : 'bg-muted text-muted-foreground'
                         }`}
                         title={`${trip.country} - ${trip.city}`}
                       >
@@ -291,7 +288,7 @@ export default function CalendarPage() {
                       </div>
                     ))}
                     {dayTrips.length > 2 && (
-                      <div className="text-xs text-gray-500 text-center">
+                      <div className="text-xs text-muted-foreground/70 text-center">
                         +{dayTrips.length - 2}
                       </div>
                     )}
@@ -304,8 +301,8 @@ export default function CalendarPage() {
 
         {/* 선택된 날짜 상세 정보 */}
         {selectedDate && (
-          <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="mt-6 bg-card rounded-lg shadow-sm border border-border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 여행 정보
             </h3>
             
@@ -319,29 +316,29 @@ export default function CalendarPage() {
                   return (
                     <div
                       key={trip.id}
-                      className="flex items-start justify-between p-4 rounded-lg border border-gray-200 hover:bg-gray-50"
+                      className="flex items-start justify-between p-4 rounded-lg border border-border hover:bg-muted/50"
                     >
                       <div>
                         <div className="flex items-center space-x-2 mb-1">
-                          <h4 className="font-medium text-gray-900">
+                          <h4 className="font-medium text-foreground">
                             {trip.country} - {trip.city}
                           </h4>
                           {trip.isSchengen && (
-                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                            <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full">
                               셰겐
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {format(tripStart, 'M월 d일')} - {format(tripEnd, 'M월 d일')} ({duration}일)
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-muted-foreground/70 mt-1">
                           목적: {trip.purpose}
                         </p>
                       </div>
                       <button
                         onClick={() => router.push(`/trips/${trip.id}`)}
-                        className="text-sm text-blue-600 hover:text-blue-700"
+                        className="text-sm text-primary hover:text-primary/90"
                       >
                         상세보기
                       </button>
@@ -350,7 +347,7 @@ export default function CalendarPage() {
                 })}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">
+              <p className="text-muted-foreground/70 text-center py-8">
                 이 날짜에 예정된 여행이 없습니다
               </p>
             )}
@@ -358,24 +355,23 @@ export default function CalendarPage() {
         )}
 
         {/* 범례 */}
-        <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">범례</h3>
+        <div className="mt-6 bg-card rounded-lg shadow-sm border border-border p-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">범례</h3>
           <div className="flex items-center space-x-6 text-sm">
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-blue-50 border border-blue-500 rounded"></div>
-              <span className="text-gray-600">오늘</span>
+              <div className="w-4 h-4 bg-primary/10 border border-primary rounded"></div>
+              <span className="text-muted-foreground">오늘</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-green-100 rounded"></div>
-              <span className="text-gray-600">일반 여행</span>
+              <div className="w-4 h-4 bg-muted rounded"></div>
+              <span className="text-muted-foreground">일반 여행</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-purple-100 rounded"></div>
-              <span className="text-gray-600">셰겐 지역</span>
+              <div className="w-4 h-4 bg-secondary rounded"></div>
+              <span className="text-muted-foreground">셰겐 지역</span>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </StandardPageLayout>
   )
 }

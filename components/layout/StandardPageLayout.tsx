@@ -3,6 +3,9 @@
 import { ReactNode } from 'react'
 import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 
+// Re-export for convenience
+export { PageIcons }
+
 interface StandardPageLayoutProps {
   children: ReactNode
   title?: string
@@ -23,7 +26,7 @@ export function StandardPageLayout({
   className = '',
 }: StandardPageLayoutProps) {
   return (
-    <div className={`min-h-screen bg-gray-50 ${className}`}>
+    <div className={`min-h-screen bg-muted ${className}`}>
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Page Header (if provided) */}
@@ -31,7 +34,7 @@ export function StandardPageLayout({
             <PageHeader
               title={title}
               description={description}
-              icon={icon}
+              icon={icon ? PageIcons[icon] : undefined}
               breadcrumbs={breadcrumbs}
             />
           )}
@@ -68,9 +71,9 @@ export function StandardCard({
   titleIcon
 }: StandardCardProps) {
   return (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-100 p-6 ${className}`}>
+    <div className={`bg-card rounded-xl shadow-sm border border-border p-6 ${className}`}>
       {title && (
-        <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
+        <h2 className="text-xl font-bold text-foreground mb-6 text-center">
           {titleIcon && <span className="mr-2">{titleIcon}</span>}
           {title}
         </h2>
@@ -97,12 +100,12 @@ export function StatsCard({
   className = '' 
 }: StatsCardProps) {
   const colorStyles = {
-    blue: 'bg-blue-50 border-blue-100 text-blue-600 text-blue-700',
-    green: 'bg-green-50 border-green-100 text-green-600 text-green-700',
-    purple: 'bg-purple-50 border-purple-100 text-purple-600 text-purple-700',
-    emerald: 'bg-emerald-50 border-emerald-100 text-emerald-600 text-emerald-700',
-    red: 'bg-red-50 border-red-100 text-red-600 text-red-700',
-    yellow: 'bg-yellow-50 border-yellow-100 text-yellow-600 text-yellow-700',
+    blue: 'bg-primary/10 border-primary/20 text-primary text-primary',
+    green: 'bg-secondary/10 border-secondary/20 text-secondary-foreground text-secondary-foreground',
+    purple: 'bg-accent/10 border-accent/20 text-accent-foreground text-accent-foreground',
+    emerald: 'bg-muted border-border text-foreground text-foreground',
+    red: 'bg-destructive/10 border-destructive/20 text-destructive text-destructive',
+    yellow: 'bg-primary/5 border-primary/10 text-primary text-primary',
   }
   
   const [bgColor, borderColor, valueColor, labelColor] = colorStyles[color].split(' ')
@@ -139,14 +142,14 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className={`text-center py-12 ${className}`}>
-      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="w-20 h-20 bg-gradient-to-br from-muted to-muted/80 rounded-full flex items-center justify-center mx-auto mb-4">
         <span className="text-4xl">{icon}</span>
       </div>
-      <p className="text-gray-600 mb-4 text-lg">
+      <p className="text-muted-foreground mb-4 text-lg">
         {title}
       </p>
       {description && (
-        <p className="text-gray-500 mb-4">
+        <p className="text-muted-foreground/70 mb-4">
           {description}
         </p>
       )}
@@ -165,13 +168,13 @@ interface LoadingCardProps {
 
 export function LoadingCard({ rows = 4, className = '' }: LoadingCardProps) {
   return (
-    <div className={`bg-white p-6 rounded-xl shadow-sm border border-gray-100 animate-pulse ${className}`}>
-      <div className="h-6 bg-gray-200 rounded-lg w-32 mx-auto mb-4"></div>
+    <div className={`bg-card p-6 rounded-xl shadow-sm border border-border animate-pulse ${className}`}>
+      <div className="h-6 bg-muted rounded-lg w-32 mx-auto mb-4"></div>
       <div className={`grid grid-cols-2 md:grid-cols-${rows} gap-4`}>
         {[...Array(rows)].map((_, i) => (
-          <div key={i} className="p-4 bg-gray-50 rounded-lg">
-            <div className="h-8 bg-gray-200 rounded w-16 mx-auto mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-20 mx-auto"></div>
+          <div key={i} className="p-4 bg-muted/50 rounded-lg">
+            <div className="h-8 bg-muted rounded w-16 mx-auto mb-2"></div>
+            <div className="h-4 bg-muted rounded w-20 mx-auto"></div>
           </div>
         ))}
       </div>

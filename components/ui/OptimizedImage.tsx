@@ -43,12 +43,12 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   if (hasError) {
     return (
       <div
-        className={`bg-gray-100 flex items-center justify-center ${className}`}
+        className={`bg-muted flex items-center justify-center ${className}`}
         style={{ width, height }}
         role="img"
         aria-label={alt}
       >
-        <span className="text-gray-400 text-sm">이미지 로드 실패</span>
+        <span className="text-muted-foreground text-sm">이미지 로드 실패</span>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   return (
     <div className={`relative ${className}`} style={{ width, height }}>
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+        <div className="absolute inset-0 bg-muted animate-pulse" />
       )}
       <Image
         src={src}

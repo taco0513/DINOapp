@@ -35,7 +35,7 @@ export default function EnhancedLanguageSelector({
       <div className='relative'>
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className={`btn btn-ghost btn-sm flex items-center gap-1 ${className}`}
+          className={`flex items-center gap-1 px-2 py-1 rounded-md text-sm bg-background hover:bg-accent hover:text-accent-foreground transition-colors ${className}`}
           title={t('language.select')}
         >
           <Globe className='h-4 w-4' />
@@ -48,14 +48,14 @@ export default function EnhancedLanguageSelector({
               className='fixed inset-0 z-40'
               onClick={() => setShowDropdown(false)}
             />
-            <div className='absolute right-0 z-50 mt-2 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg min-w-[140px]'>
+            <div className='absolute right-0 z-50 mt-2 py-1 bg-popover border border-border rounded-lg shadow-lg min-w-[140px]'>
               {supportedLocales.map(locale => (
                 <button
                   key={locale.code}
                   onClick={() => handleLanguageChange(locale.code)}
-                  className={`w-full flex items-center px-3 py-2 text-sm text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                  className={`w-full flex items-center px-3 py-2 text-sm text-left transition-colors hover:bg-accent hover:text-accent-foreground ${
                     currentLocale === locale.code
-                      ? 'bg-gray-100 dark:bg-gray-700'
+                      ? 'bg-accent text-accent-foreground'
                       : ''
                   }`}
                 >
@@ -90,13 +90,13 @@ export default function EnhancedLanguageSelector({
               className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
                 currentLocale === locale.code
                   ? 'border-primary bg-primary/10'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-primary/50'
+                  : 'border-border hover:border-primary/50'
               }`}
             >
               <span className='text-2xl'>{locale.flag}</span>
               <div className='text-left'>
                 <div className='font-medium'>{locale.name}</div>
-                <div className='text-sm text-gray-500 uppercase'>
+                <div className='text-sm text-muted-foreground uppercase'>
                   {locale.code}
                 </div>
               </div>
@@ -109,7 +109,7 @@ export default function EnhancedLanguageSelector({
           ))}
         </div>
 
-        <div className='text-sm text-gray-600 dark:text-gray-400'>
+        <div className='text-sm text-muted-foreground'>
           {t('language.change_note')}
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function EnhancedLanguageSelector({
     <div className='relative'>
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className={`btn btn-ghost btn-sm flex items-center gap-2 ${className}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-background hover:bg-accent hover:text-accent-foreground transition-colors ${className}`}
         aria-label={t('language.select')}
       >
         <Globe className='h-4 w-4' />
@@ -148,20 +148,20 @@ export default function EnhancedLanguageSelector({
             className='fixed inset-0 z-40'
             onClick={() => setShowDropdown(false)}
           />
-          <div className='absolute right-0 z-50 mt-2 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg min-w-[180px]'>
+          <div className='absolute right-0 z-50 mt-2 py-1 bg-popover border border-border rounded-lg shadow-lg min-w-[180px]'>
             {supportedLocales.map(locale => (
               <button
                 key={locale.code}
                 onClick={() => handleLanguageChange(locale.code)}
-                className={`w-full flex items-center px-4 py-3 text-sm text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                className={`w-full flex items-center px-4 py-3 text-sm text-left transition-colors hover:bg-accent hover:text-accent-foreground ${
                   currentLocale === locale.code
-                    ? 'bg-gray-100 dark:bg-gray-700'
+                    ? 'bg-accent text-accent-foreground'
                     : ''
                 }`}
               >
                 <span className='mr-3 text-lg'>{locale.flag}</span>
                 <span className='flex-1'>{locale.name}</span>
-                <span className='text-xs text-gray-500 uppercase mr-2'>
+                <span className='text-xs text-muted-foreground uppercase mr-2'>
                   {locale.code}
                 </span>
                 {currentLocale === locale.code && (

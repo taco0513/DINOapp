@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { StandardPageLayout, PageIcons } from '@/components/layout/StandardPageLayout'
 
 interface EmailPattern {
   id: string
@@ -265,38 +266,35 @@ export default function GmailIntegrationPage() {
   const importedTrips = extractedTrips.filter(t => t.status === 'imported')
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gmail 연동 📧</h1>
-          <p className="text-gray-600">
-            이메일에서 여행 예약 정보를 자동으로 추출합니다
-          </p>
-        </div>
+    <StandardPageLayout
+      title="Gmail 연동"
+      description="이메일에서 여행 예약 정보를 자동으로 추출합니다"
+      icon="Gmail"
+    >
 
         {/* 연결 상태 카드 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6 mb-6">
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-4">
               <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                isConnected ? 'bg-green-100' : 'bg-gray-100'
+                isConnected ? 'bg-primary/10' : 'bg-muted'
               }`}>
-                <svg className={`w-6 h-6 ${isConnected ? 'text-green-600' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-6 h-6 ${isConnected ? 'text-primary' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-foreground">
                   Gmail 계정
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   {isConnected 
                     ? `${session?.user?.email || 'user@gmail.com'}과 연결됨`
                     : 'Gmail 계정을 연결하여 예약 확인 이메일을 자동으로 가져오세요'
                   }
                 </p>
                 {isConnected && (
-                  <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                  <div className="flex items-center space-x-4 mt-2 text-sm text-muted-foreground/70">
                     <span>마지막 스캔: 2시간 전</span>
                     <span>•</span>
                     <span>발견된 예약: {extractedTrips.length}개</span>
@@ -308,14 +306,14 @@ export default function GmailIntegrationPage() {
             {isConnected ? (
               <button
                 onClick={handleDisconnect}
-                className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700"
+                className="px-4 py-2 text-sm font-medium text-destructive hover:text-destructive/90"
               >
                 연결 해제
               </button>
             ) : (
               <button
                 onClick={handleConnect}
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90"
               >
                 Gmail 연결
               </button>
@@ -326,28 +324,28 @@ export default function GmailIntegrationPage() {
         {isConnected && (
           <>
             {/* 이메일 패턴 설정 */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6 mb-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 스캔할 이메일 유형
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {emailPatterns.map(pattern => (
                   <label
                     key={pattern.id}
-                    className="flex items-start space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"
+                    className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-muted/50 cursor-pointer"
                   >
                     <input
                       type="checkbox"
                       checked={pattern.enabled}
                       onChange={() => handleTogglePattern(pattern.id)}
-                      className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="mt-1 w-4 h-4 text-primary border-border rounded focus:ring-primary"
                     />
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
                         <span className="text-lg">{pattern.icon}</span>
-                        <span className="font-medium text-gray-900">{pattern.name}</span>
+                        <span className="font-medium text-foreground">{pattern.name}</span>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">{pattern.description}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{pattern.description}</p>
                     </div>
                   </label>
                 ))}
@@ -356,20 +354,20 @@ export default function GmailIntegrationPage() {
               <button
                 onClick={handleScan}
                 disabled={isScanning || !emailPatterns.some(p => p.enabled)}
-                className="mt-4 w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-4 w-full px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isScanning ? '스캔 중...' : '이메일 스캔 시작'}
               </button>
               
               {isScanning && (
                 <div className="mt-4">
-                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                  <div className="flex justify-between text-sm text-muted-foreground mb-1">
                     <span>스캔 진행률</span>
                     <span>{scanProgress}%</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-muted rounded-full h-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-primary h-2 rounded-full transition-all duration-300"
                       style={{ width: `${scanProgress}%` }}
                     />
                   </div>
@@ -379,15 +377,15 @@ export default function GmailIntegrationPage() {
 
             {/* 추출된 여행 목록 */}
             {pendingTrips.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+              <div className="bg-card rounded-lg shadow-sm border border-border p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-foreground">
                     발견된 예약 ({pendingTrips.length}개)
                   </h3>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={handleSelectAll}
-                      className="text-sm text-blue-600 hover:text-blue-700"
+                      className="text-sm text-primary hover:text-primary"
                     >
                       {selectedTrips.size === pendingTrips.length ? '선택 해제' : '모두 선택'}
                     </button>
@@ -400,8 +398,8 @@ export default function GmailIntegrationPage() {
                       key={trip.id}
                       className={`block p-4 rounded-lg border cursor-pointer transition-colors ${
                         selectedTrips.has(trip.id)
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:bg-gray-50'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:bg-muted/50'
                       }`}
                     >
                       <div className="flex items-start">
@@ -409,7 +407,7 @@ export default function GmailIntegrationPage() {
                           type="checkbox"
                           checked={selectedTrips.has(trip.id)}
                           onChange={() => handleSelectTrip(trip.id)}
-                          className="mt-1 mr-3 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          className="mt-1 mr-3 w-4 h-4 text-primary border-border rounded focus:ring-primary"
                         />
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
@@ -421,24 +419,24 @@ export default function GmailIntegrationPage() {
                                   {trip.type === 'car' && '🚗'}
                                   {trip.type === 'activity' && '🎫'}
                                 </span>
-                                <h4 className="font-semibold text-gray-900">{trip.title}</h4>
+                                <h4 className="font-semibold text-foreground">{trip.title}</h4>
                               </div>
-                              <p className="text-sm text-gray-600 mt-1">
+                              <p className="text-sm text-muted-foreground mt-1">
                                 {trip.provider} • 예약번호: {trip.bookingRef}
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-muted-foreground">
                                 {new Date(trip.startDate).toLocaleDateString('ko-KR')}
                                 {trip.endDate && ` - ${new Date(trip.endDate).toLocaleDateString('ko-KR')}`}
                               </p>
-                              <p className="text-sm text-gray-500 mt-1">
+                              <p className="text-sm text-muted-foreground/70 mt-1">
                                 {trip.location}
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-muted-foreground/70">
                                 이메일 날짜
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-muted-foreground">
                                 {new Date(trip.emailDate).toLocaleDateString('ko-KR')}
                               </p>
                             </div>
@@ -450,16 +448,16 @@ export default function GmailIntegrationPage() {
                 </div>
                 
                 {selectedTrips.size > 0 && (
-                  <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-border">
                     <button
                       onClick={handleIgnoreSelected}
-                      className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                      className="px-4 py-2 text-foreground/80 bg-muted rounded-lg hover:bg-muted"
                     >
                       무시하기 ({selectedTrips.size}개)
                     </button>
                     <button
                       onClick={handleImportSelected}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
                     >
                       가져오기 ({selectedTrips.size}개)
                     </button>
@@ -470,15 +468,15 @@ export default function GmailIntegrationPage() {
 
             {/* 가져온 예약 */}
             {importedTrips.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   가져온 예약 ({importedTrips.length}개)
                 </h3>
                 <div className="space-y-2">
                   {importedTrips.map(trip => (
                     <div
                       key={trip.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200"
+                      className="flex items-center justify-between p-3 rounded-lg bg-primary/10 border border-primary/20"
                     >
                       <div className="flex items-center space-x-3">
                         <span className="text-lg">
@@ -488,13 +486,13 @@ export default function GmailIntegrationPage() {
                           {trip.type === 'activity' && '🎫'}
                         </span>
                         <div>
-                          <p className="font-medium text-gray-900">{trip.title}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="font-medium text-foreground">{trip.title}</p>
+                          <p className="text-sm text-muted-foreground">
                             {new Date(trip.startDate).toLocaleDateString('ko-KR')} • {trip.location}
                           </p>
                         </div>
                       </div>
-                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -504,7 +502,6 @@ export default function GmailIntegrationPage() {
             )}
           </>
         )}
-      </div>
-    </div>
+    </StandardPageLayout>
   )
 }

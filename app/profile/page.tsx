@@ -237,7 +237,7 @@ export default function ProfilePage() {
       setProfile(prev => ({
         ...prev,
         [keys[0]]: {
-          ...prev[keys[0] as keyof UserProfile],
+          ...(prev[keys[0] as keyof UserProfile] as Record<string, any>),
           [keys[1]]: value,
         },
       }));
@@ -245,7 +245,7 @@ export default function ProfilePage() {
       setProfile(prev => ({
         ...prev,
         [keys[0]]: {
-          ...prev[keys[0] as keyof UserProfile],
+          ...(prev[keys[0] as keyof UserProfile] as Record<string, any>),
           [keys[1]]: {
             ...(prev[keys[0] as keyof UserProfile] as any)[keys[1]],
             [keys[2]]: value,

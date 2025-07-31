@@ -122,8 +122,8 @@ export async function GET(_request: NextRequest) {
         
         const feedbacks = await Promise.all(
           files
-            .filter(file => file.endsWith('.json'))
-            .map(async (file) => {
+            .filter((file: string) => file.endsWith('.json'))
+            .map(async (file: string) => {
               const content = await fs.readFile(path.join(feedbackDir, file), 'utf-8');
               return JSON.parse(content);
             })

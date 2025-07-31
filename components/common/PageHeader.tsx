@@ -165,7 +165,7 @@ export default function PageHeader({
 export { PageHeader };
 
 // 미리 정의된 페이지별 아이콘들
-export const PageIcons = {
+export const PageIcons: Record<string, ReactNode> = {
   Dashboard: (
     <div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-lg'>
       🏠

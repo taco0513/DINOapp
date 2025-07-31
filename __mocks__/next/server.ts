@@ -71,7 +71,7 @@ export class NextResponse extends Response {
     this.cookies = new Map()
   }
 
-  static json(data: any, init?: ResponseInit) {
+  static override json(data: any, init?: ResponseInit) {
     return new NextResponse(JSON.stringify(data), {
       ...init,
       headers: {

@@ -25,7 +25,7 @@ interface Trip {
   isSchengen?: boolean
 }
 
-interface _CountryStats {
+interface CountryStats {
   country: string
   visits: number
   totalDays: number

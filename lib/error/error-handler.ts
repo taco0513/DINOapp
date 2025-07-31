@@ -3,7 +3,7 @@
  * Provides consistent error handling across the application
  */
 
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { ZodError } from 'zod'
 import { Prisma } from '@prisma/client'
 
@@ -226,9 +226,9 @@ export function handleError(error: unknown, requestId?: string): NextResponse {
 
 // Async error wrapper for route handlers
 export function asyncHandler<T = any>(
-  handler: (req: Request, context?: any) => Promise<T>
+  handler: (req: Request | NextRequest, context?: any) => Promise<T>
 ) {
-  return async (req: Request, context?: any) => {
+  return async (req: Request | NextRequest, context?: any) => {
     try {
       return await handler(req, context)
     } catch (error) {

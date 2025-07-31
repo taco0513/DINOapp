@@ -20,7 +20,7 @@ const ALLOWED_ORIGINS = [
 const RATE_LIMIT_MAP = new Map();
 
 // Enhanced rate limit configurations
-const RATE_LIMITS = {
+const _RATE_LIMITS = {
   general: { requests: 100, windowMs: 60000 }, // 100 requests per minute
   auth: { requests: 10, windowMs: 900000 }, // 10 auth attempts per 15 minutes
   mutation: { requests: 50, windowMs: 60000 }, // 50 mutations per minute
@@ -252,6 +252,8 @@ function handleCORS(request: NextRequest, response: NextResponse) {
   if (request.method === 'OPTIONS') {
     return new NextResponse(null, { status: 200 });
   }
+  
+  return response;
 }
 
 /**

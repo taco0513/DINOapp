@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { dbBackupManager } from '@/lib/backup/database-backup'
-import { fileBackupManager } from '@/lib/backup/file-backup'
+import { _dbBackupManager as dbBackupManager } from '@/lib/backup/database-backup'
+import { _fileBackupManager as fileBackupManager } from '@/lib/backup/file-backup'
 import { backupScheduler } from '@/lib/backup/backup-scheduler'
 import { asyncHandler } from '@/lib/error/error-handler'
 import { httpMetrics } from '@/lib/monitoring/metrics-collector'
 
 // GET /api/backup - List backups and schedules (admin only)
-export const GET = asyncHandler(async (request: NextRequest) => {
+export async function GET(request: NextRequest) {
   const endTimer = httpMetrics.requestStart('GET', '/api/backup')
   
   try {
@@ -61,10 +61,10 @@ export const GET = asyncHandler(async (request: NextRequest) => {
     endTimer()
     throw error
   }
-})
+}
 
 // POST /api/backup - Create manual backup (admin only)
-export const POST = asyncHandler(async (request: NextRequest) => {
+export async function POST(request: NextRequest) {
   const endTimer = httpMetrics.requestStart('POST', '/api/backup')
   
   try {
@@ -117,4 +117,4 @@ export const POST = asyncHandler(async (request: NextRequest) => {
     endTimer()
     throw error
   }
-})
+}

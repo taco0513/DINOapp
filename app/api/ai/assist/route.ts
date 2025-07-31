@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { AIServiceFactory } from '@/lib/ai/factory';
 import { prisma } from '@/lib/prisma';
 
-interface AIContext {
+interface _AIContext {
   task:
     | 'feature_development'
     | 'bug_fixing'
@@ -16,7 +16,7 @@ interface AIContext {
   currentCode?: string;
 }
 
-interface AISuggestion {
+interface _AISuggestion {
   type: 'code' | 'explanation' | 'fix' | 'optimization' | 'documentation';
   content: string;
   confidence: number;
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     if (response.usage) {
       await prisma.aIUsage.create({
         data: {
-          userId: user.id,
+          userId: user!.id,
           service: isPremium ? 'premium' : 'basic',
           tokens: response.usage.totalTokens,
           cost: 0, // TODO: 실제 비용 계산

@@ -8,7 +8,7 @@ import { csrfProtection } from '@/lib/security/csrf-protection'
 import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
 
 // GET /api/alerts - 알림 목록 조회
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   const requestId = generateRequestId()
   
   try {

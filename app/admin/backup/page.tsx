@@ -4,18 +4,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import BackupManagementDashboard from '@/components/admin/BackupManagementDashboard';
 
-interface _BackupInfo {
-  databaseBackups: any[];
-  fileBackups: any[];
-  schedules: any[];
-  status: {
-    totalSchedules: number;
-    enabledSchedules: number;
-    runningSchedules: number;
-    lastBackup?: string;
-    nextBackup?: string;
-  };
-}
 
 export const metadata: Metadata = {
   title: '백업 및 복구 - DINO Admin',

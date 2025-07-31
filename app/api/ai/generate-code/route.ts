@@ -487,7 +487,7 @@ model Tag {
     framework: 'prisma',
     dependencies: ['@prisma/client', 'prisma'],
     testCode: undefined,
-    documentation: includeDocs ? '# Database Schema Documentation' : undefined
+    documentation: _includeDocs ? '# Database Schema Documentation' : undefined
   };
 }
 

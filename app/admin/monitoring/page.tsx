@@ -3,20 +3,8 @@ import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import MonitoringDashboard from '@/components/admin/MonitoringDashboard'
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle, 
-  Clock, 
-  Database, 
-  Server,
-  TrendingUp,
-  Users,
-  Zap,
-  RefreshCw
-} from 'lucide-react'
 
-interface HealthCheck {
+interface _HealthCheck {
   timestamp: string
   status: 'healthy' | 'degraded' | 'unhealthy'
   version: string
@@ -51,7 +39,7 @@ interface HealthCheck {
   }
 }
 
-interface MetricsData {
+interface _MetricsData {
   summary: {
     totalRequests: number
     errorRate: number
@@ -75,7 +63,7 @@ interface LogEntry {
   stack?: string
 }
 
-interface LogsData {
+interface _LogsData {
   logs: LogEntry[]
   stats: {
     total: number

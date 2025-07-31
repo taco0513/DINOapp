@@ -1,11 +1,13 @@
 # Project Setup Playbook
-*AI-Assisted Full-Stack Development Workflow*
+
+_AI-Assisted Full-Stack Development Workflow_
 
 ## 📋 Overview
 
 This playbook provides a comprehensive, step-by-step workflow for setting up modern full-stack projects using AI assistance. Based on practical experience with the DiNoCal project and enhanced with best practices.
 
 ### 🎯 Goals
+
 - Minimize setup friction and maximize development velocity
 - Ensure comprehensive documentation from day one
 - Establish robust development practices early
@@ -16,6 +18,7 @@ This playbook provides a comprehensive, step-by-step workflow for setting up mod
 ## 🚀 Phase 1: Project Foundation
 
 ### Step 1.1: Project Initialization
+
 ```bash
 # Create new Next.js project with TypeScript
 npx create-next-app@latest project-name --typescript --tailwind --eslint --app
@@ -30,6 +33,7 @@ git commit -m "Initial project setup"
 ```
 
 ### Step 1.2: Essential Dependencies Setup
+
 ```bash
 # Core dependencies (based on project needs)
 npm install next-auth @next-auth/prisma-adapter @prisma/client prisma zod
@@ -42,7 +46,9 @@ npx prisma init
 ```
 
 ### Step 1.3: Package.json Scripts Enhancement
+
 Add these essential scripts to your package.json:
+
 ```json
 {
   "scripts": {
@@ -65,26 +71,33 @@ Add these essential scripts to your package.json:
 ## 📊 Phase 2: Requirements Analysis & Planning
 
 ### Step 2.1: Create Core Planning Documents
+
 Create these essential documents in your project root:
 
 **planning.md**
+
 ```markdown
 # [Project Name] - Planning Document
 
 ## 🌍 Project Overview
+
 [Brief description of the project]
 
 ## 🎯 Core Goals
+
 - [Goal 1]
 - [Goal 2]
 - [Goal 3]
 
 ## 👥 Target Users
+
 - [User group 1]
 - [User group 2]
 
 ## 🏗️ Technical Architecture
+
 ### Tech Stack
+
 - Frontend: Next.js + TypeScript
 - Backend: Next.js API Routes
 - Database: [Your choice]
@@ -92,20 +105,24 @@ Create these essential documents in your project root:
 - Styling: Tailwind CSS
 
 ## 📈 Success Metrics
+
 - [Metric 1]
 - [Metric 2]
 ```
 
 **tasks.md**
+
 ```markdown
 # [Project Name] Development Tasks
 
 ## 🚀 High Priority - Epic 1: Foundation
+
 - [ ] Project setup and infrastructure
 - [ ] Authentication implementation
 - [ ] Basic layout and navigation
 
 ## 🏗️ High Priority - Epic 2: Core Features
+
 - [ ] [Core feature 1]
 - [ ] [Core feature 2]
 
@@ -113,7 +130,9 @@ Create these essential documents in your project root:
 ```
 
 ### Step 2.2: AI-Assisted Requirements Analysis
+
 Use this AI command to analyze your planning documents:
+
 ```
 Analyze the planning.md and tasks.md files to identify:
 1. Core functional requirements
@@ -129,14 +148,17 @@ Provide a structured analysis with priorities and recommendations.
 ## 🔍 Phase 3: Technical Architecture & API Planning
 
 ### Step 3.1: Third-Party API Analysis
+
 **🎯 This is where our enhanced workflow comes in!**
 
 Use this AI command at the **design phase** (not during implementation):
+
 ```
 Analyze my codebase for any third-party APIs that are required or recommended (including in the PLANNING.md and TASKS.md files). Make a plan to use the Context7 MCP to search relevant documentation needed for each of these APIs. Then, plan to add relevant documentation to a md file in the /documentation folder of my project directory
 ```
 
 ### Step 3.2: Create Documentation Structure
+
 ```bash
 # Create documentation folder
 mkdir documentation
@@ -150,7 +172,9 @@ documentation/
 ```
 
 ### Step 3.3: System Architecture Design
+
 Use this AI command:
+
 ```
 Based on the requirements in planning.md and the identified APIs, create a comprehensive system architecture document that includes:
 1. High-level system overview
@@ -166,6 +190,7 @@ Based on the requirements in planning.md and the identified APIs, create a compr
 ## 🏗️ Phase 4: Development Environment Setup
 
 ### Step 4.1: Environment Configuration
+
 ```bash
 # Create environment files
 touch .env.local .env.example
@@ -182,6 +207,7 @@ echo ".env.local" >> .gitignore
 ```
 
 ### Step 4.2: TypeScript Configuration
+
 ```json
 // tsconfig.json enhancements
 {
@@ -199,6 +225,7 @@ echo ".env.local" >> .gitignore
 ```
 
 ### Step 4.3: Project Structure Setup
+
 ```bash
 # Create essential directories
 mkdir -p lib/{auth,database,utils} components/{ui,forms,layout} types
@@ -212,6 +239,7 @@ touch types/global.ts types/api.ts types/auth.ts
 ## 🧪 Phase 5: Testing & Quality Setup
 
 ### Step 5.1: Testing Framework Setup
+
 ```bash
 # Install testing dependencies
 npm install -D jest @testing-library/react @testing-library/jest-dom
@@ -222,6 +250,7 @@ touch jest.config.js jest.setup.js
 ```
 
 ### Step 5.2: Code Quality Tools
+
 ```bash
 # Install additional linting tools
 npm install -D @typescript-eslint/eslint-plugin @typescript-eslint/parser
@@ -236,9 +265,11 @@ npm install -D prettier eslint-config-prettier
 ## 🚀 Phase 6: Implementation Workflow
 
 ### Step 6.1: Feature Development Process
+
 For each epic/story in your tasks.md:
 
 1. **Planning Phase**
+
    ```
    AI: Create a detailed implementation plan for [feature], including:
    - Component architecture
@@ -248,6 +279,7 @@ For each epic/story in your tasks.md:
    ```
 
 2. **Implementation Phase**
+
    ```
    AI: Implement [feature] following the plan, ensuring:
    - TypeScript type safety
@@ -265,7 +297,9 @@ For each epic/story in your tasks.md:
    ```
 
 ### Step 6.2: AI-Assisted Code Review
+
 After implementing each feature:
+
 ```
 AI: Review the implemented [feature] for:
 1. Code quality and best practices
@@ -280,7 +314,9 @@ AI: Review the implemented [feature] for:
 ## 📚 Phase 7: Documentation & Knowledge Management
 
 ### Step 7.1: API Documentation Maintenance
+
 After each API integration:
+
 ```
 AI: Update the api-documentation.md file with:
 - New endpoint documentation
@@ -290,6 +326,7 @@ AI: Update the api-documentation.md file with:
 ```
 
 ### Step 7.2: Development Guide Creation
+
 ```
 AI: Create a comprehensive development guide including:
 - Local development setup
@@ -304,7 +341,9 @@ AI: Create a comprehensive development guide including:
 ## 🔄 Phase 8: Continuous Improvement
 
 ### Step 8.1: Regular Architecture Reviews
+
 Monthly AI-assisted reviews:
+
 ```
 AI: Review the current architecture and identify:
 1. Technical debt accumulation
@@ -315,6 +354,7 @@ AI: Review the current architecture and identify:
 ```
 
 ### Step 8.2: Documentation Updates
+
 ```
 AI: Review and update all documentation for:
 - Accuracy of current implementation
@@ -330,21 +370,25 @@ AI: Review and update all documentation for:
 ### Quick Commands for Common Tasks
 
 **Project Analysis**
+
 ```
 Analyze the current project structure and identify areas for improvement in terms of organization, naming conventions, and architectural patterns.
 ```
 
 **Security Review**
+
 ```
 Perform a security audit of the current implementation, focusing on authentication, data validation, API security, and potential vulnerabilities.
 ```
 
 **Performance Optimization**
+
 ```
 Analyze the application for performance bottlenecks and suggest optimizations for loading times, bundle size, and runtime performance.
 ```
 
 **Code Quality Check**
+
 ```
 Review the codebase for code quality issues, including TypeScript usage, error handling, testing coverage, and maintainability.
 ```
@@ -354,6 +398,7 @@ Review the codebase for code quality issues, including TypeScript usage, error h
 ## 📋 Checklist Templates
 
 ### Pre-Development Checklist
+
 - [ ] Project initialized with proper structure
 - [ ] Essential dependencies installed
 - [ ] Environment configuration completed
@@ -363,6 +408,7 @@ Review the codebase for code quality issues, including TypeScript usage, error h
 - [ ] Code quality tools setup
 
 ### Feature Implementation Checklist
+
 - [ ] Implementation plan created
 - [ ] TypeScript types defined
 - [ ] Components implemented with proper props
@@ -373,6 +419,7 @@ Review the codebase for code quality issues, including TypeScript usage, error h
 - [ ] Security review completed
 
 ### Pre-Deployment Checklist
+
 - [ ] All tests passing
 - [ ] Security audit completed
 - [ ] Performance optimization done
@@ -389,24 +436,28 @@ Review the codebase for code quality issues, including TypeScript usage, error h
 ### Common Issues and Solutions
 
 **API Integration Issues**
+
 - Check API keys and environment variables
 - Verify OAuth scopes and permissions
 - Review rate limiting and quota usage
 - Test with API exploration tools
 
 **Database Issues**
+
 - Verify database connection strings
 - Check migration status
 - Review schema changes
 - Test database queries locally
 
 **Authentication Problems**
+
 - Verify OAuth provider configuration
 - Check callback URLs and domains
 - Review session configuration
 - Test authentication flow
 
 **Performance Issues**
+
 - Analyze bundle size and optimize imports
 - Review database query performance
 - Check for unnecessary re-renders
@@ -417,17 +468,20 @@ Review the codebase for code quality issues, including TypeScript usage, error h
 ## 📈 Success Metrics
 
 ### Development Velocity
+
 - Time from idea to deployment
 - Feature completion rate
 - Bug resolution time
 
 ### Code Quality
+
 - TypeScript coverage
 - Test coverage percentage
 - Code review feedback quality
 - Documentation completeness
 
 ### Team Productivity
+
 - Onboarding time for new developers
 - Knowledge sharing effectiveness
 - Process improvement adoption
@@ -437,6 +491,7 @@ Review the codebase for code quality issues, including TypeScript usage, error h
 ## 🔄 Workflow Optimization
 
 ### Lessons Learned Integration
+
 Based on the DiNoCal project experience:
 
 1. **API Documentation Early**: Don't wait until implementation to document third-party APIs
@@ -446,6 +501,7 @@ Based on the DiNoCal project experience:
 5. **Documentation as Code**: Keep documentation in version control and update regularly
 
 ### AI Assistance Best Practices
+
 1. **Specific Commands**: Use detailed, specific prompts for better results
 2. **Iterative Refinement**: Break complex tasks into smaller, manageable pieces
 3. **Context Awareness**: Provide relevant context files and project information
@@ -457,6 +513,7 @@ Based on the DiNoCal project experience:
 ## 📚 Additional Resources
 
 ### Recommended Tools
+
 - **Development**: VS Code with TypeScript extensions
 - **Database**: Prisma Studio for database management
 - **API Testing**: Postman or Thunder Client
@@ -464,6 +521,7 @@ Based on the DiNoCal project experience:
 - **Monitoring**: Vercel Analytics or similar
 
 ### Learning Resources
+
 - Next.js Documentation
 - TypeScript Handbook
 - React Testing Library
@@ -472,7 +530,7 @@ Based on the DiNoCal project experience:
 
 ---
 
-*Last Updated: January 2025*
-*Version: 2.0 - Enhanced with DiNoCal project learnings*
+_Last Updated: January 2025_
+_Version: 2.0 - Enhanced with DiNoCal project learnings_
 
 **Key Improvement**: Third-party API analysis and documentation is now properly positioned in Phase 3 (Technical Architecture & API Planning) rather than during implementation, ensuring better project foundation and smoother development process.

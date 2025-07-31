@@ -39,7 +39,9 @@ export default function PerformanceMetricsDashboard() {
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [webVitals, setWebVitals] = useState<WebVitals | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<'1h' | '24h' | '7d' | '30d'>('24h');
+  const [timeRange, setTimeRange] = useState<'1h' | '24h' | '7d' | '30d'>(
+    '24h'
+  );
 
   useEffect(() => {
     fetchPerformanceData();
@@ -49,7 +51,9 @@ export default function PerformanceMetricsDashboard() {
 
   const fetchPerformanceData = async () => {
     try {
-      const response = await fetch(`/api/metrics/performance?range=${timeRange}`);
+      const response = await fetch(
+        `/api/metrics/performance?range=${timeRange}`
+      );
       const data = await response.json();
       setPerformanceData(data.metrics);
       setWebVitals(data.webVitals);
@@ -60,27 +64,32 @@ export default function PerformanceMetricsDashboard() {
     }
   };
 
-  const getHealthStatus = (metric: number, thresholds: { good: number; warning: number }) => {
-    if (metric <= thresholds.good) return { color: 'text-green-600', icon: CheckCircle };
-    if (metric <= thresholds.warning) return { color: 'text-yellow-600', icon: AlertTriangle };
+  const getHealthStatus = (
+    metric: number,
+    thresholds: { good: number; warning: number }
+  ) => {
+    if (metric <= thresholds.good)
+      return { color: 'text-green-600', icon: CheckCircle };
+    if (metric <= thresholds.warning)
+      return { color: 'text-yellow-600', icon: AlertTriangle };
     return { color: 'text-red-600', icon: AlertTriangle };
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className='flex items-center justify-center h-96'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* 시간 범위 선택 */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">성능 모니터링</h2>
-        <div className="flex gap-2">
-          {(['1h', '24h', '7d', '30d'] as const).map((range) => (
+      <div className='flex justify-between items-center'>
+        <h2 className='text-2xl font-bold'>성능 모니터링</h2>
+        <div className='flex gap-2'>
+          {(['1h', '24h', '7d', '30d'] as const).map(range => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
@@ -101,19 +110,26 @@ export default function PerformanceMetricsDashboard() {
 
       {/* Core Web Vitals */}
       {webVitals && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">LCP (Largest Contentful Paint)</CardTitle>
+            <CardHeader className='pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                LCP (Largest Contentful Paint)
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <div className="text-2xl font-bold">{webVitals.lcp.toFixed(2)}s</div>
-                  <p className="text-xs text-gray-600">목표: &lt; 2.5s</p>
+                  <div className='text-2xl font-bold'>
+                    {webVitals.lcp.toFixed(2)}s
+                  </div>
+                  <p className='text-xs text-gray-600'>목표: &lt; 2.5s</p>
                 </div>
                 {(() => {
-                  const status = getHealthStatus(webVitals.lcp, { good: 2.5, warning: 4.0 });
+                  const status = getHealthStatus(webVitals.lcp, {
+                    good: 2.5,
+                    warning: 4.0,
+                  });
                   const Icon = status.icon;
                   return <Icon className={`h-5 w-5 ${status.color}`} />;
                 })()}
@@ -122,17 +138,24 @@ export default function PerformanceMetricsDashboard() {
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">FID (First Input Delay)</CardTitle>
+            <CardHeader className='pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                FID (First Input Delay)
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <div className="text-2xl font-bold">{webVitals.fid.toFixed(0)}ms</div>
-                  <p className="text-xs text-gray-600">목표: &lt; 100ms</p>
+                  <div className='text-2xl font-bold'>
+                    {webVitals.fid.toFixed(0)}ms
+                  </div>
+                  <p className='text-xs text-gray-600'>목표: &lt; 100ms</p>
                 </div>
                 {(() => {
-                  const status = getHealthStatus(webVitals.fid, { good: 100, warning: 300 });
+                  const status = getHealthStatus(webVitals.fid, {
+                    good: 100,
+                    warning: 300,
+                  });
                   const Icon = status.icon;
                   return <Icon className={`h-5 w-5 ${status.color}`} />;
                 })()}
@@ -141,17 +164,24 @@ export default function PerformanceMetricsDashboard() {
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">CLS (Cumulative Layout Shift)</CardTitle>
+            <CardHeader className='pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                CLS (Cumulative Layout Shift)
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <div className="text-2xl font-bold">{webVitals.cls.toFixed(3)}</div>
-                  <p className="text-xs text-gray-600">목표: &lt; 0.1</p>
+                  <div className='text-2xl font-bold'>
+                    {webVitals.cls.toFixed(3)}
+                  </div>
+                  <p className='text-xs text-gray-600'>목표: &lt; 0.1</p>
                 </div>
                 {(() => {
-                  const status = getHealthStatus(webVitals.cls, { good: 0.1, warning: 0.25 });
+                  const status = getHealthStatus(webVitals.cls, {
+                    good: 0.1,
+                    warning: 0.25,
+                  });
                   const Icon = status.icon;
                   return <Icon className={`h-5 w-5 ${status.color}`} />;
                 })()}
@@ -160,17 +190,24 @@ export default function PerformanceMetricsDashboard() {
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">TTFB (Time to First Byte)</CardTitle>
+            <CardHeader className='pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                TTFB (Time to First Byte)
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <div className="text-2xl font-bold">{webVitals.ttfb.toFixed(0)}ms</div>
-                  <p className="text-xs text-gray-600">목표: &lt; 800ms</p>
+                  <div className='text-2xl font-bold'>
+                    {webVitals.ttfb.toFixed(0)}ms
+                  </div>
+                  <p className='text-xs text-gray-600'>목표: &lt; 800ms</p>
                 </div>
                 {(() => {
-                  const status = getHealthStatus(webVitals.ttfb, { good: 800, warning: 1800 });
+                  const status = getHealthStatus(webVitals.ttfb, {
+                    good: 800,
+                    warning: 1800,
+                  });
                   const Icon = status.icon;
                   return <Icon className={`h-5 w-5 ${status.color}`} />;
                 })()}
@@ -181,34 +218,34 @@ export default function PerformanceMetricsDashboard() {
       )}
 
       {/* 성능 차트 */}
-      <Tabs defaultValue="response" className="space-y-4">
+      <Tabs defaultValue='response' className='space-y-4'>
         <TabsList>
-          <TabsTrigger value="response">응답 시간</TabsTrigger>
-          <TabsTrigger value="throughput">처리량</TabsTrigger>
-          <TabsTrigger value="errors">에러율</TabsTrigger>
-          <TabsTrigger value="resources">리소스 사용량</TabsTrigger>
+          <TabsTrigger value='response'>응답 시간</TabsTrigger>
+          <TabsTrigger value='throughput'>처리량</TabsTrigger>
+          <TabsTrigger value='errors'>에러율</TabsTrigger>
+          <TabsTrigger value='resources'>리소스 사용량</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="response" className="space-y-4">
+        <TabsContent value='response' className='space-y-4'>
           <Card>
             <CardHeader>
               <CardTitle>API 응답 시간</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
                   <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="timestamp" />
+                    <CartesianGrid strokeDasharray='3 3' />
+                    <XAxis dataKey='timestamp' />
                     <YAxis />
                     <Tooltip />
                     <Legend />
                     <Line
-                      type="monotone"
-                      dataKey="responseTime"
-                      stroke="#000000"
+                      type='monotone'
+                      dataKey='responseTime'
+                      stroke='#000000'
                       strokeWidth={2}
-                      name="응답 시간 (ms)"
+                      name='응답 시간 (ms)'
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -217,32 +254,46 @@ export default function PerformanceMetricsDashboard() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="throughput" className="space-y-4">
+        <TabsContent value='throughput' className='space-y-4'>
           <Card>
             <CardHeader>
               <CardTitle>요청 처리량</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
                   <AreaChart data={performanceData}>
                     <defs>
-                      <linearGradient id="colorThroughput" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                      <linearGradient
+                        id='colorThroughput'
+                        x1='0'
+                        y1='0'
+                        x2='0'
+                        y2='1'
+                      >
+                        <stop
+                          offset='5%'
+                          stopColor='#4f46e5'
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset='95%'
+                          stopColor='#4f46e5'
+                          stopOpacity={0}
+                        />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="timestamp" />
+                    <CartesianGrid strokeDasharray='3 3' />
+                    <XAxis dataKey='timestamp' />
                     <YAxis />
                     <Tooltip />
                     <Area
-                      type="monotone"
-                      dataKey="throughput"
-                      stroke="#4f46e5"
+                      type='monotone'
+                      dataKey='throughput'
+                      stroke='#4f46e5'
                       fillOpacity={1}
-                      fill="url(#colorThroughput)"
-                      name="요청/초"
+                      fill='url(#colorThroughput)'
+                      name='요청/초'
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -251,26 +302,26 @@ export default function PerformanceMetricsDashboard() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="errors" className="space-y-4">
+        <TabsContent value='errors' className='space-y-4'>
           <Card>
             <CardHeader>
               <CardTitle>에러율</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
                   <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="timestamp" />
+                    <CartesianGrid strokeDasharray='3 3' />
+                    <XAxis dataKey='timestamp' />
                     <YAxis />
-                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Tooltip formatter={value => `${value}%`} />
                     <Legend />
                     <Line
-                      type="monotone"
-                      dataKey="errorRate"
-                      stroke="#ef4444"
+                      type='monotone'
+                      dataKey='errorRate'
+                      stroke='#ef4444'
                       strokeWidth={2}
-                      name="에러율 (%)"
+                      name='에러율 (%)'
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -279,33 +330,47 @@ export default function PerformanceMetricsDashboard() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="resources" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <TabsContent value='resources' className='space-y-4'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
             <Card>
               <CardHeader>
                 <CardTitle>CPU 사용량</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className='h-80'>
+                  <ResponsiveContainer width='100%' height='100%'>
                     <AreaChart data={performanceData}>
                       <defs>
-                        <linearGradient id="colorCPU" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                        <linearGradient
+                          id='colorCPU'
+                          x1='0'
+                          y1='0'
+                          x2='0'
+                          y2='1'
+                        >
+                          <stop
+                            offset='5%'
+                            stopColor='#22c55e'
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset='95%'
+                            stopColor='#22c55e'
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="timestamp" />
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis dataKey='timestamp' />
                       <YAxis />
-                      <Tooltip formatter={(value) => `${value}%`} />
+                      <Tooltip formatter={value => `${value}%`} />
                       <Area
-                        type="monotone"
-                        dataKey="cpuUsage"
-                        stroke="#22c55e"
+                        type='monotone'
+                        dataKey='cpuUsage'
+                        stroke='#22c55e'
                         fillOpacity={1}
-                        fill="url(#colorCPU)"
-                        name="CPU (%)"
+                        fill='url(#colorCPU)'
+                        name='CPU (%)'
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -318,26 +383,40 @@ export default function PerformanceMetricsDashboard() {
                 <CardTitle>메모리 사용량</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className='h-80'>
+                  <ResponsiveContainer width='100%' height='100%'>
                     <AreaChart data={performanceData}>
                       <defs>
-                        <linearGradient id="colorMemory" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                        <linearGradient
+                          id='colorMemory'
+                          x1='0'
+                          y1='0'
+                          x2='0'
+                          y2='1'
+                        >
+                          <stop
+                            offset='5%'
+                            stopColor='#f59e0b'
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset='95%'
+                            stopColor='#f59e0b'
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="timestamp" />
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis dataKey='timestamp' />
                       <YAxis />
-                      <Tooltip formatter={(value) => `${value}%`} />
+                      <Tooltip formatter={value => `${value}%`} />
                       <Area
-                        type="monotone"
-                        dataKey="memoryUsage"
-                        stroke="#f59e0b"
+                        type='monotone'
+                        dataKey='memoryUsage'
+                        stroke='#f59e0b'
                         fillOpacity={1}
-                        fill="url(#colorMemory)"
-                        name="메모리 (%)"
+                        fill='url(#colorMemory)'
+                        name='메모리 (%)'
                       />
                     </AreaChart>
                   </ResponsiveContainer>

@@ -29,11 +29,12 @@ export function useLocalStorage<T>(
 
   // Save to localStorage whenever the value changes
   const setValue: SetValue<T> = useCallback(
-    (value) => {
+    value => {
       try {
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
         setStoredValue(valueToStore);
-        
+
         if (typeof window !== 'undefined') {
           window.localStorage.setItem(key, JSON.stringify(valueToStore));
         }

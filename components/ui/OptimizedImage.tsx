@@ -45,19 +45,17 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       <div
         className={`bg-muted flex items-center justify-center ${className}`}
         style={{ width, height }}
-        role="img"
+        role='img'
         aria-label={alt}
       >
-        <span className="text-muted-foreground text-sm">이미지 로드 실패</span>
+        <span className='text-muted-foreground text-sm'>이미지 로드 실패</span>
       </div>
     );
   }
 
   return (
     <div className={`relative ${className}`} style={{ width, height }}>
-      {isLoading && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
-      )}
+      {isLoading && <div className='absolute inset-0 bg-muted animate-pulse' />}
       <Image
         src={src}
         alt={alt}

@@ -1,7 +1,12 @@
 import { EventEmitter } from 'events';
 
 export interface WorkflowTrigger {
-  type: 'code_change' | 'pull_request' | 'error_detected' | 'schedule' | 'manual';
+  type:
+    | 'code_change'
+    | 'pull_request'
+    | 'error_detected'
+    | 'schedule'
+    | 'manual';
   conditions?: Record<string, any>;
 }
 
@@ -67,7 +72,10 @@ export class WorkflowAutomationEngine extends EventEmitter {
       trigger: { type: 'error_detected' },
       actions: [
         { type: 'analyze_error', timeout: 30 },
-        { type: 'search_solutions', params: { sources: ['stackoverflow', 'github', 'docs'] } },
+        {
+          type: 'search_solutions',
+          params: { sources: ['stackoverflow', 'github', 'docs'] },
+        },
         { type: 'generate_fix', params: { confidence_threshold: 0.8 } },
         { type: 'test_fix' },
         { type: 'apply_fix', params: { require_approval: true } },
@@ -89,7 +97,12 @@ export class WorkflowAutomationEngine extends EventEmitter {
     });
   }
 
-  createWorkflow(config: Omit<AutomatedWorkflow, 'id' | 'enabled' | 'successCount' | 'failureCount'>): AutomatedWorkflow {
+  createWorkflow(
+    config: Omit<
+      AutomatedWorkflow,
+      'id' | 'enabled' | 'successCount' | 'failureCount'
+    >
+  ): AutomatedWorkflow {
     const workflow: AutomatedWorkflow = {
       ...config,
       id: this.generateWorkflowId(),
@@ -126,15 +139,23 @@ export class WorkflowAutomationEngine extends EventEmitter {
             success: true,
             output,
           });
-          this.emit('action:completed', { workflowId, action: action.type, output });
+          this.emit('action:completed', {
+            workflowId,
+            action: action.type,
+            output,
+          });
         } catch (error) {
           results.push({
             action: action.type,
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
           });
-          this.emit('action:failed', { workflowId, action: action.type, error });
-          
+          this.emit('action:failed', {
+            workflowId,
+            action: action.type,
+            error,
+          });
+
           // 액션 실패 시 워크플로우 중단 (설정에 따라 계속 진행 가능)
           break;
         }
@@ -142,7 +163,7 @@ export class WorkflowAutomationEngine extends EventEmitter {
 
       const success = results.every(r => r.success);
       workflow.lastRun = new Date();
-      
+
       if (success) {
         workflow.successCount++;
       } else {
@@ -289,7 +310,9 @@ export class WorkflowAutomationEngine extends EventEmitter {
   }
 
   // 워크플로우 통계
-  getWorkflowStats(id: string): { successRate: number; avgDuration: number } | null {
+  getWorkflowStats(
+    id: string
+  ): { successRate: number; avgDuration: number } | null {
     const workflow = this.workflows.get(id);
     if (!workflow) return null;
 

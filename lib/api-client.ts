@@ -1,6 +1,11 @@
-import type { CountryVisit, VisaType, PassportCountry } from '@/types/global'
-import { withCache, generateCacheKey, CacheKeys, memoryCache } from '@/lib/cache/memory-cache'
-import { toast } from 'sonner'
+import type { CountryVisit, VisaType, PassportCountry } from '@/types/global';
+import {
+  withCache,
+  generateCacheKey,
+  CacheKeys,
+  memoryCache,
+} from '@/lib/cache/memory-cache';
+import { toast } from 'sonner';
 
 /**
  * Standard API response wrapper for all API endpoints
@@ -8,15 +13,15 @@ import { toast } from 'sonner'
  */
 export interface ApiResponse<T = any> {
   /** Indicates if the request was successful */
-  success: boolean
+  success: boolean;
   /** The response data if successful */
-  data?: T
+  data?: T;
   /** Error message if the request failed */
-  error?: string
+  error?: string;
   /** Additional message for the user */
-  message?: string
+  message?: string;
   /** Additional error details for debugging */
-  details?: any
+  details?: any;
 }
 
 /**
@@ -24,19 +29,19 @@ export interface ApiResponse<T = any> {
  */
 export interface TripFormData {
   /** Country code or name for the trip destination */
-  country: string
+  country: string;
   /** ISO date string for entry date (YYYY-MM-DD) */
-  entryDate: string
+  entryDate: string;
   /** ISO date string for exit date (YYYY-MM-DD), optional for current trips */
-  exitDate?: string | null
+  exitDate?: string | null;
   /** Type of visa used for entry */
-  visaType: VisaType
+  visaType: VisaType;
   /** Maximum days allowed for this visa type */
-  maxDays: number
+  maxDays: number;
   /** User's passport country */
-  passportCountry: PassportCountry
+  passportCountry: PassportCountry;
   /** Optional notes about the trip */
-  notes?: string
+  notes?: string;
 }
 
 /**
@@ -50,12 +55,12 @@ const CACHE_TIMES = {
   STATIC_DATA: 60 * 60 * 1000,
   /** 24 hours for system data like countries and visa types */
   SYSTEM_DATA: 24 * 60 * 60 * 1000,
-} as const
+} as const;
 
 /**
  * Main API client for DINO app
  * Handles all API communication with built-in caching, CSRF protection, and offline support
- * 
+ *
  * @example
  * ```typescript
  * // Get all trips for the current user
@@ -74,13 +79,13 @@ export class ApiClient {
   private static async getCSRFToken(): Promise<string> {
     try {
       const response = await fetch('/api/csrf-token', {
-        credentials: 'same-origin'
-      })
-      const data = await response.json()
-      return data.token || data.csrfToken
+        credentials: 'same-origin',
+      });
+      const data = await response.json();
+      return data.token || data.csrfToken;
     } catch (error) {
-      console.error('Failed to get CSRF token:', error)
-      return ''
+      console.error('Failed to get CSRF token:', error);
+      return '';
     }
   }
 
@@ -96,17 +101,23 @@ export class ApiClient {
    * @private
    */
   private static async request<T>(
-    url: string, 
+    url: string,
     options: RequestInit = {},
     useCache = false,
     cacheKey?: string,
     cacheTTL?: number
   ): Promise<ApiResponse<T>> {
     // Use cache for GET requests if specified
-    if (useCache && cacheKey && options.method !== 'POST' && options.method !== 'PUT' && options.method !== 'DELETE') {
-      const cached = memoryCache.get<ApiResponse<T>>(cacheKey)
+    if (
+      useCache &&
+      cacheKey &&
+      options.method !== 'POST' &&
+      options.method !== 'PUT' &&
+      options.method !== 'DELETE'
+    ) {
+      const cached = memoryCache.get<ApiResponse<T>>(cacheKey);
       if (cached) {
-        return cached
+        return cached;
       }
     }
 
@@ -115,19 +126,22 @@ export class ApiClient {
       let headers: HeadersInit = {
         'Content-Type': 'application/json',
         ...options.headers,
-      }
-      
-      if (options.method && ['POST', 'PUT', 'DELETE'].includes(options.method)) {
+      };
+
+      if (
+        options.method &&
+        ['POST', 'PUT', 'DELETE'].includes(options.method)
+      ) {
         try {
-          const csrfToken = await this.getCSRFToken()
+          const csrfToken = await this.getCSRFToken();
           if (csrfToken) {
             headers = {
               ...headers,
               'X-CSRF-Token': csrfToken,
-            }
+            };
           }
         } catch (csrfError) {
-          console.error('Failed to get CSRF token:', csrfError)
+          console.error('Failed to get CSRF token:', csrfError);
           // Continue without CSRF token in development
         }
       }
@@ -136,55 +150,63 @@ export class ApiClient {
         headers,
         credentials: 'same-origin',
         ...options,
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || `HTTP error! status: ${response.status}`)
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
       }
 
       // Cache successful GET responses
-      if (useCache && cacheKey && response.ok && (!options.method || options.method === 'GET')) {
-        memoryCache.set(cacheKey, data, cacheTTL || CACHE_TIMES.USER_DATA)
+      if (
+        useCache &&
+        cacheKey &&
+        response.ok &&
+        (!options.method || options.method === 'GET')
+      ) {
+        memoryCache.set(cacheKey, data, cacheTTL || CACHE_TIMES.USER_DATA);
       }
 
-      return data
+      return data;
     } catch (error) {
       // API request failed
-      console.error('API request failed:', error)
-      
+      console.error('API request failed:', error);
+
       // 오프라인 상태 처리
       if (!navigator.onLine) {
         // 오프라인일 때 localStorage에서 데이터 가져오기
-        const offlineData = localStorage.getItem('dinoapp-offline-data')
+        const offlineData = localStorage.getItem('dinoapp-offline-data');
         if (offlineData && options.method === 'GET') {
-          const cached = JSON.parse(offlineData)
-          
+          const cached = JSON.parse(offlineData);
+
           // URL에 따른 캐시 데이터 반환
           if (url.includes('/api/trips') && cached.trips) {
-            toast.info('오프라인 모드: 캐시된 데이터를 표시합니다')
-            return { success: true, data: cached.trips }
-          } else if (url.includes('/api/schengen-status') && cached.schengenStatus) {
-            return { success: true, data: cached.schengenStatus }
+            toast.info('오프라인 모드: 캐시된 데이터를 표시합니다');
+            return { success: true, data: cached.trips };
+          } else if (
+            url.includes('/api/schengen-status') &&
+            cached.schengenStatus
+          ) {
+            return { success: true, data: cached.schengenStatus };
           } else if (url.includes('/api/user/stats') && cached.stats) {
-            return { success: true, data: cached.stats }
+            return { success: true, data: cached.stats };
           }
         }
       }
-      
+
       // Return a proper error response instead of throwing
       if (error instanceof Error) {
         return {
           success: false,
-          error: error.message
-        }
+          error: error.message,
+        };
       }
-      
+
       return {
         success: false,
-        error: 'An unexpected error occurred'
-      }
+        error: 'An unexpected error occurred',
+      };
     }
   }
 
@@ -196,19 +218,19 @@ export class ApiClient {
    */
   private static invalidateUserCache(userId?: string): void {
     if (userId) {
-      memoryCache.delete(CacheKeys.USER_TRIPS(userId))
-      memoryCache.delete(CacheKeys.USER_SCHENGEN_STATUS(userId))
-      memoryCache.delete(CacheKeys.USER_STATS(userId))
+      memoryCache.delete(CacheKeys.USER_TRIPS(userId));
+      memoryCache.delete(CacheKeys.USER_SCHENGEN_STATUS(userId));
+      memoryCache.delete(CacheKeys.USER_STATS(userId));
     }
     // Also invalidate the general trips cache
-    memoryCache.delete('trips:all')
+    memoryCache.delete('trips:all');
   }
 
   /**
    * Retrieves all trips for a user or all trips if no userId provided
    * @param userId - Optional user ID to filter trips
    * @returns Promise resolving to array of CountryVisit records
-   * 
+   *
    * @example
    * ```typescript
    * const { success, data } = await ApiClient.getTrips('user123');
@@ -218,14 +240,14 @@ export class ApiClient {
    * ```
    */
   static async getTrips(userId?: string): Promise<ApiResponse<CountryVisit[]>> {
-    const cacheKey = userId ? CacheKeys.USER_TRIPS(userId) : 'trips:all'
+    const cacheKey = userId ? CacheKeys.USER_TRIPS(userId) : 'trips:all';
     return this.request<CountryVisit[]>(
       '/api/trips',
       {},
       true,
       cacheKey,
       CACHE_TIMES.USER_DATA
-    )
+    );
   }
 
   /**
@@ -234,14 +256,14 @@ export class ApiClient {
    * @returns Promise resolving to CountryVisit record
    */
   static async getTrip(id: string): Promise<ApiResponse<CountryVisit>> {
-    const cacheKey = `trip:${id}`
+    const cacheKey = `trip:${id}`;
     return this.request<CountryVisit>(
       `/api/trips/${id}`,
       {},
       true,
       cacheKey,
       CACHE_TIMES.USER_DATA
-    )
+    );
   }
 
   /**
@@ -249,7 +271,7 @@ export class ApiClient {
    * @param data - Trip form data containing country, dates, visa info
    * @param userId - Optional user ID for cache invalidation
    * @returns Promise resolving to the created CountryVisit record
-   * 
+   *
    * @example
    * ```typescript
    * const newTrip = await ApiClient.createTrip({
@@ -262,16 +284,19 @@ export class ApiClient {
    * });
    * ```
    */
-  static async createTrip(data: TripFormData, userId?: string): Promise<ApiResponse<CountryVisit>> {
+  static async createTrip(
+    data: TripFormData,
+    userId?: string
+  ): Promise<ApiResponse<CountryVisit>> {
     const result = await this.request<CountryVisit>('/api/trips', {
       method: 'POST',
       body: JSON.stringify(data),
-    })
-    
+    });
+
     // Invalidate relevant caches
-    this.invalidateUserCache(userId)
-    
-    return result
+    this.invalidateUserCache(userId);
+
+    return result;
   }
 
   /**
@@ -281,17 +306,21 @@ export class ApiClient {
    * @param userId - Optional user ID for cache invalidation
    * @returns Promise resolving to the updated CountryVisit record
    */
-  static async updateTrip(id: string, data: Partial<TripFormData>, userId?: string): Promise<ApiResponse<CountryVisit>> {
+  static async updateTrip(
+    id: string,
+    data: Partial<TripFormData>,
+    userId?: string
+  ): Promise<ApiResponse<CountryVisit>> {
     const result = await this.request<CountryVisit>(`/api/trips/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
-    })
-    
+    });
+
     // Invalidate relevant caches
-    this.invalidateUserCache(userId)
-    memoryCache.delete(`trip:${id}`)
-    
-    return result
+    this.invalidateUserCache(userId);
+    memoryCache.delete(`trip:${id}`);
+
+    return result;
   }
 
   /**
@@ -300,23 +329,26 @@ export class ApiClient {
    * @param userId - Optional user ID for cache invalidation
    * @returns Promise resolving to null on successful deletion
    */
-  static async deleteTrip(id: string, userId?: string): Promise<ApiResponse<null>> {
+  static async deleteTrip(
+    id: string,
+    userId?: string
+  ): Promise<ApiResponse<null>> {
     const result = await this.request<null>(`/api/trips/${id}`, {
       method: 'DELETE',
-    })
-    
+    });
+
     // Invalidate relevant caches
-    this.invalidateUserCache(userId)
-    memoryCache.delete(`trip:${id}`)
-    
-    return result
+    this.invalidateUserCache(userId);
+    memoryCache.delete(`trip:${id}`);
+
+    return result;
   }
 
   /**
    * Calculates Schengen zone status for a user
    * @param userId - Optional user ID to calculate status for
    * @returns Promise resolving to Schengen status including used/remaining days
-   * 
+   *
    * @example
    * ```typescript
    * const { data } = await ApiClient.getSchengenStatus('user123');
@@ -324,14 +356,16 @@ export class ApiClient {
    * ```
    */
   static async getSchengenStatus(userId?: string): Promise<ApiResponse<any>> {
-    const cacheKey = userId ? CacheKeys.USER_SCHENGEN_STATUS(userId) : 'schengen:status'
+    const cacheKey = userId
+      ? CacheKeys.USER_SCHENGEN_STATUS(userId)
+      : 'schengen:status';
     return this.request(
       '/api/schengen',
       {},
       true,
       cacheKey,
       CACHE_TIMES.USER_DATA
-    )
+    );
   }
 
   /**
@@ -339,7 +373,7 @@ export class ApiClient {
    * @returns Promise resolving to array of notifications
    */
   static async getNotifications(): Promise<ApiResponse<any>> {
-    return this.request('/api/notifications')
+    return this.request('/api/notifications');
   }
 
   /**
@@ -347,11 +381,13 @@ export class ApiClient {
    * @param notificationId - The notification ID to mark as read
    * @returns Promise resolving to success status
    */
-  static async markNotificationRead(notificationId: string): Promise<ApiResponse<any>> {
+  static async markNotificationRead(
+    notificationId: string
+  ): Promise<ApiResponse<any>> {
     return this.request('/api/notifications/mark-read', {
       method: 'POST',
-      body: JSON.stringify({ notificationId })
-    })
+      body: JSON.stringify({ notificationId }),
+    });
   }
 
   /**
@@ -360,14 +396,16 @@ export class ApiClient {
    * @returns Promise resolving to statistics data
    */
   static async getStats(userId?: string): Promise<ApiResponse<any>> {
-    const cacheKey = userId ? CacheKeys.USER_STATS(userId) : CacheKeys.SYSTEM_STATS
+    const cacheKey = userId
+      ? CacheKeys.USER_STATS(userId)
+      : CacheKeys.SYSTEM_STATS;
     return this.request(
       '/api/stats',
       {},
       true,
       cacheKey,
       CACHE_TIMES.USER_DATA
-    )
+    );
   }
 
   /**
@@ -382,7 +420,7 @@ export class ApiClient {
       true,
       CacheKeys.COUNTRIES_DATA,
       CACHE_TIMES.SYSTEM_DATA
-    )
+    );
   }
 
   /**
@@ -397,7 +435,7 @@ export class ApiClient {
       true,
       CacheKeys.VISA_TYPES,
       CACHE_TIMES.SYSTEM_DATA
-    )
+    );
   }
 
   /**
@@ -406,15 +444,18 @@ export class ApiClient {
    * @param query - Optional search query to filter messages
    * @returns Promise resolving to array of Gmail messages
    */
-  static async getGmailMessages(userId: string, query?: string): Promise<ApiResponse<any>> {
-    const cacheKey = CacheKeys.GMAIL_MESSAGES(userId, query)
+  static async getGmailMessages(
+    userId: string,
+    query?: string
+  ): Promise<ApiResponse<any>> {
+    const cacheKey = CacheKeys.GMAIL_MESSAGES(userId, query);
     return this.request(
       `/api/gmail/search${query ? `?q=${encodeURIComponent(query)}` : ''}`,
       {},
       true,
       cacheKey,
       CACHE_TIMES.USER_DATA
-    )
+    );
   }
 
   /**
@@ -424,18 +465,21 @@ export class ApiClient {
    * @param messageId - The Gmail message ID to analyze
    * @returns Promise resolving to extracted travel data
    */
-  static async analyzeGmailMessage(userId: string, messageId: string): Promise<ApiResponse<any>> {
-    const cacheKey = CacheKeys.GMAIL_ANALYSIS(userId, messageId)
+  static async analyzeGmailMessage(
+    userId: string,
+    messageId: string
+  ): Promise<ApiResponse<any>> {
+    const cacheKey = CacheKeys.GMAIL_ANALYSIS(userId, messageId);
     return this.request(
       `/api/gmail/analyze`,
       {
         method: 'POST',
-        body: JSON.stringify({ messageId })
+        body: JSON.stringify({ messageId }),
       },
       true,
       cacheKey,
       CACHE_TIMES.STATIC_DATA // Longer cache for analyzed emails
-    )
+    );
   }
 
   /**
@@ -444,7 +488,7 @@ export class ApiClient {
    * @returns Promise resolving to database test results
    */
   static async testDatabase(): Promise<ApiResponse<any>> {
-    return this.request('/api/test-db')
+    return this.request('/api/test-db');
   }
 
   /**
@@ -452,7 +496,7 @@ export class ApiClient {
    * @param userId - The user ID whose cache should be cleared
    */
   static clearUserCache(userId: string): void {
-    this.invalidateUserCache(userId)
+    this.invalidateUserCache(userId);
   }
 
   /**
@@ -460,7 +504,7 @@ export class ApiClient {
    * Use sparingly as it will force all data to be re-fetched
    */
   static clearAllCache(): void {
-    memoryCache.clear()
+    memoryCache.clear();
   }
 
   /**
@@ -468,7 +512,7 @@ export class ApiClient {
    * @returns Cache statistics including hit rate, size, etc.
    */
   static getCacheStats() {
-    return memoryCache.getStats()
+    return memoryCache.getStats();
   }
 }
 
@@ -479,9 +523,9 @@ export class ApiClient {
  */
 export async function handleApiError(error: any): Promise<string> {
   if (error instanceof Error) {
-    return error.message
+    return error.message;
   }
-  return 'An unexpected error occurred'
+  return 'An unexpected error occurred';
 }
 
 /**
@@ -490,7 +534,7 @@ export async function handleApiError(error: any): Promise<string> {
  * @returns ISO date string in YYYY-MM-DD format
  */
 export function formatApiDate(date: Date | string): string {
-  return new Date(date).toISOString().split('T')[0]
+  return new Date(date).toISOString().split('T')[0];
 }
 
 /**
@@ -499,5 +543,5 @@ export function formatApiDate(date: Date | string): string {
  * @returns JavaScript Date object
  */
 export function parseApiDate(dateString: string): Date {
-  return new Date(dateString)
+  return new Date(dateString);
 }

@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { 
+import {
   Bug,
   Search,
   Zap,
@@ -19,7 +19,7 @@ import {
   Code,
   FileSearch,
   GitBranch,
-  Terminal
+  Terminal,
 } from 'lucide-react';
 
 interface ProblemContext {
@@ -57,7 +57,9 @@ export default function ProblemSolver() {
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [searchProgress, setSearchProgress] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(120); // 2분 타이머
-  const [selectedSolution, setSelectedSolution] = useState<Solution | null>(null);
+  const [selectedSolution, setSelectedSolution] = useState<Solution | null>(
+    null
+  );
 
   // 2분 타이머
   useEffect(() => {
@@ -109,67 +111,71 @@ export default function ProblemSolver() {
 
   const getSolutionIcon = (type: Solution['type']) => {
     switch (type) {
-      case 'quick_fix': return <Zap className="h-4 w-4" />;
-      case 'root_cause': return <Bug className="h-4 w-4" />;
-      case 'workaround': return <GitBranch className="h-4 w-4" />;
-      case 'prevention': return <CheckCircle className="h-4 w-4" />;
+      case 'quick_fix':
+        return <Zap className='h-4 w-4' />;
+      case 'root_cause':
+        return <Bug className='h-4 w-4' />;
+      case 'workaround':
+        return <GitBranch className='h-4 w-4' />;
+      case 'prevention':
+        return <CheckCircle className='h-4 w-4' />;
     }
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-4">
+    <div className='w-full max-w-6xl mx-auto space-y-4'>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bug className="h-5 w-5 text-red-500" />
+          <CardTitle className='flex items-center gap-2'>
+            <Bug className='h-5 w-5 text-red-500' />
             스마트 문제 해결 엔진
           </CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <p className='text-sm text-muted-foreground'>
             2분 룰 - 막힌 문제를 2분 안에 해결하는 AI 기반 자동 검색 시스템
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className='space-y-4'>
           {/* 문제 설명 입력 */}
           <div>
-            <label className="text-sm font-medium mb-2 block">
+            <label className='text-sm font-medium mb-2 block'>
               어떤 문제를 겪고 계신가요?
             </label>
             <Textarea
               placeholder="예: 'TypeError: Cannot read property of undefined 에러가 발생해요'"
               value={problem}
-              onChange={(e) => setProblem(e.target.value)}
+              onChange={e => setProblem(e.target.value)}
               rows={3}
             />
           </div>
 
           {/* 에러 상세 정보 */}
           <div>
-            <label className="text-sm font-medium mb-2 block">
+            <label className='text-sm font-medium mb-2 block'>
               에러 메시지나 스택 트레이스 (선택사항)
             </label>
             <Textarea
-              placeholder="에러 메시지나 코드를 붙여넣으세요..."
+              placeholder='에러 메시지나 코드를 붙여넣으세요...'
               value={errorDetails}
-              onChange={(e) => setErrorDetails(e.target.value)}
+              onChange={e => setErrorDetails(e.target.value)}
               rows={4}
-              className="font-mono text-sm"
+              className='font-mono text-sm'
             />
           </div>
 
-          <Button 
+          <Button
             onClick={handleSearch}
             disabled={isSearching || !problem.trim()}
-            className="w-full"
-            size="lg"
+            className='w-full'
+            size='lg'
           >
             {isSearching ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 AI가 해결책을 찾는 중... ({formatTime(timeRemaining)})
               </>
             ) : (
               <>
-                <Search className="mr-2 h-4 w-4" />
+                <Search className='mr-2 h-4 w-4' />
                 2분 안에 해결책 찾기
               </>
             )}
@@ -177,25 +183,37 @@ export default function ProblemSolver() {
 
           {/* 검색 진행 상황 */}
           {isSearching && (
-            <div className="space-y-3">
+            <div className='space-y-3'>
               <Progress value={searchProgress} />
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <Timer className="h-4 w-4" />
+              <div className='flex items-center justify-between text-sm'>
+                <div className='flex items-center gap-2'>
+                  <Timer className='h-4 w-4' />
                   <span>남은 시간: {formatTime(timeRemaining)}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className='flex items-center gap-2'>
                   {searchProgress < 30 && (
-                    <><FileSearch className="h-4 w-4 animate-pulse" /> Stack Overflow 검색 중...</>
+                    <>
+                      <FileSearch className='h-4 w-4 animate-pulse' /> Stack
+                      Overflow 검색 중...
+                    </>
                   )}
                   {searchProgress >= 30 && searchProgress < 60 && (
-                    <><Code className="h-4 w-4 animate-pulse" /> GitHub Issues 분석 중...</>
+                    <>
+                      <Code className='h-4 w-4 animate-pulse' /> GitHub Issues
+                      분석 중...
+                    </>
                   )}
                   {searchProgress >= 60 && searchProgress < 90 && (
-                    <><Terminal className="h-4 w-4 animate-pulse" /> 공식 문서 확인 중...</>
+                    <>
+                      <Terminal className='h-4 w-4 animate-pulse' /> 공식 문서
+                      확인 중...
+                    </>
                   )}
                   {searchProgress >= 90 && (
-                    <><Lightbulb className="h-4 w-4 animate-pulse" /> AI 솔루션 생성 중...</>
+                    <>
+                      <Lightbulb className='h-4 w-4 animate-pulse' /> AI 솔루션
+                      생성 중...
+                    </>
                   )}
                 </div>
               </div>
@@ -208,38 +226,38 @@ export default function ProblemSolver() {
       {solutions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">발견된 해결책</CardTitle>
-            <p className="text-sm text-muted-foreground">
+            <CardTitle className='text-lg'>발견된 해결책</CardTitle>
+            <p className='text-sm text-muted-foreground'>
               총 {solutions.length}개의 해결 방법을 찾았습니다
             </p>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {solutions.map((solution) => (
-              <Card 
-                key={solution.id} 
-                className="cursor-pointer hover:border-primary transition-colors"
+          <CardContent className='space-y-3'>
+            {solutions.map(solution => (
+              <Card
+                key={solution.id}
+                className='cursor-pointer hover:border-primary transition-colors'
                 onClick={() => setSelectedSolution(solution)}
               >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
+                <CardHeader className='pb-3'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex items-center gap-2'>
                       {getSolutionIcon(solution.type)}
-                      <h4 className="font-medium">{solution.title}</h4>
+                      <h4 className='font-medium'>{solution.title}</h4>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">
-                        {solution.timeEstimate}
-                      </Badge>
-                      <Badge 
-                        variant={solution.confidence > 0.8 ? 'default' : 'secondary'}
+                    <div className='flex items-center gap-2'>
+                      <Badge variant='outline'>{solution.timeEstimate}</Badge>
+                      <Badge
+                        variant={
+                          solution.confidence > 0.8 ? 'default' : 'secondary'
+                        }
                       >
                         {Math.round(solution.confidence * 100)}% 확신
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-sm text-muted-foreground">
+                <CardContent className='pt-0'>
+                  <p className='text-sm text-muted-foreground'>
                     {solution.description}
                   </p>
                 </CardContent>
@@ -253,30 +271,30 @@ export default function ProblemSolver() {
       {selectedSolution && (
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
+            <div className='flex items-center justify-between'>
+              <CardTitle className='flex items-center gap-2'>
                 {getSolutionIcon(selectedSolution.type)}
                 {selectedSolution.title}
               </CardTitle>
-              <Button 
-                variant="ghost" 
-                size="sm"
+              <Button
+                variant='ghost'
+                size='sm'
                 onClick={() => setSelectedSolution(null)}
               >
                 닫기
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className='space-y-4'>
             <div>
-              <h4 className="font-medium mb-2">해결 단계</h4>
-              <ol className="space-y-2">
+              <h4 className='font-medium mb-2'>해결 단계</h4>
+              <ol className='space-y-2'>
                 {selectedSolution.steps.map((step, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs">
+                  <li key={idx} className='flex items-start gap-2'>
+                    <span className='flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs'>
                       {idx + 1}
                     </span>
-                    <span className="text-sm">{step}</span>
+                    <span className='text-sm'>{step}</span>
                   </li>
                 ))}
               </ol>
@@ -284,44 +302,48 @@ export default function ProblemSolver() {
 
             {selectedSolution.code && (
               <div>
-                <h4 className="font-medium mb-2">코드 예시</h4>
-                <pre className="bg-muted p-3 rounded-md overflow-x-auto">
-                  <code className="text-sm">{selectedSolution.code}</code>
+                <h4 className='font-medium mb-2'>코드 예시</h4>
+                <pre className='bg-muted p-3 rounded-md overflow-x-auto'>
+                  <code className='text-sm'>{selectedSolution.code}</code>
                 </pre>
               </div>
             )}
 
-            {selectedSolution.references && selectedSolution.references.length > 0 && (
-              <div>
-                <h4 className="font-medium mb-2">참고 자료</h4>
-                <div className="space-y-2">
-                  {selectedSolution.references.map((ref, idx) => (
-                    <a
-                      key={idx}
-                      href={ref.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted transition-colors"
-                    >
-                      <span className="text-sm text-blue-600">{ref.title}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {Math.round(ref.relevance * 100)}% 관련
-                      </Badge>
-                    </a>
-                  ))}
+            {selectedSolution.references &&
+              selectedSolution.references.length > 0 && (
+                <div>
+                  <h4 className='font-medium mb-2'>참고 자료</h4>
+                  <div className='space-y-2'>
+                    {selectedSolution.references.map((ref, idx) => (
+                      <a
+                        key={idx}
+                        href={ref.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='flex items-center justify-between p-2 rounded-md hover:bg-muted transition-colors'
+                      >
+                        <span className='text-sm text-blue-600'>
+                          {ref.title}
+                        </span>
+                        <Badge variant='outline' className='text-xs'>
+                          {Math.round(ref.relevance * 100)}% 관련
+                        </Badge>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </CardContent>
         </Card>
       )}
 
       {/* 2분 룰 설명 */}
       <Alert>
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircle className='h-4 w-4' />
         <AlertDescription>
-          <strong>2분 룰이란?</strong> 개발 중 막힌 문제는 2분 안에 해결하거나 도움을 요청하는 규칙입니다. 
-          AI가 Stack Overflow, GitHub, 공식 문서 등을 자동으로 검색하여 최적의 해결책을 제시합니다.
+          <strong>2분 룰이란?</strong> 개발 중 막힌 문제는 2분 안에 해결하거나
+          도움을 요청하는 규칙입니다. AI가 Stack Overflow, GitHub, 공식 문서
+          등을 자동으로 검색하여 최적의 해결책을 제시합니다.
         </AlertDescription>
       </Alert>
     </div>

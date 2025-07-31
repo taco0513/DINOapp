@@ -4,49 +4,49 @@
  */
 
 interface AlertChannel {
-  name: string
-  type: 'email' | 'webhook' | 'console' | 'database'
-  enabled: boolean
-  config: Record<string, any>
+  name: string;
+  type: 'email' | 'webhook' | 'console' | 'database';
+  enabled: boolean;
+  config: Record<string, any>;
 }
 
 interface Alert {
-  id: string
-  title: string
-  message: string
-  severity: 'info' | 'warning' | 'error' | 'critical'
-  timestamp: Date
-  source: string
-  metadata?: Record<string, any>
-  resolved?: boolean
-  resolvedAt?: Date
+  id: string;
+  title: string;
+  message: string;
+  severity: 'info' | 'warning' | 'error' | 'critical';
+  timestamp: Date;
+  source: string;
+  metadata?: Record<string, any>;
+  resolved?: boolean;
+  resolvedAt?: Date;
 }
 
 interface NotificationTemplate {
-  id: string
-  name: string
-  subject: string
-  message: string
-  channels: string[]
+  id: string;
+  name: string;
+  subject: string;
+  message: string;
+  channels: string[];
 }
 
 class AlertManager {
-  private static instance: AlertManager
-  private alerts: Alert[] = []
-  private channels: Map<string, AlertChannel> = new Map()
-  private templates: Map<string, NotificationTemplate> = new Map()
-  private readonly MAX_ALERTS = 1000
+  private static instance: AlertManager;
+  private alerts: Alert[] = [];
+  private channels: Map<string, AlertChannel> = new Map();
+  private templates: Map<string, NotificationTemplate> = new Map();
+  private readonly MAX_ALERTS = 1000;
 
   private constructor() {
-    this.initializeDefaultChannels()
-    this.initializeDefaultTemplates()
+    this.initializeDefaultChannels();
+    this.initializeDefaultTemplates();
   }
 
   public static getInstance(): AlertManager {
     if (!AlertManager.instance) {
-      AlertManager.instance = new AlertManager()
+      AlertManager.instance = new AlertManager();
     }
-    return AlertManager.instance
+    return AlertManager.instance;
   }
 
   private initializeDefaultChannels(): void {
@@ -55,16 +55,16 @@ class AlertManager {
       name: 'Console Logger',
       type: 'console',
       enabled: true,
-      config: {}
-    })
+      config: {},
+    });
 
     // Database logging channel
     this.channels.set('database', {
       name: 'Database Logger',
       type: 'database',
       enabled: true,
-      config: {}
-    })
+      config: {},
+    });
 
     // Email channel (if configured)
     if (process.env.SMTP_HOST) {
@@ -78,9 +78,9 @@ class AlertManager {
           user: process.env.SMTP_USER,
           password: process.env.SMTP_PASSWORD,
           from: process.env.SMTP_FROM || 'noreply@dino-app.com',
-          to: process.env.ADMIN_EMAILS?.split(',') || []
-        }
-      })
+          to: process.env.ADMIN_EMAILS?.split(',') || [],
+        },
+      });
     }
 
     // Webhook channel (Slack, Discord, etc.)
@@ -91,9 +91,9 @@ class AlertManager {
         enabled: true,
         config: {
           url: process.env.WEBHOOK_URL,
-          format: process.env.WEBHOOK_FORMAT || 'slack' // slack, discord, generic
-        }
-      })
+          format: process.env.WEBHOOK_FORMAT || 'slack', // slack, discord, generic
+        },
+      });
     }
   }
 
@@ -102,41 +102,46 @@ class AlertManager {
       id: 'system_error',
       name: 'System Error Alert',
       subject: '🚨 DINO System Error Alert',
-      message: 'System error detected: {{message}}\nTimestamp: {{timestamp}}\nSeverity: {{severity}}',
-      channels: ['console', 'email', 'webhook']
-    })
+      message:
+        'System error detected: {{message}}\nTimestamp: {{timestamp}}\nSeverity: {{severity}}',
+      channels: ['console', 'email', 'webhook'],
+    });
 
     this.templates.set('performance_warning', {
       id: 'performance_warning',
       name: 'Performance Warning',
       subject: '⚠️ DINO Performance Warning',
-      message: 'Performance issue detected: {{message}}\nMetric: {{metric}}\nThreshold: {{threshold}}\nCurrent: {{current}}',
-      channels: ['console', 'webhook']
-    })
+      message:
+        'Performance issue detected: {{message}}\nMetric: {{metric}}\nThreshold: {{threshold}}\nCurrent: {{current}}',
+      channels: ['console', 'webhook'],
+    });
 
     this.templates.set('security_alert', {
       id: 'security_alert',
       name: 'Security Alert',
       subject: '🔒 DINO Security Alert',
-      message: 'Security event detected: {{message}}\nSource: {{source}}\nIP: {{ip}}\nAction: {{action}}',
-      channels: ['console', 'email', 'webhook', 'database']
-    })
+      message:
+        'Security event detected: {{message}}\nSource: {{source}}\nIP: {{ip}}\nAction: {{action}}',
+      channels: ['console', 'email', 'webhook', 'database'],
+    });
 
     this.templates.set('backup_status', {
       id: 'backup_status',
       name: 'Backup Status',
       subject: '💾 DINO Backup Status',
-      message: 'Backup operation: {{status}}\nBackup ID: {{backupId}}\nTimestamp: {{timestamp}}',
-      channels: ['console', 'email']
-    })
+      message:
+        'Backup operation: {{status}}\nBackup ID: {{backupId}}\nTimestamp: {{timestamp}}',
+      channels: ['console', 'email'],
+    });
 
     this.templates.set('user_activity', {
       id: 'user_activity',
       name: 'User Activity Alert',
       subject: '👤 DINO User Activity',
-      message: 'User activity: {{activity}}\nUser: {{user}}\nTimestamp: {{timestamp}}',
-      channels: ['database']
-    })
+      message:
+        'User activity: {{activity}}\nUser: {{user}}\nTimestamp: {{timestamp}}',
+      channels: ['database'],
+    });
   }
 
   /**
@@ -146,15 +151,15 @@ class AlertManager {
     templateId: string,
     variables: Record<string, any>,
     overrides?: {
-      severity?: Alert['severity']
-      channels?: string[]
-      title?: string
+      severity?: Alert['severity'];
+      channels?: string[];
+      title?: string;
     }
   ): Promise<void> {
-    const template = this.templates.get(templateId)
+    const template = this.templates.get(templateId);
     if (!template) {
       // Alert template not found
-      return
+      return;
     }
 
     const alert: Alert = {
@@ -165,57 +170,62 @@ class AlertManager {
       timestamp: new Date(),
       source: variables.source || 'system',
       metadata: variables,
-      resolved: false
-    }
+      resolved: false,
+    };
 
     // 알림 저장
-    this.storeAlert(alert)
+    this.storeAlert(alert);
 
     // 채널별 발송
-    const channelsToUse = overrides?.channels || template.channels
-    await this.dispatchToChannels(alert, channelsToUse, template)
+    const channelsToUse = overrides?.channels || template.channels;
+    await this.dispatchToChannels(alert, channelsToUse, template);
   }
 
   /**
    * 직접 알림 발송 (템플릿 없이)
    */
-  public async sendDirectAlert(alert: Omit<Alert, 'id' | 'timestamp'>): Promise<void> {
+  public async sendDirectAlert(
+    alert: Omit<Alert, 'id' | 'timestamp'>
+  ): Promise<void> {
     const fullAlert: Alert = {
       ...alert,
       id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
 
-    this.storeAlert(fullAlert)
-    await this.dispatchToChannels(fullAlert, ['console', 'database'])
+    this.storeAlert(fullAlert);
+    await this.dispatchToChannels(fullAlert, ['console', 'database']);
   }
 
-  private interpolateTemplate(template: string, variables: Record<string, any>): string {
+  private interpolateTemplate(
+    template: string,
+    variables: Record<string, any>
+  ): string {
     return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-      return variables[key]?.toString() || match
-    })
+      return variables[key]?.toString() || match;
+    });
   }
 
   private storeAlert(alert: Alert): void {
-    this.alerts.unshift(alert) // 최신 알림을 앞에 추가
-    
+    this.alerts.unshift(alert); // 최신 알림을 앞에 추가
+
     // 최대 알림 수 제한
     if (this.alerts.length > this.MAX_ALERTS) {
-      this.alerts = this.alerts.slice(0, this.MAX_ALERTS)
+      this.alerts = this.alerts.slice(0, this.MAX_ALERTS);
     }
   }
 
   private async dispatchToChannels(
-    alert: Alert, 
-    channelIds: string[], 
+    alert: Alert,
+    channelIds: string[],
     template?: NotificationTemplate
   ): Promise<void> {
     for (const channelId of channelIds) {
-      const channel = this.channels.get(channelId)
-      if (!channel || !channel.enabled) continue
+      const channel = this.channels.get(channelId);
+      if (!channel || !channel.enabled) continue;
 
       try {
-        await this.sendToChannel(alert, channel, template)
+        await this.sendToChannel(alert, channel, template);
       } catch (error) {
         // Failed to send alert to channel
       }
@@ -223,26 +233,26 @@ class AlertManager {
   }
 
   private async sendToChannel(
-    alert: Alert, 
-    channel: AlertChannel, 
+    alert: Alert,
+    channel: AlertChannel,
     template?: NotificationTemplate
   ): Promise<void> {
     switch (channel.type) {
       case 'console':
-        this.sendToConsole(alert)
-        break
-        
+        this.sendToConsole(alert);
+        break;
+
       case 'email':
-        await this.sendToEmail(alert, channel, template)
-        break
-        
+        await this.sendToEmail(alert, channel, template);
+        break;
+
       case 'webhook':
-        await this.sendToWebhook(alert, channel)
-        break
-        
+        await this.sendToWebhook(alert, channel);
+        break;
+
       case 'database':
-        await this.sendToDatabase(alert)
-        break
+        await this.sendToDatabase(alert);
+        break;
     }
   }
 
@@ -251,8 +261,8 @@ class AlertManager {
       info: 'ℹ️',
       warning: '⚠️',
       error: '❌',
-      critical: '🚨'
-    }[alert.severity]
+      critical: '🚨',
+    }[alert.severity];
 
     // Alert: ${alert.title}
     // Message: ${alert.message}
@@ -260,8 +270,8 @@ class AlertManager {
   }
 
   private async sendToEmail(
-    alert: Alert, 
-    channel: AlertChannel, 
+    alert: Alert,
+    channel: AlertChannel,
     template?: NotificationTemplate
   ): Promise<void> {
     try {
@@ -278,31 +288,33 @@ class AlertManager {
           <p><strong>Time:</strong> ${alert.timestamp.toISOString()}</p>
           <p><strong>Message:</strong></p>
           <p>${alert.message.replace(/\n/g, '<br>')}</p>
-        `
-      }
+        `,
+      };
 
       // Email alert prepared
       // 실제 이메일 발송 로직은 여기에 구현
-      
     } catch (error) {
       // Email sending failed
     }
   }
 
-  private async sendToWebhook(alert: Alert, channel: AlertChannel): Promise<void> {
+  private async sendToWebhook(
+    alert: Alert,
+    channel: AlertChannel
+  ): Promise<void> {
     try {
-      const payload = this.formatWebhookPayload(alert, channel.config.format)
-      
+      const payload = this.formatWebhookPayload(alert, channel.config.format);
+
       const response = await fetch(channel.config.url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
-      })
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
-        throw new Error(`Webhook failed: ${response.statusText}`)
+        throw new Error(`Webhook failed: ${response.statusText}`);
       }
 
       // Webhook alert sent successfully
@@ -316,39 +328,51 @@ class AlertManager {
       info: '#36a64f',
       warning: '#ff9500',
       error: '#ff2d00',
-      critical: '#8b0000'
-    }[alert.severity]
+      critical: '#8b0000',
+    }[alert.severity];
 
     switch (format) {
       case 'slack':
         return {
           text: alert.title,
-          attachments: [{
-            color,
-            fields: [
-              { title: 'Severity', value: alert.severity, short: true },
-              { title: 'Source', value: alert.source, short: true },
-              { title: 'Time', value: alert.timestamp.toISOString(), short: false },
-              { title: 'Message', value: alert.message, short: false }
-            ]
-          }]
-        }
-        
+          attachments: [
+            {
+              color,
+              fields: [
+                { title: 'Severity', value: alert.severity, short: true },
+                { title: 'Source', value: alert.source, short: true },
+                {
+                  title: 'Time',
+                  value: alert.timestamp.toISOString(),
+                  short: false,
+                },
+                { title: 'Message', value: alert.message, short: false },
+              ],
+            },
+          ],
+        };
+
       case 'discord':
         return {
-          embeds: [{
-            title: alert.title,
-            description: alert.message,
-            color: parseInt(color.replace('#', ''), 16),
-            fields: [
-              { name: 'Severity', value: alert.severity, inline: true },
-              { name: 'Source', value: alert.source, inline: true },
-              { name: 'Time', value: alert.timestamp.toISOString(), inline: false }
-            ],
-            timestamp: alert.timestamp.toISOString()
-          }]
-        }
-        
+          embeds: [
+            {
+              title: alert.title,
+              description: alert.message,
+              color: parseInt(color.replace('#', ''), 16),
+              fields: [
+                { name: 'Severity', value: alert.severity, inline: true },
+                { name: 'Source', value: alert.source, inline: true },
+                {
+                  name: 'Time',
+                  value: alert.timestamp.toISOString(),
+                  inline: false,
+                },
+              ],
+              timestamp: alert.timestamp.toISOString(),
+            },
+          ],
+        };
+
       default:
         return {
           title: alert.title,
@@ -356,8 +380,8 @@ class AlertManager {
           severity: alert.severity,
           source: alert.source,
           timestamp: alert.timestamp.toISOString(),
-          metadata: alert.metadata
-        }
+          metadata: alert.metadata,
+        };
     }
   }
 
@@ -374,115 +398,139 @@ class AlertManager {
   /**
    * 알림 조회
    */
-  public getAlerts(options: {
-    severity?: Alert['severity']
-    source?: string
-    resolved?: boolean
-    limit?: number
-    offset?: number
-  } = {}): Alert[] {
-    let filtered = this.alerts
+  public getAlerts(
+    options: {
+      severity?: Alert['severity'];
+      source?: string;
+      resolved?: boolean;
+      limit?: number;
+      offset?: number;
+    } = {}
+  ): Alert[] {
+    let filtered = this.alerts;
 
     if (options.severity) {
-      filtered = filtered.filter(alert => alert.severity === options.severity)
+      filtered = filtered.filter(alert => alert.severity === options.severity);
     }
 
     if (options.source) {
-      filtered = filtered.filter(alert => alert.source === options.source)
+      filtered = filtered.filter(alert => alert.source === options.source);
     }
 
     if (options.resolved !== undefined) {
-      filtered = filtered.filter(alert => alert.resolved === options.resolved)
+      filtered = filtered.filter(alert => alert.resolved === options.resolved);
     }
 
-    const start = options.offset || 0
-    const end = start + (options.limit || 50)
-    
-    return filtered.slice(start, end)
+    const start = options.offset || 0;
+    const end = start + (options.limit || 50);
+
+    return filtered.slice(start, end);
   }
 
   /**
    * 알림 해결 처리
    */
   public resolveAlert(alertId: string): boolean {
-    const alert = this.alerts.find(a => a.id === alertId)
+    const alert = this.alerts.find(a => a.id === alertId);
     if (alert && !alert.resolved) {
-      alert.resolved = true
-      alert.resolvedAt = new Date()
-      return true
+      alert.resolved = true;
+      alert.resolvedAt = new Date();
+      return true;
     }
-    return false
+    return false;
   }
 
   /**
    * 알림 통계
    */
   public getAlertStats(): {
-    total: number
-    unresolved: number
-    bySeverity: Record<Alert['severity'], number>
-    bySource: Record<string, number>
+    total: number;
+    unresolved: number;
+    bySeverity: Record<Alert['severity'], number>;
+    bySource: Record<string, number>;
   } {
     const stats = {
       total: this.alerts.length,
       unresolved: this.alerts.filter(a => !a.resolved).length,
       bySeverity: { info: 0, warning: 0, error: 0, critical: 0 },
-      bySource: {} as Record<string, number>
-    }
+      bySource: {} as Record<string, number>,
+    };
 
     for (const alert of this.alerts) {
-      stats.bySeverity[alert.severity]++
-      stats.bySource[alert.source] = (stats.bySource[alert.source] || 0) + 1
+      stats.bySeverity[alert.severity]++;
+      stats.bySource[alert.source] = (stats.bySource[alert.source] || 0) + 1;
     }
 
-    return stats
+    return stats;
   }
 
   /**
    * 채널 관리
    */
   public addChannel(channel: AlertChannel): void {
-    this.channels.set(channel.name, channel)
+    this.channels.set(channel.name, channel);
   }
 
   public removeChannel(name: string): void {
-    this.channels.delete(name)
+    this.channels.delete(name);
   }
 
   public getChannels(): AlertChannel[] {
-    return Array.from(this.channels.values())
+    return Array.from(this.channels.values());
   }
 
   /**
    * 템플릿 관리
    */
   public addTemplate(template: NotificationTemplate): void {
-    this.templates.set(template.id, template)
+    this.templates.set(template.id, template);
   }
 
   public getTemplates(): NotificationTemplate[] {
-    return Array.from(this.templates.values())
+    return Array.from(this.templates.values());
   }
 }
 
 // 시스템 통합을 위한 편의 함수들
-export const alertManager = AlertManager.getInstance()
+export const alertManager = AlertManager.getInstance();
 
 export const systemAlert = {
   error: (message: string, source = 'system', metadata?: any) =>
-    alertManager.sendAlert('system_error', { message, source, ...metadata }, { severity: 'error' }),
-    
-  warning: (message: string, source = 'system', metadata?: any) =>
-    alertManager.sendAlert('performance_warning', { message, source, ...metadata }, { severity: 'warning' }),
-    
-  security: (message: string, ip?: string, action?: string, metadata?: any) =>
-    alertManager.sendAlert('security_alert', { message, ip, action, source: 'security', ...metadata }, { severity: 'critical' }),
-    
-  backup: (status: string, backupId?: string, metadata?: any) =>
-    alertManager.sendAlert('backup_status', { status, backupId, source: 'backup', ...metadata }),
-    
-  userActivity: (activity: string, user: string, metadata?: any) =>
-    alertManager.sendAlert('user_activity', { activity, user, source: 'user', ...metadata })
-}
+    alertManager.sendAlert(
+      'system_error',
+      { message, source, ...metadata },
+      { severity: 'error' }
+    ),
 
-export type { Alert, AlertChannel, NotificationTemplate }
+  warning: (message: string, source = 'system', metadata?: any) =>
+    alertManager.sendAlert(
+      'performance_warning',
+      { message, source, ...metadata },
+      { severity: 'warning' }
+    ),
+
+  security: (message: string, ip?: string, action?: string, metadata?: any) =>
+    alertManager.sendAlert(
+      'security_alert',
+      { message, ip, action, source: 'security', ...metadata },
+      { severity: 'critical' }
+    ),
+
+  backup: (status: string, backupId?: string, metadata?: any) =>
+    alertManager.sendAlert('backup_status', {
+      status,
+      backupId,
+      source: 'backup',
+      ...metadata,
+    }),
+
+  userActivity: (activity: string, user: string, metadata?: any) =>
+    alertManager.sendAlert('user_activity', {
+      activity,
+      user,
+      source: 'user',
+      ...metadata,
+    }),
+};
+
+export type { Alert, AlertChannel, NotificationTemplate };

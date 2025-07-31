@@ -151,12 +151,8 @@ export default function GmailIntegration() {
   if (!session) {
     return (
       <div className='alert alert-warning'>
-        <h3 className='text-lg font-semibold mb-2'>
-          Gmail 통합
-        </h3>
-        <p>
-          Gmail 통합을 사용하려면 먼저 로그인해주세요.
-        </p>
+        <h3 className='text-lg font-semibold mb-2'>Gmail 통합</h3>
+        <p>Gmail 통합을 사용하려면 먼저 로그인해주세요.</p>
       </div>
     );
   }
@@ -188,9 +184,7 @@ export default function GmailIntegration() {
                     connectionStatus.connected ? 'badge-success' : 'badge-error'
                   }`}
                 />
-                <span className='font-medium'>
-                  {connectionStatus.message}
-                </span>
+                <span className='font-medium'>{connectionStatus.message}</span>
               </div>
             </div>
           )}
@@ -208,9 +202,7 @@ export default function GmailIntegration() {
         {connectionStatus?.connected && (
           <div className='mb-6'>
             <div className='flex items-center justify-between mb-4'>
-              <h3 className='text-lg font-medium'>
-                여행 이메일 분석
-              </h3>
+              <h3 className='text-lg font-medium'>여행 이메일 분석</h3>
               {travelEmails.length > 0 && (
                 <span className='badge'>{travelEmails.length}개 발견</span>
               )}
@@ -335,9 +327,7 @@ export default function GmailIntegration() {
                       {email.departureDate && (
                         <div className='flex items-center gap-1'>
                           <span>✈️</span>
-                          <span className='font-medium'>
-                            출발:
-                          </span>
+                          <span className='font-medium'>출발:</span>
                           <span className='text-secondary'>
                             {email.departureDate}
                           </span>
@@ -346,9 +336,7 @@ export default function GmailIntegration() {
                       {email.returnDate && (
                         <div className='flex items-center gap-1'>
                           <span>🏠</span>
-                          <span className='font-medium'>
-                            귀국:
-                          </span>
+                          <span className='font-medium'>귀국:</span>
                           <span className='text-secondary'>
                             {email.returnDate}
                           </span>
@@ -357,9 +345,7 @@ export default function GmailIntegration() {
                       {email.departure && (
                         <div className='flex items-center gap-1'>
                           <span>📍</span>
-                          <span className='font-medium'>
-                            출발지:
-                          </span>
+                          <span className='font-medium'>출발지:</span>
                           <span className='text-secondary'>
                             {email.departure}
                           </span>
@@ -368,9 +354,7 @@ export default function GmailIntegration() {
                       {email.destination && (
                         <div className='flex items-center gap-1'>
                           <span>🎯</span>
-                          <span className='font-medium'>
-                            목적지:
-                          </span>
+                          <span className='font-medium'>목적지:</span>
                           <span className='text-secondary'>
                             {email.destination}
                           </span>
@@ -379,9 +363,7 @@ export default function GmailIntegration() {
                       {email.flightNumber && (
                         <div className='flex items-center gap-1'>
                           <span>✈️</span>
-                          <span className='font-medium'>
-                            항공편:
-                          </span>
+                          <span className='font-medium'>항공편:</span>
                           <span className='text-secondary'>
                             {email.flightNumber}
                           </span>
@@ -390,9 +372,7 @@ export default function GmailIntegration() {
                       {email.bookingReference && (
                         <div className='flex items-center gap-1'>
                           <span>📋</span>
-                          <span className='font-medium'>
-                            예약번호:
-                          </span>
+                          <span className='font-medium'>예약번호:</span>
                           <span className='text-secondary'>
                             {email.bookingReference}
                           </span>
@@ -401,9 +381,7 @@ export default function GmailIntegration() {
                       {email.hotelName && (
                         <div className='flex items-center gap-1'>
                           <span>🏨</span>
-                          <span className='font-medium'>
-                            호텔:
-                          </span>
+                          <span className='font-medium'>호텔:</span>
                           <span className='text-secondary'>
                             {email.hotelName}
                           </span>
@@ -412,9 +390,7 @@ export default function GmailIntegration() {
                       {email.passengerName && (
                         <div className='flex items-center gap-1'>
                           <span>👤</span>
-                          <span className='font-medium'>
-                            승객:
-                          </span>
+                          <span className='font-medium'>승객:</span>
                           <span className='text-secondary'>
                             {email.passengerName}
                           </span>

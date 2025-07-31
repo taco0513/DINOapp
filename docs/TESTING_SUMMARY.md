@@ -5,7 +5,7 @@
 ### 📊 전체 요약
 
 - **총 테스트 파일**: 20개
-- **총 테스트 케이스**: 205개 
+- **총 테스트 케이스**: 205개
 - **통과한 테스트**: 198개
 - **실패한 테스트**: 7개
 - **코드 커버리지**: 약 16% (목표: 80%)
@@ -13,6 +13,7 @@
 ### ✅ 완료된 테스트
 
 #### 1. 단위 테스트 (Unit Tests)
+
 - ✅ **Schengen Calculator Tests** (`__tests__/lib/schengen-calculator.test.ts`)
   - 90/180일 규칙 계산 로직
   - 날짜 범위 검증
@@ -42,6 +43,7 @@
   - 동기화 메커니즘
 
 #### 2. 통합 테스트 (Integration Tests)
+
 - ✅ **Google API Integration Tests** (`__tests__/lib/google-integration.test.ts`)
   - Gmail API 연동
   - Calendar API 연동
@@ -61,6 +63,7 @@
   - 세션 유지
 
 #### 3. E2E 테스트 (End-to-End Tests)
+
 - ✅ **Authentication E2E** (`__tests__/e2e/auth-simple.spec.ts`)
   - 로그인 페이지 표시
   - 보호된 라우트 접근 제한
@@ -85,7 +88,7 @@
    - 원인: 이메일 파싱 로직의 정규표현식 패턴 불일치
    - 영향: Gmail 자동 여행 감지 기능
 
-2. **PWA Hook Test** (1개 실패)  
+2. **PWA Hook Test** (1개 실패)
    - 원인: window.matchMedia 모킹 이슈
    - 영향: PWA 설치 프롬프트 기능
 
@@ -100,6 +103,7 @@
 ### 📈 코드 커버리지 분석
 
 현재 코드 커버리지가 목표치(80%)에 미달하는 이유:
+
 - E2E 테스트가 Jest 커버리지에 포함되지 않음
 - 많은 React 컴포넌트가 테스트되지 않음
 - API 라우트 핸들러 테스트 미완성

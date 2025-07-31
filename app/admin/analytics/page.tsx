@@ -20,17 +20,18 @@ export default async function AdminAnalyticsPage() {
   // 관리자 권한 확인 (이메일 기반)
   const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
   const isAdmin = adminEmails.includes(session.user.email || '');
-  
+
   if (!isAdmin) {
     redirect('/dashboard?error=unauthorized');
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">고급 분석</h1>
-        <p className="text-gray-600">
-          사용자 행동 패턴, 전환 퍼널, 리텐션 분석 등 심층적인 인사이트를 제공합니다.
+    <div className='container mx-auto px-4 py-8'>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold mb-2'>고급 분석</h1>
+        <p className='text-gray-600'>
+          사용자 행동 패턴, 전환 퍼널, 리텐션 분석 등 심층적인 인사이트를
+          제공합니다.
         </p>
       </div>
 

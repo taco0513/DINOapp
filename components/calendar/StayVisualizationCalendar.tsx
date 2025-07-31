@@ -233,15 +233,15 @@ export default function StayVisualizationCalendar({
           <div className='flex items-center gap-2'>
             <Button
               onClick={() => setShowManualInput(!showManualInput)}
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
             >
               날짜 입력
             </Button>
             <Button
               onClick={() => setShowDateCalculator(!showDateCalculator)}
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
             >
               날짜 계산
             </Button>
@@ -249,12 +249,12 @@ export default function StayVisualizationCalendar({
               onClick={() =>
                 setViewMode(viewMode === 'month' ? 'year' : 'month')
               }
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
             >
               {viewMode === 'month' ? '연간 보기' : '월간 보기'}
             </Button>
-            <Button onClick={goToToday} variant="ghost" size="sm">
+            <Button onClick={goToToday} variant='ghost' size='sm'>
               오늘
             </Button>
           </div>
@@ -317,8 +317,8 @@ export default function StayVisualizationCalendar({
                     setManualDateInput('');
                     setShowDatePicker(false);
                   }}
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                 >
                   닫기
                 </Button>
@@ -353,10 +353,7 @@ export default function StayVisualizationCalendar({
                   placeholder='+30 또는 -30'
                   className='flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                 />
-                <Button
-                  onClick={handleDateCalculation}
-                  size="sm"
-                >
+                <Button onClick={handleDateCalculation} size='sm'>
                   계산
                 </Button>
               </div>
@@ -374,9 +371,9 @@ export default function StayVisualizationCalendar({
                       setSelectedDate(calcResult);
                       setShowDateCalculator(false);
                     }}
-                    variant="ghost"
-                    size="sm"
-                    className="ml-auto"
+                    variant='ghost'
+                    size='sm'
+                    className='ml-auto'
                   >
                     이동
                   </Button>
@@ -387,9 +384,9 @@ export default function StayVisualizationCalendar({
                   setShowDateCalculator(false);
                   setCalcResult(null);
                 }}
-                variant="ghost"
-                size="sm"
-                className="w-full"
+                variant='ghost'
+                size='sm'
+                className='w-full'
               >
                 닫기
               </Button>
@@ -438,8 +435,8 @@ export default function StayVisualizationCalendar({
         <div className='flex items-center justify-between mb-4'>
           <Button
             onClick={() => navigateMonth('prev')}
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
           >
             <ChevronLeft className='h-4 w-4' />
           </Button>
@@ -448,8 +445,8 @@ export default function StayVisualizationCalendar({
           </h3>
           <Button
             onClick={() => navigateMonth('next')}
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
           >
             <ChevronRight className='h-4 w-4' />
           </Button>

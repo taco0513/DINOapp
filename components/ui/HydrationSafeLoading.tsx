@@ -1,28 +1,26 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { t } from '@/lib/i18n'
+import { useEffect, useState } from 'react';
+import { t } from '@/lib/i18n';
 
 interface HydrationSafeLoadingProps {
-  fallback?: string
-  className?: string
-  translationKey?: string
+  fallback?: string;
+  className?: string;
+  translationKey?: string;
 }
 
-export function HydrationSafeLoading({ 
-  fallback = 'Loading...', 
+export function HydrationSafeLoading({
+  fallback = 'Loading...',
   className = 'loading',
-  translationKey = 'common.loading'
+  translationKey = 'common.loading',
 }: HydrationSafeLoadingProps) {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   return (
-    <div className={className}>
-      {mounted ? t(translationKey) : fallback}
-    </div>
-  )
+    <div className={className}>{mounted ? t(translationKey) : fallback}</div>
+  );
 }

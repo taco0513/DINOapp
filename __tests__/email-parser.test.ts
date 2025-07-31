@@ -8,7 +8,7 @@ describe('EmailParser', () => {
     parser = new EmailParser({
       strictMode: false,
       includeRawData: false,
-      confidenceThreshold: 0.6
+      confidenceThreshold: 0.6,
     });
   });
 
@@ -38,7 +38,9 @@ describe('EmailParser', () => {
       expect(result.data?.confirmationNumber).toBe('ABC123');
       expect(result.data?.departure?.location).toContain('인천국제공항');
       expect(result.data?.arrival?.location).toContain('나리타국제공항');
-      expect(result.data?.departure?.date).toEqual(new Date('2024-03-14T17:00:00.000Z')); // UTC time
+      expect(result.data?.departure?.date).toEqual(
+        new Date('2024-03-14T17:00:00.000Z')
+      ); // UTC time
     });
 
     it('should parse English Korean Air confirmation', async () => {
@@ -194,13 +196,13 @@ describe('EmailParser', () => {
         {
           subject: '대한항공 예약 확인',
           body: '예약번호: ABC123\n항공편: KE 123',
-          senderEmail: 'test@koreanair.com'
+          senderEmail: 'test@koreanair.com',
         },
         {
           subject: 'Booking.com 예약 확인',
           body: '예약번호: 1234567890\n체크인: 2024년 5월 1일\n체크아웃: 2024년 5월 3일',
-          senderEmail: 'test@booking.com'
-        }
+          senderEmail: 'test@booking.com',
+        },
       ];
 
       const results = await parser.parseEmails(emails);
@@ -249,7 +251,7 @@ describe('EmailParser', () => {
       const testCases = [
         { input: '2024년 3월 15일', expected: new Date(2024, 2, 15) },
         { input: '2024-03-15', expected: new Date(2024, 2, 15) },
-        { input: '2024.03.15', expected: new Date(2024, 2, 15) }
+        { input: '2024.03.15', expected: new Date(2024, 2, 15) },
       ];
 
       for (const testCase of testCases) {
@@ -264,7 +266,9 @@ describe('EmailParser', () => {
         const result = await parser.parseEmail(subject, body, senderEmail);
 
         if (result.success && result.data?.departure?.date) {
-          expect(result.data.departure.date.getTime()).toBe(testCase.expected.getTime());
+          expect(result.data.departure.date.getTime()).toBe(
+            testCase.expected.getTime()
+          );
         }
       }
     });
@@ -281,7 +285,9 @@ describe('EmailParser', () => {
       const result = await parser.parseEmail(subject, body, senderEmail);
 
       if (result.success && result.data?.departure?.date) {
-        expect(result.data.departure.date.getTime()).toBe(new Date(2024, 2, 15).getTime());
+        expect(result.data.departure.date.getTime()).toBe(
+          new Date(2024, 2, 15).getTime()
+        );
       }
     });
   });
@@ -324,7 +330,7 @@ describe('Parser Options', () => {
   it('should respect strict mode', async () => {
     const strictParser = new EmailParser({
       strictMode: true,
-      confidenceThreshold: 0.9
+      confidenceThreshold: 0.9,
     });
 
     const subject = '대한항공 예약 확인';
@@ -338,7 +344,7 @@ describe('Parser Options', () => {
 
   it('should include raw data when requested', async () => {
     const parserWithRaw = new EmailParser({
-      includeRawData: true
+      includeRawData: true,
     });
 
     const subject = '대한항공 예약 확인';
@@ -355,14 +361,18 @@ describe('Parser Options', () => {
 
   it('should respect confidence threshold', async () => {
     const highThresholdParser = new EmailParser({
-      confidenceThreshold: 0.95
+      confidenceThreshold: 0.95,
     });
 
     const subject = '대한항공 예약 확인';
     const body = '예약번호: ABC123'; // Low confidence data
     const senderEmail = 'test@koreanair.com';
 
-    const result = await highThresholdParser.parseEmail(subject, body, senderEmail);
+    const result = await highThresholdParser.parseEmail(
+      subject,
+      body,
+      senderEmail
+    );
 
     expect(result.success).toBe(false);
     expect(result.error).toContain('Confidence too low');

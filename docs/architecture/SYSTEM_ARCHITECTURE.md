@@ -11,31 +11,31 @@ graph TB
         State[State Management]
         Forms[Form Validation]
     end
-    
+
     subgraph "API Gateway"
         Auth[NextAuth.js]
         Routes[API Routes]
         Middleware[Middleware]
     end
-    
+
     subgraph "Business Logic"
         TripLogic[Trip Management]
         SchengenCalc[Schengen Calculator]
         Validation[Data Validation]
     end
-    
+
     subgraph "External APIs"
         Google[Google OAuth]
         Calendar[Google Calendar]
         Gmail[Gmail API]
     end
-    
+
     subgraph "Data Layer"
         Prisma[Prisma ORM]
         DB[(PostgreSQL)]
         Cache[Redis Cache]
     end
-    
+
     subgraph "Infrastructure"
         Vercel[Vercel Hosting]
         Edge[Edge Functions]
@@ -87,7 +87,7 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
-    
+
     Account {
         string id PK
         string userId FK
@@ -102,14 +102,14 @@ erDiagram
         string id_token
         string session_state
     }
-    
+
     Session {
         string id PK
         string sessionToken UK
         string userId FK
         datetime expires
     }
-    
+
     CountryVisit {
         string id PK
         string userId FK
@@ -123,7 +123,7 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
-    
+
     NotificationSettings {
         string id PK
         string userId FK
@@ -149,19 +149,19 @@ flowchart LR
         Hook[Custom Hook]
         State[Local State]
     end
-    
+
     subgraph "API Layer"
         Route[API Route]
         Auth[Auth Check]
         Valid[Validation]
     end
-    
+
     subgraph "Business Layer"
         Service[Service Function]
         Calc[Calculations]
         Rules[Business Rules]
     end
-    
+
     subgraph "Data Layer"
         ORM[Prisma ORM]
         DB[(Database)]
@@ -178,7 +178,7 @@ flowchart LR
     Rules --> ORM
     ORM --> DB
     ORM --> Cache
-    
+
     Cache -.-> ORM
     ORM -.-> Rules
     Rules -.-> Calc
@@ -209,21 +209,21 @@ graph TD
         Schengen[Schengen Page]
         Profile[Profile Page]
     end
-    
+
     subgraph "Layout Components"
         Layout[App Layout]
         Nav[Navigation]
         Sidebar[Sidebar]
         Footer[Footer]
     end
-    
+
     subgraph "Feature Components"
         TripList[Trip List]
         TripForm[Trip Form]
         SchengenCalc[Schengen Calculator]
         Dashboard[Dashboard]
     end
-    
+
     subgraph "UI Components"
         Button[Button]
         Input[Input]
@@ -231,7 +231,7 @@ graph TD
         Modal[Modal]
         Alert[Alert]
     end
-    
+
     subgraph "Custom Hooks"
         useTrips[useTrips]
         useSchengen[useSchengen]
@@ -242,22 +242,22 @@ graph TD
     Trips --> Layout
     Schengen --> Layout
     Profile --> Layout
-    
+
     Layout --> Nav
     Layout --> Sidebar
     Layout --> Footer
-    
+
     Trips --> TripList
     Trips --> TripForm
     Schengen --> SchengenCalc
     Home --> Dashboard
-    
+
     TripList --> Card
     TripForm --> Input
     TripForm --> Button
     SchengenCalc --> Alert
     Dashboard --> Card
-    
+
     TripList --> useTrips
     SchengenCalc --> useSchengen
     Layout --> useAuth
@@ -299,7 +299,7 @@ sequenceDiagram
     App->>User: Redirect to dashboard
 
     Note over User,Database: User is now authenticated
-    
+
     User->>App: Access protected route
     App->>NextAuth: Check session
     NextAuth->>Database: Validate session
@@ -316,20 +316,20 @@ flowchart TD
     GetTrips --> FilterSchengen[Filter Schengen Trips]
     FilterSchengen --> SortByDate[Sort by Entry Date]
     SortByDate --> InitCalc[Initialize Calculation]
-    
+
     InitCalc --> LoopTrips{For Each Trip}
     LoopTrips --> CalcDays[Calculate Stay Days]
     CalcDays --> Check180[Check 180-day Window]
     Check180 --> Check90{Days > 90?}
-    
+
     Check90 -->|Yes| AddViolation[Add Violation]
     Check90 -->|No| Continue[Continue]
     AddViolation --> Continue
-    
+
     Continue --> MoreTrips{More Trips?}
     MoreTrips -->|Yes| LoopTrips
     MoreTrips -->|No| CalcRemaining[Calculate Remaining Days]
-    
+
     CalcRemaining --> CalcNextEntry[Calculate Next Entry Date]
     CalcNextEntry --> FormatResults[Format Results]
     FormatResults --> End([Return Calculation])
@@ -353,32 +353,32 @@ graph TB
         Mobile[Mobile App]
         External[External API]
     end
-    
+
     subgraph "API Gateway"
         CORS[CORS Handler]
         RateLimit[Rate Limiting]
         Auth[Authentication]
     end
-    
+
     subgraph "API Routes"
         TripsAPI[/api/trips]
         SchengenAPI[/api/schengen]
         UserAPI[/api/user]
         AuthAPI[/api/auth]
     end
-    
+
     subgraph "Middleware"
         Validation[Request Validation]
         Logging[Request Logging]
         Error[Error Handling]
     end
-    
+
     subgraph "Services"
         TripService[Trip Service]
         SchengenService[Schengen Service]
         UserService[User Service]
     end
-    
+
     subgraph "Data Access"
         Prisma[Prisma Client]
         Cache[Redis Cache]
@@ -388,30 +388,30 @@ graph TB
     WebApp --> CORS
     Mobile --> CORS
     External --> CORS
-    
+
     CORS --> RateLimit
     RateLimit --> Auth
-    
+
     Auth --> TripsAPI
     Auth --> SchengenAPI
     Auth --> UserAPI
     Auth --> AuthAPI
-    
+
     TripsAPI --> Validation
     SchengenAPI --> Validation
     UserAPI --> Validation
-    
+
     Validation --> TripService
     Validation --> SchengenService
     Validation --> UserService
-    
+
     TripService --> Prisma
     SchengenService --> Prisma
     UserService --> Prisma
-    
+
     Prisma --> Cache
     Prisma --> DB
-    
+
     Validation --> Logging
     Logging --> Error
 
@@ -439,28 +439,28 @@ graph TB
         Tests[Automated Tests]
         Lint[Code Quality]
     end
-    
+
     subgraph "CI/CD Pipeline"
         GitHub[GitHub Repository]
         Actions[GitHub Actions]
         Build[Build Process]
         Deploy[Deployment]
     end
-    
+
     subgraph "Vercel Platform"
         Edge[Edge Functions]
         Static[Static Assets]
         Preview[Preview Deployments]
         Prod[Production]
     end
-    
+
     subgraph "External Services"
         Supabase[(Supabase DB)]
         Redis[(Redis Cloud)]
         Analytics[Vercel Analytics]
         Monitoring[Error Tracking]
     end
-    
+
     subgraph "CDN & Edge"
         CDN[Global CDN]
         EdgeCache[Edge Caching]
@@ -470,23 +470,23 @@ graph TB
     Dev --> Tests
     Tests --> Lint
     Lint --> GitHub
-    
+
     GitHub --> Actions
     Actions --> Build
     Build --> Deploy
-    
+
     Deploy --> Preview
     Deploy --> Prod
-    
+
     Prod --> Edge
     Prod --> Static
-    
+
     Edge --> Supabase
     Edge --> Redis
-    
+
     Prod --> Analytics
     Prod --> Monitoring
-    
+
     Static --> CDN
     CDN --> EdgeCache
     CDN --> DNS
@@ -511,27 +511,27 @@ stateDiagram-v2
     [*] --> Loading
     Loading --> Success : Data loaded
     Loading --> Error : Failed to load
-    
+
     Success --> Updating : User action
     Success --> Refreshing : Refresh request
-    
+
     Updating --> Success : Update successful
     Updating --> Error : Update failed
-    
+
     Refreshing --> Success : Refresh successful
     Refreshing --> Error : Refresh failed
-    
+
     Error --> Loading : Retry
     Error --> Success : Manual fix
-    
+
     Success --> [*] : Component unmount
     Error --> [*] : Component unmount
-    
+
     note right of Success
-        Data is cached and 
+        Data is cached and
         available for use
     end note
-    
+
     note right of Error
         Show error message
         with retry option
@@ -547,19 +547,19 @@ graph LR
         Tablet["Tablet\n640px - 1024px"]
         Desktop["Desktop\n> 1024px"]
     end
-    
+
     subgraph "Layout Patterns"
         Stack["Stack Layout\n(Mobile)"]
         Grid2["2-Column Grid\n(Tablet)"]
         Grid3["3-Column Grid\n(Desktop)"]
     end
-    
+
     subgraph "Navigation"
         MobileNav["Hamburger Menu"]
         TabletNav["Tab Navigation"]
         DesktopNav["Sidebar Navigation"]
     end
-    
+
     subgraph "Components"
         Cards["Responsive Cards"]
         Forms["Adaptive Forms"]
@@ -568,21 +568,21 @@ graph LR
 
     Mobile --> Stack
     Mobile --> MobileNav
-    
+
     Tablet --> Grid2
     Tablet --> TabletNav
-    
+
     Desktop --> Grid3
     Desktop --> DesktopNav
-    
+
     Stack --> Cards
     Grid2 --> Cards
     Grid3 --> Cards
-    
+
     Stack --> Forms
     Grid2 --> Forms
     Grid3 --> Forms
-    
+
     MobileNav --> Tables
     TabletNav --> Tables
     DesktopNav --> Tables

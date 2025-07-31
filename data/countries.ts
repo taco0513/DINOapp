@@ -1,16 +1,16 @@
 export interface CountryInfo {
-  code: string
-  name: string
-  flag: string
-  isSchengen: boolean
+  code: string;
+  name: string;
+  flag: string;
+  isSchengen: boolean;
   visaFree?: {
-    US?: number
-    UK?: number
-    EU?: number
-    CA?: number
-    AU?: number
-    JP?: number
-  }
+    US?: number;
+    UK?: number;
+    EU?: number;
+    CA?: number;
+    AU?: number;
+    JP?: number;
+  };
 }
 
 export const COUNTRIES: CountryInfo[] = [
@@ -74,11 +74,11 @@ export const COUNTRIES: CountryInfo[] = [
   { code: 'TW', name: 'Taiwan', flag: '🇹🇼', isSchengen: false },
   { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', isSchengen: false },
   { code: 'FJ', name: 'Fiji', flag: '🇫🇯', isSchengen: false },
-]
+];
 
 export const VISA_TYPES = [
   'Tourist',
-  'Business', 
+  'Business',
   'Student',
   'Working Holiday',
   'Digital Nomad',
@@ -90,8 +90,8 @@ export const VISA_TYPES = [
   'Visa Run',
   'Extension',
   'Spouse',
-  'Medical'
-] as const
+  'Medical',
+] as const;
 
 export const PASSPORT_COUNTRIES = [
   { code: 'US', name: 'United States' },
@@ -100,21 +100,21 @@ export const PASSPORT_COUNTRIES = [
   { code: 'CA', name: 'Canada' },
   { code: 'AU', name: 'Australia' },
   { code: 'JP', name: 'Japan' },
-  { code: 'OTHER', name: 'Other' }
-] as const
+  { code: 'OTHER', name: 'Other' },
+] as const;
 
 export function getCountryByName(name: string): CountryInfo | undefined {
-  return COUNTRIES.find(country => country.name === name)
+  return COUNTRIES.find(country => country.name === name);
 }
 
 export function getSchengenCountries(): CountryInfo[] {
-  return COUNTRIES.filter(country => country.isSchengen)
+  return COUNTRIES.filter(country => country.isSchengen);
 }
 
 export function getNonSchengenCountries(): CountryInfo[] {
-  return COUNTRIES.filter(country => !country.isSchengen)
+  return COUNTRIES.filter(country => !country.isSchengen);
 }
 
 // Default export for backward compatibility
-export default COUNTRIES
-export const countries = COUNTRIES
+export default COUNTRIES;
+export const countries = COUNTRIES;

@@ -13,56 +13,69 @@ DINO 앱의 AI 기능을 시뮬레이션에서 실제 AI 서비스로 전환하�
 ## 🤖 AI 서비스 옵션 비교
 
 ### 1. OpenAI GPT-4
+
 **장점:**
+
 - 뛰어난 코드 생성 능력
 - 다양한 프로그래밍 언어 지원
 - 강력한 추론 능력
 - 대규모 커뮤니티 및 문서
 
 **단점:**
+
 - 비용이 상대적으로 높음 ($0.03/1K input, $0.06/1K output tokens)
 - API 호출 제한
 - 데이터 프라이버시 우려 가능
 
 **예상 비용:**
+
 - 일반 사용자: 월 $0.05-0.10/사용자
 - 헤비 사용자: 월 $0.50-1.00/사용자
 
 ### 2. Anthropic Claude 3
+
 **장점:**
+
 - 안전성과 정확성에 중점
 - 긴 컨텍스트 윈도우 (100K+ tokens)
 - 코딩 작업에 특화
 - 윤리적 AI 접근
 
 **단점:**
+
 - OpenAI보다 약간 비쌈
 - 한국어 지원이 GPT-4보다 약간 부족
 - API 가용성 제한적
 
 **예상 비용:**
+
 - 일반 사용자: 월 $0.08-0.15/사용자
 - 헤비 사용자: 월 $0.80-1.50/사용자
 
 ### 3. Google Gemini Pro
+
 **장점:**
+
 - 무료 티어 제공 (60 requests/minute)
 - 멀티모달 지원
 - Google 생태계 통합 용이
 - 빠른 응답 속도
 
 **단점:**
+
 - 코드 생성 능력이 GPT-4보다 약함
 - API 안정성 문제 가능
 - 상대적으로 새로운 서비스
 
 **예상 비용:**
+
 - 무료 티어: 0원 (제한적 사용)
 - 유료: 월 $0.03-0.05/사용자
 
 ## 📊 추천 솔루션
 
 ### 하이브리드 접근 방식
+
 1. **기본 AI**: Google Gemini Pro (무료 티어)
    - 간단한 질문 답변
    - 기본적인 여행 추천
@@ -76,6 +89,7 @@ DINO 앱의 AI 기능을 시뮬레이션에서 실제 AI 서비스로 전환하�
 ## 🏗️ 구현 계획
 
 ### Phase 1: 기반 구축 (1주)
+
 ```typescript
 // 1. AI 서비스 추상화 레이어
 interface AIService {
@@ -93,37 +107,41 @@ class AIServiceFactory {
 ```
 
 ### Phase 2: 서비스 통합 (2주)
+
 1. **환경변수 설정**
+
    ```env
    # AI Service Configuration
    AI_SERVICE_PRIMARY=gemini
    AI_SERVICE_PREMIUM=openai
-   
+
    # Google Gemini
    GEMINI_API_KEY=your-gemini-api-key
-   
+
    # OpenAI
    OPENAI_API_KEY=your-openai-api-key
    OPENAI_MODEL=gpt-4-turbo-preview
-   
+
    # Usage Limits
    AI_FREE_REQUESTS_PER_USER=100
    AI_RATE_LIMIT_PER_MINUTE=20
    ```
 
 2. **API 라우트 수정**
+
    ```typescript
    // app/api/ai/assist/route.ts
    export async function POST(request: NextRequest) {
      const aiService = AIServiceFactory.create(
        isPremiumUser ? 'openai' : 'gemini'
      );
-     
-     const response = await aiService.generateResponse(
-       query,
-       { context, mode, userId }
-     );
-     
+
+     const response = await aiService.generateResponse(query, {
+       context,
+       mode,
+       userId,
+     });
+
      // 사용량 추적
      await trackAIUsage(userId, service, tokens);
    }
@@ -132,41 +150,43 @@ class AIServiceFactory {
 ### Phase 3: 기능별 구현 (2주)
 
 #### 개발자 도우미
+
 ```typescript
 // lib/ai/services/developer-assistant.ts
 export class DeveloperAssistant {
   async generateCode(spec: CodeSpec): Promise<GeneratedCode> {
     const prompt = this.buildCodePrompt(spec);
     const code = await this.aiService.generateCode(prompt, spec.language);
-    
+
     // 코드 검증
     const validation = await this.validateCode(code, spec);
-    
+
     return {
       code,
       language: spec.language,
       confidence: validation.score,
-      warnings: validation.warnings
+      warnings: validation.warnings,
     };
   }
 }
 ```
 
 #### 여행 도우미
+
 ```typescript
 // lib/ai/services/travel-assistant.ts
 export class TravelAssistant {
   async optimizeItinerary(trips: Trip[]): Promise<OptimizedItinerary> {
     // 셰겐 규칙 분석
     const schengenAnalysis = await this.analyzeSchengenCompliance(trips);
-    
+
     // AI 기반 최적화
     const optimization = await this.aiService.analyzeTravel({
       trips,
       constraints: schengenAnalysis,
-      preferences: userPreferences
+      preferences: userPreferences,
     });
-    
+
     return optimization;
   }
 }
@@ -175,6 +195,7 @@ export class TravelAssistant {
 ### Phase 4: 비용 관리 (1주)
 
 1. **사용량 추적 시스템**
+
    ```typescript
    // 데이터베이스 스키마
    model AIUsage {
@@ -184,7 +205,7 @@ export class TravelAssistant {
      tokens    Int
      cost      Float
      timestamp DateTime @default(now())
-     
+
      user      User     @relation(fields: [userId], references: [id])
    }
    ```
@@ -211,16 +232,19 @@ export class TravelAssistant {
 ## 💰 예산 계획
 
 ### 초기 (MVP)
+
 - **월 예산**: $100-200
 - **예상 사용자**: 100-500명
 - **서비스**: Gemini Pro (무료) + OpenAI (제한적)
 
 ### 성장기
+
 - **월 예산**: $500-1000
 - **예상 사용자**: 1000-5000명
 - **서비스**: 하이브리드 모델
 
 ### 성숙기
+
 - **월 예산**: $2000+
 - **예상 사용자**: 10000+명
 - **서비스**: 사용자 맞춤형 AI 선택

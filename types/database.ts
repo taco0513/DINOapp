@@ -4,48 +4,48 @@
  */
 
 export interface CountryVisit {
-  id: string
-  userId: string
-  country: string
-  entryDate: Date
-  exitDate: Date
-  purpose: string
-  notes?: string | null
-  isCompleted: boolean
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  userId: string;
+  country: string;
+  entryDate: Date;
+  exitDate: Date;
+  purpose: string;
+  notes?: string | null;
+  isCompleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface User {
-  id: string
-  email: string
-  name?: string | null
-  image?: string | null
-  provider?: string | null
-  providerId?: string | null
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  email: string;
+  name?: string | null;
+  image?: string | null;
+  provider?: string | null;
+  providerId?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Trip {
-  id: string
-  userId: string
-  country: string
-  entryDate: Date
-  exitDate: Date
-  purpose: string
-  notes?: string | null
-  isCompleted: boolean
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  userId: string;
+  country: string;
+  entryDate: Date;
+  exitDate: Date;
+  purpose: string;
+  notes?: string | null;
+  isCompleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Helper type for API responses
 export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
 }
 
 // Travel-related enums and constants
@@ -56,15 +56,15 @@ export const TripPurpose = {
   FAMILY: 'FAMILY',
   MEDICAL: 'MEDICAL',
   TRANSIT: 'TRANSIT',
-  OTHER: 'OTHER'
-} as const
+  OTHER: 'OTHER',
+} as const;
 
-export type TripPurposeType = typeof TripPurpose[keyof typeof TripPurpose]
+export type TripPurposeType = (typeof TripPurpose)[keyof typeof TripPurpose];
 
 export const TripStatus = {
   PLANNED: 'PLANNED',
-  ONGOING: 'ONGOING', 
-  COMPLETED: 'COMPLETED'
-} as const
+  ONGOING: 'ONGOING',
+  COMPLETED: 'COMPLETED',
+} as const;
 
-export type TripStatusType = typeof TripStatus[keyof typeof TripStatus]
+export type TripStatusType = (typeof TripStatus)[keyof typeof TripStatus];

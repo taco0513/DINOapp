@@ -86,18 +86,21 @@ vercel env pull .env.vercel.local
 ## 🔐 보안 고려사항
 
 ### NEXTAUTH_SECRET 생성:
+
 ```bash
 # 안전한 시크릿 키 생성
 openssl rand -base64 32
 ```
 
 ### ENCRYPTION_KEY 생성:
+
 ```bash
 # 32자 암호화 키 생성
 openssl rand -hex 16
 ```
 
 ### Google OAuth 설정:
+
 1. [Google Cloud Console](https://console.cloud.google.com/) 접속
 2. 새 프로젝트 생성 또는 기존 프로젝트 선택
 3. APIs & Services → Credentials
@@ -108,15 +111,19 @@ openssl rand -hex 16
 ## 🗄️ 데이터베이스 권장 사항
 
 ### 개발/테스트용:
+
 - SQLite (파일 기반, Vercel에서 읽기 전용)
 
 ### 프로덕션 권장:
+
 1. **Vercel Postgres** (권장)
+
    ```bash
    DATABASE_URL=postgresql://user:password@host:5432/database
    ```
 
 2. **PlanetScale** (서버리스 MySQL)
+
    ```bash
    DATABASE_URL=mysql://user:password@host:3306/database
    ```
@@ -138,6 +145,7 @@ openssl rand -hex 16
 ## 📊 성능 최적화
 
 ### Vercel 함수 설정 (이미 구성됨):
+
 ```json
 {
   "functions": {
@@ -152,6 +160,7 @@ openssl rand -hex 16
 ```
 
 ### 캐싱 헤더 (이미 구성됨):
+
 - 정적 자산: 1년 캐시
 - 이미지: 1년 캐시
 - API: 5분 캐시
@@ -159,16 +168,19 @@ openssl rand -hex 16
 ## 🔍 배포 후 검증
 
 ### 1. 환경변수 확인:
+
 ```bash
 vercel env ls
 ```
 
 ### 2. 배포 로그 확인:
+
 ```bash
 vercel logs
 ```
 
 ### 3. 기능 테스트:
+
 - [ ] 로그인/로그아웃 동작
 - [ ] Gmail 연동 테스트
 - [ ] 캘린더 동기화 테스트
@@ -179,15 +191,19 @@ vercel logs
 ### 자주 발생하는 오류:
 
 1. **NEXTAUTH_SECRET 누락**
+
    ```
    Error: Please define a `NEXTAUTH_SECRET` environment variable
    ```
+
    → Vercel에서 NEXTAUTH_SECRET 환경변수 추가
 
 2. **Google OAuth 오류**
+
    ```
    Error: redirect_uri_mismatch
    ```
+
    → Google Console에서 올바른 리다이렉트 URI 등록
 
 3. **데이터베이스 연결 오류**
@@ -199,6 +215,7 @@ vercel logs
 ## 📞 지원
 
 배포 관련 문제가 발생하면:
+
 1. Vercel 로그 확인
 2. 환경변수 설정 재검토
 3. 프로젝트 이슈 트래커에 문의

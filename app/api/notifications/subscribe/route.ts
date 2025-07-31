@@ -11,7 +11,7 @@ import { pushNotificationService } from '@/lib/notifications/push-service';
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
       create: {
         email: session.user.email,
         name: session.user.name || '',
-        image: session.user.image
-      }
+        image: session.user.image,
+      },
     });
 
     // Store subscription in database
@@ -45,15 +45,15 @@ export async function POST(request: NextRequest) {
       where: {
         userId_endpoint: {
           userId: user.id,
-          endpoint: subscription.endpoint
-        }
+          endpoint: subscription.endpoint,
+        },
       },
       update: {
         p256dh: subscription.keys.p256dh,
         auth: subscription.keys.auth,
         preferences: preferences || {},
         isActive: true,
-        lastUsed: new Date()
+        lastUsed: new Date(),
       },
       create: {
         userId: user.id,
@@ -65,11 +65,11 @@ export async function POST(request: NextRequest) {
           schengenWarning: true,
           tripReminders: true,
           emailProcessing: false,
-          systemUpdates: false
+          systemUpdates: false,
         },
         isActive: true,
-        lastUsed: new Date()
-      }
+        lastUsed: new Date(),
+      },
     });
 
     // Send test notification if requested
@@ -85,9 +85,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       subscriptionId: pushSubscription.id,
-      message: 'Successfully subscribed to push notifications'
+      message: 'Successfully subscribed to push notifications',
     });
-
   } catch (error) {
     console.error('Push subscription error:', error);
     return NextResponse.json(
@@ -104,7 +103,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -123,34 +122,30 @@ export async function PUT(request: NextRequest) {
 
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Update subscription preferences
     const updatedSubscription = await prisma.pushSubscription.update({
       where: {
         id: subscriptionId,
-        userId: user.id
+        userId: user.id,
       },
       data: {
         preferences,
-        lastUsed: new Date()
-      }
+        lastUsed: new Date(),
+      },
     });
 
     return NextResponse.json({
       success: true,
       subscription: updatedSubscription,
-      message: 'Notification preferences updated'
+      message: 'Notification preferences updated',
     });
-
   } catch (error) {
     console.error('Preference update error:', error);
     return NextResponse.json(
@@ -167,7 +162,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -188,30 +183,26 @@ export async function DELETE(request: NextRequest) {
 
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Delete subscription
-    const whereClause = subscriptionId 
+    const whereClause = subscriptionId
       ? { id: subscriptionId, userId: user.id }
       : { endpoint: endpoint!, userId: user.id };
 
     await prisma.pushSubscription.delete({
-      where: whereClause
+      where: whereClause,
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Successfully unsubscribed from push notifications'
+      message: 'Successfully unsubscribed from push notifications',
     });
-
   } catch (error) {
     console.error('Unsubscribe error:', error);
     return NextResponse.json(
@@ -228,7 +219,7 @@ export async function DELETE(request: NextRequest) {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -247,24 +238,20 @@ export async function GET() {
             endpoint: true,
             preferences: true,
             createdAt: true,
-            lastUsed: true
-          }
-        }
-      }
+            lastUsed: true,
+          },
+        },
+      },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json({
       subscriptions: user.pushSubscriptions,
-      count: user.pushSubscriptions.length
+      count: user.pushSubscriptions.length,
     });
-
   } catch (error) {
     console.error('Get subscriptions error:', error);
     return NextResponse.json(

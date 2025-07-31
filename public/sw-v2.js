@@ -1,5 +1,7 @@
 // DINO Service Worker v2.0.0 - Enhanced PWA functionality
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js');
+importScripts(
+  'https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js'
+);
 
 // Configuration
 const SW_VERSION = '2.0.0';
@@ -7,7 +9,7 @@ const CACHE_NAMES = {
   STATIC: `dino-static-v${SW_VERSION}`,
   API: `dino-api-v${SW_VERSION}`,
   IMAGES: `dino-images-v${SW_VERSION}`,
-  RUNTIME: `dino-runtime-v${SW_VERSION}`
+  RUNTIME: `dino-runtime-v${SW_VERSION}`,
 };
 
 // Initialize Workbox
@@ -31,7 +33,7 @@ workbox.precaching.precacheAndRoute([
   { url: '/profile', revision: SW_VERSION },
   { url: '/settings', revision: SW_VERSION },
   { url: '/offline', revision: SW_VERSION },
-  { url: '/manifest.json', revision: SW_VERSION }
+  { url: '/manifest.json', revision: SW_VERSION },
 ]);
 
 // Clean up old caches
@@ -47,12 +49,12 @@ workbox.routing.registerRoute(
       new workbox.expiration.ExpirationPlugin({
         maxEntries: 50,
         maxAgeSeconds: 5 * 60, // 5 minutes
-        purgeOnQuotaError: true
+        purgeOnQuotaError: true,
       }),
       new workbox.cacheableResponse.CacheableResponsePlugin({
-        statuses: [0, 200]
-      })
-    ]
+        statuses: [0, 200],
+      }),
+    ],
   })
 );
 
@@ -65,12 +67,12 @@ workbox.routing.registerRoute(
       new workbox.expiration.ExpirationPlugin({
         maxEntries: 100,
         maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
-        purgeOnQuotaError: true
+        purgeOnQuotaError: true,
       }),
       new workbox.cacheableResponse.CacheableResponsePlugin({
-        statuses: [0, 200]
-      })
-    ]
+        statuses: [0, 200],
+      }),
+    ],
   })
 );
 
@@ -82,9 +84,9 @@ workbox.routing.registerRoute(
     plugins: [
       new workbox.expiration.ExpirationPlugin({
         maxEntries: 100,
-        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
-      })
-    ]
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+    ],
   })
 );
 
@@ -96,9 +98,9 @@ workbox.routing.registerRoute(
     networkTimeoutSeconds: 3,
     plugins: [
       new workbox.cacheableResponse.CacheableResponsePlugin({
-        statuses: [0, 200]
-      })
-    ]
+        statuses: [0, 200],
+      }),
+    ],
   })
 );
 
@@ -107,49 +109,54 @@ workbox.routing.setCatchHandler(async ({ event }) => {
   if (event.request.destination === 'document') {
     return caches.match('/offline');
   }
-  
+
   // Return offline API response for API requests
   if (event.request.url.includes('/api/')) {
     return new Response(
       JSON.stringify({
         error: 'offline',
         message: '오프라인 상태입니다. 인터넷 연결을 확인해주세요.',
-        cached: false
+        cached: false,
       }),
       {
         headers: { 'Content-Type': 'application/json' },
-        status: 503
+        status: 503,
       }
     );
   }
-  
+
   return Response.error();
 });
 
 // Background Sync for offline actions
 workbox.backgroundSync.Queue('dino-sync-queue', {
-  maxRetentionTime: 24 * 60 // Retry for up to 24 hours
+  maxRetentionTime: 24 * 60, // Retry for up to 24 hours
 });
 
 // Register sync for specific API endpoints
-const bgSyncPlugin = new workbox.backgroundSync.BackgroundSyncPlugin('dino-sync-queue', {
-  maxRetentionTime: 24 * 60
-});
+const bgSyncPlugin = new workbox.backgroundSync.BackgroundSyncPlugin(
+  'dino-sync-queue',
+  {
+    maxRetentionTime: 24 * 60,
+  }
+);
 
 // POST/PUT/DELETE requests - use background sync
 workbox.routing.registerRoute(
   ({ url, request }) => {
-    return url.pathname.startsWith('/api/') && 
-           ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method);
+    return (
+      url.pathname.startsWith('/api/') &&
+      ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)
+    );
   },
   new workbox.strategies.NetworkOnly({
-    plugins: [bgSyncPlugin]
+    plugins: [bgSyncPlugin],
   }),
   'POST'
 );
 
 // Skip waiting and claim clients
-self.addEventListener('message', (event) => {
+self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
@@ -162,7 +169,7 @@ self.addEventListener('activate', event => {
 // Push Notifications
 self.addEventListener('push', event => {
   console.log('Push notification received:', event);
-  
+
   let notificationData = {
     title: 'DINO 알림',
     body: '새로운 알림이 있습니다.',
@@ -174,8 +181,8 @@ self.addEventListener('push', event => {
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
-    }
+      primaryKey: 1,
+    },
   };
 
   try {
@@ -199,8 +206,8 @@ self.addEventListener('push', event => {
       requireInteraction: notificationData.requireInteraction,
       actions: [
         { action: 'view', title: '확인하기' },
-        { action: 'dismiss', title: '나중에' }
-      ]
+        { action: 'dismiss', title: '나중에' },
+      ],
     }
   );
 
@@ -210,13 +217,14 @@ self.addEventListener('push', event => {
 // Notification click handler
 self.addEventListener('notificationclick', event => {
   console.log('Notification clicked:', event);
-  
+
   event.notification.close();
-  
+
   const urlToOpen = event.notification.data?.url || '/dashboard';
-  
+
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
       .then(windowClients => {
         // Check if there is already a window/tab open
         for (let i = 0; i < windowClients.length; i++) {
@@ -247,9 +255,9 @@ async function updateTripsInBackground() {
   try {
     const response = await fetch('/api/trips/sync', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
-    
+
     if (response.ok) {
       console.log('Trips synced successfully');
       // Update local cache

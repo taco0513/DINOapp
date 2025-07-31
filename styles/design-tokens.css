@@ -47,16 +47,32 @@
 }
 
 /* Modern Typography Scale */
-.text-title-1 { @apply text-2xl font-bold; }
-.text-title-2 { @apply text-xl font-semibold; }
-.text-body { @apply text-base; }
-.text-caption { @apply text-sm; }
-.text-footnote { @apply text-sm; }
+.text-title-1 {
+  @apply text-2xl font-bold;
+}
+.text-title-2 {
+  @apply text-xl font-semibold;
+}
+.text-body {
+  @apply text-base;
+}
+.text-caption {
+  @apply text-sm;
+}
+.text-footnote {
+  @apply text-sm;
+}
 
 /* Semantic Colors */
-.text-primary-custom { @apply text-primary; }
-.text-secondary-custom { @apply text-muted-foreground; }
-.bg-surface { @apply bg-card; }
+.text-primary-custom {
+  @apply text-primary;
+}
+.text-secondary-custom {
+  @apply text-muted-foreground;
+}
+.bg-surface {
+  @apply bg-card;
+}
 
 /* Legacy compatibility - minimal set */
 :root {

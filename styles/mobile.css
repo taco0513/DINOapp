@@ -121,63 +121,63 @@
     padding-left: 16px;
     padding-right: 16px;
   }
-  
+
   /* Stack cards on mobile */
   .grid {
     grid-template-columns: 1fr !important;
   }
-  
+
   /* Larger touch targets */
   .btn {
     min-height: 44px;
     padding: 12px 20px;
   }
-  
+
   /* Adjust text sizes */
   h1 {
     font-size: 28px;
   }
-  
+
   h2 {
     font-size: 24px;
   }
-  
+
   h3 {
     font-size: 20px;
   }
-  
+
   /* Card adjustments */
   .card {
     padding: 16px;
   }
-  
+
   /* Hide desktop-only elements */
   .desktop-only {
     display: none !important;
   }
-  
+
   /* Show mobile-only elements */
   .mobile-only {
     display: block !important;
   }
-  
+
   /* Adjust form inputs */
   input,
   select,
   textarea {
     font-size: 16px; /* Prevents zoom on iOS */
   }
-  
+
   /* Bottom padding for mobile nav */
   main {
     padding-bottom: 80px;
   }
-  
+
   /* Full-width buttons on mobile */
   .btn-full-mobile {
     width: 100%;
   }
-  
+
   /* Adjust modals for mobile */
   .modal {
     margin: 0;
@@ -185,19 +185,19 @@
     width: 100%;
     border-radius: 0;
   }
-  
+
   /* Improve tap targets */
   a,
   button {
     min-width: 44px;
     min-height: 44px;
   }
-  
+
   /* Adjust spacing */
   .mb-8 {
     margin-bottom: 24px;
   }
-  
+
   .py-6 {
     padding-top: 24px;
     padding-bottom: 24px;
@@ -220,7 +220,9 @@
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.1);
   transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
+  transition:
+    width 0.3s,
+    height 0.3s;
 }
 
 .touch-feedback:active::after {
@@ -262,11 +264,11 @@
   .mobile-nav {
     padding: 4px 0;
   }
-  
+
   .mobile-nav-item {
     padding: 4px;
   }
-  
+
   .mobile-modal {
     max-height: 80vh;
   }
@@ -277,7 +279,7 @@
   .mobile-modal {
     background: var(--color-bg-dark);
   }
-  
+
   .mobile-nav {
     background: var(--color-bg-dark);
     border-top-color: var(--color-border-dark);

@@ -3,6 +3,7 @@
 ## 코딩 초보자를 위한 Context7 활용 앱 개발 완벽 가이드
 
 ### 목차
+
 1. [Context7란 무엇인가?](#context7란-무엇인가)
 2. [Context7 vs SuperClaude](#context7-vs-superclause)
 3. [시작하기 전 준비사항](#시작하기-전-준비사항)
@@ -20,15 +21,18 @@
 ## Context7란 무엇인가?
 
 ### 개념 소개
+
 **Context7**은 공식 라이브러리 문서와 베스트 프랙티스를 실시간으로 참조하며 코드를 생성하는 MCP(Model Context Protocol) 서버입니다.
 
 ### 핵심 강점
+
 - 📚 **공식 문서 기반**: 항상 최신 라이브러리 문서 참조
 - 🎯 **정확한 구현**: 프레임워크별 베스트 프랙티스 적용
 - 🌐 **다국어 지원**: 한국어 문서와 예제 제공
 - ⚡ **실시간 업데이트**: 라이브러리 버전 변경 즉시 반영
 
 ### Context7이 특히 유용한 경우
+
 ```
 ✅ React, Vue, Angular 같은 프레임워크 사용
 ✅ 복잡한 라이브러리 통합 (Redux, GraphQL 등)
@@ -42,15 +46,16 @@
 
 ### 비교표
 
-| 특징 | Context7 | SuperClaude |
-|------|----------|-------------|
-| **강점** | 라이브러리 문서 정확성 | 종합적인 프로젝트 관리 |
-| **초점** | 프레임워크 구현 | 전체 개발 프로세스 |
-| **문서 참조** | 실시간 공식 문서 | 내장된 패턴 지식 |
-| **코드 생성** | 프레임워크 최적화 | 범용적 접근 |
-| **학습 곡선** | 낮음 (문서 기반) | 중간 (명령어 학습) |
+| 특징          | Context7               | SuperClaude            |
+| ------------- | ---------------------- | ---------------------- |
+| **강점**      | 라이브러리 문서 정확성 | 종합적인 프로젝트 관리 |
+| **초점**      | 프레임워크 구현        | 전체 개발 프로세스     |
+| **문서 참조** | 실시간 공식 문서       | 내장된 패턴 지식       |
+| **코드 생성** | 프레임워크 최적화      | 범용적 접근            |
+| **학습 곡선** | 낮음 (문서 기반)       | 중간 (명령어 학습)     |
 
 ### Context7 선택 기준
+
 ```
 "다음 중 하나라도 해당되면 Context7가 최적입니다:"
 - React/Vue/Angular 프로젝트
@@ -64,6 +69,7 @@
 ## 시작하기 전 준비사항
 
 ### 필수 도구 설치
+
 ```bash
 # 1. Node.js 설치 확인
 node --version  # v18 이상
@@ -79,6 +85,7 @@ bun --version   # (가장 빠름!)
 ```
 
 ### Context7 활성화
+
 ```bash
 # Claude Code에서 Context7 자동 활성화됨
 # 수동 활성화가 필요한 경우:
@@ -86,6 +93,7 @@ bun --version   # (가장 빠름!)
 ```
 
 ### 마인드셋 준비
+
 - 🎯 **목표 명확히**: "무엇을 만들고 싶은가?"
 - 📚 **문서 친화적**: Context7는 문서를 잘 활용합니다
 - 🔄 **반복 개선**: 한 번에 완벽할 필요 없음
@@ -98,6 +106,7 @@ bun --version   # (가장 빠름!)
 ### Step 1.1: 프로젝트 아이디어 구체화
 
 #### 자연어로 설명하기
+
 ```
 "여행 기록 웹앱을 만들고 싶어.
 - React로 만들기
@@ -107,6 +116,7 @@ bun --version   # (가장 빠름!)
 ```
 
 #### Context7 활용 초기 설정
+
 ```bash
 # Context7가 React 문서를 참조하여 프로젝트 생성
 "React 최신 버전으로 여행 기록 앱 프로젝트 만들어줘"
@@ -121,6 +131,7 @@ bun --version   # (가장 빠름!)
 ### Step 1.2: 프레임워크별 프로젝트 생성
 
 #### React 프로젝트 (Vite)
+
 ```bash
 # Context7가 최신 React 문서 기반으로 생성
 "Vite로 React TypeScript 프로젝트 만들어줘"
@@ -133,19 +144,21 @@ npm run dev
 ```
 
 #### Vue 프로젝트
+
 ```bash
 # Vue 3 공식 문서 기반 설정
 "Vue 3 Composition API로 프로젝트 시작해줘"
 
 # Context7가 생성:
 npm create vue@latest travel-diary
-# ✅ TypeScript 
+# ✅ TypeScript
 # ✅ Vue Router
 # ✅ Pinia
 # ✅ ESLint + Prettier
 ```
 
 #### Angular 프로젝트
+
 ```bash
 # Angular 최신 CLI 활용
 "Angular로 여행 앱 프로젝트 만들어줘"
@@ -184,6 +197,7 @@ src/
 ### Step 2.1: UI 라이브러리 선택과 설정
 
 #### Material-UI (MUI) 통합
+
 ```bash
 # Context7가 MUI 공식 문서 참조
 "Material-UI 최신 버전 설치하고 기본 테마 설정해줘"
@@ -212,6 +226,7 @@ const theme = createTheme({
 ```
 
 #### Ant Design 통합
+
 ```bash
 # Context7가 Ant Design 문서 기반 설정
 "Ant Design으로 UI 구성해줘"
@@ -229,6 +244,7 @@ import koKR from 'antd/locale/ko_KR';
 ### Step 2.2: 상태 관리 라이브러리 통합
 
 #### Redux Toolkit 설정
+
 ```bash
 # Context7가 Redux 공식 문서 참조하여 최신 패턴 적용
 "Redux Toolkit으로 여행 데이터 상태 관리 설정해줘"
@@ -269,6 +285,7 @@ const tripsSlice = createSlice({
 ```
 
 #### Zustand 설정 (더 간단한 대안)
+
 ```bash
 # Context7가 Zustand 문서 참조
 "Zustand로 간단한 상태 관리 만들어줘"
@@ -288,11 +305,11 @@ export const useTripStore = create<TripStore>()(
   persist(
     (set) => ({
       trips: [],
-      addTrip: (trip) => set((state) => ({ 
-        trips: [...state.trips, trip] 
+      addTrip: (trip) => set((state) => ({
+        trips: [...state.trips, trip]
       })),
-      removeTrip: (id) => set((state) => ({ 
-        trips: state.trips.filter(t => t.id !== id) 
+      removeTrip: (id) => set((state) => ({
+        trips: state.trips.filter(t => t.id !== id)
       })),
     }),
     {
@@ -305,6 +322,7 @@ export const useTripStore = create<TripStore>()(
 ### Step 2.3: 라우팅 설정
 
 #### React Router 설정
+
 ```bash
 # Context7가 React Router v6 문서 기반 설정
 "React Router로 페이지 라우팅 설정해줘"
@@ -335,6 +353,7 @@ function App() {
 ### Step 3.1: 컴포넌트 라이브러리 활용
 
 #### 기본 컴포넌트 생성
+
 ```bash
 # Context7가 MUI 문서 참조하여 생성
 "여행 카드 컴포넌트 만들어줘"
@@ -373,6 +392,7 @@ export function TripCard({ trip }: { trip: Trip }) {
 ```
 
 #### 폼 컴포넌트 생성
+
 ```bash
 # Context7가 React Hook Form + MUI 통합
 "여행 추가 폼 만들어줘"
@@ -385,7 +405,7 @@ import { DatePicker } from '@mui/x-date-pickers'
 
 export function AddTripForm() {
   const { control, handleSubmit } = useForm<TripFormData>()
-  
+
   const onSubmit = (data: TripFormData) => {
     // Context7가 자동으로 Zustand store 연결
     useTripStore.getState().addTrip({
@@ -393,7 +413,7 @@ export function AddTripForm() {
       ...data
     })
   }
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Controller
@@ -409,7 +429,7 @@ export function AddTripForm() {
           />
         )}
       />
-      
+
       <Controller
         name="startDate"
         control={control}
@@ -421,7 +441,7 @@ export function AddTripForm() {
           />
         )}
       />
-      
+
       <Button type="submit" variant="contained">
         여행 추가
       </Button>
@@ -443,7 +463,7 @@ import { Container } from '@mui/material'
 
 export function TripsPage() {
   const trips = useTripStore(state => state.trips)
-  
+
   return (
     <Container maxWidth="lg">
       <Grid container spacing={3}>
@@ -492,6 +512,7 @@ export function AnimatedTripCard({ trip, index }: Props) {
 ### Step 4.1: API 클라이언트 설정
 
 #### Axios 설정
+
 ```bash
 # Context7가 Axios 문서 기반 설정
 "Axios로 API 클라이언트 설정해줘"
@@ -535,6 +556,7 @@ api.interceptors.response.use(
 ```
 
 #### React Query 통합
+
 ```bash
 # Context7가 TanStack Query v5 문서 참조
 "React Query로 데이터 페칭 최적화해줘"
@@ -553,7 +575,7 @@ export function useTrips() {
 
 export function useCreateTrip() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: (newTrip: TripInput) => api.post('/trips', newTrip),
     onSuccess: () => {
@@ -566,10 +588,10 @@ export function useCreateTrip() {
 function TripsList() {
   const { data: trips, isLoading, error } = useTrips()
   const createTrip = useCreateTrip()
-  
+
   if (isLoading) return <Skeleton />
   if (error) return <ErrorMessage />
-  
+
   return (
     <div>
       {trips.map(trip => <TripCard key={trip.id} trip={trip} />)}
@@ -610,14 +632,14 @@ export async function signInWithGoogle() {
 // hooks/useAuth.ts
 export function useAuth() {
   const [user, setUser] = useState(null)
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user)
     })
     return unsubscribe
   }, [])
-  
+
   return { user, signInWithGoogle, signOut }
 }
 ```
@@ -636,22 +658,22 @@ const socket = io(process.env.REACT_APP_SOCKET_URL)
 
 export function useRealtimeTrips() {
   const queryClient = useQueryClient()
-  
+
   useEffect(() => {
     socket.on('trip:created', (newTrip) => {
-      queryClient.setQueryData(['trips'], (old: Trip[]) => 
+      queryClient.setQueryData(['trips'], (old: Trip[]) =>
         [...old, newTrip]
       )
     })
-    
+
     socket.on('trip:updated', (updatedTrip) => {
       queryClient.setQueryData(['trips'], (old: Trip[]) =>
-        old.map(trip => 
+        old.map(trip =>
           trip.id === updatedTrip.id ? updatedTrip : trip
         )
       )
     })
-    
+
     return () => {
       socket.off('trip:created')
       socket.off('trip:updated')
@@ -667,6 +689,7 @@ export function useRealtimeTrips() {
 ### Step 5.1: 성능 최적화
 
 #### 코드 스플리팅
+
 ```bash
 # Context7가 React.lazy 문서 참조
 "라우트별 코드 스플리팅 적용해줘"
@@ -693,6 +716,7 @@ function App() {
 ```
 
 #### 이미지 최적화
+
 ```bash
 # Context7가 next/image 또는 react-lazy-load-image 활용
 "이미지 레이지 로딩 구현해줘"
@@ -766,6 +790,7 @@ export default {
 ### Step 5.3: 배포
 
 #### Vercel 배포
+
 ```bash
 # Context7가 Vercel 문서 참조
 "Vercel로 배포 설정해줘"
@@ -796,6 +821,7 @@ npx vercel --prod
 ### 프레임워크 마이그레이션
 
 #### Vue 2에서 Vue 3로
+
 ```bash
 # Context7가 Vue 마이그레이션 가이드 참조
 "Vue 2 프로젝트를 Vue 3로 마이그레이션해줘"
@@ -808,6 +834,7 @@ npx vercel --prod
 ```
 
 #### Class Component에서 Function Component로
+
 ```bash
 # Context7가 React Hooks 문서 참조
 "클래스 컴포넌트를 함수형으로 변환해줘"
@@ -816,11 +843,11 @@ npx vercel --prod
 // Before (Class)
 class TripList extends Component {
   state = { trips: [] }
-  
+
   componentDidMount() {
     fetchTrips().then(trips => this.setState({ trips }))
   }
-  
+
   render() {
     return <div>{this.state.trips.map(...)}</div>
   }
@@ -829,11 +856,11 @@ class TripList extends Component {
 // After (Function)
 function TripList() {
   const [trips, setTrips] = useState([])
-  
+
   useEffect(() => {
     fetchTrips().then(setTrips)
   }, [])
-  
+
   return <div>{trips.map(...)}</div>
 }
 ```
@@ -841,6 +868,7 @@ function TripList() {
 ### 라이브러리별 최적화
 
 #### React 최적화
+
 ```bash
 # Context7가 React 성능 문서 참조
 "React 렌더링 최적화해줘"
@@ -863,6 +891,7 @@ const handleClick = useCallback((id) => {
 ```
 
 #### Bundle 크기 최적화
+
 ```bash
 # Context7가 번들 분석 도구 활용
 "번들 크기 줄여줘"
@@ -874,7 +903,7 @@ import Button from '@mui/material/Button' // ✅
 import TextField from '@mui/material/TextField' // ✅
 
 // 2. Dynamic imports
-const HeavyComponent = lazy(() => 
+const HeavyComponent = lazy(() =>
   import(/* webpackChunkName: "heavy" */ './HeavyComponent')
 )
 
@@ -890,6 +919,7 @@ import dayjs from 'dayjs'
 ### 자주 발생하는 문제들
 
 #### 1. "Module not found" 에러
+
 ```bash
 # Context7가 패키지 문서 확인
 "Module not found 에러 해결해줘"
@@ -902,6 +932,7 @@ import dayjs from 'dayjs'
 ```
 
 #### 2. CORS 에러
+
 ```bash
 # Context7가 CORS 해결 방법 제시
 "CORS 에러 해결해줘"
@@ -926,6 +957,7 @@ app.use(cors({
 ```
 
 #### 3. 상태 관리 문제
+
 ```bash
 # Context7가 상태 관리 디버깅
 "상태가 업데이트 안 돼"
@@ -942,6 +974,7 @@ app.use(cors({
 ## Context7 최적화 팁
 
 ### 1. 라이브러리 ID 해상도 향상
+
 ```bash
 # 명확한 라이브러리명 사용
 "Material-UI로..." → "MUI v5로..."
@@ -949,6 +982,7 @@ app.use(cors({
 ```
 
 ### 2. 버전 특정하기
+
 ```bash
 # 특정 버전 문서 참조
 "React 18의 Suspense 사용법 보여줘"
@@ -956,6 +990,7 @@ app.use(cors({
 ```
 
 ### 3. 프레임워크 컨텍스트 제공
+
 ```bash
 # 프로젝트 정보 명시
 "Next.js 14 App Router에서..."
@@ -963,6 +998,7 @@ app.use(cors({
 ```
 
 ### 4. 통합 시나리오 명시
+
 ```bash
 # 라이브러리 조합 명확히
 "React Query + Axios로 데이터 페칭"
@@ -970,6 +1006,7 @@ app.use(cors({
 ```
 
 ### 5. 한국어 문서 활용
+
 ```bash
 # 한국어 설명 요청
 "한국어로 설명하면서 구현해줘"
@@ -983,16 +1020,19 @@ app.use(cors({
 ### Context7의 장점 활용하기
 
 #### 📚 문서 기반 개발
+
 - 항상 최신 공식 문서 참조
 - 프레임워크별 베스트 프랙티스
 - 정확한 API 사용법
 
 #### 🎯 정확한 구현
+
 - 타입 안전성 보장
 - 프레임워크 관례 준수
 - 버전별 호환성 확인
 
 #### 🚀 빠른 개발
+
 - 보일러플레이트 자동 생성
 - 일반적인 패턴 즉시 적용
 - 에러 해결 방법 제시

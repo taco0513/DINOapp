@@ -27,14 +27,14 @@ const buildDir = path.join(process.cwd(), '.next');
 
 function getDirectorySize(dir) {
   let totalSize = 0;
-  
+
   function calculateSize(dirPath) {
     const files = fs.readdirSync(dirPath);
-    
+
     files.forEach(file => {
       const filePath = path.join(dirPath, file);
       const stat = fs.statSync(filePath);
-      
+
       if (stat.isDirectory()) {
         calculateSize(filePath);
       } else {
@@ -42,11 +42,11 @@ function getDirectorySize(dir) {
       }
     });
   }
-  
+
   if (fs.existsSync(dir)) {
     calculateSize(dir);
   }
-  
+
   return totalSize;
 }
 
@@ -67,17 +67,18 @@ const appDir = path.join(buildDir, 'server', 'app');
 
 function analyzePages(dir, prefix = '') {
   if (!fs.existsSync(dir)) return;
-  
+
   const files = fs.readdirSync(dir);
   files.forEach(file => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
-    
+
     if (stat.isDirectory() && !file.startsWith('_')) {
       analyzePages(filePath, `${prefix}${file}/`);
     } else if (file.endsWith('.js') || file.endsWith('.html')) {
       const size = stat.size / 1024;
-      if (size > 50) { // Only show files larger than 50KB
+      if (size > 50) {
+        // Only show files larger than 50KB
         console.log(`  - ${prefix}${file}: ${size.toFixed(1)} KB`);
       }
     }
@@ -95,12 +96,12 @@ let lineCount = 0;
 
 function countFiles(dir) {
   if (dir.includes('node_modules') || dir.includes('.next')) return;
-  
+
   const files = fs.readdirSync(dir);
   files.forEach(file => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
-    
+
     if (stat.isDirectory()) {
       countFiles(filePath);
     } else if (sourceExtensions.some(ext => file.endsWith(ext))) {
@@ -121,21 +122,28 @@ console.log('\n💡 Performance Recommendations:');
 const recommendations = [];
 
 if (totalSize > 50 * 1024 * 1024) {
-  recommendations.push('⚠️  Total build size exceeds 50MB - consider code splitting');
+  recommendations.push(
+    '⚠️  Total build size exceeds 50MB - consider code splitting'
+  );
 }
 
 if (staticSize > 10 * 1024 * 1024) {
-  recommendations.push('⚠️  Static assets exceed 10MB - optimize images and fonts');
+  recommendations.push(
+    '⚠️  Static assets exceed 10MB - optimize images and fonts'
+  );
 }
 
 // Check for large dependencies
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const heavyDeps = ['moment', 'lodash', 'jquery'];
-const foundHeavyDeps = Object.keys(packageJson.dependencies || {})
-  .filter(dep => heavyDeps.some(heavy => dep.includes(heavy)));
+const foundHeavyDeps = Object.keys(packageJson.dependencies || {}).filter(dep =>
+  heavyDeps.some(heavy => dep.includes(heavy))
+);
 
 if (foundHeavyDeps.length > 0) {
-  recommendations.push(`⚠️  Heavy dependencies found: ${foundHeavyDeps.join(', ')} - consider lighter alternatives`);
+  recommendations.push(
+    `⚠️  Heavy dependencies found: ${foundHeavyDeps.join(', ')} - consider lighter alternatives`
+  );
 }
 
 if (recommendations.length === 0) {
@@ -150,13 +158,13 @@ const report = {
   build: {
     staticSize: `${(staticSize / 1024 / 1024).toFixed(2)} MB`,
     serverSize: `${(serverSize / 1024 / 1024).toFixed(2)} MB`,
-    totalSize: `${(totalSize / 1024 / 1024).toFixed(2)} MB`
+    totalSize: `${(totalSize / 1024 / 1024).toFixed(2)} MB`,
   },
   project: {
     sourceFiles: fileCount,
-    linesOfCode: lineCount
+    linesOfCode: lineCount,
   },
-  recommendations
+  recommendations,
 };
 
 fs.writeFileSync(

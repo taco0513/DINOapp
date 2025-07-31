@@ -5,6 +5,7 @@
 The Gmail API integration in DINO provides automated travel email analysis and extraction capabilities. The API consists of three main endpoints that handle Gmail connection verification, email searching, and travel information extraction.
 
 ## Base URL
+
 ```
 https://your-dino-app.com/api/gmail
 ```
@@ -14,6 +15,7 @@ https://your-dino-app.com/api/gmail
 All Gmail API endpoints require user authentication via NextAuth.js session. The user must have granted Gmail read permissions through Google OAuth.
 
 **Required Scopes:**
+
 - `https://www.googleapis.com/auth/gmail.readonly`
 - `https://www.googleapis.com/auth/userinfo.email`
 
@@ -37,6 +39,7 @@ All Gmail API endpoints require user authentication via NextAuth.js session. The
 **Request Parameters**: None
 
 **Response**:
+
 ```typescript
 {
   connected: boolean,
@@ -53,7 +56,8 @@ All Gmail API endpoints require user authentication via NextAuth.js session. The
 
 **Response Examples**:
 
-*Success (Connected)*:
+_Success (Connected)_:
+
 ```json
 {
   "connected": true,
@@ -68,7 +72,8 @@ All Gmail API endpoints require user authentication via NextAuth.js session. The
 }
 ```
 
-*Error (Not Connected)*:
+_Error (Not Connected)_:
+
 ```json
 {
   "connected": false,
@@ -84,6 +89,7 @@ All Gmail API endpoints require user authentication via NextAuth.js session. The
 ```
 
 **Error Codes**:
+
 - `401`: Unauthorized (No valid session)
 - `403`: Forbidden (Rate limit exceeded)
 - `500`: Internal server error
@@ -104,11 +110,13 @@ All Gmail API endpoints require user authentication via NextAuth.js session. The
 | `maxResults` | integer | 20 | 100 | Maximum number of emails to return |
 
 **Request Example**:
+
 ```
 GET /api/gmail/search?maxResults=50
 ```
 
 **Response**:
+
 ```typescript
 {
   success: boolean,
@@ -124,6 +132,7 @@ GET /api/gmail/search?maxResults=50
 ```
 
 **Response Example**:
+
 ```json
 {
   "success": true,
@@ -140,7 +149,7 @@ GET /api/gmail/search?maxResults=50
       "id": "def456",
       "subject": "Hotel Reservation Confirmed",
       "from": "bookings@booking.com",
-      "date": "2024-01-10T14:45:00Z", 
+      "date": "2024-01-10T14:45:00Z",
       "snippet": "Your hotel reservation has been confirmed..."
     }
   ]
@@ -148,11 +157,13 @@ GET /api/gmail/search?maxResults=50
 ```
 
 **Search Criteria**:
+
 - Subject contains: flight, airline, booking, hotel, travel, 항공, 숙박, 여행
 - From domains: booking.com, agoda.com, airlines, hotels.com
 - Date range: Configurable (default: last 3 months)
 
 **Error Codes**:
+
 - `401`: Unauthorized
 - `403`: Rate limit exceeded
 - `429`: Too many requests
@@ -174,11 +185,13 @@ GET /api/gmail/search?maxResults=50
 | `maxResults` | integer | 20 | 50 | Maximum number of emails to analyze |
 
 **Request Example**:
+
 ```
 GET /api/gmail/analyze?maxResults=30
 ```
 
 **Response**:
+
 ```typescript
 {
   success: boolean,
@@ -199,6 +212,7 @@ GET /api/gmail/analyze?maxResults=30
 ```
 
 **Response Example**:
+
 ```json
 {
   "success": true,
@@ -217,7 +231,7 @@ GET /api/gmail/analyze?maxResults=30
       "confidence": 92
     },
     {
-      "emailId": "def456", 
+      "emailId": "def456",
       "subject": "Hotel Reservation - Grand Hotel Paris",
       "from": "bookings@booking.com",
       "departureDate": "2024-02-15",
@@ -231,12 +245,14 @@ GET /api/gmail/analyze?maxResults=30
 ```
 
 **Confidence Levels**:
+
 - **90-100%**: High confidence - Complete information extracted
 - **70-89%**: Medium confidence - Most information extracted
 - **50-69%**: Low confidence - Limited information extracted
 - **Below 50%**: Filtered out (not returned)
 
 **Extracted Information Types**:
+
 - **Flight Information**: Flight numbers, airports, dates, airlines
 - **Hotel Information**: Hotel names, addresses, check-in/out dates
 - **Booking References**: Confirmation codes, PNRs
@@ -245,25 +261,29 @@ GET /api/gmail/analyze?maxResults=30
 - **Passenger Information**: Names (sanitized for privacy)
 
 **Error Codes**:
+
 - `401`: Unauthorized
-- `403`: Rate limit exceeded  
+- `403`: Rate limit exceeded
 - `429`: Too many requests
 - `500`: Analysis service error
 
 ## Privacy & Security
 
 ### Data Protection
+
 - **Local Processing**: Email content is processed locally and not stored
 - **Data Sanitization**: Personal information is sanitized before API responses
 - **Read-Only Access**: Only read permissions are requested from Gmail
 - **Session-Based**: All access is tied to user sessions
 
 ### Rate Limiting
+
 - **User-based Limits**: Per-user request limits to prevent abuse
 - **Time Windows**: Sliding window rate limiting
 - **Graceful Degradation**: Clear error messages when limits are exceeded
 
 ### GDPR Compliance
+
 - **Minimal Data**: Only necessary data is extracted and processed
 - **User Consent**: Explicit permission required for Gmail access
 - **Data Retention**: No long-term storage of email content
@@ -274,6 +294,7 @@ GET /api/gmail/analyze?maxResults=30
 ### Common Error Responses
 
 **401 Unauthorized**:
+
 ```json
 {
   "error": "Unauthorized",
@@ -282,15 +303,17 @@ GET /api/gmail/analyze?maxResults=30
 ```
 
 **403 Rate Limited**:
+
 ```json
 {
-  "error": "Rate limit exceeded", 
+  "error": "Rate limit exceeded",
   "message": "Too many requests. Please try again later.",
   "retryAfter": 3600
 }
 ```
 
 **500 Server Error**:
+
 ```json
 {
   "error": "Internal server error",
@@ -302,24 +325,24 @@ GET /api/gmail/analyze?maxResults=30
 
 ```typescript
 try {
-  const response = await fetch('/api/gmail/analyze?maxResults=20')
-  const data = await response.json()
-  
+  const response = await fetch('/api/gmail/analyze?maxResults=20');
+  const data = await response.json();
+
   if (!response.ok) {
     if (response.status === 403) {
       // Handle rate limiting
-      console.log('Rate limited, retry after:', data.retryAfter)
+      console.log('Rate limited, retry after:', data.retryAfter);
     } else if (response.status === 401) {
       // Handle authentication
-      signIn('google')
+      signIn('google');
     }
-    throw new Error(data.message)
+    throw new Error(data.message);
   }
-  
+
   // Process successful response
-  console.log('Travel infos:', data.travelInfos)
+  console.log('Travel infos:', data.travelInfos);
 } catch (error) {
-  console.error('Gmail API error:', error)
+  console.error('Gmail API error:', error);
 }
 ```
 
@@ -329,66 +352,64 @@ try {
 
 ```typescript
 // 1. Check connection
-const checkResponse = await fetch('/api/gmail/check')
-const checkData = await checkResponse.json()
+const checkResponse = await fetch('/api/gmail/check');
+const checkData = await checkResponse.json();
 
 if (!checkData.connected) {
   // Handle connection issue
-  return
+  return;
 }
 
 // 2. Search for emails
-const searchResponse = await fetch('/api/gmail/search?maxResults=50')
-const searchData = await searchResponse.json()
+const searchResponse = await fetch('/api/gmail/search?maxResults=50');
+const searchData = await searchResponse.json();
 
-console.log(`Found ${searchData.count} emails`)
+console.log(`Found ${searchData.count} emails`);
 
 // 3. Analyze travel information
-const analyzeResponse = await fetch('/api/gmail/analyze?maxResults=30')
-const analyzeData = await analyzeResponse.json()
+const analyzeResponse = await fetch('/api/gmail/analyze?maxResults=30');
+const analyzeData = await analyzeResponse.json();
 
-console.log(`Extracted ${analyzeData.count} travel records`)
+console.log(`Extracted ${analyzeData.count} travel records`);
 ```
 
 ### Component Integration
 
 ```tsx
-import { useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react';
 
 function GmailIntegration() {
-  const { data: session } = useSession()
-  const [travelData, setTravelData] = useState([])
-  
+  const { data: session } = useSession();
+  const [travelData, setTravelData] = useState([]);
+
   const analyzeTravelEmails = async () => {
-    if (!session) return
-    
+    if (!session) return;
+
     try {
-      const response = await fetch('/api/gmail/analyze?maxResults=20')
-      const data = await response.json()
-      
+      const response = await fetch('/api/gmail/analyze?maxResults=20');
+      const data = await response.json();
+
       if (data.success) {
-        setTravelData(data.travelInfos)
+        setTravelData(data.travelInfos);
       }
     } catch (error) {
-      console.error('Analysis failed:', error)
+      console.error('Analysis failed:', error);
     }
-  }
-  
+  };
+
   return (
     <div>
-      <button onClick={analyzeTravelEmails}>
-        Analyze Travel Emails
-      </button>
+      <button onClick={analyzeTravelEmails}>Analyze Travel Emails</button>
       {/* Render travel data */}
     </div>
-  )
+  );
 }
 ```
 
 ## API Limitations
 
 - **Email Volume**: Maximum 100 emails per search request
-- **Analysis Volume**: Maximum 50 emails per analysis request  
+- **Analysis Volume**: Maximum 50 emails per analysis request
 - **Rate Limits**: User-based rate limiting (configurable)
 - **Scope**: Read-only Gmail access
 - **Language**: Optimized for English and Korean emails
@@ -404,6 +425,7 @@ function GmailIntegration() {
 ## Development and Testing
 
 ### Local Testing
+
 ```bash
 # Set environment variables
 export GOOGLE_CLIENT_ID="your-client-id"
@@ -418,6 +440,7 @@ curl http://localhost:3000/api/gmail/check
 ```
 
 ### Testing Considerations
+
 - Use test Gmail account with travel emails
 - Verify rate limiting behavior
 - Test error scenarios (network issues, invalid tokens)

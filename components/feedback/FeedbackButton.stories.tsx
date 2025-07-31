@@ -8,7 +8,8 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: '사용자 피드백을 수집하는 플로팅 버튼 컴포넌트입니다. 버그 리포트, 기능 요청, 일반 피드백을 지원합니다.',
+        component:
+          '사용자 피드백을 수집하는 플로팅 버튼 컴포넌트입니다. 버그 리포트, 기능 요청, 일반 피드백을 지원합니다.',
       },
     },
   },

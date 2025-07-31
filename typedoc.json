@@ -1,9 +1,5 @@
 {
-  "entryPoints": [
-    "./lib",
-    "./types",
-    "./components"
-  ],
+  "entryPoints": ["./lib", "./types", "./components"],
   "out": "docs/code/typedoc",
   "theme": "default",
   "readme": "README.md",
@@ -18,12 +14,5 @@
   "excludeProtected": false,
   "excludeInternal": true,
   "categorizeByGroup": true,
-  "categoryOrder": [
-    "Components",
-    "Hooks",
-    "Utilities",
-    "Types",
-    "API",
-    "*"
-  ]
+  "categoryOrder": ["Components", "Hooks", "Utilities", "Types", "API", "*"]
 }

@@ -15,7 +15,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
   onSwipeLeft,
   onSwipeRight,
   threshold = 100,
-  className = ''
+  className = '',
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
@@ -31,7 +31,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
 
   const handleMove = (clientX: number) => {
     if (!isDragging || startX === null) return;
-    
+
     setCurrentX(clientX);
     const diff = clientX - startX;
     setTranslateX(diff);
@@ -39,9 +39,9 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
 
   const handleEnd = () => {
     if (!isDragging || startX === null || currentX === null) return;
-    
+
     const diff = currentX - startX;
-    
+
     if (Math.abs(diff) > threshold) {
       if (diff > 0 && onSwipeRight) {
         onSwipeRight();
@@ -49,7 +49,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
         onSwipeLeft();
       }
     }
-    
+
     // Reset
     setStartX(null);
     setCurrentX(null);
@@ -88,7 +88,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      
+
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
@@ -104,7 +104,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
         transform: `translateX(${translateX}px)`,
         transition: isDragging ? 'none' : 'transform 0.3s ease-out',
         cursor: isDragging ? 'grabbing' : 'grab',
-        userSelect: 'none'
+        userSelect: 'none',
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}

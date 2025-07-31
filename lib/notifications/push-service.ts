@@ -42,7 +42,12 @@ export interface NotificationPayload {
 
 export interface NotificationContext {
   userId: string;
-  type: 'visa_expiry' | 'schengen_warning' | 'trip_reminder' | 'system_update' | 'email_processed';
+  type:
+    | 'visa_expiry'
+    | 'schengen_warning'
+    | 'trip_reminder'
+    | 'system_update'
+    | 'email_processed';
   priority: 'low' | 'normal' | 'high' | 'critical';
   scheduledFor?: Date;
   metadata?: Record<string, any>;
@@ -82,17 +87,21 @@ export class PushNotificationService {
         data: {
           ...payload.data,
           url: payload.data?.url || '/',
-          openUrl: payload.data?.openUrl || '/'
-        }
+          openUrl: payload.data?.openUrl || '/',
+        },
       });
 
       const pushOptions = {
         TTL: options?.TTL || 24 * 60 * 60, // 24 hours default
         urgency: options?.urgency || 'normal',
-        topic: options?.topic
+        topic: options?.topic,
       };
 
-      await webpush.sendNotification(subscription, notificationPayload, pushOptions);
+      await webpush.sendNotification(
+        subscription,
+        notificationPayload,
+        pushOptions
+      );
     } catch (error) {
       console.error('Failed to send push notification:', error);
       throw error;
@@ -114,12 +123,12 @@ export class PushNotificationService {
   ): Promise<{ success: number; failed: number; errors: Error[] }> {
     const batchSize = options?.batchSize || 100;
     const results = { success: 0, failed: 0, errors: [] as Error[] };
-    
+
     // Process in batches to avoid overwhelming the service
     for (let i = 0; i < subscriptions.length; i += batchSize) {
       const batch = subscriptions.slice(i, i + batchSize);
-      
-      const promises = batch.map(async (subscription) => {
+
+      const promises = batch.map(async subscription => {
         try {
           await this.sendNotification(subscription, payload, options);
           return { success: true };
@@ -129,8 +138,8 @@ export class PushNotificationService {
       });
 
       const batchResults = await Promise.allSettled(promises);
-      
-      batchResults.forEach((result) => {
+
+      batchResults.forEach(result => {
         if (result.status === 'fulfilled') {
           if (result.value.success) {
             results.success++;
@@ -156,7 +165,10 @@ export class PushNotificationService {
   /**
    * Create notification payload for different types
    */
-  createNotificationPayload(type: NotificationContext['type'], context: NotificationContext): NotificationPayload {
+  createNotificationPayload(
+    type: NotificationContext['type'],
+    context: NotificationContext
+  ): NotificationPayload {
     const basePayload = {
       icon: '/icons/icon-192x192.png',
       badge: '/icons/badge-72x72.png',
@@ -166,8 +178,8 @@ export class PushNotificationService {
         type,
         userId: context.userId,
         priority: context.priority,
-        ...context.metadata
-      }
+        ...context.metadata,
+      },
     };
 
     switch (type) {
@@ -180,18 +192,18 @@ export class PushNotificationService {
           data: {
             ...basePayload.data,
             openUrl: `/visa/${context.metadata?.countryCode}`,
-            countryCode: context.metadata?.countryCode
+            countryCode: context.metadata?.countryCode,
           },
           actions: [
             {
               action: 'view-visa',
-              title: '비자 정보 보기'
+              title: '비자 정보 보기',
             },
             {
               action: 'extend-visa',
-              title: '연장 신청'
-            }
-          ]
+              title: '연장 신청',
+            },
+          ],
         };
 
       case 'schengen_warning':
@@ -204,18 +216,18 @@ export class PushNotificationService {
           data: {
             ...basePayload.data,
             openUrl: '/schengen',
-            daysRemaining: context.metadata?.daysRemaining
+            daysRemaining: context.metadata?.daysRemaining,
           },
           actions: [
             {
               action: 'view-schengen',
-              title: '계산기 확인'
+              title: '계산기 확인',
             },
             {
               action: 'plan-exit',
-              title: '출국 계획'
-            }
-          ]
+              title: '출국 계획',
+            },
+          ],
         };
 
       case 'trip_reminder':
@@ -227,18 +239,18 @@ export class PushNotificationService {
           data: {
             ...basePayload.data,
             openUrl: `/trips/${context.metadata?.tripId}`,
-            tripId: context.metadata?.tripId
+            tripId: context.metadata?.tripId,
           },
           actions: [
             {
               action: 'view-trip',
-              title: '여행 상세보기'
+              title: '여행 상세보기',
             },
             {
               action: 'check-documents',
-              title: '서류 확인'
-            }
-          ]
+              title: '서류 확인',
+            },
+          ],
         };
 
       case 'email_processed':
@@ -251,14 +263,14 @@ export class PushNotificationService {
           data: {
             ...basePayload.data,
             openUrl: '/dashboard',
-            emailCount: context.metadata?.emailCount
+            emailCount: context.metadata?.emailCount,
           },
           actions: [
             {
               action: 'view-dashboard',
-              title: '대시보드 보기'
-            }
-          ]
+              title: '대시보드 보기',
+            },
+          ],
         };
 
       case 'system_update':
@@ -271,8 +283,8 @@ export class PushNotificationService {
           data: {
             ...basePayload.data,
             openUrl: '/updates',
-            version: context.metadata?.version
-          }
+            version: context.metadata?.version,
+          },
         };
 
       default:
@@ -280,7 +292,7 @@ export class PushNotificationService {
           ...basePayload,
           title: 'DINO 알림',
           body: '새로운 알림이 있습니다.',
-          tag: 'general'
+          tag: 'general',
         };
     }
   }
@@ -295,7 +307,7 @@ export class PushNotificationService {
     context: NotificationContext
   ): Promise<void> {
     const delay = scheduledFor.getTime() - Date.now();
-    
+
     if (delay <= 0) {
       // Send immediately if scheduled time has passed
       await this.sendNotification(subscription, payload);
@@ -314,7 +326,9 @@ export class PushNotificationService {
     } else {
       // For longer delays, store in database and use a cron job
       // This would require a database table for scheduled notifications
-      throw new Error('Long-term scheduling not implemented. Use a job queue system.');
+      throw new Error(
+        'Long-term scheduling not implemented. Use a job queue system.'
+      );
     }
   }
 
@@ -342,13 +356,13 @@ export class PushNotificationService {
       tag: 'test-notification',
       data: {
         test: true,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
 
     await this.sendNotification(subscription, testPayload, {
       TTL: 60, // 1 minute TTL for test notifications
-      urgency: 'normal'
+      urgency: 'normal',
     });
   }
 }
@@ -357,33 +371,59 @@ export class PushNotificationService {
  * Notification Template Builder
  */
 export class NotificationTemplates {
-  static visaExpiry(countryName: string, daysUntilExpiry: number, countryCode: string): NotificationContext {
+  static visaExpiry(
+    countryName: string,
+    daysUntilExpiry: number,
+    countryCode: string
+  ): NotificationContext {
     return {
       userId: '', // Will be set by the caller
       type: 'visa_expiry',
-      priority: daysUntilExpiry <= 7 ? 'critical' : daysUntilExpiry <= 30 ? 'high' : 'normal',
+      priority:
+        daysUntilExpiry <= 7
+          ? 'critical'
+          : daysUntilExpiry <= 30
+            ? 'high'
+            : 'normal',
       metadata: {
         countryName,
         daysUntilExpiry,
-        countryCode
-      }
+        countryCode,
+      },
     };
   }
 
-  static schengenWarning(daysRemaining: number, totalDaysUsed: number): NotificationContext {
+  static schengenWarning(
+    daysRemaining: number,
+    totalDaysUsed: number
+  ): NotificationContext {
     return {
       userId: '', // Will be set by the caller
       type: 'schengen_warning',
-      priority: daysRemaining <= 7 ? 'critical' : daysRemaining <= 14 ? 'high' : 'normal',
+      priority:
+        daysRemaining <= 7
+          ? 'critical'
+          : daysRemaining <= 14
+            ? 'high'
+            : 'normal',
       metadata: {
         daysRemaining,
         totalDaysUsed,
-        warningLevel: daysRemaining <= 7 ? 'critical' : daysRemaining <= 14 ? 'warning' : 'info'
-      }
+        warningLevel:
+          daysRemaining <= 7
+            ? 'critical'
+            : daysRemaining <= 14
+              ? 'warning'
+              : 'info',
+      },
     };
   }
 
-  static tripReminder(destination: string, daysUntilTrip: number, tripId: string): NotificationContext {
+  static tripReminder(
+    destination: string,
+    daysUntilTrip: number,
+    tripId: string
+  ): NotificationContext {
     return {
       userId: '', // Will be set by the caller
       type: 'trip_reminder',
@@ -391,20 +431,23 @@ export class NotificationTemplates {
       metadata: {
         destination,
         daysUntilTrip,
-        tripId
-      }
+        tripId,
+      },
     };
   }
 
-  static emailProcessed(emailCount: number, newTripsFound: number): NotificationContext {
+  static emailProcessed(
+    emailCount: number,
+    newTripsFound: number
+  ): NotificationContext {
     return {
       userId: '', // Will be set by the caller
       type: 'email_processed',
       priority: newTripsFound > 0 ? 'normal' : 'low',
       metadata: {
         emailCount,
-        newTripsFound
-      }
+        newTripsFound,
+      },
     };
   }
 
@@ -415,8 +458,8 @@ export class NotificationTemplates {
       priority: 'low',
       metadata: {
         message,
-        version
-      }
+        version,
+      },
     };
   }
 }

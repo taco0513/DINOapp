@@ -44,12 +44,14 @@ Notification System
 #### Features Overview
 
 ##### Multi-Channel Configuration
+
 - **Email Notifications**: SMTP-based email alerts
 - **Browser Push**: HTML5 push notification support
 - **In-App Alerts**: Real-time interface notifications
 - **Quiet Hours**: Do-not-disturb time period management
 
 ##### Advanced Timing Controls
+
 - **Visa Expiry Alerts**: Customizable advance warning periods
 - **Schengen Warnings**: Configurable compliance thresholds
 - **Trip Reminders**: Flexible pre-departure notifications
@@ -58,42 +60,44 @@ Notification System
 #### Data Models
 
 ##### NotificationPreferences Interface
+
 ```typescript
 interface NotificationPreferences {
-  userId: string                     // User identifier
-  email: boolean                     // Email notifications enabled
-  push: boolean                      // Browser push enabled
-  inApp: boolean                     // In-app alerts enabled
-  
+  userId: string; // User identifier
+  email: boolean; // Email notifications enabled
+  push: boolean; // Browser push enabled
+  inApp: boolean; // In-app alerts enabled
+
   // Timing configurations
-  visaExpiryDays: number[]          // Days before visa expiry [30, 7, 1]
-  schengenWarningThreshold: number  // Schengen usage warning threshold (80)
-  tripReminderDays: number[]        // Days before trip departure [7, 1]
-  
+  visaExpiryDays: number[]; // Days before visa expiry [30, 7, 1]
+  schengenWarningThreshold: number; // Schengen usage warning threshold (80)
+  tripReminderDays: number[]; // Days before trip departure [7, 1]
+
   // Quiet hours configuration
   quiet: {
-    enabled: boolean                 // Quiet hours active
-    startTime: string               // Start time (HH:MM format)
-    endTime: string                 // End time (HH:MM format)
-    timezone: string                // User timezone
-  }
-  
+    enabled: boolean; // Quiet hours active
+    startTime: string; // Start time (HH:MM format)
+    endTime: string; // End time (HH:MM format)
+    timezone: string; // User timezone
+  };
+
   // Channel-specific settings
   emailSettings: {
-    address: string                 // Primary email address
-    frequency: 'immediate' | 'daily' | 'weekly'
-    format: 'text' | 'html'
-  }
-  
+    address: string; // Primary email address
+    frequency: 'immediate' | 'daily' | 'weekly';
+    format: 'text' | 'html';
+  };
+
   pushSettings: {
-    permission: NotificationPermission
-    enableSound: boolean
-    enableVibration: boolean
-  }
+    permission: NotificationPermission;
+    enableSound: boolean;
+    enableVibration: boolean;
+  };
 }
 ```
 
 ##### Default Preferences Configuration
+
 ```typescript
 export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
   email: true,
@@ -106,24 +110,25 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
     enabled: false,
     startTime: '22:00',
     endTime: '08:00',
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
   emailSettings: {
     address: '',
     frequency: 'immediate',
-    format: 'html'
+    format: 'html',
   },
   pushSettings: {
     permission: 'default',
     enableSound: true,
-    enableVibration: true
-  }
-}
+    enableVibration: true,
+  },
+};
 ```
 
 #### UI Implementation
 
 ##### Channel Selection Interface
+
 ```typescript
 // Multi-channel notification toggle controls
 <div className="notification-channels">
@@ -134,7 +139,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
     enabled={preferences.email}
     onChange={(enabled) => updatePreference('email', enabled)}
   />
-  
+
   <ChannelToggle
     icon="🔔"
     title="브라우저 푸시 알림"
@@ -143,7 +148,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
     onChange={(enabled) => updatePreference('push', enabled)}
     requiresPermission={true}
   />
-  
+
   <ChannelToggle
     icon="📱"
     title="앱 내 알림"
@@ -155,6 +160,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
 ```
 
 ##### Timing Configuration Panel
+
 ```typescript
 // Flexible timing controls for different alert types
 <div className="timing-controls">
@@ -166,7 +172,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
     placeholder="30, 7, 1"
     validation={(days) => days.every(d => d > 0 && d <= 365)}
   />
-  
+
   <ThresholdInput
     label="셰겐 경고 기준"
     description="90일 중 사용량이 이 값을 넘으면 경고합니다"
@@ -176,7 +182,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
     max={90}
     unit="일"
   />
-  
+
   <TimingInput
     label="여행 알림"
     description="여행 출발 전 알림을 받을 일수를 설정하세요"
@@ -188,6 +194,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
 ```
 
 ##### Quiet Hours Configuration
+
 ```typescript
 // Do-not-disturb time period management
 <div className="quiet-hours-config">
@@ -199,7 +206,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
     />
     <span>방해 금지 시간 사용</span>
   </label>
-  
+
   {preferences.quiet.enabled && (
     <div className="time-range-selector">
       <TimeInput
@@ -223,6 +230,7 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
 **Purpose**: Real-time notification indicator with badge display
 
 #### Features
+
 - **Unread Count Badge**: Visual indicator of pending notifications
 - **Real-time Updates**: WebSocket-based live notification reception
 - **Priority Indicators**: Color-coded severity levels
@@ -233,23 +241,23 @@ export const DEFAULT_PREFERENCES: Omit<NotificationPreferences, 'userId'> = {
 export default function NotificationIcon() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [hasHighPriority, setHasHighPriority] = useState(false)
-  
+
   useEffect(() => {
     // WebSocket connection for real-time updates
     const ws = new WebSocket('/api/notifications/ws')
-    
+
     ws.onmessage = (event) => {
       const notification = JSON.parse(event.data)
       setUnreadCount(prev => prev + 1)
-      
+
       if (notification.priority === 'high' || notification.priority === 'critical') {
         setHasHighPriority(true)
       }
     }
-    
+
     return () => ws.close()
   }, [])
-  
+
   return (
     <div className="notification-icon" onClick={openNotificationPanel}>
       <BellIcon className={hasHighPriority ? 'urgent' : 'normal'} />
@@ -267,6 +275,7 @@ export default function NotificationIcon() {
 **Purpose**: Comprehensive notification history and management interface
 
 #### Features
+
 - **Chronological Display**: Time-ordered notification history
 - **Categorization**: Grouped by notification type
 - **Bulk Actions**: Mark all as read, bulk delete operations
@@ -278,14 +287,14 @@ export default function NotificationList() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [filter, setFilter] = useState<NotificationFilter>('all')
   const [searchQuery, setSearchQuery] = useState('')
-  
+
   const filteredNotifications = useMemo(() => {
     return notifications
       .filter(n => filter === 'all' || n.type === filter)
       .filter(n => n.title.toLowerCase().includes(searchQuery.toLowerCase()))
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [notifications, filter, searchQuery])
-  
+
   return (
     <div className="notification-list">
       <div className="list-header">
@@ -300,7 +309,7 @@ export default function NotificationList() {
           onChange={setFilter}
         />
       </div>
-      
+
       <div className="notification-items">
         {filteredNotifications.map(notification => (
           <NotificationItem
@@ -324,11 +333,12 @@ export default function NotificationList() {
 **Purpose**: Automated notification scheduling and delivery coordination
 
 #### Core Scheduling Logic
+
 ```typescript
 export class NotificationScheduler {
-  private scheduleQueue: Map<string, ScheduledNotification> = new Map()
-  private processingInterval: NodeJS.Timeout | null = null
-  
+  private scheduleQueue: Map<string, ScheduledNotification> = new Map();
+  private processingInterval: NodeJS.Timeout | null = null;
+
   // Schedule notification based on user preferences and alert type
   public scheduleNotification(
     userId: string,
@@ -336,21 +346,21 @@ export class NotificationScheduler {
     triggerDate: Date,
     context: NotificationContext
   ): string {
-    const preferences = this.getUserPreferences(userId)
+    const preferences = this.getUserPreferences(userId);
     const notifications = this.generateNotificationSchedule(
-      type, 
-      triggerDate, 
-      preferences, 
+      type,
+      triggerDate,
+      preferences,
       context
-    )
-    
+    );
+
     notifications.forEach(notification => {
-      this.scheduleQueue.set(notification.id, notification)
-    })
-    
-    return notifications[0].id
+      this.scheduleQueue.set(notification.id, notification);
+    });
+
+    return notifications[0].id;
   }
-  
+
   // Generate multiple notifications based on user timing preferences
   private generateNotificationSchedule(
     type: NotificationType,
@@ -358,14 +368,14 @@ export class NotificationScheduler {
     preferences: NotificationPreferences,
     context: NotificationContext
   ): ScheduledNotification[] {
-    const schedule: ScheduledNotification[] = []
-    
+    const schedule: ScheduledNotification[] = [];
+
     switch (type) {
       case 'visa_expiry':
         preferences.visaExpiryDays.forEach(days => {
-          const scheduledTime = new Date(triggerDate)
-          scheduledTime.setDate(scheduledTime.getDate() - days)
-          
+          const scheduledTime = new Date(triggerDate);
+          scheduledTime.setDate(scheduledTime.getDate() - days);
+
           schedule.push({
             id: generateNotificationId(),
             userId: preferences.userId,
@@ -373,11 +383,11 @@ export class NotificationScheduler {
             scheduledTime,
             context: { ...context, daysUntilExpiry: days },
             channels: this.getEnabledChannels(preferences),
-            priority: this.calculatePriority(days, type)
-          })
-        })
-        break
-        
+            priority: this.calculatePriority(days, type),
+          });
+        });
+        break;
+
       case 'schengen_warning':
         // Schedule immediate notification for Schengen compliance issues
         schedule.push({
@@ -387,15 +397,15 @@ export class NotificationScheduler {
           scheduledTime: new Date(),
           context,
           channels: this.getEnabledChannels(preferences),
-          priority: 'high'
-        })
-        break
-        
+          priority: 'high',
+        });
+        break;
+
       case 'trip_reminder':
         preferences.tripReminderDays.forEach(days => {
-          const scheduledTime = new Date(triggerDate)
-          scheduledTime.setDate(scheduledTime.getDate() - days)
-          
+          const scheduledTime = new Date(triggerDate);
+          scheduledTime.setDate(scheduledTime.getDate() - days);
+
           schedule.push({
             id: generateNotificationId(),
             userId: preferences.userId,
@@ -403,30 +413,31 @@ export class NotificationScheduler {
             scheduledTime,
             context: { ...context, daysUntilTrip: days },
             channels: this.getEnabledChannels(preferences),
-            priority: days <= 1 ? 'high' : 'medium'
-          })
-        })
-        break
+            priority: days <= 1 ? 'high' : 'medium',
+          });
+        });
+        break;
     }
-    
-    return schedule.filter(n => this.isWithinQuietHours(n, preferences))
+
+    return schedule.filter(n => this.isWithinQuietHours(n, preferences));
   }
-  
+
   // Process scheduled notifications
   public startProcessing(): void {
     this.processingInterval = setInterval(() => {
-      this.processScheduledNotifications()
-    }, 60000) // Check every minute
+      this.processScheduledNotifications();
+    }, 60000); // Check every minute
   }
-  
+
   private async processScheduledNotifications(): Promise<void> {
-    const now = new Date()
-    const dueNotifications = Array.from(this.scheduleQueue.values())
-      .filter(n => n.scheduledTime <= now)
-    
+    const now = new Date();
+    const dueNotifications = Array.from(this.scheduleQueue.values()).filter(
+      n => n.scheduledTime <= now
+    );
+
     for (const notification of dueNotifications) {
-      await this.deliverNotification(notification)
-      this.scheduleQueue.delete(notification.id)
+      await this.deliverNotification(notification);
+      this.scheduleQueue.delete(notification.id);
     }
   }
 }
@@ -438,42 +449,45 @@ export class NotificationScheduler {
 
 ```typescript
 export class NotificationTemplateEngine {
-  private templates: Map<string, NotificationTemplate> = new Map()
-  
+  private templates: Map<string, NotificationTemplate> = new Map();
+
   constructor() {
-    this.loadTemplates()
+    this.loadTemplates();
   }
-  
+
   // Generate notification content based on type and context
   public generateNotification(
     type: NotificationType,
     context: NotificationContext,
     locale: string = 'ko'
   ): NotificationContent {
-    const template = this.templates.get(`${type}_${locale}`)
+    const template = this.templates.get(`${type}_${locale}`);
     if (!template) {
-      throw new Error(`Template not found: ${type}_${locale}`)
+      throw new Error(`Template not found: ${type}_${locale}`);
     }
-    
+
     return {
       title: this.processTemplate(template.title, context),
       body: this.processTemplate(template.body, context),
       actions: template.actions?.map(action => ({
         ...action,
-        title: this.processTemplate(action.title, context)
+        title: this.processTemplate(action.title, context),
       })),
       icon: template.icon,
       badge: template.badge,
-      tag: `${type}_${context.userId}`
-    }
+      tag: `${type}_${context.userId}`,
+    };
   }
-  
-  private processTemplate(template: string, context: NotificationContext): string {
+
+  private processTemplate(
+    template: string,
+    context: NotificationContext
+  ): string {
     return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-      return context[key]?.toString() || match
-    })
+      return context[key]?.toString() || match;
+    });
   }
-  
+
   private loadTemplates(): void {
     // Visa expiry notification templates
     this.templates.set('visa_expiry_ko', {
@@ -483,10 +497,10 @@ export class NotificationTemplateEngine {
       badge: '/icons/badge.png',
       actions: [
         { action: 'view', title: '자세히 보기' },
-        { action: 'dismiss', title: '무시' }
-      ]
-    })
-    
+        { action: 'dismiss', title: '무시' },
+      ],
+    });
+
     // Schengen compliance warning templates
     this.templates.set('schengen_warning_ko', {
       title: '셰겐 체류 한도 경고',
@@ -495,10 +509,10 @@ export class NotificationTemplateEngine {
       badge: '/icons/badge.png',
       actions: [
         { action: 'calculator', title: '계산기 열기' },
-        { action: 'dismiss', title: '확인' }
-      ]
-    })
-    
+        { action: 'dismiss', title: '확인' },
+      ],
+    });
+
     // Trip reminder templates
     this.templates.set('trip_reminder_ko', {
       title: '여행 일정 알림',
@@ -507,9 +521,9 @@ export class NotificationTemplateEngine {
       badge: '/icons/badge.png',
       actions: [
         { action: 'checklist', title: '준비사항 확인' },
-        { action: 'dismiss', title: '확인' }
-      ]
-    })
+        { action: 'dismiss', title: '확인' },
+      ],
+    });
   }
 }
 ```
@@ -520,71 +534,91 @@ export class NotificationTemplateEngine {
 
 ```typescript
 export class NotificationChannelManager {
-  private channels: Map<string, NotificationChannel> = new Map()
-  
+  private channels: Map<string, NotificationChannel> = new Map();
+
   constructor() {
-    this.initializeChannels()
+    this.initializeChannels();
   }
-  
+
   // Deliver notification through all enabled channels
   public async deliverNotification(
     notification: ScheduledNotification,
     content: NotificationContent
   ): Promise<DeliveryResult[]> {
-    const results: DeliveryResult[] = []
-    
+    const results: DeliveryResult[] = [];
+
     for (const channelType of notification.channels) {
-      const channel = this.channels.get(channelType)
+      const channel = this.channels.get(channelType);
       if (channel) {
         try {
-          const result = await channel.send(notification, content)
-          results.push(result)
-          
+          const result = await channel.send(notification, content);
+          results.push(result);
+
           // Log successful delivery
-          await this.logDelivery(notification.id, channelType, 'success', result)
+          await this.logDelivery(
+            notification.id,
+            channelType,
+            'success',
+            result
+          );
         } catch (error) {
           // Log failed delivery and attempt fallback
-          await this.logDelivery(notification.id, channelType, 'failed', { error })
-          
+          await this.logDelivery(notification.id, channelType, 'failed', {
+            error,
+          });
+
           // Attempt fallback channel if available
-          const fallbackResult = await this.attemptFallback(notification, content, channelType)
+          const fallbackResult = await this.attemptFallback(
+            notification,
+            content,
+            channelType
+          );
           if (fallbackResult) {
-            results.push(fallbackResult)
+            results.push(fallbackResult);
           }
         }
       }
     }
-    
-    return results
+
+    return results;
   }
-  
+
   private initializeChannels(): void {
     // Email notification channel
-    this.channels.set('email', new EmailNotificationChannel({
-      smtp: {
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: false,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS
-        }
-      }
-    }))
-    
+    this.channels.set(
+      'email',
+      new EmailNotificationChannel({
+        smtp: {
+          host: process.env.SMTP_HOST,
+          port: parseInt(process.env.SMTP_PORT || '587'),
+          secure: false,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        },
+      })
+    );
+
     // Browser push notification channel
-    this.channels.set('push', new PushNotificationChannel({
-      vapidKeys: {
-        publicKey: process.env.VAPID_PUBLIC_KEY!,
-        privateKey: process.env.VAPID_PRIVATE_KEY!
-      },
-      contact: process.env.VAPID_CONTACT!
-    }))
-    
+    this.channels.set(
+      'push',
+      new PushNotificationChannel({
+        vapidKeys: {
+          publicKey: process.env.VAPID_PUBLIC_KEY!,
+          privateKey: process.env.VAPID_PRIVATE_KEY!,
+        },
+        contact: process.env.VAPID_CONTACT!,
+      })
+    );
+
     // In-app notification channel
-    this.channels.set('inApp', new InAppNotificationChannel({
-      websocketServer: this.websocketServer
-    }))
+    this.channels.set(
+      'inApp',
+      new InAppNotificationChannel({
+        websocketServer: this.websocketServer,
+      })
+    );
   }
 }
 ```
@@ -597,36 +631,36 @@ export class NotificationChannelManager {
 
 ```typescript
 export class EmailNotificationChannel implements NotificationChannel {
-  private transporter: nodemailer.Transporter
-  
+  private transporter: nodemailer.Transporter;
+
   constructor(config: EmailChannelConfig) {
-    this.transporter = nodemailer.createTransporter(config.smtp)
+    this.transporter = nodemailer.createTransporter(config.smtp);
   }
-  
+
   public async send(
     notification: ScheduledNotification,
     content: NotificationContent
   ): Promise<DeliveryResult> {
-    const user = await this.getUserData(notification.userId)
-    
+    const user = await this.getUserData(notification.userId);
+
     const emailContent = {
       from: process.env.FROM_EMAIL,
       to: user.email,
       subject: content.title,
       html: this.generateHTMLEmail(content, notification),
-      text: this.generatePlainTextEmail(content, notification)
-    }
-    
-    const result = await this.transporter.sendMail(emailContent)
-    
+      text: this.generatePlainTextEmail(content, notification),
+    };
+
+    const result = await this.transporter.sendMail(emailContent);
+
     return {
       channel: 'email',
       status: 'delivered',
       messageId: result.messageId,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
   }
-  
+
   private generateHTMLEmail(
     content: NotificationContent,
     notification: ScheduledNotification
@@ -662,7 +696,7 @@ export class EmailNotificationChannel implements NotificationChannel {
           </div>
         </body>
       </html>
-    `
+    `;
   }
 }
 ```
@@ -673,24 +707,26 @@ export class EmailNotificationChannel implements NotificationChannel {
 
 ```typescript
 export class PushNotificationChannel implements NotificationChannel {
-  private vapidKeys: VapidKeys
-  
+  private vapidKeys: VapidKeys;
+
   constructor(config: PushChannelConfig) {
-    this.vapidKeys = config.vapidKeys
+    this.vapidKeys = config.vapidKeys;
     webpush.setVapidDetails(
       config.contact,
       config.vapidKeys.publicKey,
       config.vapidKeys.privateKey
-    )
+    );
   }
-  
+
   public async send(
     notification: ScheduledNotification,
     content: NotificationContent
   ): Promise<DeliveryResult> {
-    const subscriptions = await this.getUserPushSubscriptions(notification.userId)
-    const results: DeliveryResult[] = []
-    
+    const subscriptions = await this.getUserPushSubscriptions(
+      notification.userId
+    );
+    const results: DeliveryResult[] = [];
+
     for (const subscription of subscriptions) {
       try {
         await webpush.sendNotification(
@@ -705,33 +741,33 @@ export class PushNotificationChannel implements NotificationChannel {
             data: {
               notificationId: notification.id,
               type: notification.type,
-              url: this.generateNotificationUrl(notification)
-            }
+              url: this.generateNotificationUrl(notification),
+            },
           })
-        )
-        
+        );
+
         results.push({
           channel: 'push',
           status: 'delivered',
           endpoint: subscription.endpoint,
-          timestamp: new Date()
-        })
+          timestamp: new Date(),
+        });
       } catch (error) {
         // Handle invalid subscriptions
         if (error.statusCode === 410) {
-          await this.removeInvalidSubscription(subscription)
+          await this.removeInvalidSubscription(subscription);
         }
-        
+
         results.push({
           channel: 'push',
           status: 'failed',
           error: error.message,
-          timestamp: new Date()
-        })
+          timestamp: new Date(),
+        });
       }
     }
-    
-    return results[0] // Return first result for simplicity
+
+    return results[0]; // Return first result for simplicity
   }
 }
 ```
@@ -744,23 +780,23 @@ export class PushNotificationChannel implements NotificationChannel {
 
 ```typescript
 export class VisaExpirationAlertManager {
-  private scheduler: NotificationScheduler
-  
+  private scheduler: NotificationScheduler;
+
   // Monitor all user visas and schedule alerts
   public async monitorVisaExpirations(): Promise<void> {
-    const users = await this.getAllUsers()
-    
+    const users = await this.getAllUsers();
+
     for (const user of users) {
-      const visas = await this.getUserVisas(user.id)
-      
+      const visas = await this.getUserVisas(user.id);
+
       for (const visa of visas) {
         if (visa.expiryDate) {
-          await this.scheduleVisaExpirationAlerts(user.id, visa)
+          await this.scheduleVisaExpirationAlerts(user.id, visa);
         }
       }
     }
   }
-  
+
   private async scheduleVisaExpirationAlerts(
     userId: string,
     visa: VisaRecord
@@ -770,15 +806,15 @@ export class VisaExpirationAlertManager {
       country: visa.country,
       visaType: visa.type,
       expiryDate: visa.expiryDate.toISOString(),
-      passportNumber: visa.passportNumber
-    }
-    
+      passportNumber: visa.passportNumber,
+    };
+
     await this.scheduler.scheduleNotification(
       userId,
       'visa_expiry',
       visa.expiryDate,
       context
-    )
+    );
   }
 }
 ```
@@ -789,26 +825,26 @@ export class VisaExpirationAlertManager {
 
 ```typescript
 export class SchengenComplianceAlertManager {
-  private schengenCalculator: SchengenCalculator
-  
+  private schengenCalculator: SchengenCalculator;
+
   // Check compliance for all users and trigger alerts
   public async checkSchengenCompliance(): Promise<void> {
-    const users = await this.getAllUsers()
-    
+    const users = await this.getAllUsers();
+
     for (const user of users) {
-      const visits = await this.getUserSchengenVisits(user.id)
-      const compliance = this.schengenCalculator.calculateCompliance(visits)
-      
-      await this.evaluateComplianceAlerts(user.id, compliance)
+      const visits = await this.getUserSchengenVisits(user.id);
+      const compliance = this.schengenCalculator.calculateCompliance(visits);
+
+      await this.evaluateComplianceAlerts(user.id, compliance);
     }
   }
-  
+
   private async evaluateComplianceAlerts(
     userId: string,
     compliance: SchengenComplianceResult
   ): Promise<void> {
-    const preferences = await this.getUserPreferences(userId)
-    
+    const preferences = await this.getUserPreferences(userId);
+
     // Check if user has exceeded warning threshold
     if (compliance.daysUsed >= preferences.schengenWarningThreshold) {
       const context: NotificationContext = {
@@ -816,15 +852,15 @@ export class SchengenComplianceAlertManager {
         usedDays: compliance.daysUsed,
         remainingDays: compliance.remainingDays,
         nextResetDate: compliance.nextResetDate.toISOString(),
-        complianceStatus: compliance.status
-      }
-      
+        complianceStatus: compliance.status,
+      };
+
       await this.scheduler.scheduleNotification(
         userId,
         'schengen_warning',
         new Date(),
         context
-      )
+      );
     }
   }
 }
@@ -833,61 +869,66 @@ export class SchengenComplianceAlertManager {
 ## Performance and Optimization
 
 ### Batch Processing
+
 ```typescript
 // Process notifications in batches for better performance
 export class BatchNotificationProcessor {
-  private batchSize = 100
-  private processingQueue: ScheduledNotification[] = []
-  
+  private batchSize = 100;
+  private processingQueue: ScheduledNotification[] = [];
+
   public async processBatch(): Promise<void> {
-    const batch = this.processingQueue.splice(0, this.batchSize)
-    
+    const batch = this.processingQueue.splice(0, this.batchSize);
+
     // Process notifications in parallel with concurrency limit
     await Promise.allSettled(
       batch.map(notification => this.processNotification(notification))
-    )
+    );
   }
 }
 ```
 
 ### Caching Strategy
+
 ```typescript
 // Cache user preferences to reduce database queries
-const preferenceCache = new Map<string, NotificationPreferences>()
+const preferenceCache = new Map<string, NotificationPreferences>();
 
-export const getCachedPreferences = async (userId: string): Promise<NotificationPreferences> => {
+export const getCachedPreferences = async (
+  userId: string
+): Promise<NotificationPreferences> => {
   if (preferenceCache.has(userId)) {
-    return preferenceCache.get(userId)!
+    return preferenceCache.get(userId)!;
   }
-  
-  const preferences = await loadUserPreferences(userId)
-  preferenceCache.set(userId, preferences)
-  
+
+  const preferences = await loadUserPreferences(userId);
+  preferenceCache.set(userId, preferences);
+
   // Cache for 10 minutes
-  setTimeout(() => preferenceCache.delete(userId), 10 * 60 * 1000)
-  
-  return preferences
-}
+  setTimeout(() => preferenceCache.delete(userId), 10 * 60 * 1000);
+
+  return preferences;
+};
 ```
 
 ### Rate Limiting
+
 ```typescript
 // Prevent notification spam with intelligent rate limiting
 export class NotificationRateLimiter {
-  private limits = new Map<string, number>()
-  
+  private limits = new Map<string, number>();
+
   public canSendNotification(userId: string, type: NotificationType): boolean {
-    const key = `${userId}:${type}`
-    const now = Date.now()
-    const lastSent = this.limits.get(key) || 0
-    
+    const key = `${userId}:${type}`;
+    const now = Date.now();
+    const lastSent = this.limits.get(key) || 0;
+
     // Minimum 1 hour between similar notifications
     if (now - lastSent < 60 * 60 * 1000) {
-      return false
+      return false;
     }
-    
-    this.limits.set(key, now)
-    return true
+
+    this.limits.set(key, now);
+    return true;
   }
 }
 ```
@@ -895,12 +936,14 @@ export class NotificationRateLimiter {
 ## Security and Privacy
 
 ### Data Protection
+
 - **Minimal Data Storage**: Only essential notification metadata stored
 - **Encryption**: Sensitive notification content encrypted at rest
 - **Access Control**: User-specific notification isolation
 - **Audit Logging**: Comprehensive delivery tracking
 
 ### Privacy Controls
+
 - **Opt-out Mechanisms**: Easy unsubscribe for all notification types
 - **Data Retention**: Automatic cleanup of old notifications
 - **Consent Management**: Explicit consent for push notifications

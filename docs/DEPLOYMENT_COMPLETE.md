@@ -3,25 +3,30 @@
 ## ✅ 완료된 작업
 
 ### 1. 배포 문서 및 가이드
+
 - **PRODUCTION_DEPLOYMENT_CHECKLIST.md**: 프로덕션 배포를 위한 포괄적인 체크리스트
 - **VERCEL_DEPLOYMENT_GUIDE.md**: Vercel 배포 단계별 가이드
 - **.env.production.example**: 프로덕션 환경 변수 템플릿
 
 ### 2. 배포 스크립트
+
 - **migrate-production.sh**: 프로덕션 데이터베이스 마이그레이션 스크립트
 - **deploy.sh**: 다중 플랫폼 배포 지원 스크립트 (Docker, Vercel, Railway, Netlify)
 - **docker-entrypoint.sh**: Docker 컨테이너 시작 스크립트
 
 ### 3. GitHub Actions CI/CD
+
 - **.github/workflows/deploy.yml**: 메인 브랜치 자동 프로덕션 배포
 - **.github/workflows/preview.yml**: PR 자동 프리뷰 배포
 
 ### 4. Docker 설정
+
 - **Dockerfile**: 멀티스테이지 빌드로 최적화된 프로덕션 이미지
 - **docker-compose.yml**: PostgreSQL과 Redis를 포함한 전체 스택 구성
 - **.dockerignore**: 불필요한 파일 제외
 
 ### 5. Vercel 설정
+
 - **vercel.json**: 최적화된 Vercel 배포 설정
   - 리전 설정 (icn1 - 서울)
   - 함수 타임아웃 설정
@@ -29,10 +34,13 @@
   - CSP 정책 설정
 
 ### 6. 헬스체크 API
+
 - **/api/health**: 프로덕션 모니터링을 위한 헬스체크 엔드포인트
 
 ### 7. Package.json 스크립트
+
 추가된 배포 관련 스크립트:
+
 - `deploy`: Vercel 기본 배포
 - `deploy:preview`: 프리뷰 배포
 - `deploy:production`: 프로덕션 배포
@@ -46,6 +54,7 @@
 ### 즉시 실행 가능한 작업:
 
 1. **Vercel 프로젝트 생성**
+
    ```bash
    npm i -g vercel
    vercel
@@ -77,6 +86,7 @@
 ## 🎯 완료된 Epic
 
 **deployment_setup** 태스크가 완료되었습니다:
+
 - ✅ Vercel 배포 환경 구성
 - ✅ 환경 변수 설정 가이드
 - ✅ 도메인 및 SSL 구성 (Vercel 자동)

@@ -1,70 +1,73 @@
-import { NextRequest } from 'next/server'
+import { NextRequest } from 'next/server';
 
 // Rate limiting store (in production, use Redis or similar)
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 export interface RateLimitConfig {
-  windowMs: number // Time window in milliseconds
-  maxRequests: number // Maximum requests per window
+  windowMs: number; // Time window in milliseconds
+  maxRequests: number; // Maximum requests per window
 }
 
 // Default rate limit: 100 requests per 15 minutes
 export const DEFAULT_RATE_LIMIT: RateLimitConfig = {
   windowMs: 15 * 60 * 1000, // 15 minutes
-  maxRequests: 100
-}
+  maxRequests: 100,
+};
 
 // Strict rate limit for sensitive operations: 10 requests per 5 minutes
 export const STRICT_RATE_LIMIT: RateLimitConfig = {
   windowMs: 5 * 60 * 1000, // 5 minutes
-  maxRequests: 10
-}
+  maxRequests: 10,
+};
 
 /**
  * Rate limiting middleware
  */
-export function checkRateLimit(request: NextRequest, config: RateLimitConfig = DEFAULT_RATE_LIMIT): boolean {
-  const ip = getClientIP(request)
-  const key = `rate_limit:${ip}`
-  const now = Date.now()
-  
-  const existing = rateLimitStore.get(key)
-  
+export function checkRateLimit(
+  request: NextRequest,
+  config: RateLimitConfig = DEFAULT_RATE_LIMIT
+): boolean {
+  const ip = getClientIP(request);
+  const key = `rate_limit:${ip}`;
+  const now = Date.now();
+
+  const existing = rateLimitStore.get(key);
+
   if (!existing || now > existing.resetTime) {
     // Reset window
     rateLimitStore.set(key, {
       count: 1,
-      resetTime: now + config.windowMs
-    })
-    return true
+      resetTime: now + config.windowMs,
+    });
+    return true;
   }
-  
+
   if (existing.count >= config.maxRequests) {
-    return false // Rate limit exceeded
+    return false; // Rate limit exceeded
   }
-  
+
   // Increment count
-  existing.count += 1
-  rateLimitStore.set(key, existing)
-  return true
+  existing.count += 1;
+  rateLimitStore.set(key, existing);
+  return true;
 }
 
 /**
  * Extract client IP address
  */
 export function getClientIP(request: NextRequest): string {
-  const xForwardedFor = request.headers.get('x-forwarded-for')
-  const xRealIP = request.headers.get('x-real-ip')
-  
+  const xForwardedFor = request.headers.get('x-forwarded-for');
+  const xRealIP = request.headers.get('x-real-ip');
+
   if (xForwardedFor) {
-    return xForwardedFor.split(',')[0].trim()
+    return xForwardedFor.split(',')[0].trim();
   }
-  
+
   if (xRealIP) {
-    return xRealIP
+    return xRealIP;
   }
-  
-  return request.ip || 'unknown'
+
+  return request.ip || 'unknown';
 }
 
 /**
@@ -72,11 +75,11 @@ export function getClientIP(request: NextRequest): string {
  */
 export function sanitizeHTML(input: string): string {
   if (typeof input !== 'string') {
-    return ''
+    return '';
   }
-  
+
   // Remove all HTML tags
-  return input.replace(/<[^>]*>/g, '')
+  return input.replace(/<[^>]*>/g, '');
 }
 
 /**
@@ -84,44 +87,50 @@ export function sanitizeHTML(input: string): string {
  */
 export function sanitizeText(input: unknown, maxLength: number = 1000): string {
   if (typeof input !== 'string') {
-    return ''
+    return '';
   }
-  
+
   // Remove dangerous characters and limit length
   const sanitized = input
     .replace(/[<>\"'&]/g, '') // Remove HTML/SQL injection chars
     .replace(/javascript:/gi, '') // Remove javascript: protocol
     .replace(/on\w+=/gi, '') // Remove event handlers
     .trim()
-    .slice(0, maxLength)
-  
-  return sanitized
+    .slice(0, maxLength);
+
+  return sanitized;
 }
 
 /**
  * Validate request content type
  */
-export function validateContentType(request: NextRequest, allowedTypes: string[] = ['application/json']): boolean {
-  const contentType = request.headers.get('content-type')
-  
+export function validateContentType(
+  request: NextRequest,
+  allowedTypes: string[] = ['application/json']
+): boolean {
+  const contentType = request.headers.get('content-type');
+
   if (!contentType) {
-    return false
+    return false;
   }
-  
-  return allowedTypes.some(type => contentType.includes(type))
+
+  return allowedTypes.some(type => contentType.includes(type));
 }
 
 /**
  * Check request size limit
  */
-export function checkRequestSize(request: NextRequest, maxSizeBytes: number = 1024 * 1024): boolean {
-  const contentLength = request.headers.get('content-length')
-  
+export function checkRequestSize(
+  request: NextRequest,
+  maxSizeBytes: number = 1024 * 1024
+): boolean {
+  const contentLength = request.headers.get('content-length');
+
   if (!contentLength) {
-    return true // Allow requests without content-length
+    return true; // Allow requests without content-length
   }
-  
-  return parseInt(contentLength) <= maxSizeBytes
+
+  return parseInt(contentLength) <= maxSizeBytes;
 }
 
 /**
@@ -132,9 +141,9 @@ export const securityHeaders = {
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
   'Cache-Control': 'private, no-cache, no-store, must-revalidate',
-  'Pragma': 'no-cache',
-  'Expires': '0'
-}
+  Pragma: 'no-cache',
+  Expires: '0',
+};
 
 /**
  * Validate and sanitize trip data
@@ -145,18 +154,25 @@ export function sanitizeTripData(data: any) {
     entryDate: data.entryDate, // Date validation handled by Zod
     exitDate: data.exitDate,
     visaType: sanitizeText(data.visaType, 50),
-    maxDays: typeof data.maxDays === 'number' ? Math.max(1, Math.min(365, data.maxDays)) : 30,
+    maxDays:
+      typeof data.maxDays === 'number'
+        ? Math.max(1, Math.min(365, data.maxDays))
+        : 30,
     passportCountry: sanitizeText(data.passportCountry, 10),
-    notes: data.notes ? sanitizeHTML(data.notes).slice(0, 2000) : null
-  }
+    notes: data.notes ? sanitizeHTML(data.notes).slice(0, 2000) : null,
+  };
 }
 
 /**
  * Log security events
  */
-export function logSecurityEvent(event: string, details: any, request: NextRequest) {
-  const ip = getClientIP(request)
-  const userAgent = request.headers.get('user-agent') || 'unknown'
-  
+export function logSecurityEvent(
+  event: string,
+  details: any,
+  request: NextRequest
+) {
+  const ip = getClientIP(request);
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+
   // Security event logged
 }

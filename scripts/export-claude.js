@@ -379,13 +379,13 @@ Remember: DiNoCal은 실제 사용자의 법적 준수를 돕는 프로덕션 �
 const updatePackageJson = () => {
   const packagePath = path.join(projectRoot, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-  
+
   packageJson.type = 'module';
   packageJson.scripts = {
     ...packageJson.scripts,
-    'export-claude': 'node scripts/export-claude.js'
+    'export-claude': 'node scripts/export-claude.js',
   };
-  
+
   fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
   console.log('✓ package.json updated with ES module support');
 };
@@ -393,19 +393,18 @@ const updatePackageJson = () => {
 // 메인 실행 함수
 const main = () => {
   console.log('🚀 Generating Claude Code files for DiNoCal project...\n');
-  
+
   try {
     updatePackageJson();
     createPlanningFile();
     createTasksFile();
     createClaudeFile();
-    
+
     console.log('\n✅ All files generated successfully!');
     console.log('\nNext steps:');
     console.log('1. Files are ready for Claude Code CLI');
     console.log('2. Load files: planning.md, claude.md, tasks.md');
     console.log('3. Start development with first task from Epic 1');
-    
   } catch (error) {
     console.error('❌ Error generating files:', error);
     process.exit(1);
@@ -417,4 +416,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { createPlanningFile, createTasksFile, createClaudeFile, updatePackageJson };
+export {
+  createPlanningFile,
+  createTasksFile,
+  createClaudeFile,
+  updatePackageJson,
+};

@@ -4,12 +4,24 @@
  */
 
 import { Trip, User, Country } from '@prisma/client';
-import { differenceInDays, format, startOfYear, endOfYear, startOfMonth, endOfMonth } from 'date-fns';
+import {
+  differenceInDays,
+  format,
+  startOfYear,
+  endOfYear,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns';
 
 export interface TravelPattern {
   id: string;
   userId: string;
-  patternType: 'seasonal' | 'regional' | 'visa_optimization' | 'nomad_circuit' | 'business_travel';
+  patternType:
+    | 'seasonal'
+    | 'regional'
+    | 'visa_optimization'
+    | 'nomad_circuit'
+    | 'business_travel';
   confidence: number; // 0-1
   description: string;
   countries: string[];
@@ -21,7 +33,12 @@ export interface TravelPattern {
 
 export interface TravelInsight {
   id: string;
-  type: 'cost_optimization' | 'visa_efficiency' | 'travel_timing' | 'destination_suggestion' | 'risk_alert';
+  type:
+    | 'cost_optimization'
+    | 'visa_efficiency'
+    | 'travel_timing'
+    | 'destination_suggestion'
+    | 'risk_alert';
   priority: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   description: string;
@@ -45,27 +62,27 @@ export interface TravelStats {
   shortestTrip: number;
   mostVisitedCountry: string;
   travelFrequency: number; // trips per month
-  
+
   // Schengen specific
   schengenDaysUsed: number;
   schengenDaysRemaining: number;
   schengenEfficiency: number; // 0-1
-  
+
   // Visa analysis
   visaFreeCountries: number;
   visaRequiredCountries: number;
   eVisaCountries: number;
   visaOnArrivalCountries: number;
-  
+
   // Cost analysis
   estimatedVisaCosts: number;
   averageCostPerTrip: number;
   costEfficiencyScore: number;
-  
+
   // Timing patterns
   peakTravelMonths: number[];
   offSeasonMonths: number[];
-  
+
   // Risk factors
   riskScore: number; // 0-1
   riskFactors: string[];
@@ -123,31 +140,52 @@ export class TravelAnalyticsEngine {
     }
 
     const totalTrips = trips.length;
-    const totalDays = trips.reduce((sum, trip) => 
-      sum + differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1, 0
+    const totalDays = trips.reduce(
+      (sum, trip) =>
+        sum +
+        differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) +
+        1,
+      0
     );
 
-    const durations = trips.map(trip => 
-      differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1
+    const durations = trips.map(
+      trip =>
+        differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1
     );
 
     const countries = [...new Set(trips.map(trip => trip.country))];
     const countryVisits = this.countryVisitFrequency(trips);
-    const mostVisitedCountry = Object.entries(countryVisits)
-      .sort(([,a], [,b]) => b - a)[0]?.[0] || '';
+    const mostVisitedCountry =
+      Object.entries(countryVisits).sort(([, a], [, b]) => b - a)[0]?.[0] || '';
 
     // Schengen analysis
-    const schengenCountries = ['DE', 'FR', 'ES', 'IT', 'NL', 'AT', 'BE', 'PT', 'CH', 'GR'];
-    const schengenTrips = trips.filter(trip => schengenCountries.includes(trip.country));
+    const schengenCountries = [
+      'DE',
+      'FR',
+      'ES',
+      'IT',
+      'NL',
+      'AT',
+      'BE',
+      'PT',
+      'CH',
+      'GR',
+    ];
+    const schengenTrips = trips.filter(trip =>
+      schengenCountries.includes(trip.country)
+    );
     const schengenAnalysis = this.calculateSchengenUsage(schengenTrips);
 
     // Visa analysis
-    const visaAnalysis = await this.analyzeVisaRequirements(trips, userPassportCountry);
+    const visaAnalysis = await this.analyzeVisaRequirements(
+      trips,
+      userPassportCountry
+    );
 
     // Timing patterns
     const monthlyDistribution = this.calculateMonthlyDistribution(trips);
     const peakMonths = Object.entries(monthlyDistribution)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
       .map(([month]) => parseInt(month));
 
@@ -163,32 +201,35 @@ export class TravelAnalyticsEngine {
       shortestTrip: Math.min(...durations),
       mostVisitedCountry,
       travelFrequency: this.calculateTravelFrequency(trips),
-      
+
       schengenDaysUsed: schengenAnalysis.daysUsed,
       schengenDaysRemaining: Math.max(0, 90 - schengenAnalysis.daysUsed),
       schengenEfficiency: schengenAnalysis.efficiency,
-      
+
       visaFreeCountries: visaAnalysis.visaFree,
       visaRequiredCountries: visaAnalysis.visaRequired,
       eVisaCountries: visaAnalysis.eVisa,
       visaOnArrivalCountries: visaAnalysis.visaOnArrival,
-      
+
       estimatedVisaCosts: visaAnalysis.totalCosts,
       averageCostPerTrip: visaAnalysis.totalCosts / totalTrips,
       costEfficiencyScore: visaAnalysis.efficiencyScore,
-      
+
       peakTravelMonths: peakMonths,
       offSeasonMonths: this.getOffSeasonMonths(peakMonths),
-      
+
       riskScore: riskAssessment.score,
-      riskFactors: riskAssessment.factors
+      riskFactors: riskAssessment.factors,
     };
   }
 
   /**
    * Detect travel patterns using ML-like algorithms
    */
-  async detectTravelPatterns(trips: Trip[], userId: string): Promise<TravelPattern[]> {
+  async detectTravelPatterns(
+    trips: Trip[],
+    userId: string
+  ): Promise<TravelPattern[]> {
     const patterns: TravelPattern[] = [];
 
     // Seasonal patterns
@@ -221,7 +262,11 @@ export class TravelAnalyticsEngine {
       patterns.push(businessPattern);
     }
 
-    return patterns.map(pattern => ({ ...pattern, userId, lastDetected: new Date() }));
+    return patterns.map(pattern => ({
+      ...pattern,
+      userId,
+      lastDetected: new Date(),
+    }));
   }
 
   /**
@@ -246,15 +291,15 @@ export class TravelAnalyticsEngine {
         actionItems: [
           '비자프리 국가 목록 확인하기',
           '여행 루트 최적화로 비자 비용 줄이기',
-          '장기 체류 비자 고려하기'
+          '장기 체류 비자 고려하기',
         ],
         potentialSavings: {
           amount: Math.round(stats.estimatedVisaCosts * 0.3),
           currency: 'USD',
-          type: 'money'
+          type: 'money',
         },
         data: { currentCost: stats.estimatedVisaCosts },
-        createdAt: now
+        createdAt: now,
       });
     }
 
@@ -269,19 +314,21 @@ export class TravelAnalyticsEngine {
         actionItems: [
           '셰겐 외 유럽 국가 방문 고려',
           '체류 기간 최적화',
-          '90일 한도 활용 극대화'
+          '90일 한도 활용 극대화',
         ],
-        data: { 
+        data: {
           currentEfficiency: stats.schengenEfficiency,
           daysUsed: stats.schengenDaysUsed,
-          daysRemaining: stats.schengenDaysRemaining
+          daysRemaining: stats.schengenDaysRemaining,
         },
-        createdAt: now
+        createdAt: now,
       });
     }
 
     // Travel timing insights
-    const upcomingPeakSeason = this.getUpcomingPeakSeason(stats.peakTravelMonths);
+    const upcomingPeakSeason = this.getUpcomingPeakSeason(
+      stats.peakTravelMonths
+    );
     if (upcomingPeakSeason) {
       insights.push({
         id: `timing-${now.getTime()}`,
@@ -292,11 +339,11 @@ export class TravelAnalyticsEngine {
         actionItems: [
           '항공료 및 숙박 가격 모니터링',
           '비자 신청 일정 조정',
-          '대안 목적지 고려'
+          '대안 목적지 고려',
         ],
         data: { peakMonth: upcomingPeakSeason.month },
         createdAt: now,
-        expiresAt: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) // 30 days
+        expiresAt: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000), // 30 days
       });
     }
 
@@ -311,13 +358,13 @@ export class TravelAnalyticsEngine {
         actionItems: [
           '여행 보험 검토',
           '비상 연락처 업데이트',
-          '리스크 요소 개선 방안 수립'
+          '리스크 요소 개선 방안 수립',
         ],
-        data: { 
+        data: {
           riskScore: stats.riskScore,
-          riskFactors: stats.riskFactors
+          riskFactors: stats.riskFactors,
         },
-        createdAt: now
+        createdAt: now,
       });
     }
 
@@ -330,14 +377,15 @@ export class TravelAnalyticsEngine {
           type: 'destination_suggestion',
           priority: 'low',
           title: '맞춤 목적지 추천',
-          description: '귀하의 여행 패턴을 기반으로 새로운 목적지를 추천합니다.',
+          description:
+            '귀하의 여행 패턴을 기반으로 새로운 목적지를 추천합니다.',
           actionItems: [
             '추천 목적지 상세 정보 확인',
             '비자 요구사항 검토',
-            '여행 일정 계획'
+            '여행 일정 계획',
           ],
           data: { suggestions },
-          createdAt: now
+          createdAt: now,
         });
       }
     }
@@ -352,43 +400,60 @@ export class TravelAnalyticsEngine {
    * Generate country-specific analytics
    */
   generateCountryAnalytics(trips: Trip[]): CountryAnalytics[] {
-    const countryGroups = trips.reduce((groups, trip) => {
-      if (!groups[trip.country]) {
-        groups[trip.country] = [];
-      }
-      groups[trip.country].push(trip);
-      return groups;
-    }, {} as Record<string, Trip[]>);
+    const countryGroups = trips.reduce(
+      (groups, trip) => {
+        if (!groups[trip.country]) {
+          groups[trip.country] = [];
+        }
+        groups[trip.country].push(trip);
+        return groups;
+      },
+      {} as Record<string, Trip[]>
+    );
 
-    return Object.entries(countryGroups).map(([countryCode, countryTrips]) => {
-      const totalDays = countryTrips.reduce((sum, trip) => 
-        sum + differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1, 0
-      );
+    return Object.entries(countryGroups)
+      .map(([countryCode, countryTrips]) => {
+        const totalDays = countryTrips.reduce(
+          (sum, trip) =>
+            sum +
+            differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) +
+            1,
+          0
+        );
 
-      const seasonalPattern = countryTrips.reduce((pattern, trip) => {
-        const month = new Date(trip.startDate).getMonth() + 1;
-        pattern[month] = (pattern[month] || 0) + 1;
-        return pattern;
-      }, {} as Record<number, number>);
+        const seasonalPattern = countryTrips.reduce(
+          (pattern, trip) => {
+            const month = new Date(trip.startDate).getMonth() + 1;
+            pattern[month] = (pattern[month] || 0) + 1;
+            return pattern;
+          },
+          {} as Record<number, number>
+        );
 
-      const lastVisit = new Date(Math.max(...countryTrips.map(trip => 
-        new Date(trip.endDate).getTime()
-      )));
+        const lastVisit = new Date(
+          Math.max(
+            ...countryTrips.map(trip => new Date(trip.endDate).getTime())
+          )
+        );
 
-      return {
-        countryCode,
-        countryName: this.getCountryName(countryCode),
-        visits: countryTrips.length,
-        totalDays,
-        avgStayDuration: totalDays / countryTrips.length,
-        lastVisit,
-        seasonalPattern,
-        visaRequirement: this.getVisaRequirement(countryCode),
-        visaCost: this.getVisaCost(countryCode),
-        riskLevel: this.getCountryRiskLevel(countryCode),
-        recommendations: this.generateCountryRecommendations(countryCode, countryTrips)
-      };
-    }).sort((a, b) => b.totalDays - a.totalDays);
+        return {
+          countryCode,
+          countryName: this.getCountryName(countryCode),
+          visits: countryTrips.length,
+          totalDays,
+          avgStayDuration: totalDays / countryTrips.length,
+          lastVisit,
+          seasonalPattern,
+          visaRequirement: this.getVisaRequirement(countryCode),
+          visaCost: this.getVisaCost(countryCode),
+          riskLevel: this.getCountryRiskLevel(countryCode),
+          recommendations: this.generateCountryRecommendations(
+            countryCode,
+            countryTrips
+          ),
+        };
+      })
+      .sort((a, b) => b.totalDays - a.totalDays);
   }
 
   /**
@@ -413,14 +478,14 @@ export class TravelAnalyticsEngine {
           countries: [],
           visaCosts: 0,
           schengenDays: 0,
-          highlights: []
+          highlights: [],
         });
       }
 
       const entry = timelineMap.get(key)!;
       entry.trips += 1;
       entry.days += differenceInDays(endDate, startDate) + 1;
-      
+
       if (!entry.countries.includes(trip.country)) {
         entry.countries.push(trip.country);
       }
@@ -429,7 +494,18 @@ export class TravelAnalyticsEngine {
       entry.visaCosts += this.getVisaCost(trip.country);
 
       // Add Schengen days if applicable
-      const schengenCountries = ['DE', 'FR', 'ES', 'IT', 'NL', 'AT', 'BE', 'PT', 'CH', 'GR'];
+      const schengenCountries = [
+        'DE',
+        'FR',
+        'ES',
+        'IT',
+        'NL',
+        'AT',
+        'BE',
+        'PT',
+        'CH',
+        'GR',
+      ];
       if (schengenCountries.includes(trip.country)) {
         entry.schengenDays += differenceInDays(endDate, startDate) + 1;
       }
@@ -442,7 +518,7 @@ export class TravelAnalyticsEngine {
       })
       .map(entry => ({
         ...entry,
-        highlights: this.generateMonthlyHighlights(entry)
+        highlights: this.generateMonthlyHighlights(entry),
       }));
   }
 
@@ -471,43 +547,70 @@ export class TravelAnalyticsEngine {
       peakTravelMonths: [],
       offSeasonMonths: [],
       riskScore: 0,
-      riskFactors: []
+      riskFactors: [],
     };
   }
 
   private countryVisitFrequency(trips: Trip[]): Record<string, number> {
-    return trips.reduce((freq, trip) => {
-      freq[trip.country] = (freq[trip.country] || 0) + 1;
-      return freq;
-    }, {} as Record<string, number>);
+    return trips.reduce(
+      (freq, trip) => {
+        freq[trip.country] = (freq[trip.country] || 0) + 1;
+        return freq;
+      },
+      {} as Record<string, number>
+    );
   }
 
   private calculateSchengenUsage(schengenTrips: Trip[]) {
     // This is a simplified calculation
     // In reality, you'd need to implement the rolling 180-day window
-    const totalDays = schengenTrips.reduce((sum, trip) => 
-      sum + differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1, 0
+    const totalDays = schengenTrips.reduce(
+      (sum, trip) =>
+        sum +
+        differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) +
+        1,
+      0
     );
 
     return {
       daysUsed: Math.min(totalDays, 90),
-      efficiency: totalDays > 0 ? Math.min(totalDays / 90, 1) : 0
+      efficiency: totalDays > 0 ? Math.min(totalDays / 90, 1) : 0,
     };
   }
 
-  private async analyzeVisaRequirements(trips: Trip[], passportCountry: string) {
+  private async analyzeVisaRequirements(
+    trips: Trip[],
+    passportCountry: string
+  ) {
     // This would integrate with the visa database
     // For now, using simplified logic
-    let visaFree = 0, visaRequired = 0, eVisa = 0, visaOnArrival = 0;
+    let visaFree = 0,
+      visaRequired = 0,
+      eVisa = 0,
+      visaOnArrival = 0;
     let totalCosts = 0;
 
     trips.forEach(trip => {
-      const requirement = this.getVisaRequirement(trip.country, passportCountry);
+      const requirement = this.getVisaRequirement(
+        trip.country,
+        passportCountry
+      );
       switch (requirement) {
-        case 'visa_free': visaFree++; break;
-        case 'visa_required': visaRequired++; totalCosts += this.getVisaCost(trip.country); break;
-        case 'evisa': eVisa++; totalCosts += this.getVisaCost(trip.country); break;
-        case 'visa_on_arrival': visaOnArrival++; totalCosts += this.getVisaCost(trip.country); break;
+        case 'visa_free':
+          visaFree++;
+          break;
+        case 'visa_required':
+          visaRequired++;
+          totalCosts += this.getVisaCost(trip.country);
+          break;
+        case 'evisa':
+          eVisa++;
+          totalCosts += this.getVisaCost(trip.country);
+          break;
+        case 'visa_on_arrival':
+          visaOnArrival++;
+          totalCosts += this.getVisaCost(trip.country);
+          break;
       }
     });
 
@@ -520,29 +623,39 @@ export class TravelAnalyticsEngine {
       eVisa,
       visaOnArrival,
       totalCosts,
-      efficiencyScore
+      efficiencyScore,
     };
   }
 
   private calculateMonthlyDistribution(trips: Trip[]): Record<number, number> {
-    return trips.reduce((dist, trip) => {
-      const month = new Date(trip.startDate).getMonth() + 1;
-      dist[month] = (dist[month] || 0) + 1;
-      return dist;
-    }, {} as Record<number, number>);
+    return trips.reduce(
+      (dist, trip) => {
+        const month = new Date(trip.startDate).getMonth() + 1;
+        dist[month] = (dist[month] || 0) + 1;
+        return dist;
+      },
+      {} as Record<number, number>
+    );
   }
 
   private calculateTravelFrequency(trips: Trip[]): number {
     if (trips.length < 2) return 0;
-    
-    const firstTrip = new Date(Math.min(...trips.map(t => new Date(t.startDate).getTime())));
-    const lastTrip = new Date(Math.max(...trips.map(t => new Date(t.endDate).getTime())));
+
+    const firstTrip = new Date(
+      Math.min(...trips.map(t => new Date(t.startDate).getTime()))
+    );
+    const lastTrip = new Date(
+      Math.max(...trips.map(t => new Date(t.endDate).getTime()))
+    );
     const monthsDiff = differenceInDays(lastTrip, firstTrip) / 30;
-    
+
     return trips.length / Math.max(monthsDiff, 1);
   }
 
-  private assessTravelRisk(trips: Trip[]): { score: number; factors: string[] } {
+  private assessTravelRisk(trips: Trip[]): {
+    score: number;
+    factors: string[];
+  } {
     const factors: string[] = [];
     let score = 0;
 
@@ -554,20 +667,37 @@ export class TravelAnalyticsEngine {
     }
 
     // Multiple visa requirements
-    const visaRequiredCount = trips.filter(trip => 
-      this.getVisaRequirement(trip.country) === 'visa_required'
+    const visaRequiredCount = trips.filter(
+      trip => this.getVisaRequirement(trip.country) === 'visa_required'
     ).length;
-    
+
     if (visaRequiredCount > trips.length * 0.5) {
       factors.push('비자 요구사항이 많은 국가들');
       score += 0.3;
     }
 
     // Schengen overuse risk
-    const schengenCountries = ['DE', 'FR', 'ES', 'IT', 'NL', 'AT', 'BE', 'PT', 'CH', 'GR'];
-    const schengenTrips = trips.filter(trip => schengenCountries.includes(trip.country));
-    const schengenDays = schengenTrips.reduce((sum, trip) => 
-      sum + differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1, 0
+    const schengenCountries = [
+      'DE',
+      'FR',
+      'ES',
+      'IT',
+      'NL',
+      'AT',
+      'BE',
+      'PT',
+      'CH',
+      'GR',
+    ];
+    const schengenTrips = trips.filter(trip =>
+      schengenCountries.includes(trip.country)
+    );
+    const schengenDays = schengenTrips.reduce(
+      (sum, trip) =>
+        sum +
+        differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) +
+        1,
+      0
     );
 
     if (schengenDays > 80) {
@@ -583,20 +713,25 @@ export class TravelAnalyticsEngine {
     return allMonths.filter(month => !peakMonths.includes(month));
   }
 
-  private getUpcomingPeakSeason(peakMonths: number[]): { month: number } | null {
+  private getUpcomingPeakSeason(
+    peakMonths: number[]
+  ): { month: number } | null {
     const currentMonth = new Date().getMonth() + 1;
-    const nextPeakMonth = peakMonths.find(month => month > currentMonth) || 
-                         peakMonths[0]; // wrap around to next year
-    
+    const nextPeakMonth =
+      peakMonths.find(month => month > currentMonth) || peakMonths[0]; // wrap around to next year
+
     return nextPeakMonth ? { month: nextPeakMonth } : null;
   }
 
   // Pattern detection methods (simplified implementations)
-  
+
   private detectSeasonalPattern(trips: Trip[]): TravelPattern {
     const monthlyDist = this.calculateMonthlyDistribution(trips);
     const peak = Math.max(...Object.values(monthlyDist));
-    const total = Object.values(monthlyDist).reduce((sum, count) => sum + count, 0);
+    const total = Object.values(monthlyDist).reduce(
+      (sum, count) => sum + count,
+      0
+    );
     const confidence = peak / total;
 
     return {
@@ -607,16 +742,21 @@ export class TravelAnalyticsEngine {
       description: '계절별 여행 패턴 감지됨',
       countries: [...new Set(trips.map(t => t.country))],
       frequency: 'yearly',
-      avgDuration: trips.reduce((sum, t) => sum + differenceInDays(new Date(t.endDate), new Date(t.startDate)), 0) / trips.length,
+      avgDuration:
+        trips.reduce(
+          (sum, t) =>
+            sum + differenceInDays(new Date(t.endDate), new Date(t.startDate)),
+          0
+        ) / trips.length,
       lastDetected: new Date(),
-      recommendations: ['계절별 최적 목적지 고려', '성수기 요금 회피 전략']
+      recommendations: ['계절별 최적 목적지 고려', '성수기 요금 회피 전략'],
     };
   }
 
   private detectRegionalPattern(trips: Trip[]): TravelPattern {
     // Simplified: check if trips are clustered in specific regions
     const regions = this.groupTripsByRegion(trips);
-    const maxRegion = Object.entries(regions).sort(([,a], [,b]) => b - a)[0];
+    const maxRegion = Object.entries(regions).sort(([, a], [, b]) => b - a)[0];
     const confidence = maxRegion ? maxRegion[1] / trips.length : 0;
 
     return {
@@ -629,14 +769,15 @@ export class TravelAnalyticsEngine {
       frequency: 'quarterly',
       avgDuration: 0,
       lastDetected: new Date(),
-      recommendations: ['지역 내 다른 국가 탐색', '지역별 패스 활용']
+      recommendations: ['지역 내 다른 국가 탐색', '지역별 패스 활용'],
     };
   }
 
   private detectVisaOptimizationPattern(trips: Trip[]): TravelPattern {
-    const visaFreeRatio = trips.filter(trip => 
-      this.getVisaRequirement(trip.country) === 'visa_free'
-    ).length / trips.length;
+    const visaFreeRatio =
+      trips.filter(
+        trip => this.getVisaRequirement(trip.country) === 'visa_free'
+      ).length / trips.length;
 
     return {
       id: '',
@@ -648,7 +789,7 @@ export class TravelAnalyticsEngine {
       frequency: 'monthly',
       avgDuration: 0,
       lastDetected: new Date(),
-      recommendations: ['비자프리 국가 확대', '비자 비용 절감 방안']
+      recommendations: ['비자프리 국가 확대', '비자 비용 절감 방안'],
     };
   }
 
@@ -668,14 +809,15 @@ export class TravelAnalyticsEngine {
       frequency: 'monthly',
       avgDuration: 0,
       lastDetected: new Date(),
-      recommendations: ['노마드 친화적 도시 추천', '장기 체류 비자 고려']
+      recommendations: ['노마드 친화적 도시 추천', '장기 체류 비자 고려'],
     };
   }
 
   private detectBusinessTravelPattern(trips: Trip[]): TravelPattern {
     // Detect short, frequent trips (typical of business travel)
-    const shortTrips = trips.filter(trip => 
-      differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) <= 7
+    const shortTrips = trips.filter(
+      trip =>
+        differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) <= 7
     );
     const confidence = shortTrips.length / trips.length;
 
@@ -689,26 +831,37 @@ export class TravelAnalyticsEngine {
       frequency: 'monthly',
       avgDuration: 0,
       lastDetected: new Date(),
-      recommendations: ['비즈니스 라운지 패스', '빠른 입출국 서비스']
+      recommendations: ['비즈니스 라운지 패스', '빠른 입출국 서비스'],
     };
   }
 
   // Helper methods for country/visa information (would integrate with visa database)
-  
+
   private getCountryName(countryCode: string): string {
     const countryNames: Record<string, string> = {
-      'KR': '대한민국', 'US': '미국', 'JP': '일본', 'CN': '중국',
-      'DE': '독일', 'FR': '프랑스', 'ES': '스페인', 'IT': '이탈리아',
-      'TH': '태국', 'MY': '말레이시아', 'SG': '싱가포르'
+      KR: '대한민국',
+      US: '미국',
+      JP: '일본',
+      CN: '중국',
+      DE: '독일',
+      FR: '프랑스',
+      ES: '스페인',
+      IT: '이탈리아',
+      TH: '태국',
+      MY: '말레이시아',
+      SG: '싱가포르',
     };
     return countryNames[countryCode] || countryCode;
   }
 
-  private getVisaRequirement(countryCode: string, passportCountry: string = 'KR'): string {
+  private getVisaRequirement(
+    countryCode: string,
+    passportCountry: string = 'KR'
+  ): string {
     // Simplified visa requirements for Korean passport
     const visaFree = ['US', 'JP', 'DE', 'FR', 'ES', 'IT', 'TH', 'MY', 'SG'];
     const visaRequired = ['CN', 'IN', 'RU'];
-    
+
     if (visaFree.includes(countryCode)) return 'visa_free';
     if (visaRequired.includes(countryCode)) return 'visa_required';
     return 'evisa';
@@ -716,7 +869,11 @@ export class TravelAnalyticsEngine {
 
   private getVisaCost(countryCode: string): number {
     const costs: Record<string, number> = {
-      'CN': 140, 'IN': 80, 'RU': 160, 'VN': 50, 'KH': 30
+      CN: 140,
+      IN: 80,
+      RU: 160,
+      VN: 50,
+      KH: 30,
     };
     return costs[countryCode] || 0;
   }
@@ -724,7 +881,7 @@ export class TravelAnalyticsEngine {
   private getCountryRiskLevel(countryCode: string): 'low' | 'medium' | 'high' {
     const highRisk = ['AF', 'SY', 'IQ'];
     const mediumRisk = ['PK', 'BD', 'MM'];
-    
+
     if (highRisk.includes(countryCode)) return 'high';
     if (mediumRisk.includes(countryCode)) return 'medium';
     return 'low';
@@ -732,15 +889,15 @@ export class TravelAnalyticsEngine {
 
   private groupTripsByRegion(trips: Trip[]): Record<string, number> {
     const regions: Record<string, string[]> = {
-      'Europe': ['DE', 'FR', 'ES', 'IT', 'NL', 'AT', 'BE', 'PT', 'CH', 'GR'],
-      'Asia': ['TH', 'MY', 'SG', 'ID', 'VN', 'PH', 'JP', 'KR', 'CN'],
-      'Americas': ['US', 'CA', 'MX', 'BR', 'AR', 'CO', 'PE'],
-      'Africa': ['ZA', 'KE', 'MA', 'EG'],
-      'Oceania': ['AU', 'NZ']
+      Europe: ['DE', 'FR', 'ES', 'IT', 'NL', 'AT', 'BE', 'PT', 'CH', 'GR'],
+      Asia: ['TH', 'MY', 'SG', 'ID', 'VN', 'PH', 'JP', 'KR', 'CN'],
+      Americas: ['US', 'CA', 'MX', 'BR', 'AR', 'CO', 'PE'],
+      Africa: ['ZA', 'KE', 'MA', 'EG'],
+      Oceania: ['AU', 'NZ'],
     };
 
     const regionCounts: Record<string, number> = {};
-    
+
     trips.forEach(trip => {
       for (const [region, countries] of Object.entries(regions)) {
         if (countries.includes(trip.country)) {
@@ -753,44 +910,52 @@ export class TravelAnalyticsEngine {
     return regionCounts;
   }
 
-  private generateDestinationSuggestions(trips: Trip[], patterns: TravelPattern[]): string[] {
+  private generateDestinationSuggestions(
+    trips: Trip[],
+    patterns: TravelPattern[]
+  ): string[] {
     // This would use ML to suggest destinations based on patterns
     // Simplified implementation
     const visitedCountries = new Set(trips.map(t => t.country));
     const suggestions = ['PT', 'EE', 'CO', 'CR', 'GE', 'UA'];
-    
-    return suggestions.filter(country => !visitedCountries.has(country)).slice(0, 3);
+
+    return suggestions
+      .filter(country => !visitedCountries.has(country))
+      .slice(0, 3);
   }
 
-  private generateCountryRecommendations(countryCode: string, trips: Trip[]): string[] {
+  private generateCountryRecommendations(
+    countryCode: string,
+    trips: Trip[]
+  ): string[] {
     const recommendations: string[] = [];
-    
+
     if (trips.length > 3) {
       recommendations.push('단골 목적지로 장기 체류 비자 고려');
     }
-    
+
     if (this.getVisaCost(countryCode) > 100) {
       recommendations.push('비자 비용 절감 방안 검토');
     }
-    
+
     return recommendations;
   }
 
   private generateMonthlyHighlights(entry: TimelineAnalytics): string[] {
     const highlights: string[] = [];
-    
+
     if (entry.trips > 3) {
       highlights.push('높은 여행 활동');
     }
-    
+
     if (entry.countries.length > 2) {
       highlights.push('다양한 국가 방문');
     }
-    
+
     if (entry.schengenDays > 20) {
       highlights.push('집중적인 셰겐 체류');
     }
-    
+
     return highlights;
   }
 }

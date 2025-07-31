@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   const robots = `User-agent: *
@@ -31,12 +31,12 @@ User-agent: SemrushBot
 Crawl-delay: 10
 
 User-agent: MJ12bot
-Disallow: /`
+Disallow: /`;
 
   return new NextResponse(robots, {
     headers: {
       'Content-Type': 'text/plain',
-      'Cache-Control': 'public, max-age=86400, s-maxage=86400' // 24 hours
-    }
-  })
+      'Cache-Control': 'public, max-age=86400, s-maxage=86400', // 24 hours
+    },
+  });
 }

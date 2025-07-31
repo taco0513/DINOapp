@@ -3,6 +3,7 @@
 ## 코딩 초보자를 위한 제로-투-MVP 완벽 가이드
 
 ### 목차
+
 1. [바이브 코딩이란?](#바이브-코딩이란)
 2. [SuperClaude 소개](#superclause-소개)
 3. [시작하기 전 준비사항](#시작하기-전-준비사항)
@@ -23,12 +24,14 @@
 **"바이브 코딩"**은 코딩 지식 없이도 자연어로 원하는 것을 설명하면 AI가 코드를 생성해주는 개발 방식입니다.
 
 ### 핵심 원칙
+
 1. **자연어 우선**: 기술 용어 몰라도 OK
 2. **대화형 개발**: AI와 대화하듯 개발
 3. **즉각적 피드백**: 바로 결과 확인
 4. **반복적 개선**: 마음에 들 때까지 수정
 
 ### 예시
+
 ```
 ❌ 기존 방식: "React useState 훅으로 상태 관리 구현해줘"
 ✅ 바이브 코딩: "버튼 누르면 숫자가 1씩 올라가게 해줘"
@@ -39,15 +42,18 @@
 ## SuperClaude 소개
 
 ### SuperClaude란?
+
 Claude Code의 고급 기능을 활용한 지능형 개발 프레임워크
 
 ### 주요 특징
+
 - 🧠 **컨텍스트 인식**: 프로젝트 전체를 이해
 - 🔄 **자동 최적화**: 성능 문제 자동 해결
 - 🛡️ **보안 내장**: 보안 best practice 자동 적용
 - 📱 **반응형 기본**: 모바일 우선 개발
 
 ### 핵심 명령어
+
 ```bash
 /analyze    # 코드 분석
 /build      # 프로젝트 빌드
@@ -62,12 +68,14 @@ Claude Code의 고급 기능을 활용한 지능형 개발 프레임워크
 ## 시작하기 전 준비사항
 
 ### 필수 도구
+
 1. **VS Code** 설치
 2. **Node.js** 설치 (LTS 버전)
 3. **Git** 설치
 4. **Chrome** 브라우저
 
 ### 환경 설정
+
 ```bash
 # 1. VS Code 열기
 # 2. Terminal 열기 (Ctrl + `)
@@ -77,6 +85,7 @@ npm --version   # v9 이상이어야 함
 ```
 
 ### 마인드셋
+
 - 😌 에러를 무서워하지 마세요
 - 🤔 모르는 건 그냥 물어보세요
 - 🔄 처음부터 완벽할 필요 없어요
@@ -89,6 +98,7 @@ npm --version   # v9 이상이어야 함
 ### Step 1.1: 아이디어 구체화
 
 #### 자연어로 설명하기
+
 ```
 "여행 관리 앱을 만들고 싶어.
 - 여행한 나라들 기록
@@ -98,6 +108,7 @@ npm --version   # v9 이상이어야 함
 ```
 
 #### SuperClaude 명령어
+
 ```bash
 # 프로젝트 설계 자동화
 /design "여행 비자 관리 앱 DINO" --think-hard
@@ -113,6 +124,7 @@ npm --version   # v9 이상이어야 함
 ### Step 1.2: 프로젝트 생성
 
 #### 프로젝트 초기화
+
 ```bash
 # 한 줄로 전체 프로젝트 구조 생성
 /build "DINO 여행 관리 앱" --type new --framework nextjs --typescript
@@ -127,6 +139,7 @@ npm --version   # v9 이상이어야 함
 ```
 
 #### 폴더 구조
+
 ```
 DINO/
 ├── app/                    # Next.js 15 app directory
@@ -157,6 +170,7 @@ npm run dev
 ### Step 2.1: 인증 시스템 (Day 2)
 
 #### 요구사항 설명
+
 ```
 "구글 계정으로 로그인할 수 있게 해줘.
 로그인하면 대시보드로 이동하고,
@@ -164,6 +178,7 @@ npm run dev
 ```
 
 #### 구현 명령어
+
 ```bash
 # Google OAuth 자동 구현
 /implement "Google OAuth 로그인 시스템" --type auth --validate
@@ -177,6 +192,7 @@ npm run dev
 ```
 
 #### 환경 변수 설정
+
 ```env
 # .env.local 파일 자동 생성
 GOOGLE_CLIENT_ID=your-client-id
@@ -188,6 +204,7 @@ NEXTAUTH_URL=http://localhost:3000
 ### Step 2.2: 데이터베이스 설계 (Day 3)
 
 #### 요구사항 설명
+
 ```
 "여행 기록을 저장하고 싶어.
 필요한 정보:
@@ -198,6 +215,7 @@ NEXTAUTH_URL=http://localhost:3000
 ```
 
 #### 구현 명령어
+
 ```bash
 # 데이터베이스 스키마 자동 생성
 /implement "여행 기록 데이터베이스" --type database --with-migrations
@@ -229,6 +247,7 @@ model CountryVisit {
 ### Step 2.3: CRUD 기능 구현 (Day 4-6)
 
 #### 여행 기록 추가 기능
+
 ```
 "여행 기록 추가하는 폼 만들어줘.
 국가는 드롭다운으로 선택하고,
@@ -251,33 +270,35 @@ model CountryVisit {
 ```
 
 #### API 엔드포인트 예시
+
 ```typescript
 // app/api/trips/route.ts (자동 생성)
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const body = await request.json()
-  
+  const body = await request.json();
+
   // Zod 스키마로 자동 검증
-  const validatedData = createTripSchema.parse(body)
-  
+  const validatedData = createTripSchema.parse(body);
+
   const trip = await prisma.countryVisit.create({
     data: {
       ...validatedData,
-      userId: session.user.id
-    }
-  })
-  
-  return NextResponse.json(trip)
+      userId: session.user.id,
+    },
+  });
+
+  return NextResponse.json(trip);
 }
 ```
 
 ### Step 2.4: 셰겐 계산기 (Day 7)
 
 #### 요구사항 설명
+
 ```
 "셰겐 지역 90/180일 규칙 계산기 만들어줘.
 현재까지 며칠 썼는지 보여주고,
@@ -304,6 +325,7 @@ export async function POST(request: Request) {
 ### Step 3.1: 디자인 시스템 (Day 8)
 
 #### 요구사항
+
 ```
 "깔끔한 디자인으로 만들어줘.
 복잡하지 않고 와이어프레임 스타일로.
@@ -356,6 +378,7 @@ export async function POST(request: Request) {
 ### Step 4.1: Gmail 연동 (Day 11-12)
 
 #### 요구사항
+
 ```
 "Gmail에서 항공권 이메일 찾아서
 자동으로 여행 기록 만들어줘.
@@ -375,18 +398,19 @@ export async function POST(request: Request) {
 ```
 
 #### 이메일 파싱 예시
+
 ```typescript
 // 자동 생성된 파싱 로직
 const parseFlightEmail = (email: GmailMessage) => {
   const patterns = {
     koreanAir: /출발:\s*(\d{4}-\d{2}-\d{2}).*도착지:\s*([A-Z]{3})/,
-    asiana: /여행일자:\s*(\d{4}년\s*\d{1,2}월\s*\d{1,2}일)/
-  }
-  
+    asiana: /여행일자:\s*(\d{4}년\s*\d{1,2}월\s*\d{1,2}일)/,
+  };
+
   // 항공사별 파싱 로직
   // 날짜, 목적지 추출
   // 자동 데이터 정제
-}
+};
 ```
 
 ### Step 4.2: 캘린더 동기화 (Day 13)
@@ -439,20 +463,21 @@ const parseFlightEmail = (email: GmailMessage) => {
 ```
 
 #### 테스트 예시
+
 ```typescript
 // 셰겐 계산기 테스트 (자동 생성)
 describe('SchengenCalculator', () => {
   it('should calculate days correctly', () => {
     const visits = [
       { country: 'France', entryDate: '2024-01-01', exitDate: '2024-01-10' },
-      { country: 'Germany', entryDate: '2024-02-01', exitDate: '2024-02-15' }
-    ]
-    
-    const result = calculateSchengenDays(visits)
-    expect(result.totalDays).toBe(24)
-    expect(result.remainingDays).toBe(66)
-  })
-})
+      { country: 'Germany', entryDate: '2024-02-01', exitDate: '2024-02-15' },
+    ];
+
+    const result = calculateSchengenDays(visits);
+    expect(result.totalDays).toBe(24);
+    expect(result.remainingDays).toBe(66);
+  });
+});
 ```
 
 ### Step 5.2: 성능 최적화 (Day 16)
@@ -509,6 +534,7 @@ describe('SchengenCalculator', () => {
 ### 자주 발생하는 문제들
 
 #### 1. "에러가 났어요"
+
 ```bash
 # 자동 에러 해결
 /troubleshoot --auto-fix --explain
@@ -522,6 +548,7 @@ describe('SchengenCalculator', () => {
 ```
 
 #### 2. "느려요"
+
 ```bash
 # 성능 문제 자동 해결
 /analyze --focus performance
@@ -529,6 +556,7 @@ describe('SchengenCalculator', () => {
 ```
 
 #### 3. "디자인이 마음에 안 들어요"
+
 ```bash
 # UI 반복 개선
 /improve @components --magic --loop --interactive
@@ -540,6 +568,7 @@ describe('SchengenCalculator', () => {
 ```
 
 #### 4. "모바일에서 이상해요"
+
 ```bash
 # 모바일 문제 해결
 /analyze --persona-frontend --focus mobile
@@ -551,6 +580,7 @@ describe('SchengenCalculator', () => {
 ## 자주 사용하는 패턴
 
 ### 패턴 1: 새 기능 추가
+
 ```bash
 # 1. 요구사항 설명
 "사용자 프로필 페이지 추가해줘"
@@ -563,6 +593,7 @@ describe('SchengenCalculator', () => {
 ```
 
 ### 패턴 2: 버그 수정
+
 ```bash
 # 1. 문제 설명
 "로그인이 안 돼"
@@ -575,6 +606,7 @@ describe('SchengenCalculator', () => {
 ```
 
 ### 패턴 3: 디자인 개선
+
 ```bash
 # 1. 현재 상태 분석
 /analyze @components/Header --persona-frontend
@@ -584,6 +616,7 @@ describe('SchengenCalculator', () => {
 ```
 
 ### 패턴 4: 성능 최적화
+
 ```bash
 # 1. 병목 현상 찾기
 /analyze --focus performance --think-hard
@@ -599,6 +632,7 @@ describe('SchengenCalculator', () => {
 ### 💡 초보자를 위한 꿀팁
 
 #### 1. 작게 시작하세요
+
 ```bash
 # ❌ 나쁜 예
 "전체 앱을 한 번에 만들어줘"
@@ -608,6 +642,7 @@ describe('SchengenCalculator', () => {
 ```
 
 #### 2. 구체적으로 설명하세요
+
 ```bash
 # ❌ 나쁜 예
 "예쁘게 만들어줘"
@@ -617,6 +652,7 @@ describe('SchengenCalculator', () => {
 ```
 
 #### 3. 단계별로 진행하세요
+
 ```bash
 # 단계별 접근
 1. /implement "기본 기능"
@@ -625,6 +661,7 @@ describe('SchengenCalculator', () => {
 ```
 
 #### 4. 에러를 두려워하지 마세요
+
 ```bash
 # 에러 = 학습 기회
 /troubleshoot --explain    # 왜 에러가 났는지 설명
@@ -633,24 +670,28 @@ describe('SchengenCalculator', () => {
 ### 🚀 고급 팁
 
 #### 1. Wave 모드 활용
+
 ```bash
 # 복잡한 작업을 여러 단계로
 /improve --wave-mode force --wave-strategy systematic
 ```
 
 #### 2. 병렬 처리
+
 ```bash
 # 여러 작업 동시 진행
 /analyze --delegate folders --concurrency 10
 ```
 
 #### 3. 자동화
+
 ```bash
 # 반복 작업 자동화
 /improve --loop --iterations 5 --auto-fix
 ```
 
 #### 4. 최적화 체인
+
 ```bash
 # 연속 최적화
 /analyze --focus performance
@@ -674,6 +715,7 @@ describe('SchengenCalculator', () => {
 ### 🎉 축하합니다!
 
 17일 만에 MVP를 완성했습니다! 이제 당신은:
+
 - ✅ 풀스택 웹 앱을 만들 수 있습니다
 - ✅ 데이터베이스를 다룰 수 있습니다
 - ✅ API를 연동할 수 있습니다

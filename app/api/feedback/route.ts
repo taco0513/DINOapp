@@ -64,14 +64,14 @@ export async function POST(request: NextRequest) {
     if (process.env.NODE_ENV === 'development') {
       const fs = require('fs').promises;
       const path = require('path');
-      
+
       try {
         const feedbackDir = path.join(process.cwd(), 'data', 'feedback');
         await fs.mkdir(feedbackDir, { recursive: true });
-        
+
         const filename = `${feedbackEntry.id}.json`;
         const filepath = path.join(feedbackDir, filename);
-        
+
         await fs.writeFile(filepath, JSON.stringify(feedbackEntry, null, 2));
       } catch (fileError) {
         console.warn('피드백 파일 저장 실패:', fileError);
@@ -84,14 +84,13 @@ export async function POST(request: NextRequest) {
       message: '피드백이 성공적으로 접수되었습니다.',
       feedbackId: feedbackEntry.id,
     });
-
   } catch (error) {
     console.error('피드백 처리 오류:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: '피드백 처리 중 오류가 발생했습니다.',
-        details: process.env.NODE_ENV === 'development' ? error : undefined
+        details: process.env.NODE_ENV === 'development' ? error : undefined,
       },
       { status: 500 }
     );
@@ -102,35 +101,38 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     // 관리자 권한 확인 (실제로는 더 정교한 권한 체크 필요)
     if (!session?.user?.email || !isAdmin(session.user.email)) {
-      return NextResponse.json(
-        { error: '권한이 없습니다.' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 });
     }
 
     // 개발 환경에서 파일 기반 피드백 목록 반환
     if (process.env.NODE_ENV === 'development') {
       const fs = require('fs').promises;
       const path = require('path');
-      
+
       try {
         const feedbackDir = path.join(process.cwd(), 'data', 'feedback');
         const files = await fs.readdir(feedbackDir);
-        
+
         const feedbacks = await Promise.all(
           files
             .filter(file => file.endsWith('.json'))
-            .map(async (file) => {
-              const content = await fs.readFile(path.join(feedbackDir, file), 'utf-8');
+            .map(async file => {
+              const content = await fs.readFile(
+                path.join(feedbackDir, file),
+                'utf-8'
+              );
               return JSON.parse(content);
             })
         );
 
         // 최신순 정렬
-        feedbacks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        feedbacks.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
 
         return NextResponse.json({
           feedbacks,
@@ -147,7 +149,6 @@ export async function GET(request: NextRequest) {
       total: 0,
       message: '프로덕션 환경에서는 데이터베이스 연결이 필요합니다.',
     });
-
   } catch (error) {
     console.error('피드백 조회 오류:', error);
     return NextResponse.json(

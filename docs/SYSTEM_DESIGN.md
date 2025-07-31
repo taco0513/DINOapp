@@ -3,6 +3,7 @@
 ## 🏗️ Architecture Overview
 
 ### System Architecture Diagram
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                            Client Layer                              │
@@ -52,21 +53,25 @@
 ## 🎯 Core Design Principles
 
 ### 1. **Modularity & Separation of Concerns**
+
 - Clear separation between UI, business logic, and data layers
 - Reusable components with single responsibilities
 - Pluggable architecture for easy feature additions
 
 ### 2. **Security First**
+
 - Zero-trust architecture with multiple security layers
 - Principle of least privilege for all operations
 - End-to-end encryption for sensitive data
 
 ### 3. **Performance & Scalability**
+
 - Edge-optimized deployment on Vercel
 - Multi-level caching strategy
 - Database query optimization with indexes
 
 ### 4. **User Experience**
+
 - Mobile-first responsive design
 - Progressive enhancement
 - Offline capability with service workers
@@ -74,6 +79,7 @@
 ## 🔧 Component Architecture
 
 ### Frontend Components Structure
+
 ```
 components/
 ├── ui/                    # Base UI components (shadcn/ui)
@@ -107,6 +113,7 @@ components/
 ### Component Design Patterns
 
 #### 1. **Compound Components**
+
 ```typescript
 // Example: Trip Card with compound pattern
 <TripCard>
@@ -118,18 +125,19 @@ components/
 ```
 
 #### 2. **Render Props & Hooks**
+
 ```typescript
 // Custom hook for trip management
 const useTripManagement = () => {
   const [trips, setTrips] = useState<Trip[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  
+
   // CRUD operations
   const createTrip = async (data: TripInput) => { ... }
   const updateTrip = async (id: string, data: TripInput) => { ... }
   const deleteTrip = async (id: string) => { ... }
-  
+
   return { trips, loading, error, createTrip, updateTrip, deleteTrip }
 }
 ```
@@ -137,6 +145,7 @@ const useTripManagement = () => {
 ## 🌐 API Architecture
 
 ### RESTful API Design
+
 ```
 /api
 ├── auth/             # Authentication endpoints
@@ -157,6 +166,7 @@ const useTripManagement = () => {
 ```
 
 ### API Response Standards
+
 ```typescript
 // Success Response
 {
@@ -183,18 +193,21 @@ const useTripManagement = () => {
 ## 💾 Database Design
 
 ### Schema Design Principles
+
 1. **Normalization**: 3NF for data integrity
 2. **Indexing**: Strategic indexes for query performance
 3. **Constraints**: Foreign keys and check constraints
 4. **Auditing**: Created/updated timestamps on all tables
 
 ### Key Database Features
+
 - **Connection Pooling**: Optimized for serverless environment
 - **Query Optimization**: Using Prisma's query optimizer
 - **Caching Strategy**: Redis-like caching for frequent queries
 - **Backup Strategy**: Automated daily backups with point-in-time recovery
 
 ### Performance Indexes
+
 ```sql
 -- User trips by date (most common query)
 CREATE INDEX idx_user_trips_date ON CountryVisit(userId, entryDate);
@@ -209,6 +222,7 @@ CREATE INDEX idx_country_filter ON CountryVisit(country);
 ## 🔒 Security Architecture
 
 ### Security Layers
+
 1. **Authentication**: Google OAuth 2.0 with NextAuth.js
 2. **Authorization**: Role-based access control (RBAC)
 3. **API Security**: Rate limiting, CSRF protection, input validation
@@ -216,6 +230,7 @@ CREATE INDEX idx_country_filter ON CountryVisit(country);
 5. **Application Security**: XSS protection, SQL injection prevention
 
 ### Security Implementation
+
 ```typescript
 // Security middleware stack
 export const securityMiddleware = compose(
@@ -224,12 +239,13 @@ export const securityMiddleware = compose(
   inputSanitization({ strict: true }),
   authenticationCheck(),
   authorizationCheck()
-)
+);
 ```
 
 ## ⚡ Performance Architecture
 
 ### Caching Strategy
+
 1. **Browser Cache**: Static assets with long TTL
 2. **CDN Cache**: Vercel Edge Network caching
 3. **API Cache**: 5-minute TTL for expensive queries
@@ -237,6 +253,7 @@ export const securityMiddleware = compose(
 5. **Computation Cache**: Schengen calculation results
 
 ### Performance Optimizations
+
 - **Code Splitting**: Route-based splitting with Next.js
 - **Image Optimization**: Next.js Image component with lazy loading
 - **Bundle Optimization**: Tree shaking and minification
@@ -244,6 +261,7 @@ export const securityMiddleware = compose(
 - **API Optimization**: Parallel requests and batch operations
 
 ### Performance Metrics
+
 - **Core Web Vitals**: LCP < 2.5s, FID < 100ms, CLS < 0.1
 - **API Response**: < 200ms for 95th percentile
 - **Database Queries**: < 50ms for common operations
@@ -252,6 +270,7 @@ export const securityMiddleware = compose(
 ## 🚀 Deployment Architecture
 
 ### Infrastructure
+
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │   Vercel Edge   │────▶│   Origin Server │────▶│    Database     │
@@ -265,6 +284,7 @@ export const securityMiddleware = compose(
 ```
 
 ### Deployment Strategy
+
 1. **CI/CD Pipeline**: GitHub Actions → Vercel
 2. **Environment Management**: Dev, Staging, Production
 3. **Feature Flags**: Gradual rollout capability
@@ -274,6 +294,7 @@ export const securityMiddleware = compose(
 ## 📊 Monitoring & Observability
 
 ### Monitoring Stack
+
 1. **Application Monitoring**: Custom metrics collector
 2. **Error Tracking**: Integrated error reporting
 3. **Performance Monitoring**: Web vitals and API metrics
@@ -281,6 +302,7 @@ export const securityMiddleware = compose(
 5. **User Analytics**: Privacy-focused analytics
 
 ### Key Metrics
+
 - **Business Metrics**: Active users, trips tracked, Schengen calculations
 - **Technical Metrics**: Response times, error rates, uptime
 - **Infrastructure Metrics**: CPU, memory, database connections
@@ -289,12 +311,14 @@ export const securityMiddleware = compose(
 ## 🔄 Future Architecture Considerations
 
 ### Scalability Path
+
 1. **Microservices**: Split into separate services as needed
 2. **Event-Driven**: Implement event sourcing for complex workflows
 3. **GraphQL**: Consider GraphQL for flexible data fetching
 4. **Real-time**: WebSocket support for live updates
 
 ### Technology Evolution
+
 1. **React Server Components**: Further optimization
 2. **Edge Computing**: More logic at the edge
 3. **AI Integration**: Smart trip suggestions

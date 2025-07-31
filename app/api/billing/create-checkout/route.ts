@@ -4,14 +4,16 @@ import { authOptions } from '@/lib/auth';
 
 // Stripe 가격 ID 매핑 (실제 환경에서는 환경 변수로 관리)
 const PRICE_IDS = {
-  'pro-monthly': process.env.STRIPE_PRICE_ID_PRO_MONTHLY || 'price_pro_monthly_test',
-  'pro-yearly': process.env.STRIPE_PRICE_ID_PRO_YEARLY || 'price_pro_yearly_test',
+  'pro-monthly':
+    process.env.STRIPE_PRICE_ID_PRO_MONTHLY || 'price_pro_monthly_test',
+  'pro-yearly':
+    process.env.STRIPE_PRICE_ID_PRO_YEARLY || 'price_pro_yearly_test',
 };
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: '로그인이 필요합니다.' },
@@ -23,9 +25,9 @@ export async function POST(request: NextRequest) {
 
     // 무료 플랜은 결제 불필요
     if (planId === 'free') {
-      return NextResponse.json({ 
-        success: true, 
-        message: '무료 플랜으로 변경되었습니다.' 
+      return NextResponse.json({
+        success: true,
+        message: '무료 플랜으로 변경되었습니다.',
       });
     }
 
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // 실제 Stripe 구현
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-    
+
     const checkoutSession = await stripe.checkout.sessions.create({
       customer_email: session.user.email,
       line_items: [
@@ -79,10 +81,9 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ url: checkoutSession.url });
-
   } catch (error) {
     console.error('결제 페이지 생성 오류:', error);
-    
+
     return NextResponse.json(
       {
         error: '결제 페이지 생성에 실패했습니다.',

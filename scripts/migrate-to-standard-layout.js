@@ -21,11 +21,11 @@ const colorMappings = {
   'gray-700': 'foreground/80',
   'gray-800': 'foreground/90',
   'gray-900': 'foreground',
-  
+
   // Basic colors
-  'white': 'background',
-  'black': 'foreground',
-  
+  white: 'background',
+  black: 'foreground',
+
   // Blues (primary)
   'blue-50': 'primary/10',
   'blue-100': 'primary/20',
@@ -37,7 +37,7 @@ const colorMappings = {
   'blue-700': 'primary',
   'blue-800': 'primary',
   'blue-900': 'primary',
-  
+
   // Hex colors
   '#ffffff': 'background',
   '#000000': 'foreground',
@@ -56,26 +56,26 @@ const colorMappings = {
 // Helper function to replace colors in className
 function replaceColors(content) {
   let updated = content;
-  
+
   // Replace bg-gray-* with bg-*
   Object.entries(colorMappings).forEach(([old, newColor]) => {
     // Background colors
     const bgRegex = new RegExp(`bg-${old}(?![0-9])`, 'g');
     updated = updated.replace(bgRegex, `bg-${newColor}`);
-    
+
     // Text colors
     const textRegex = new RegExp(`text-${old}(?![0-9])`, 'g');
     updated = updated.replace(textRegex, `text-${newColor}`);
-    
+
     // Border colors
     const borderRegex = new RegExp(`border-${old}(?![0-9])`, 'g');
     updated = updated.replace(borderRegex, `border-${newColor}`);
-    
+
     // Ring colors
     const ringRegex = new RegExp(`ring-${old}(?![0-9])`, 'g');
     updated = updated.replace(ringRegex, `ring-${newColor}`);
   });
-  
+
   return updated;
 }
 
@@ -86,9 +86,11 @@ function usesStandardPageLayout(content) {
 
 // Function to check if file has old layout pattern
 function hasOldLayoutPattern(content) {
-  return content.includes('min-h-screen') && 
-         (content.includes('<Header') || content.includes('Header />')) &&
-         (content.includes('<Footer') || content.includes('Footer />'));
+  return (
+    content.includes('min-h-screen') &&
+    (content.includes('<Header') || content.includes('Header />')) &&
+    (content.includes('<Footer') || content.includes('Footer />'))
+  );
 }
 
 // Analyze all page files
@@ -98,35 +100,45 @@ function analyzePages() {
     withStandardLayout: [],
     withoutStandardLayout: [],
     withOldPattern: [],
-    colorUsage: {}
+    colorUsage: {},
   };
-  
+
   function walkDir(dir) {
     const files = fs.readdirSync(dir);
-    
+
     files.forEach(file => {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
-      
-      if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
+
+      if (
+        stat.isDirectory() &&
+        !file.startsWith('.') &&
+        file !== 'node_modules'
+      ) {
         walkDir(filePath);
       } else if (file === 'page.tsx' || file === 'page.jsx') {
         const content = fs.readFileSync(filePath, 'utf8');
-        const relativePath = path.relative(path.join(__dirname, '..'), filePath);
-        
+        const relativePath = path.relative(
+          path.join(__dirname, '..'),
+          filePath
+        );
+
         if (usesStandardPageLayout(content)) {
           results.withStandardLayout.push(relativePath);
         } else {
           results.withoutStandardLayout.push(relativePath);
-          
+
           if (hasOldLayoutPattern(content)) {
             results.withOldPattern.push(relativePath);
           }
         }
-        
+
         // Count color usage
         Object.keys(colorMappings).forEach(color => {
-          const regex = new RegExp(`(bg-|text-|border-|ring-)${color}(?![0-9])`, 'g');
+          const regex = new RegExp(
+            `(bg-|text-|border-|ring-)${color}(?![0-9])`,
+            'g'
+          );
           const matches = content.match(regex);
           if (matches) {
             if (!results.colorUsage[color]) {
@@ -138,7 +150,7 @@ function analyzePages() {
       }
     });
   }
-  
+
   walkDir(appDir);
   return results;
 }
@@ -147,17 +159,23 @@ function analyzePages() {
 console.log('🔍 Analyzing pages...\n');
 const analysis = analyzePages();
 
-console.log(`✅ Pages with StandardPageLayout: ${analysis.withStandardLayout.length}`);
+console.log(
+  `✅ Pages with StandardPageLayout: ${analysis.withStandardLayout.length}`
+);
 analysis.withStandardLayout.forEach(page => {
   console.log(`   - ${page}`);
 });
 
-console.log(`\n❌ Pages WITHOUT StandardPageLayout: ${analysis.withoutStandardLayout.length}`);
+console.log(
+  `\n❌ Pages WITHOUT StandardPageLayout: ${analysis.withoutStandardLayout.length}`
+);
 analysis.withoutStandardLayout.forEach(page => {
   console.log(`   - ${page}`);
 });
 
-console.log(`\n🔄 Pages with old layout pattern: ${analysis.withOldPattern.length}`);
+console.log(
+  `\n🔄 Pages with old layout pattern: ${analysis.withOldPattern.length}`
+);
 analysis.withOldPattern.forEach(page => {
   console.log(`   - ${page}`);
 });
@@ -170,4 +188,6 @@ Object.entries(analysis.colorUsage)
   });
 
 console.log('\n💡 Migration command example:');
-console.log('   node scripts/migrate-to-standard-layout.js --migrate app/dashboard/page.tsx');
+console.log(
+  '   node scripts/migrate-to-standard-layout.js --migrate app/dashboard/page.tsx'
+);

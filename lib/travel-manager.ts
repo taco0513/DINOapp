@@ -1,11 +1,11 @@
 /**
  * Travel Management Core Business Logic Module
- * 
+ *
  * PURPOSE: 여행 관리 핵심 비즈니스 로직 - 여행 CRUD, 솅겐 계산, 분석 기능
  * ARCHITECTURE: Service Layer - 데이터베이스와 UI 사이의 비즈니스 로직 처리
  * RELATED: lib/schengen-calculator.ts, lib/database/dev-prisma.ts, data/countries.ts
  * GOTCHAS: 솅겐 계산시 시간대 처리 주의, 과거 여행 데이터 불일치 가능성
- * 
+ *
  * @module travel-manager
  */
 
@@ -95,7 +95,7 @@ export interface TravelInsights {
 /**
  * Main travel management service class
  * Handles all travel-related business logic and database operations
- * 
+ *
  * @example
  * ```typescript
  * const manager = new TravelManager('user123');
@@ -120,7 +120,7 @@ export class TravelManager {
    * Retrieves all trips for the user with filtering and sorting options
    * @param options - Filtering and sorting options
    * @returns Array of country visits matching the criteria
-   * 
+   *
    * @example
    * ```typescript
    * // Get only completed trips, sorted by entry date
@@ -171,7 +171,7 @@ export class TravelManager {
    * @param tripData - Trip information to create
    * @returns Created trip record
    * @throws Error if country or visa type is invalid, or dates are illogical
-   * 
+   *
    * @example
    * ```typescript
    * const newTrip = await manager.createTrip({
@@ -248,7 +248,7 @@ export class TravelManager {
    * @param updateData - Partial data to update
    * @returns Updated trip record
    * @throws Error if trip not found or unauthorized
-   * 
+   *
    * @example
    * ```typescript
    * const updated = await manager.updateTrip('trip123', {
@@ -319,7 +319,7 @@ export class TravelManager {
    * Deletes a trip record
    * @param tripId - ID of the trip to delete
    * @returns true if deleted, false if not found
-   * 
+   *
    * @example
    * ```typescript
    * const deleted = await manager.deleteTrip('trip123');
@@ -342,9 +342,9 @@ export class TravelManager {
   /**
    * Generates comprehensive travel insights and analytics
    * Analyzes travel patterns, Schengen compliance, and provides recommendations
-   * 
+   *
    * @returns Complete travel insights including statistics, patterns, and recommendations
-   * 
+   *
    * @example
    * ```typescript
    * const insights = await manager.getTravelInsights();
@@ -541,7 +541,7 @@ export class TravelManager {
    * @param exitDate - Planned exit date
    * @param passportCountry - User's passport country (optional)
    * @returns Validation result with warnings and suggestions
-   * 
+   *
    * @example
    * ```typescript
    * const validation = await manager.validatePlannedTrip(
@@ -575,7 +575,7 @@ export class TravelManager {
    * @param fromCountry - Origin/passport country
    * @param toCountry - Destination country
    * @returns Visa requirements including types, duration, and specific requirements
-   * 
+   *
    * @example
    * ```typescript
    * const requirements = await manager.getVisaRequirements('KR', 'US');
@@ -621,7 +621,7 @@ export class TravelManager {
    * Retrieves active travel alerts and warnings for a country
    * @param country - Country to check for alerts
    * @returns Array of active travel alerts sorted by severity
-   * 
+   *
    * @example
    * ```typescript
    * const alerts = await manager.getTravelAlerts('France');
@@ -670,7 +670,7 @@ export class TravelManager {
    * Updates user's travel preferences
    * @param preferences - Preferences to update (partial update supported)
    * @returns Updated preferences record
-   * 
+   *
    * @example
    * ```typescript
    * await manager.updateTravelPreferences({
@@ -736,7 +736,7 @@ export class TravelManager {
  * Factory function for creating TravelManager instances
  * @param userId - User ID for the travel manager
  * @returns New TravelManager instance
- * 
+ *
  * @example
  * ```typescript
  * const manager = createTravelManager('user123');
@@ -750,7 +750,7 @@ export function createTravelManager(userId: string): TravelManager {
  * Utility function to get user's travel summary quickly
  * @param userId - User ID to get summary for
  * @returns Trip summary statistics
- * 
+ *
  * @example
  * ```typescript
  * const summary = await getUserTravelSummary('user123');
@@ -772,7 +772,7 @@ export async function getUserTravelSummary(
  * @param entryDate - Planned entry date
  * @param exitDate - Planned exit date
  * @returns Trip validation result
- * 
+ *
  * @example
  * ```typescript
  * const validation = await validateUserTrip(

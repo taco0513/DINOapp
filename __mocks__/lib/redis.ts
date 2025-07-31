@@ -5,4 +5,4 @@ export const redis = {
   expire: jest.fn(),
   del: jest.fn(),
   ttl: jest.fn(),
-}
+};

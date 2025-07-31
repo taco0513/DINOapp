@@ -45,16 +45,21 @@ export class ABTestManager {
   }
 
   // 사용자에게 변형 할당
-  public async assignVariant(testId: string, userId?: string): Promise<ABVariant | null> {
+  public async assignVariant(
+    testId: string,
+    userId?: string
+  ): Promise<ABVariant | null> {
     const test = await this.getActiveTest(testId);
     if (!test) return null;
 
     // 쿠키에서 기존 할당 확인
     const cookieStore = cookies();
     const existingAssignment = cookieStore.get(`ab_${testId}`);
-    
+
     if (existingAssignment) {
-      const variant = test.variants.find(v => v.id === existingAssignment.value);
+      const variant = test.variants.find(
+        v => v.id === existingAssignment.value
+      );
       if (variant) return variant;
     }
 
@@ -79,7 +84,10 @@ export class ABTestManager {
   }
 
   // 변형 선택 알고리즘
-  private selectVariant(variants: ABVariant[], userId?: string): ABVariant | null {
+  private selectVariant(
+    variants: ABVariant[],
+    userId?: string
+  ): ABVariant | null {
     if (variants.length === 0) return null;
 
     // 가중치 기반 랜덤 선택
@@ -115,10 +123,7 @@ export class ABTestManager {
         id: testId,
         status: 'active',
         startDate: { lte: new Date() },
-        OR: [
-          { endDate: null },
-          { endDate: { gte: new Date() } },
-        ],
+        OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
       },
       include: {
         variants: true,
@@ -129,7 +134,11 @@ export class ABTestManager {
   }
 
   // 할당 기록
-  private async recordAssignment(testId: string, variantId: string, userId: string) {
+  private async recordAssignment(
+    testId: string,
+    variantId: string,
+    userId: string
+  ) {
     await prisma.aBTestAssignment.create({
       data: {
         testId,
@@ -149,7 +158,7 @@ export class ABTestManager {
   ) {
     const cookieStore = cookies();
     const variantCookie = cookieStore.get(`ab_${testId}`);
-    
+
     if (!variantCookie) return;
 
     await prisma.aBTestEvent.create({
@@ -178,23 +187,29 @@ export class ABTestManager {
     if (!test) return null;
 
     const results = test.variants.map(variant => {
-      const assignments = test.assignments.filter(a => a.variantId === variant.id);
+      const assignments = test.assignments.filter(
+        a => a.variantId === variant.id
+      );
       const events = test.events.filter(e => e.variantId === variant.id);
 
       const conversionEvents = events.filter(e => e.event === 'conversion');
-      const conversionRate = assignments.length > 0
-        ? (conversionEvents.length / assignments.length) * 100
-        : 0;
+      const conversionRate =
+        assignments.length > 0
+          ? (conversionEvents.length / assignments.length) * 100
+          : 0;
 
       return {
         variant: variant.name,
         assignments: assignments.length,
         conversions: conversionEvents.length,
         conversionRate,
-        events: events.reduce((acc, e) => {
-          acc[e.event] = (acc[e.event] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>),
+        events: events.reduce(
+          (acc, e) => {
+            acc[e.event] = (acc[e.event] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        ),
       };
     });
 
@@ -210,7 +225,7 @@ export class ABTestManager {
         variation.assignments
       );
       const pValue = this.calculatePValue(z);
-      
+
       return {
         ...variation,
         zScore: z,
@@ -230,7 +245,12 @@ export class ABTestManager {
   }
 
   // Z-score 계산
-  private calculateZScore(p1: number, p2: number, n1: number, n2: number): number {
+  private calculateZScore(
+    p1: number,
+    p2: number,
+    n1: number,
+    n2: number
+  ): number {
     const p = (p1 * n1 + p2 * n2) / (n1 + n2);
     const se = Math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2));
     return (p2 - p1) / se;
@@ -249,7 +269,9 @@ export class ABTestManager {
     z = Math.abs(z) / Math.sqrt(2.0);
 
     const t = 1.0 / (1.0 + p * z);
-    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
+    const y =
+      1.0 -
+      ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
 
     return 1 - sign * y;
   }
@@ -305,7 +327,7 @@ export class ABTestManager {
   public async completeTest(testId: string) {
     await prisma.aBTest.update({
       where: { id: testId },
-      data: { 
+      data: {
         status: 'completed',
         endDate: new Date(),
       },

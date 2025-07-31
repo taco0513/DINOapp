@@ -3,42 +3,72 @@
 // RELATED: lib/schengen-calculator.ts, app/api/trips/route.ts, components/schengen/SchengenCalculator.tsx
 // GOTCHAS: 날짜는 UTC로 처리, 셰겐 계산은 참고용이며 법적 책임 없음
 
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { getPrismaClient } from '@/lib/database/dev-prisma'
-import { calculateSchengenStatus, getSchengenWarnings } from '@/lib/schengen-calculator'
-import { createErrorResponse, ErrorCode, generateRequestId, handleApiError } from '@/lib/api/error-handler'
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { getPrismaClient } from '@/lib/database/dev-prisma';
+import {
+  calculateSchengenStatus,
+  getSchengenWarnings,
+} from '@/lib/schengen-calculator';
+import {
+  createErrorResponse,
+  ErrorCode,
+  generateRequestId,
+  handleApiError,
+} from '@/lib/api/error-handler';
 
-type VisaType = 'Tourist' | 'Business' | 'Student' | 'Working Holiday' | 'Digital Nomad' |
-  'Transit' | 'Work' | 'Investor' | 'Retirement' | 'Volunteer' | 'Visa Run' |
-  'Extension' | 'Spouse' | 'Medical'
+type VisaType =
+  | 'Tourist'
+  | 'Business'
+  | 'Student'
+  | 'Working Holiday'
+  | 'Digital Nomad'
+  | 'Transit'
+  | 'Work'
+  | 'Investor'
+  | 'Retirement'
+  | 'Volunteer'
+  | 'Visa Run'
+  | 'Extension'
+  | 'Spouse'
+  | 'Medical';
 
-type PassportCountry = 'US' | 'UK' | 'EU' | 'CA' | 'AU' | 'JP' | 'OTHER'
+type PassportCountry = 'US' | 'UK' | 'EU' | 'CA' | 'AU' | 'JP' | 'OTHER';
 
 // GET /api/schengen - Calculate Schengen status for authenticated user
 export async function GET(request: NextRequest) {
-  const requestId = generateRequestId()
-  
+  const requestId = generateRequestId();
+
   try {
-    const session = await getServerSession(authOptions)
-    
+    const session = await getServerSession(authOptions);
+
     if (!session?.user?.email) {
-      return createErrorResponse(ErrorCode.UNAUTHORIZED, undefined, undefined, requestId)
+      return createErrorResponse(
+        ErrorCode.UNAUTHORIZED,
+        undefined,
+        undefined,
+        requestId
+      );
     }
 
-    const prisma = await getPrismaClient()
+    const prisma = await getPrismaClient();
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {
         countryVisits: {
-          orderBy: { entryDate: 'desc' }
-        }
-      }
-    })
+          orderBy: { entryDate: 'desc' },
+        },
+      },
+    });
 
     if (!user) {
-      return createErrorResponse(ErrorCode.NOT_FOUND, 'User not found', undefined, requestId)
+      return createErrorResponse(
+        ErrorCode.NOT_FOUND,
+        'User not found',
+        undefined,
+        requestId
+      );
     }
 
     // Convert Prisma dates to match our types
@@ -53,12 +83,12 @@ export async function GET(request: NextRequest) {
       passportCountry: visit.passportCountry as PassportCountry,
       notes: visit.notes || undefined,
       createdAt: new Date(visit.createdAt),
-      updatedAt: new Date(visit.updatedAt)
-    }))
+      updatedAt: new Date(visit.updatedAt),
+    }));
 
     // Calculate Schengen status
-    const schengenStatus = calculateSchengenStatus(visits)
-    const warnings = getSchengenWarnings(schengenStatus)
+    const schengenStatus = calculateSchengenStatus(visits);
+    const warnings = getSchengenWarnings(schengenStatus);
 
     return NextResponse.json({
       success: true,
@@ -68,18 +98,38 @@ export async function GET(request: NextRequest) {
         totalVisits: visits.length,
         schengenVisits: visits.filter(visit => {
           const schengenCountries = [
-            'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
-            'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
-            'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
-            'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
-          ]
-          return schengenCountries.includes(visit.country)
-        }).length
-      }
-    })
-
+            'Austria',
+            'Belgium',
+            'Czech Republic',
+            'Denmark',
+            'Estonia',
+            'Finland',
+            'France',
+            'Germany',
+            'Greece',
+            'Hungary',
+            'Iceland',
+            'Italy',
+            'Latvia',
+            'Lithuania',
+            'Luxembourg',
+            'Malta',
+            'Netherlands',
+            'Norway',
+            'Poland',
+            'Portugal',
+            'Slovakia',
+            'Slovenia',
+            'Spain',
+            'Sweden',
+            'Switzerland',
+          ];
+          return schengenCountries.includes(visit.country);
+        }).length,
+      },
+    });
   } catch (error) {
     // Error calculating Schengen status
-    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId)
+    return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId);
   }
 }

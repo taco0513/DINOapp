@@ -26,12 +26,15 @@ export const env = {
   GMAIL_TOKEN_PATH: process.env.GMAIL_TOKEN_PATH || '',
 
   // Public features
-  ENABLE_GMAIL_INTEGRATION: process.env.NEXT_PUBLIC_ENABLE_GMAIL_INTEGRATION === 'true',
+  ENABLE_GMAIL_INTEGRATION:
+    process.env.NEXT_PUBLIC_ENABLE_GMAIL_INTEGRATION === 'true',
   ENABLE_NOTIFICATIONS: process.env.NEXT_PUBLIC_ENABLE_NOTIFICATIONS === 'true',
   ENABLE_ANALYTICS: process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === 'true',
 
   // API Configuration
-  API_RATE_LIMIT_REQUESTS: parseInt(process.env.API_RATE_LIMIT_REQUESTS || '100'),
+  API_RATE_LIMIT_REQUESTS: parseInt(
+    process.env.API_RATE_LIMIT_REQUESTS || '100'
+  ),
   API_RATE_LIMIT_WINDOW: parseInt(process.env.API_RATE_LIMIT_WINDOW || '60000'),
 
   // Cache Configuration
@@ -48,47 +51,49 @@ export const env = {
   SENTRY_DSN: process.env.SENTRY_DSN || '',
 
   // Logging
-  LOG_LEVEL: process.env.LOG_LEVEL || 'info'
-} as const
+  LOG_LEVEL: process.env.LOG_LEVEL || 'info',
+} as const;
 
 /**
  * Validate required environment variables
  */
 export function validateEnvironment(): { isValid: boolean; errors: string[] } {
-  const errors: string[] = []
+  const errors: string[] = [];
 
   // Required in production
   if (env.isProduction) {
     if (!env.NEXTAUTH_SECRET) {
-      errors.push('NEXTAUTH_SECRET is required in production')
+      errors.push('NEXTAUTH_SECRET is required in production');
     }
-    
+
     if (!env.GOOGLE_CLIENT_ID) {
-      errors.push('GOOGLE_CLIENT_ID is required')
+      errors.push('GOOGLE_CLIENT_ID is required');
     }
-    
+
     if (!env.GOOGLE_CLIENT_SECRET) {
-      errors.push('GOOGLE_CLIENT_SECRET is required')
+      errors.push('GOOGLE_CLIENT_SECRET is required');
     }
 
     if (!env.DATABASE_URL) {
-      errors.push('DATABASE_URL is required')
+      errors.push('DATABASE_URL is required');
     }
 
     if (env.ENABLE_GMAIL_INTEGRATION && !env.GMAIL_CREDENTIALS_PATH) {
-      errors.push('GMAIL_CREDENTIALS_PATH is required when Gmail integration is enabled')
+      errors.push(
+        'GMAIL_CREDENTIALS_PATH is required when Gmail integration is enabled'
+      );
     }
   }
 
   // Always required
   if (!env.NEXTAUTH_URL) {
-    errors.push('NEXTAUTH_URL is required')
+    errors.push('NEXTAUTH_URL is required');
   }
 
   return {
     isValid: errors.length === 0,
-    errors
-  }
+    errors,
+  };
 }
 
 /**
@@ -102,15 +107,17 @@ export function getDatabaseConfig() {
       connectionLimit: 20,
       idleTimeout: 30000,
       acquireTimeout: 60000,
-      ssl: env.DATABASE_URL.includes('postgresql') ? { rejectUnauthorized: false } : false
-    }
+      ssl: env.DATABASE_URL.includes('postgresql')
+        ? { rejectUnauthorized: false }
+        : false,
+    };
   }
 
   return {
     url: env.DATABASE_URL,
     connectionLimit: 5,
-    idleTimeout: 10000
-  }
+    idleTimeout: 10000,
+  };
 }
 
 /**
@@ -122,8 +129,8 @@ export function getCacheConfig() {
     useRedis: env.ENABLE_REDIS_CACHE && env.isProduction,
     redisUrl: env.REDIS_URL,
     memoryLimit: env.isProduction ? 100 : 50, // MB
-    cleanupInterval: 60000 // 1 minute
-  }
+    cleanupInterval: 60000, // 1 minute
+  };
 }
 
 /**
@@ -137,15 +144,15 @@ export function getRateLimitConfig() {
     skipFailedRequests: false,
     keyPrefix: 'dinocal:ratelimit:',
     // More lenient in development
-    multiplier: env.isDevelopment ? 10 : 1
-  }
+    multiplier: env.isDevelopment ? 10 : 1,
+  };
 }
 
 /**
  * Get security headers configuration
  */
 export function getSecurityConfig() {
-  const baseUrl = env.NEXTAUTH_URL
+  const baseUrl = env.NEXTAUTH_URL;
 
   return {
     contentSecurityPolicy: {
@@ -155,31 +162,35 @@ export function getSecurityConfig() {
         "'unsafe-inline'",
         "'unsafe-eval'",
         'https://accounts.google.com',
-        'https://apis.google.com'
+        'https://apis.google.com',
       ],
-      'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      'style-src': [
+        "'self'",
+        "'unsafe-inline'",
+        'https://fonts.googleapis.com',
+      ],
       'font-src': ["'self'", 'https://fonts.gstatic.com'],
       'img-src': [
         "'self'",
         'data:',
         'https://lh3.googleusercontent.com',
-        'https://*.vercel-insights.com'
+        'https://*.vercel-insights.com',
       ],
       'connect-src': [
         "'self'",
         'https://accounts.google.com',
         'https://www.googleapis.com',
-        'https://*.vercel-insights.com'
+        'https://*.vercel-insights.com',
       ],
-      'frame-src': ['https://accounts.google.com']
+      'frame-src': ['https://accounts.google.com'],
     },
     headers: {
       'X-Frame-Options': 'SAMEORIGIN',
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'origin-when-cross-origin',
-      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
-    }
-  }
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    },
+  };
 }
 
 /**
@@ -191,5 +202,5 @@ export const config = {
   cache: getCacheConfig(),
   rateLimit: getRateLimitConfig(),
   security: getSecurityConfig(),
-  validate: validateEnvironment
-}
+  validate: validateEnvironment,
+};

@@ -53,7 +53,7 @@ export function useABTest(testId: string): ABTestHook {
 
 // 사용 예시:
 // const { variant, loading, trackEvent } = useABTest('homepage-cta-test');
-// 
+//
 // if (variant === 'variant-a') {
 //   return <ButtonVariantA onClick={() => trackEvent('click')} />;
 // } else {

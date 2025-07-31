@@ -326,7 +326,9 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                 <h3 className='text-xl font-semibold'>
                   어느 나라로 여행하셨나요?
                 </h3>
-                <p className='text-muted-foreground'>방문한 국가를 선택해주세요</p>
+                <p className='text-muted-foreground'>
+                  방문한 국가를 선택해주세요
+                </p>
               </div>
             </div>
 
@@ -383,7 +385,9 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
               </div>
               <div>
                 <h3 className='text-xl font-semibold'>언제 여행하셨나요?</h3>
-                <p className='text-muted-foreground'>입국과 출국 날짜를 입력해주세요</p>
+                <p className='text-muted-foreground'>
+                  입국과 출국 날짜를 입력해주세요
+                </p>
               </div>
             </div>
 

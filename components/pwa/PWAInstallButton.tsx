@@ -1,25 +1,27 @@
-'use client'
+'use client';
 
-import { usePWA } from '@/hooks/usePWA'
+import { usePWA } from '@/hooks/usePWA';
 
 export default function PWAInstallButton() {
-  const { isInstallable, isInstalled, isOffline, installPrompt } = usePWA()
+  const { isInstallable, isInstalled, isOffline, installPrompt } = usePWA();
 
   if (isInstalled || !isInstallable) {
-    return null
+    return null;
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: 'var(--space-5)',
-      right: 'var(--space-5)',
-      zIndex: 1000,
-      animation: 'slideUp var(--transition-slow) ease-out'
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 'var(--space-5)',
+        right: 'var(--space-5)',
+        zIndex: 1000,
+        animation: 'slideUp var(--transition-slow) ease-out',
+      }}
+    >
       <button
         onClick={installPrompt}
-        className="btn btn-primary"
+        className='btn btn-primary'
         style={{
           padding: 'var(--space-3) var(--space-5)',
           fontSize: 'var(--text-sm)',
@@ -27,13 +29,12 @@ export default function PWAInstallButton() {
           boxShadow: 'var(--shadow-md)',
           display: 'flex',
           alignItems: 'center',
-          gap: 'var(--space-2)'
+          gap: 'var(--space-2)',
         }}
       >
-        <span>📱</span>
-        앱 설치하기
+        <span>📱</span>앱 설치하기
       </button>
-      
+
       <style jsx>{`
         @keyframes slideUp {
           from {
@@ -47,5 +48,5 @@ export default function PWAInstallButton() {
         }
       `}</style>
     </div>
-  )
+  );
 }

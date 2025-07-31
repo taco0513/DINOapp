@@ -3,9 +3,9 @@
  * Provides consistent error handling across the application
  */
 
-import { NextResponse } from 'next/server'
-import { ZodError } from 'zod'
-import { Prisma } from '@prisma/client'
+import { NextResponse } from 'next/server';
+import { ZodError } from 'zod';
+import { Prisma } from '@prisma/client';
 
 // Error types
 export enum ErrorCode {
@@ -17,7 +17,7 @@ export enum ErrorCode {
   CONFLICT = 'CONFLICT',
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
-  
+
   // Server errors (5xx)
   INTERNAL_ERROR = 'INTERNAL_ERROR',
   DATABASE_ERROR = 'DATABASE_ERROR',
@@ -30,7 +30,7 @@ export enum ErrorSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 // Custom error class
@@ -43,21 +43,21 @@ export class AppError extends Error {
     public details?: any,
     public isOperational: boolean = true
   ) {
-    super(message)
-    this.name = 'AppError'
-    Error.captureStackTrace(this, this.constructor)
+    super(message);
+    this.name = 'AppError';
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 
 // Error response interface
 interface ErrorResponse {
   error: {
-    code: string
-    message: string
-    details?: any
-    timestamp: string
-    requestId?: string
-  }
+    code: string;
+    message: string;
+    details?: any;
+    timestamp: string;
+    requestId?: string;
+  };
 }
 
 // Create standardized error response
@@ -65,38 +65,38 @@ export function createErrorResponse(
   error: AppError | Error,
   requestId?: string
 ): NextResponse<ErrorResponse> {
-  const isProduction = process.env.NODE_ENV === 'production'
-  
+  const isProduction = process.env.NODE_ENV === 'production';
+
   // Determine error details
-  let code = ErrorCode.INTERNAL_ERROR
-  let statusCode = 500
-  let message = isProduction ? 'An error occurred' : error.message
-  let details = undefined
-  
+  let code = ErrorCode.INTERNAL_ERROR;
+  let statusCode = 500;
+  let message = isProduction ? 'An error occurred' : error.message;
+  let details = undefined;
+
   if (error instanceof AppError) {
-    code = error.code
-    statusCode = error.statusCode
-    message = error.message
-    details = isProduction ? undefined : error.details
+    code = error.code;
+    statusCode = error.statusCode;
+    message = error.message;
+    details = isProduction ? undefined : error.details;
   }
-  
+
   const response: ErrorResponse = {
     error: {
       code,
       message,
       timestamp: new Date().toISOString(),
-      requestId
-    }
-  }
-  
+      requestId,
+    },
+  };
+
   if (details && !isProduction) {
-    response.error.details = details
+    response.error.details = details;
   }
-  
+
   // Log error
-  logError(error, requestId)
-  
-  return NextResponse.json(response, { status: statusCode })
+  logError(error, requestId);
+
+  return NextResponse.json(response, { status: statusCode });
 }
 
 // Error logging
@@ -107,56 +107,96 @@ function logError(error: Error, requestId?: string) {
     error: {
       name: error.name,
       message: error.message,
-      stack: error.stack
-    }
-  }
-  
+      stack: error.stack,
+    },
+  };
+
   if (error instanceof AppError) {
     Object.assign(errorLog, {
       code: error.code,
       severity: error.severity,
-      isOperational: error.isOperational
-    })
+      isOperational: error.isOperational,
+    });
   }
-  
+
   // In production, send to monitoring service
   if (process.env.NODE_ENV === 'production' && process.env.SENTRY_DSN) {
     // Sentry logging would go here
   }
-  
+
   // Always log to console
-  console.error('Error Log:', JSON.stringify(errorLog, null, 2))
+  console.error('Error Log:', JSON.stringify(errorLog, null, 2));
 }
 
 // Error factory functions
 export const errors = {
   badRequest: (message = 'Bad request', details?: any) =>
-    new AppError(ErrorCode.BAD_REQUEST, message, 400, ErrorSeverity.LOW, details),
-  
+    new AppError(
+      ErrorCode.BAD_REQUEST,
+      message,
+      400,
+      ErrorSeverity.LOW,
+      details
+    ),
+
   unauthorized: (message = 'Unauthorized') =>
     new AppError(ErrorCode.UNAUTHORIZED, message, 401, ErrorSeverity.MEDIUM),
-  
+
   forbidden: (message = 'Forbidden') =>
     new AppError(ErrorCode.FORBIDDEN, message, 403, ErrorSeverity.MEDIUM),
-  
+
   notFound: (resource = 'Resource') =>
-    new AppError(ErrorCode.NOT_FOUND, `${resource} not found`, 404, ErrorSeverity.LOW),
-  
+    new AppError(
+      ErrorCode.NOT_FOUND,
+      `${resource} not found`,
+      404,
+      ErrorSeverity.LOW
+    ),
+
   conflict: (message = 'Conflict', details?: any) =>
-    new AppError(ErrorCode.CONFLICT, message, 409, ErrorSeverity.MEDIUM, details),
-  
+    new AppError(
+      ErrorCode.CONFLICT,
+      message,
+      409,
+      ErrorSeverity.MEDIUM,
+      details
+    ),
+
   validation: (details: any) =>
-    new AppError(ErrorCode.VALIDATION_ERROR, 'Validation failed', 400, ErrorSeverity.LOW, details),
-  
+    new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      'Validation failed',
+      400,
+      ErrorSeverity.LOW,
+      details
+    ),
+
   rateLimit: () =>
-    new AppError(ErrorCode.RATE_LIMIT_EXCEEDED, 'Too many requests', 429, ErrorSeverity.LOW),
-  
+    new AppError(
+      ErrorCode.RATE_LIMIT_EXCEEDED,
+      'Too many requests',
+      429,
+      ErrorSeverity.LOW
+    ),
+
   internal: (message = 'Internal server error', details?: any) =>
-    new AppError(ErrorCode.INTERNAL_ERROR, message, 500, ErrorSeverity.HIGH, details),
-  
+    new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      message,
+      500,
+      ErrorSeverity.HIGH,
+      details
+    ),
+
   database: (message = 'Database error', details?: any) =>
-    new AppError(ErrorCode.DATABASE_ERROR, message, 500, ErrorSeverity.HIGH, details),
-  
+    new AppError(
+      ErrorCode.DATABASE_ERROR,
+      message,
+      500,
+      ErrorSeverity.HIGH,
+      details
+    ),
+
   external: (service: string, details?: any) =>
     new AppError(
       ErrorCode.EXTERNAL_SERVICE_ERROR,
@@ -165,32 +205,37 @@ export const errors = {
       ErrorSeverity.MEDIUM,
       details
     ),
-  
+
   configuration: (message = 'Configuration error') =>
-    new AppError(ErrorCode.CONFIGURATION_ERROR, message, 500, ErrorSeverity.CRITICAL)
-}
+    new AppError(
+      ErrorCode.CONFIGURATION_ERROR,
+      message,
+      500,
+      ErrorSeverity.CRITICAL
+    ),
+};
 
 // Handle different error types
 export function handleError(error: unknown, requestId?: string): NextResponse {
   // Already an AppError
   if (error instanceof AppError) {
-    return createErrorResponse(error, requestId)
+    return createErrorResponse(error, requestId);
   }
-  
+
   // Zod validation error
   if (error instanceof ZodError) {
-    const validationErrors = error.errors.reduce((acc, curr) => {
-      const path = curr.path.join('.')
-      acc[path] = curr.message
-      return acc
-    }, {} as Record<string, string>)
-    
-    return createErrorResponse(
-      errors.validation(validationErrors),
-      requestId
-    )
+    const validationErrors = error.errors.reduce(
+      (acc, curr) => {
+        const path = curr.path.join('.');
+        acc[path] = curr.message;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    return createErrorResponse(errors.validation(validationErrors), requestId);
   }
-  
+
   // Prisma errors
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
@@ -198,30 +243,27 @@ export function handleError(error: unknown, requestId?: string): NextResponse {
         return createErrorResponse(
           errors.conflict('Duplicate entry', { field: error.meta?.target }),
           requestId
-        )
+        );
       case 'P2025':
-        return createErrorResponse(
-          errors.notFound('Record'),
-          requestId
-        )
+        return createErrorResponse(errors.notFound('Record'), requestId);
       default:
         return createErrorResponse(
           errors.database('Database operation failed', { code: error.code }),
           requestId
-        )
+        );
     }
   }
-  
+
   // Generic Error
   if (error instanceof Error) {
-    return createErrorResponse(error, requestId)
+    return createErrorResponse(error, requestId);
   }
-  
+
   // Unknown error
   return createErrorResponse(
     errors.internal('An unexpected error occurred'),
     requestId
-  )
+  );
 }
 
 // Async error wrapper for route handlers
@@ -230,27 +272,27 @@ export function asyncHandler<T = any>(
 ) {
   return async (req: Request, context?: any) => {
     try {
-      return await handler(req, context)
+      return await handler(req, context);
     } catch (error) {
-      const requestId = req.headers.get('X-Request-ID') || crypto.randomUUID()
-      return handleError(error, requestId)
+      const requestId = req.headers.get('X-Request-ID') || crypto.randomUUID();
+      return handleError(error, requestId);
     }
-  }
+  };
 }
 
 // Client-side error handler
 export function handleClientError(error: unknown): string {
   if (error instanceof Error) {
-    return error.message
+    return error.message;
   }
-  
+
   if (typeof error === 'string') {
-    return error
+    return error;
   }
-  
+
   if (error && typeof error === 'object' && 'message' in error) {
-    return String(error.message)
+    return String(error.message);
   }
-  
-  return 'An unexpected error occurred'
+
+  return 'An unexpected error occurred';
 }

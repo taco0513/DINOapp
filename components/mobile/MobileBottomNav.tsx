@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 interface NavItem {
-  id: string
-  label: string
-  icon: string
-  href: string
-  badge?: number
+  id: string;
+  label: string;
+  icon: string;
+  href: string;
+  badge?: number;
 }
 
 // Primary navigation items for mobile (most important features)
@@ -18,44 +18,44 @@ const navItems: NavItem[] = [
     id: 'dashboard',
     label: '홈',
     icon: '🏠',
-    href: '/dashboard'
+    href: '/dashboard',
   },
   {
     id: 'trips',
     label: '여행기록',
     icon: '✈️',
-    href: '/trips'
+    href: '/trips',
   },
   {
     id: 'schengen',
     label: '셰겐',
     icon: '🇪🇺',
-    href: '/schengen'
+    href: '/schengen',
   },
   {
     id: 'more',
     label: '더보기',
     icon: '⋯',
-    href: '/more' // 더보기 페이지로 Secondary 기능들 연결
-  }
-]
+    href: '/more', // 더보기 페이지로 Secondary 기능들 연결
+  },
+];
 
 export default function MobileBottomNav() {
-  const pathname = usePathname()
-  const [isMobile, setIsMobile] = useState(false)
+  const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   if (!isMobile) {
-    return null
+    return null;
   }
 
   return (
@@ -73,12 +73,13 @@ export default function MobileBottomNav() {
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        height: '64px'
+        height: '64px',
       }}
     >
-      {navItems.map((item) => {
-        const isActive = pathname === item.href || 
-                        (item.href !== '/dashboard' && pathname.startsWith(item.href))
+      {navItems.map(item => {
+        const isActive =
+          pathname === item.href ||
+          (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
         return (
           <Link
@@ -97,29 +98,31 @@ export default function MobileBottomNav() {
               minWidth: '60px',
               minHeight: '44px',
               position: 'relative',
-              border: isActive ? '1px solid var(--color-border-strong)' : '1px solid var(--color-border)',
-              backgroundColor: isActive ? 'var(--color-surface)' : 'var(--color-background)',
+              border: isActive
+                ? '1px solid var(--color-border-strong)'
+                : '1px solid var(--color-border)',
+              backgroundColor: isActive
+                ? 'var(--color-surface)'
+                : 'var(--color-background)',
               margin: 'var(--space-1)',
-              borderRadius: 'var(--radius-sm)'
+              borderRadius: 'var(--radius-sm)',
             }}
           >
             <div
               style={{
                 fontSize: '18px',
-                marginBottom: 'var(--space-1)'
+                marginBottom: 'var(--space-1)',
               }}
             >
               {item.icon}
             </div>
-            
-            <span style={{ fontSize: 'var(--text-xs)' }}>
-              {item.label}
-            </span>
+
+            <span style={{ fontSize: 'var(--text-xs)' }}>{item.label}</span>
 
             {/* 배지 */}
             {item.badge && item.badge > 0 && (
               <div
-                className="badge"
+                className='badge'
                 style={{
                   position: 'absolute',
                   top: 'var(--space-1)',
@@ -130,15 +133,15 @@ export default function MobileBottomNav() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 'var(--text-xs)',
-                  fontWeight: 'var(--font-semibold)'
+                  fontWeight: 'var(--font-semibold)',
                 }}
               >
                 {item.badge > 99 ? '99+' : item.badge}
               </div>
             )}
           </Link>
-        )
+        );
       })}
     </nav>
-  )
+  );
 }

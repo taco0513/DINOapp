@@ -33,6 +33,7 @@ Trip Management System
 #### Features
 
 ##### Trip Information Display
+
 - **Country Information**: Flag, name, and Schengen status indicator
 - **Date Management**: Entry date, exit date, or "currently staying" status
 - **Duration Tracking**: Visual progress bar with color-coded warnings
@@ -40,29 +41,33 @@ Trip Management System
 - **Notes Display**: Optional trip notes and additional information
 
 ##### Interactive Controls
+
 - **Edit Button**: Opens trip for modification
 - **Delete Button**: Two-step confirmation deletion process
 - **Progress Visualization**: Real-time progress bar updates
 - **Status Indicators**: Visual warnings for overstay situations
 
 #### Props Interface
+
 ```typescript
 interface TripCardProps {
-  trip: CountryVisit          // Trip data object
-  onEdit: (trip: CountryVisit) => void    // Edit callback
-  onDelete: () => void        // Delete callback
+  trip: CountryVisit; // Trip data object
+  onEdit: (trip: CountryVisit) => void; // Edit callback
+  onDelete: () => void; // Delete callback
 }
 ```
 
 #### State Management
+
 ```typescript
-const [loading, setLoading] = useState(false)
-const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+const [loading, setLoading] = useState(false);
+const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 ```
 
 #### Key Functions
 
 ##### `calculateDays()`
+
 - **Purpose**: Calculate total stay duration
 - **Logic**: Handles both completed trips and ongoing stays
 - **Returns**: Number of days stayed
@@ -70,20 +75,26 @@ const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 ```typescript
 const calculateDays = () => {
   if (exitDate) {
-    return Math.ceil((exitDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24))
+    return Math.ceil(
+      (exitDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
   } else {
     // Currently staying
-    return Math.ceil((new Date().getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24))
+    return Math.ceil(
+      (new Date().getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
   }
-}
+};
 ```
 
 ##### `handleDelete()`
+
 - **Purpose**: Two-step trip deletion with confirmation
 - **Security**: API call with error handling
 - **UX**: Loading states and confirmation flow
 
 ##### `formatDate()`
+
 - **Purpose**: Localized date formatting
 - **Locale**: Korean locale (`ko-KR`)
 - **Format**: Full date with year, month, and day
@@ -91,12 +102,13 @@ const calculateDays = () => {
 #### Visual Design Elements
 
 ##### Progress Bar Logic
+
 ```typescript
 <div
   className={`h-2 rounded-full transition-all ${
-    days > trip.maxDays 
+    days > trip.maxDays
       ? 'bg-red-500'          // Overstay
-      : days > trip.maxDays * 0.8 
+      : days > trip.maxDays * 0.8
         ? 'bg-yellow-500'     // Warning (80%+ used)
         : 'bg-green-500'      // Safe
   }`}
@@ -105,6 +117,7 @@ const calculateDays = () => {
 ```
 
 ##### Status Badges
+
 - **Schengen Indicator**: Blue badge for Schengen countries
 - **Currently Staying**: Green badge for ongoing trips
 - **Overstay Warning**: Red warning text for exceeded limits
@@ -119,6 +132,7 @@ const calculateDays = () => {
 #### Features
 
 ##### Form Fields
+
 - **Country**: Text input for destination country
 - **Entry Date**: Date picker for arrival date
 - **Exit Date**: Optional date picker for departure (empty for ongoing trips)
@@ -126,48 +140,53 @@ const calculateDays = () => {
 - **Purpose**: Text input for trip purpose/notes
 
 ##### Form Validation
+
 - **Required Fields**: Country and entry date are mandatory
 - **Date Validation**: Entry date must be valid, exit date must be after entry
 - **Visa Types**: Predefined options to ensure consistency
 
 #### Props Interface
+
 ```typescript
 interface WireframeTripFormProps {
-  trip?: CountryVisit         // Optional trip for editing
-  onSuccess: () => void       // Success callback
-  onCancel: () => void        // Cancel callback
+  trip?: CountryVisit; // Optional trip for editing
+  onSuccess: () => void; // Success callback
+  onCancel: () => void; // Cancel callback
 }
 ```
 
 #### State Management
+
 ```typescript
 const [formData, setFormData] = useState({
   country: trip?.country || '',
   entryDate: trip?.entryDate || '',
   exitDate: trip?.exitDate || '',
   visaType: trip?.visaType || '',
-  purpose: trip?.purpose || ''
-})
+  purpose: trip?.purpose || '',
+});
 ```
 
 #### Form Submission Logic
+
 ```typescript
 const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
+  e.preventDefault();
   try {
     if (trip) {
-      await ApiClient.updateTrip(trip.id!, formData)
+      await ApiClient.updateTrip(trip.id!, formData);
     } else {
-      await ApiClient.createTrip(formData)
+      await ApiClient.createTrip(formData);
     }
-    onSuccess()
+    onSuccess();
   } catch (error) {
     // Error handling
   }
-}
+};
 ```
 
 #### Visa Type Options
+
 - **schengen**: 셰겐 관광
 - **tourist**: 관광
 - **business**: 비즈니스
@@ -175,7 +194,9 @@ const handleSubmit = async (e: React.FormEvent) => {
 - **visa-free**: 비자면제
 
 #### Wireframe Styling
+
 The component uses inline styles to maintain a consistent wireframe aesthetic:
+
 - **Modal Overlay**: Semi-transparent black background
 - **Form Container**: White background with simple borders
 - **Input Styling**: Minimal borders and padding
@@ -190,9 +211,11 @@ The component uses inline styles to maintain a consistent wireframe aesthetic:
 **Rate Limiting**: General rate limits applied
 
 #### Request Parameters
+
 None (user identified through session)
 
 #### Response Format
+
 ```typescript
 {
   success: boolean,
@@ -201,18 +224,20 @@ None (user identified through session)
 ```
 
 #### Security Features
+
 - **Authentication Check**: Valid session required
 - **Rate Limiting**: Prevents abuse
 - **Optimized Queries**: Uses database query optimization
 - **User Isolation**: Only returns trips for authenticated user
 
 #### Implementation Details
+
 ```typescript
 // Use optimized query with caching
 const trips = await getUserTripsOptimized(user.id, {
-  limit: 100,           // Default 100 trips limit
-  includeActive: undefined // Include all trips
-})
+  limit: 100, // Default 100 trips limit
+  includeActive: undefined, // Include all trips
+});
 ```
 
 ---
@@ -224,6 +249,7 @@ const trips = await getUserTripsOptimized(user.id, {
 **Security**: CSRF protection, input sanitization, rate limiting
 
 #### Request Body Schema
+
 ```typescript
 {
   country: string,          // Required, minimum 1 character
@@ -237,23 +263,38 @@ const trips = await getUserTripsOptimized(user.id, {
 ```
 
 #### Validation Schema (Zod)
+
 ```typescript
 const createTripSchema = z.object({
   country: z.string().min(1, 'Country is required'),
-  entryDate: z.string().refine(date => !isNaN(Date.parse(date)), 'Invalid entry date'),
+  entryDate: z
+    .string()
+    .refine(date => !isNaN(Date.parse(date)), 'Invalid entry date'),
   exitDate: z.string().optional().nullable(),
   visaType: z.enum([
-    'Tourist', 'Business', 'Student', 'Working Holiday', 'Digital Nomad',
-    'Transit', 'Work', 'Investor', 'Retirement', 'Volunteer', 'Visa Run',
-    'Extension', 'Spouse', 'Medical'
+    'Tourist',
+    'Business',
+    'Student',
+    'Working Holiday',
+    'Digital Nomad',
+    'Transit',
+    'Work',
+    'Investor',
+    'Retirement',
+    'Volunteer',
+    'Visa Run',
+    'Extension',
+    'Spouse',
+    'Medical',
   ]),
   maxDays: z.number().min(1).max(365),
   passportCountry: z.enum(['US', 'UK', 'EU', 'CA', 'AU', 'JP', 'OTHER']),
-  notes: z.string().optional()
-})
+  notes: z.string().optional(),
+});
 ```
 
 #### Security Measures
+
 1. **Rate Limiting**: Stricter limits for mutation operations
 2. **CSRF Protection**: Double-submit token required
 3. **Input Sanitization**: All text fields sanitized
@@ -261,6 +302,7 @@ const createTripSchema = z.object({
 5. **Authorization**: User can only create trips for themselves
 
 #### Response Format
+
 ```typescript
 {
   success: boolean,
@@ -278,24 +320,27 @@ const createTripSchema = z.object({
 **Authorization**: User can only update their own trips
 
 #### Request Body
+
 Same schema as POST with additional `id` field for trip identification
 
 #### Ownership Verification
+
 ```typescript
 // Verify user owns the trip before updating
 const existingTrip = await prisma.countryVisit.findFirst({
-  where: { 
+  where: {
     id: sanitizedBody.id,
-    userId: user.id
-  }
-})
+    userId: user.id,
+  },
+});
 
 if (!existingTrip) {
-  return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found')
+  return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found');
 }
 ```
 
 #### Update Logic
+
 - **Selective Updates**: Only provided fields are updated
 - **Timestamp Management**: `updatedAt` automatically set
 - **Data Validation**: Full validation applied to updates
@@ -310,30 +355,33 @@ if (!existingTrip) {
 **Authorization**: User can only delete their own trips
 
 #### Request Parameters
+
 - **Query Parameter**: `id` - Trip ID to delete
 
 #### Security Features
+
 - **Ownership Verification**: Ensures user owns the trip
 - **Soft Delete**: Could be implemented for data recovery
 - **Audit Trail**: Could log deletion for compliance
 
 #### Implementation
+
 ```typescript
 // Verify ownership before deletion
 const existingTrip = await prisma.countryVisit.findFirst({
-  where: { 
+  where: {
     id: tripId,
-    userId: user.id
-  }
-})
+    userId: user.id,
+  },
+});
 
 if (!existingTrip) {
-  return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found')
+  return createErrorResponse(ErrorCode.NOT_FOUND, 'Trip not found');
 }
 
 await prisma.countryVisit.delete({
-  where: { id: tripId }
-})
+  where: { id: tripId },
+});
 ```
 
 ## Data Models
@@ -344,17 +392,17 @@ The core entity representing a single trip or stay in a country.
 
 ```typescript
 interface CountryVisit {
-  id: string                    // Unique identifier
-  userId: string                // Owner user ID
-  country: string               // Destination country name
-  entryDate: string            // ISO date string for entry
-  exitDate?: string | null     // ISO date string for exit (null if ongoing)
-  visaType: VisaType           // Type of visa used
-  maxDays: number              // Maximum allowed stay duration
-  passportCountry: PassportCountry // User's passport country
-  notes?: string               // Optional trip notes
-  createdAt: Date              // Record creation timestamp
-  updatedAt: Date              // Last modification timestamp
+  id: string; // Unique identifier
+  userId: string; // Owner user ID
+  country: string; // Destination country name
+  entryDate: string; // ISO date string for entry
+  exitDate?: string | null; // ISO date string for exit (null if ongoing)
+  visaType: VisaType; // Type of visa used
+  maxDays: number; // Maximum allowed stay duration
+  passportCountry: PassportCountry; // User's passport country
+  notes?: string; // Optional trip notes
+  createdAt: Date; // Record creation timestamp
+  updatedAt: Date; // Last modification timestamp
 }
 ```
 
@@ -364,17 +412,18 @@ Information about countries and their visa requirements.
 
 ```typescript
 interface Country {
-  name: string                 // Country name
-  code: string                 // ISO country code
-  flag: string                 // Emoji flag representation
-  isSchengen: boolean          // Whether country is in Schengen area
-  visaRequirements: {          // Visa requirements by passport
+  name: string; // Country name
+  code: string; // ISO country code
+  flag: string; // Emoji flag representation
+  isSchengen: boolean; // Whether country is in Schengen area
+  visaRequirements: {
+    // Visa requirements by passport
     [passportCountry: string]: {
-      required: boolean
-      maxStayDays: number
-      visaTypes: VisaType[]
-    }
-  }
+      required: boolean;
+      maxStayDays: number;
+      visaTypes: VisaType[];
+    };
+  };
 }
 ```
 
@@ -383,9 +432,9 @@ interface Country {
 Standardized visa classifications for consistency.
 
 ```typescript
-type VisaType = 
+type VisaType =
   | 'Tourist'
-  | 'Business' 
+  | 'Business'
   | 'Student'
   | 'Working Holiday'
   | 'Digital Nomad'
@@ -397,7 +446,7 @@ type VisaType =
   | 'Visa Run'
   | 'Extension'
   | 'Spouse'
-  | 'Medical'
+  | 'Medical';
 ```
 
 ## Integration with Other Systems
@@ -409,16 +458,16 @@ Trip records are automatically analyzed for Schengen compliance:
 ```typescript
 // Calculate Schengen usage based on trips
 function calculateSchengenUsage(trips: CountryVisit[]): SchengenStatus {
-  const schengenTrips = trips.filter(trip => 
-    getCountryByName(trip.country)?.isSchengen
-  )
-  
+  const schengenTrips = trips.filter(
+    trip => getCountryByName(trip.country)?.isSchengen
+  );
+
   // Implement 90/180 rule calculation
   return {
     usedDays: calculateUsedDays(schengenTrips),
     remainingDays: 90 - calculateUsedDays(schengenTrips),
-    isCompliant: calculateUsedDays(schengenTrips) <= 90
-  }
+    isCompliant: calculateUsedDays(schengenTrips) <= 90,
+  };
 }
 ```
 
@@ -434,8 +483,8 @@ function emailToTripSuggestion(travelInfo: TravelInfo): Partial<CountryVisit> {
     entryDate: travelInfo.departureDate || '',
     exitDate: travelInfo.returnDate || null,
     visaType: 'Tourist', // Default, user can modify
-    notes: `From email: ${travelInfo.subject}`
-  }
+    notes: `From email: ${travelInfo.subject}`,
+  };
 }
 ```
 
@@ -450,8 +499,8 @@ function tripToCalendarEvent(trip: CountryVisit): CalendarEvent {
     summary: `Trip to ${trip.country}`,
     start: { date: trip.entryDate },
     end: { date: trip.exitDate || trip.entryDate },
-    description: `Visa: ${trip.visaType}\nNotes: ${trip.notes || 'None'}`
-  }
+    description: `Visa: ${trip.visaType}\nNotes: ${trip.notes || 'None'}`,
+  };
 }
 ```
 
@@ -486,10 +535,10 @@ Components handle errors gracefully:
 
 ```typescript
 try {
-  await ApiClient.deleteTrip(trip.id)
-  onDelete() // Success callback
+  await ApiClient.deleteTrip(trip.id);
+  onDelete(); // Success callback
 } catch (error) {
-  setError(error.message)
+  setError(error.message);
   // Show user-friendly error message
 }
 ```
@@ -545,18 +594,18 @@ describe('TripCard', () => {
       exitDate: '2024-01-10',
       // ... other fields
     }
-    
+
     const component = render(<TripCard trip={trip} />)
     expect(component.getByText('9일')).toBeInTheDocument()
   })
-  
+
   it('should show currently staying for ongoing trip', () => {
     const trip = {
       entryDate: '2024-01-01',
       exitDate: null,
       // ... other fields
     }
-    
+
     const component = render(<TripCard trip={trip} />)
     expect(component.getByText('현재 체류 중')).toBeInTheDocument()
   })
@@ -573,18 +622,18 @@ describe('Trip API', () => {
       entryDate: '2024-01-01',
       visaType: 'Tourist',
       maxDays: 90,
-      passportCountry: 'US'
-    }
-    
+      passportCountry: 'US',
+    };
+
     const response = await request(app)
       .post('/api/trips')
       .send(tripData)
-      .expect(201)
-    
-    expect(response.body.success).toBe(true)
-    expect(response.body.trip.country).toBe('Germany')
-  })
-})
+      .expect(201);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.trip.country).toBe('Germany');
+  });
+});
 ```
 
 ### E2E Testing
@@ -592,19 +641,21 @@ describe('Trip API', () => {
 ```typescript
 test('Trip management workflow', async ({ page }) => {
   // Login
-  await page.goto('/login')
-  await page.click('[data-testid="login-button"]')
-  
+  await page.goto('/login');
+  await page.click('[data-testid="login-button"]');
+
   // Create trip
-  await page.goto('/trips')
-  await page.click('[data-testid="add-trip-button"]')
-  await page.fill('[data-testid="country-input"]', 'France')
-  await page.fill('[data-testid="entry-date"]', '2024-01-01')
-  await page.click('[data-testid="submit-trip"]')
-  
+  await page.goto('/trips');
+  await page.click('[data-testid="add-trip-button"]');
+  await page.fill('[data-testid="country-input"]', 'France');
+  await page.fill('[data-testid="entry-date"]', '2024-01-01');
+  await page.click('[data-testid="submit-trip"]');
+
   // Verify trip appears
-  await expect(page.locator('[data-testid="trip-card"]')).toContainText('France')
-})
+  await expect(page.locator('[data-testid="trip-card"]')).toContainText(
+    'France'
+  );
+});
 ```
 
 ## Deployment Considerations

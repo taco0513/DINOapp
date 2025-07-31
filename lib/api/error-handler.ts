@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 /**
  * Standard API Error Response
@@ -6,16 +6,16 @@ import { NextResponse } from 'next/server'
  */
 
 export interface APIError {
-  error: string
-  details?: string | object
-  code?: string
-  timestamp?: string
-  requestId?: string
+  error: string;
+  details?: string | object;
+  code?: string;
+  timestamp?: string;
+  requestId?: string;
 }
 
 export interface APIErrorResponse {
-  success: false
-  error: APIError
+  success: false;
+  error: APIError;
 }
 
 export enum ErrorCode {
@@ -28,14 +28,14 @@ export enum ErrorCode {
   CONFLICT = 'CONFLICT',
   UNPROCESSABLE_ENTITY = 'UNPROCESSABLE_ENTITY',
   TOO_MANY_REQUESTS = 'TOO_MANY_REQUESTS',
-  
+
   // Server errors (5xx)
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
   NOT_IMPLEMENTED = 'NOT_IMPLEMENTED',
   BAD_GATEWAY = 'BAD_GATEWAY',
   SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE',
   GATEWAY_TIMEOUT = 'GATEWAY_TIMEOUT',
-  
+
   // Custom errors
   DATABASE_ERROR = 'DATABASE_ERROR',
   VALIDATION_ERROR = 'VALIDATION_ERROR',
@@ -43,7 +43,7 @@ export enum ErrorCode {
   AUTHORIZATION_ERROR = 'AUTHORIZATION_ERROR',
   EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR',
   RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
-  CSRF_ERROR = 'CSRF_ERROR'
+  CSRF_ERROR = 'CSRF_ERROR',
 }
 
 const ErrorStatusMap: Record<ErrorCode, number> = {
@@ -56,14 +56,14 @@ const ErrorStatusMap: Record<ErrorCode, number> = {
   [ErrorCode.CONFLICT]: 409,
   [ErrorCode.UNPROCESSABLE_ENTITY]: 422,
   [ErrorCode.TOO_MANY_REQUESTS]: 429,
-  
+
   // Server errors
   [ErrorCode.INTERNAL_SERVER_ERROR]: 500,
   [ErrorCode.NOT_IMPLEMENTED]: 501,
   [ErrorCode.BAD_GATEWAY]: 502,
   [ErrorCode.SERVICE_UNAVAILABLE]: 503,
   [ErrorCode.GATEWAY_TIMEOUT]: 504,
-  
+
   // Custom errors mapped to appropriate status codes
   [ErrorCode.DATABASE_ERROR]: 500,
   [ErrorCode.VALIDATION_ERROR]: 400,
@@ -71,8 +71,8 @@ const ErrorStatusMap: Record<ErrorCode, number> = {
   [ErrorCode.AUTHORIZATION_ERROR]: 403,
   [ErrorCode.EXTERNAL_SERVICE_ERROR]: 502,
   [ErrorCode.RATE_LIMIT_ERROR]: 429,
-  [ErrorCode.CSRF_ERROR]: 403
-}
+  [ErrorCode.CSRF_ERROR]: 403,
+};
 
 /**
  * Create a standardized error response
@@ -83,9 +83,9 @@ export function createErrorResponse(
   details?: string | object,
   requestId?: string
 ): NextResponse<APIErrorResponse> {
-  const status = ErrorStatusMap[code] || 500
-  const timestamp = new Date().toISOString()
-  
+  const status = ErrorStatusMap[code] || 500;
+  const timestamp = new Date().toISOString();
+
   const errorResponse: APIErrorResponse = {
     success: false,
     error: {
@@ -93,16 +93,16 @@ export function createErrorResponse(
       code,
       timestamp,
       ...(details && { details }),
-      ...(requestId && { requestId })
-    }
-  }
-  
+      ...(requestId && { requestId }),
+    },
+  };
+
   // Log server errors
   if (status >= 500) {
     // Server error detected
   }
-  
-  return NextResponse.json(errorResponse, { status })
+
+  return NextResponse.json(errorResponse, { status });
 }
 
 /**
@@ -122,44 +122,47 @@ export function handleApiError(
         'Resource already exists',
         error.message,
         requestId
-      )
+      );
     }
-    
+
     if (error.message.includes('P2025')) {
       return createErrorResponse(
         ErrorCode.NOT_FOUND,
         'Resource not found',
         error.message,
         requestId
-      )
+      );
     }
-    
+
     // Database connection errors
-    if (error.message.includes('database') || error.message.includes('prisma')) {
+    if (
+      error.message.includes('database') ||
+      error.message.includes('prisma')
+    ) {
       return createErrorResponse(
         ErrorCode.DATABASE_ERROR,
         'Database operation failed',
         process.env.NODE_ENV === 'development' ? error.message : undefined,
         requestId
-      )
+      );
     }
-    
+
     // Default error response
     return createErrorResponse(
       defaultCode,
       error.message,
       process.env.NODE_ENV === 'development' ? error.stack : undefined,
       requestId
-    )
+    );
   }
-  
+
   // Handle non-Error objects
   return createErrorResponse(
     defaultCode,
     'An unexpected error occurred',
     process.env.NODE_ENV === 'development' ? error : undefined,
     requestId
-  )
+  );
 }
 
 /**
@@ -186,10 +189,10 @@ function getDefaultErrorMessage(code: ErrorCode): string {
     [ErrorCode.AUTHORIZATION_ERROR]: 'Authorization failed',
     [ErrorCode.EXTERNAL_SERVICE_ERROR]: 'External service error',
     [ErrorCode.RATE_LIMIT_ERROR]: 'Rate limit exceeded',
-    [ErrorCode.CSRF_ERROR]: 'CSRF validation failed'
-  }
-  
-  return messages[code] || 'An error occurred'
+    [ErrorCode.CSRF_ERROR]: 'CSRF validation failed',
+  };
+
+  return messages[code] || 'An error occurred';
 }
 
 /**
@@ -204,12 +207,12 @@ export function createValidationError(
     'Validation failed',
     errors,
     requestId
-  )
+  );
 }
 
 /**
  * Generate request ID for tracking
  */
 export function generateRequestId(): string {
-  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }

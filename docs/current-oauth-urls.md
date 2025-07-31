@@ -8,13 +8,15 @@
 ## 📝 Google Console에 추가할 URL들
 
 ### Authorized JavaScript origins
+
 ```
 https://dinoapp.net
 https://www.dinoapp.net
 https://dino-eayk7s794-zimos-projects-6824b9bc.vercel.app
 ```
 
-### Authorized redirect URIs  
+### Authorized redirect URIs
+
 ```
 https://dinoapp.net/api/auth/callback/google
 https://www.dinoapp.net/api/auth/callback/google
@@ -30,10 +32,12 @@ https://dino-eayk7s794-zimos-projects-6824b9bc.vercel.app/api/auth/callback/goog
 5. 2-3분 기다린 후 테스트
 
 ## 🧪 테스트 URL들
+
 - **로그인 테스트**: https://dino-lppbjyrci-zimos-projects-6824b9bc.vercel.app/auth/signin
 - **인증 디버그**: https://dino-lppbjyrci-zimos-projects-6824b9bc.vercel.app/api/debug-auth
 
 ## 📋 변경 사항
+
 - Ultra-simplified NextAuth 설정으로 로그인 루프 해결
 - 복잡한 refresh token 로직 제거
 - 기본 NextAuth redirect 방식 사용

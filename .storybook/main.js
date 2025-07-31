@@ -17,7 +17,7 @@ const config = {
     autodocs: 'tag',
   },
   staticDirs: ['../public'],
-  webpackFinal: async (config) => {
+  webpackFinal: async config => {
     // Tailwind CSS 지원
     config.module.rules.push({
       test: /\.css$/,

@@ -78,7 +78,7 @@ export class DocumentationAutomation extends EventEmitter {
   ): Promise<GeneratedDocumentation> {
     // HTTP 메서드 추출
     const methods = this.extractHTTPMethods(content);
-    
+
     const doc: GeneratedDocumentation = {
       id: `doc_${Date.now()}`,
       type: 'api',
@@ -90,13 +90,14 @@ export class DocumentationAutomation extends EventEmitter {
         parameters: this.generateAPIParameters(methods),
         returns: this.generateAPIResponses(methods),
         examples: this.generateAPIExamples(methods),
-        notes: '## 보안 고려사항\n\n- 모든 요청은 인증이 필요합니다\n- HTTPS를 사용하여 통신하세요'
+        notes:
+          '## 보안 고려사항\n\n- 모든 요청은 인증이 필요합니다\n- HTTPS를 사용하여 통신하세요',
       },
       metadata: {
         generatedAt: new Date(),
         lastUpdated: new Date(),
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     };
 
     // 전체 컨텐츠 조합
@@ -124,13 +125,14 @@ export class DocumentationAutomation extends EventEmitter {
         overview: `## Overview\n\n${componentName} 컴포넌트는 ${this.inferComponentPurpose(content)}를 위한 UI 컴포넌트입니다.`,
         parameters: this.generatePropsDocumentation(props),
         examples: this.generateComponentExamples(componentName, props),
-        notes: '## 사용 시 주의사항\n\n- 필수 props를 확인하세요\n- 접근성을 고려하여 사용하세요'
+        notes:
+          '## 사용 시 주의사항\n\n- 필수 props를 확인하세요\n- 접근성을 고려하여 사용하세요',
       },
       metadata: {
         generatedAt: new Date(),
         lastUpdated: new Date(),
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     };
 
     doc.content = this.combineDocumentationSections(doc.sections);
@@ -144,7 +146,7 @@ export class DocumentationAutomation extends EventEmitter {
     context: DocumentationContext
   ): Promise<GeneratedDocumentation> {
     const functions = this.extractFunctions(content);
-    
+
     const doc: GeneratedDocumentation = {
       id: `doc_${Date.now()}`,
       type: 'function',
@@ -155,13 +157,13 @@ export class DocumentationAutomation extends EventEmitter {
         overview: `## Overview\n\n${fileName} 파일에 정의된 함수들입니다.`,
         parameters: this.generateFunctionParameters(functions),
         returns: this.generateFunctionReturns(functions),
-        examples: this.generateFunctionExamples(functions)
+        examples: this.generateFunctionExamples(functions),
       },
       metadata: {
         generatedAt: new Date(),
         lastUpdated: new Date(),
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     };
 
     doc.content = this.combineDocumentationSections(doc.sections);
@@ -181,13 +183,13 @@ export class DocumentationAutomation extends EventEmitter {
       description: '코드 문서',
       content: `# ${fileName}\n\n자동 생성된 문서입니다.`,
       sections: {
-        overview: `## Overview\n\n${fileName} 파일에 대한 문서입니다.`
+        overview: `## Overview\n\n${fileName} 파일에 대한 문서입니다.`,
       },
       metadata: {
         generatedAt: new Date(),
         lastUpdated: new Date(),
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     };
 
     return doc;
@@ -201,7 +203,7 @@ export class DocumentationAutomation extends EventEmitter {
       /\.get\s*\(/g,
       /\.post\s*\(/g,
       /\.put\s*\(/g,
-      /\.delete\s*\(/g
+      /\.delete\s*\(/g,
     ];
 
     patterns.forEach(pattern => {
@@ -228,7 +230,7 @@ export class DocumentationAutomation extends EventEmitter {
         props.push({
           name: propMatch[1],
           type: propMatch[2].trim(),
-          required: !line.includes('?')
+          required: !line.includes('?'),
         });
       }
     });
@@ -237,19 +239,25 @@ export class DocumentationAutomation extends EventEmitter {
   }
 
   private extractComponentName(content: string): string {
-    const match = content.match(/(?:export\s+default\s+)?(?:function|const)\s+(\w+)/);
+    const match = content.match(
+      /(?:export\s+default\s+)?(?:function|const)\s+(\w+)/
+    );
     return match ? match[1] : 'Component';
   }
 
   private extractFunctions(content: string): any[] {
     const functions = [];
-    const functionPattern = /(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)/g;
+    const functionPattern =
+      /(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)/g;
     let match;
 
     while ((match = functionPattern.exec(content)) !== null) {
       functions.push({
         name: match[1],
-        params: match[2].split(',').map(p => p.trim()).filter(p => p)
+        params: match[2]
+          .split(',')
+          .map(p => p.trim())
+          .filter(p => p),
       });
     }
 
@@ -284,8 +292,9 @@ export class DocumentationAutomation extends EventEmitter {
   private generatePropsDocumentation(props: any[]): string {
     if (props.length === 0) return '';
 
-    let doc = '## Props\n\n| Prop | Type | Required | Description |\n|------|------|----------|-------------|\n';
-    
+    let doc =
+      '## Props\n\n| Prop | Type | Required | Description |\n|------|------|----------|-------------|\n';
+
     props.forEach(prop => {
       doc += `| ${prop.name} | ${prop.type} | ${prop.required ? 'Yes' : 'No'} | - |\n`;
     });
@@ -293,7 +302,10 @@ export class DocumentationAutomation extends EventEmitter {
     return doc;
   }
 
-  private generateComponentExamples(componentName: string, props: any[]): string {
+  private generateComponentExamples(
+    componentName: string,
+    props: any[]
+  ): string {
     const propsExample = props
       .filter(p => p.required)
       .map(p => `  ${p.name}={${p.type === 'string' ? '"value"' : 'value'}}`)
@@ -339,7 +351,7 @@ export class DocumentationAutomation extends EventEmitter {
     const dir = path.dirname(outputPath);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(outputPath, doc.content, 'utf-8');
-    
+
     this.emit('documentation:saved', { path: outputPath, documentation: doc });
   }
 
@@ -349,7 +361,11 @@ export class DocumentationAutomation extends EventEmitter {
       try {
         const stats = await fs.stat(filePath);
         if (stats.mtime > lastModified) {
-          this.emit('file:changed', { filePath, oldTime: lastModified, newTime: stats.mtime });
+          this.emit('file:changed', {
+            filePath,
+            oldTime: lastModified,
+            newTime: stats.mtime,
+          });
           // 문서 재생성 트리거
           // 실제 구현에서는 컨텍스트를 저장하고 재생성
         }

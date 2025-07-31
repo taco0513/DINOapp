@@ -120,14 +120,14 @@
       "short_name": "새 여행",
       "description": "새로운 여행 기록을 추가합니다",
       "url": "/trips?action=add",
-      "icons": [{"src": "/icons/shortcut-add.png", "sizes": "96x96"}]
+      "icons": [{ "src": "/icons/shortcut-add.png", "sizes": "96x96" }]
     },
     {
       "name": "셰겐 계산기",
       "short_name": "셰겐",
       "description": "셰겐 90/180일 규칙을 확인합니다",
       "url": "/schengen",
-      "icons": [{"src": "/icons/shortcut-schengen.png", "sizes": "96x96"}]
+      "icons": [{ "src": "/icons/shortcut-schengen.png", "sizes": "96x96" }]
     }
   ],
   "prefer_related_applications": false

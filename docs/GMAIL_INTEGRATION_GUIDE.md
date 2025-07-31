@@ -21,6 +21,7 @@ This guide provides comprehensive instructions for integrating and using the Gma
 ### Prerequisites
 
 **Required Dependencies:**
+
 ```bash
 npm install next-auth @next-auth/prisma-adapter
 npm install @googleapis/gmail
@@ -28,6 +29,7 @@ npm install zod
 ```
 
 **Environment Variables:**
+
 ```env
 # Google OAuth Configuration
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -61,9 +63,10 @@ DATABASE_URL=your_database_url
 ### NextAuth Configuration
 
 **File: `app/api/auth/[...nextauth]/route.ts`**
+
 ```typescript
-import { NextAuthOptions } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
+import { NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -72,26 +75,27 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly'
-        }
-      }
-    })
+          scope:
+            'openid email profile https://www.googleapis.com/auth/gmail.readonly',
+        },
+      },
+    }),
   ],
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account.access_token
-        token.refreshToken = account.refresh_token
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken
-      session.refreshToken = token.refreshToken
-      return session
-    }
-  }
-}
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      return session;
+    },
+  },
+};
 ```
 
 ## User Authentication
@@ -99,13 +103,14 @@ export const authOptions: NextAuthOptions = {
 ### Login Flow Implementation
 
 **Component: Login Button**
+
 ```tsx
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 function LoginButton() {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
 
-  if (status === 'loading') return <p>Loading...</p>
+  if (status === 'loading') return <p>Loading...</p>;
 
   if (session) {
     return (
@@ -113,35 +118,36 @@ function LoginButton() {
         <p>Signed in as {session.user?.email}</p>
         <button onClick={() => signOut()}>Sign out</button>
       </div>
-    )
+    );
   }
 
   return (
-    <button 
+    <button
       onClick={() => signIn('google')}
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+      className='bg-blue-600 text-white px-4 py-2 rounded-lg'
     >
       Sign in with Google
     </button>
-  )
+  );
 }
 ```
 
 ### Session Validation
 
 **Middleware: Session Check**
+
 ```typescript
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function validateSession(request: Request) {
-  const session = await getServerSession(authOptions)
-  
+  const session = await getServerSession(authOptions);
+
   if (!session || !session.accessToken) {
-    throw new Error('Authentication required')
+    throw new Error('Authentication required');
   }
-  
-  return session
+
+  return session;
 }
 ```
 
@@ -150,79 +156,81 @@ export async function validateSession(request: Request) {
 ### Basic Gmail Integration
 
 **Page Implementation:**
+
 ```tsx
-import { useSession } from 'next-auth/react'
-import GmailIntegration from '@/components/gmail/GmailIntegration'
-import LoginButton from '@/components/auth/LoginButton'
+import { useSession } from 'next-auth/react';
+import GmailIntegration from '@/components/gmail/GmailIntegration';
+import LoginButton from '@/components/auth/LoginButton';
 
 export default function GmailPage() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Gmail Travel Analysis</h1>
-      
+    <div className='container mx-auto p-6'>
+      <h1 className='text-2xl font-bold mb-6'>Gmail Travel Analysis</h1>
+
       {!session ? (
-        <div className="text-center">
-          <p className="mb-4">Please sign in to access Gmail integration</p>
+        <div className='text-center'>
+          <p className='mb-4'>Please sign in to access Gmail integration</p>
           <LoginButton />
         </div>
       ) : (
-        <GmailIntegration 
-          onDataUpdate={(data) => {
-            console.log('Travel data updated:', data)
+        <GmailIntegration
+          onDataUpdate={data => {
+            console.log('Travel data updated:', data);
             // Handle data updates (e.g., refresh other components)
           }}
         />
       )}
     </div>
-  )
+  );
 }
 ```
 
 ### Advanced Analyzer Integration
 
 **Component with Custom Configuration:**
+
 ```tsx
-import { useState } from 'react'
-import GmailAnalyzer from '@/components/gmail/GmailAnalyzer'
+import { useState } from 'react';
+import GmailAnalyzer from '@/components/gmail/GmailAnalyzer';
 
 export default function AdvancedGmailPage() {
-  const [analysisResults, setAnalysisResults] = useState([])
-  const [scanStats, setScanStats] = useState({ emailsScanned: 0 })
+  const [analysisResults, setAnalysisResults] = useState([]);
+  const [scanStats, setScanStats] = useState({ emailsScanned: 0 });
 
-  const handleAnalysisComplete = (travelInfos) => {
-    setAnalysisResults(travelInfos)
-    
+  const handleAnalysisComplete = travelInfos => {
+    setAnalysisResults(travelInfos);
+
     // Process results for other components
     const highConfidenceResults = travelInfos.filter(
       info => info.confidence >= 0.8
-    )
-    
-    // Update other parts of the application
-    updateTravelRecords(highConfidenceResults)
-  }
+    );
 
-  const handleStatsUpdate = (stats) => {
-    setScanStats(stats)
+    // Update other parts of the application
+    updateTravelRecords(highConfidenceResults);
+  };
+
+  const handleStatsUpdate = stats => {
+    setScanStats(stats);
     // Update analytics dashboard
-  }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <GmailAnalyzer
         onAnalysisComplete={handleAnalysisComplete}
         onStatsUpdate={handleStatsUpdate}
       />
-      
+
       {/* Display results summary */}
-      <div className="bg-white p-4 rounded-lg border">
-        <h3 className="font-semibold mb-2">Analysis Summary</h3>
+      <div className='bg-white p-4 rounded-lg border'>
+        <h3 className='font-semibold mb-2'>Analysis Summary</h3>
         <p>Emails Scanned: {scanStats.emailsScanned}</p>
         <p>Travel Records Found: {analysisResults.length}</p>
       </div>
     </div>
-  )
+  );
 }
 ```
 
@@ -231,41 +239,42 @@ export default function AdvancedGmailPage() {
 ### Direct API Integration
 
 **Client-Side API Calls:**
+
 ```typescript
 // Check Gmail connection
 async function checkGmailConnection() {
   try {
-    const response = await fetch('/api/gmail/check')
-    const data = await response.json()
-    
+    const response = await fetch('/api/gmail/check');
+    const data = await response.json();
+
     if (data.connected) {
-      console.log('Gmail connected successfully')
-      return true
+      console.log('Gmail connected successfully');
+      return true;
     } else {
-      console.error('Gmail connection failed:', data.message)
-      return false
+      console.error('Gmail connection failed:', data.message);
+      return false;
     }
   } catch (error) {
-    console.error('Connection check failed:', error)
-    return false
+    console.error('Connection check failed:', error);
+    return false;
   }
 }
 
 // Analyze travel emails
 async function analyzeTravelEmails(maxResults = 20) {
   try {
-    const response = await fetch(`/api/gmail/analyze?maxResults=${maxResults}`)
-    const data = await response.json()
-    
+    const response = await fetch(`/api/gmail/analyze?maxResults=${maxResults}`);
+    const data = await response.json();
+
     if (data.success) {
-      console.log(`Found ${data.count} travel records`)
-      return data.travelInfos
+      console.log(`Found ${data.count} travel records`);
+      return data.travelInfos;
     } else {
-      throw new Error('Analysis failed')
+      throw new Error('Analysis failed');
     }
   } catch (error) {
-    console.error('Email analysis failed:', error)
-    throw error
+    console.error('Email analysis failed:', error);
+    throw error;
   }
 }
 ```
@@ -273,31 +282,29 @@ async function analyzeTravelEmails(maxResults = 20) {
 ### Server-Side API Usage
 
 **API Route Example:**
+
 ```typescript
-import { NextRequest, NextResponse } from 'next/server'
-import { validateSession } from '@/lib/auth'
-import { analyzeTravelEmails } from '@/lib/gmail'
+import { NextRequest, NextResponse } from 'next/server';
+import { validateSession } from '@/lib/auth';
+import { analyzeTravelEmails } from '@/lib/gmail';
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await validateSession(request)
-    const { maxResults = 20 } = await request.json()
-    
+    const session = await validateSession(request);
+    const { maxResults = 20 } = await request.json();
+
     const travelInfos = await analyzeTravelEmails(
       session.accessToken,
       maxResults
-    )
-    
+    );
+
     return NextResponse.json({
       success: true,
       count: travelInfos.length,
-      travelInfos
-    })
+      travelInfos,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 ```
@@ -307,97 +314,98 @@ export async function POST(request: NextRequest) {
 ### Email Analysis Pipeline
 
 **Step 1: Email Retrieval**
+
 ```typescript
 async function retrieveTravelEmails(accessToken: string, maxResults: number) {
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client })
-  
+  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+
   // Search queries for different types of travel emails
   const queries = [
     'subject:(flight OR airline OR boarding pass)',
     'subject:(hotel OR accommodation OR booking)',
     'from:(booking.com OR expedia OR kayak)',
-    'subject:(travel OR trip OR itinerary)'
-  ]
-  
-  const allMessages = []
-  
+    'subject:(travel OR trip OR itinerary)',
+  ];
+
+  const allMessages = [];
+
   for (const query of queries) {
     const response = await gmail.users.messages.list({
       userId: 'me',
       q: query,
-      maxResults: Math.ceil(maxResults / queries.length)
-    })
-    
+      maxResults: Math.ceil(maxResults / queries.length),
+    });
+
     if (response.data.messages) {
-      allMessages.push(...response.data.messages)
+      allMessages.push(...response.data.messages);
     }
   }
-  
-  return allMessages
+
+  return allMessages;
 }
 ```
 
 **Step 2: Content Extraction**
+
 ```typescript
 async function extractEmailContent(messageId: string, accessToken: string) {
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client })
-  
+  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+
   const message = await gmail.users.messages.get({
     userId: 'me',
     id: messageId,
-    format: 'full'
-  })
-  
-  const headers = message.data.payload?.headers || []
-  const subject = headers.find(h => h.name === 'Subject')?.value || ''
-  const from = headers.find(h => h.name === 'From')?.value || ''
-  const date = headers.find(h => h.name === 'Date')?.value || ''
-  
+    format: 'full',
+  });
+
+  const headers = message.data.payload?.headers || [];
+  const subject = headers.find(h => h.name === 'Subject')?.value || '';
+  const from = headers.find(h => h.name === 'From')?.value || '';
+  const date = headers.find(h => h.name === 'Date')?.value || '';
+
   // Extract body content
-  const body = extractBodyContent(message.data.payload)
-  
-  return { subject, from, date, body }
+  const body = extractBodyContent(message.data.payload);
+
+  return { subject, from, date, body };
 }
 ```
 
 **Step 3: Travel Information Extraction**
+
 ```typescript
 function extractTravelInfo(emailContent: any): TravelInfo {
-  const { subject, from, body } = emailContent
-  
+  const { subject, from, body } = emailContent;
+
   // Date extraction patterns
   const datePatterns = [
     /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/g,
     /(\d{4}-\d{2}-\d{2})/g,
-    /(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}/gi
-  ]
-  
+    /(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}/gi,
+  ];
+
   // Flight number patterns
   const flightPatterns = [
     /([A-Z]{2}\d{3,4})/g,
     /Flight\s+([A-Z0-9]+)/gi,
-    /항공편\s*([A-Z0-9]+)/gi
-  ]
-  
+    /항공편\s*([A-Z0-9]+)/gi,
+  ];
+
   // Airport code patterns
-  const airportPatterns = [
-    /\b([A-Z]{3})\b/g
-  ]
-  
+  const airportPatterns = [/\b([A-Z]{3})\b/g];
+
   // Extract information using patterns
-  const dates = extractDates(body, datePatterns)
-  const flights = extractFlights(body, flightPatterns)
-  const airports = extractAirports(body, airportPatterns)
-  
+  const dates = extractDates(body, datePatterns);
+  const flights = extractFlights(body, flightPatterns);
+  const airports = extractAirports(body, airportPatterns);
+
   // Determine confidence score
   const confidence = calculateConfidence({
     dates: dates.length,
     flights: flights.length,
     airports: airports.length,
     from,
-    subject
-  })
-  
+    subject,
+  });
+
   return {
     emailId: emailContent.id,
     subject,
@@ -407,8 +415,8 @@ function extractTravelInfo(emailContent: any): TravelInfo {
     flightNumber: flights[0],
     destination: airports[1],
     departure: airports[0],
-    confidence
-  }
+    confidence,
+  };
 }
 ```
 
@@ -416,24 +424,24 @@ function extractTravelInfo(emailContent: any): TravelInfo {
 
 ```typescript
 function calculateConfidence(extractedData: any): number {
-  let score = 0
-  
+  let score = 0;
+
   // Base score from sender reputation
-  if (extractedData.from.includes('booking.com')) score += 0.3
-  if (extractedData.from.includes('airline')) score += 0.4
-  if (extractedData.from.includes('hotel')) score += 0.3
-  
+  if (extractedData.from.includes('booking.com')) score += 0.3;
+  if (extractedData.from.includes('airline')) score += 0.4;
+  if (extractedData.from.includes('hotel')) score += 0.3;
+
   // Score from extracted data completeness
-  if (extractedData.dates >= 2) score += 0.3
-  if (extractedData.flights >= 1) score += 0.2
-  if (extractedData.airports >= 2) score += 0.2
-  
+  if (extractedData.dates >= 2) score += 0.3;
+  if (extractedData.flights >= 1) score += 0.2;
+  if (extractedData.airports >= 2) score += 0.2;
+
   // Subject line indicators
-  if (extractedData.subject.includes('confirmation')) score += 0.1
-  if (extractedData.subject.includes('booking')) score += 0.1
-  if (extractedData.subject.includes('itinerary')) score += 0.15
-  
-  return Math.min(score, 1.0)
+  if (extractedData.subject.includes('confirmation')) score += 0.1;
+  if (extractedData.subject.includes('booking')) score += 0.1;
+  if (extractedData.subject.includes('itinerary')) score += 0.15;
+
+  return Math.min(score, 1.0);
 }
 ```
 
@@ -442,44 +450,48 @@ function calculateConfidence(extractedData: any): number {
 ### API Error Handling
 
 **Client-Side Error Management:**
+
 ```typescript
 async function handleGmailAPI(apiCall: () => Promise<any>) {
   try {
-    return await apiCall()
+    return await apiCall();
   } catch (error) {
     if (error instanceof Error) {
       // Handle specific error types
       if (error.message.includes('Rate limit')) {
-        throw new Error('Too many requests. Please try again later.')
+        throw new Error('Too many requests. Please try again later.');
       } else if (error.message.includes('Authentication')) {
-        throw new Error('Please sign in again to continue.')
+        throw new Error('Please sign in again to continue.');
       } else if (error.message.includes('Permission')) {
-        throw new Error('Gmail access permission required.')
+        throw new Error('Gmail access permission required.');
       }
     }
-    
-    throw new Error('An unexpected error occurred.')
+
+    throw new Error('An unexpected error occurred.');
   }
 }
 ```
 
 **Component Error Boundaries:**
+
 ```tsx
-import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorBoundary } from 'react-error-boundary';
 
 function GmailErrorFallback({ error, resetErrorBoundary }) {
   return (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-      <h3 className="text-red-800 font-semibold mb-2">Gmail Integration Error</h3>
-      <p className="text-red-700 mb-4">{error.message}</p>
-      <button 
+    <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+      <h3 className='text-red-800 font-semibold mb-2'>
+        Gmail Integration Error
+      </h3>
+      <p className='text-red-700 mb-4'>{error.message}</p>
+      <button
         onClick={resetErrorBoundary}
-        className="bg-red-600 text-white px-4 py-2 rounded"
+        className='bg-red-600 text-white px-4 py-2 rounded'
       >
         Try Again
       </button>
     </div>
-  )
+  );
 }
 
 function GmailPageWithErrorBoundary() {
@@ -490,7 +502,7 @@ function GmailPageWithErrorBoundary() {
     >
       <GmailIntegration />
     </ErrorBoundary>
-  )
+  );
 }
 ```
 
@@ -499,6 +511,7 @@ function GmailPageWithErrorBoundary() {
 ### Data Privacy Implementation
 
 **Data Sanitization:**
+
 ```typescript
 function sanitizeEmailData(emailData: any) {
   return {
@@ -511,52 +524,52 @@ function sanitizeEmailData(emailData: any) {
     // Keep only necessary travel information
     subject: emailData.subject,
     dates: emailData.dates,
-    destinations: emailData.destinations
-  }
+    destinations: emailData.destinations,
+  };
 }
 
 function sanitizeEmailAddress(email: string): string {
   // Keep domain for sender identification, mask user part
-  const [user, domain] = email.split('@')
+  const [user, domain] = email.split('@');
   if (domain && user) {
-    const maskedUser = user.length > 2 
-      ? `${user[0]}***${user[user.length - 1]}`
-      : '***'
-    return `${maskedUser}@${domain}`
+    const maskedUser =
+      user.length > 2 ? `${user[0]}***${user[user.length - 1]}` : '***';
+    return `${maskedUser}@${domain}`;
   }
-  return '***@unknown'
+  return '***@unknown';
 }
 ```
 
 **Rate Limiting:**
+
 ```typescript
 // lib/rate-limiter.ts
 export class RateLimiter {
-  private requests = new Map<string, number[]>()
-  private readonly windowMs: number
-  private readonly maxRequests: number
+  private requests = new Map<string, number[]>();
+  private readonly windowMs: number;
+  private readonly maxRequests: number;
 
   constructor(windowMs = 60000, maxRequests = 60) {
-    this.windowMs = windowMs
-    this.maxRequests = maxRequests
+    this.windowMs = windowMs;
+    this.maxRequests = maxRequests;
   }
 
   isAllowed(userId: string): boolean {
-    const now = Date.now()
-    const userRequests = this.requests.get(userId) || []
-    
+    const now = Date.now();
+    const userRequests = this.requests.get(userId) || [];
+
     // Remove old requests outside the window
     const validRequests = userRequests.filter(
       time => now - time < this.windowMs
-    )
-    
+    );
+
     if (validRequests.length >= this.maxRequests) {
-      return false
+      return false;
     }
-    
-    validRequests.push(now)
-    this.requests.set(userId, validRequests)
-    return true
+
+    validRequests.push(now);
+    this.requests.set(userId, validRequests);
+    return true;
   }
 }
 ```
@@ -574,20 +587,20 @@ export async function refreshAccessToken(refreshToken: string) {
         client_id: process.env.GOOGLE_CLIENT_ID!,
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
         refresh_token: refreshToken,
-        grant_type: 'refresh_token'
-      })
-    })
-    
-    const tokens = await response.json()
-    
+        grant_type: 'refresh_token',
+      }),
+    });
+
+    const tokens = await response.json();
+
     if (!response.ok) {
-      throw new Error('Token refresh failed')
+      throw new Error('Token refresh failed');
     }
-    
-    return tokens.access_token
+
+    return tokens.access_token;
   } catch (error) {
-    console.error('Token refresh error:', error)
-    throw new Error('Authentication expired. Please sign in again.')
+    console.error('Token refresh error:', error);
+    throw new Error('Authentication expired. Please sign in again.');
   }
 }
 ```
@@ -600,6 +613,7 @@ export async function refreshAccessToken(refreshToken: string) {
 
 **Problem**: "Authentication required" error
 **Solutions:**
+
 - Check if user is signed in: `useSession()` returns valid session
 - Verify OAuth scopes include `gmail.readonly`
 - Ensure `accessToken` is present in session
@@ -609,6 +623,7 @@ export async function refreshAccessToken(refreshToken: string) {
 
 **Problem**: "Rate limit exceeded" or quota errors
 **Solutions:**
+
 - Implement exponential backoff in API calls
 - Reduce `maxResults` parameter
 - Cache results to reduce API calls
@@ -618,6 +633,7 @@ export async function refreshAccessToken(refreshToken: string) {
 
 **Problem**: Analysis returns empty results
 **Solutions:**
+
 - Check search queries for user's email language
 - Verify date range covers period with travel emails
 - Test with known travel confirmation emails
@@ -627,6 +643,7 @@ export async function refreshAccessToken(refreshToken: string) {
 
 **Problem**: Travel emails detected but with low confidence
 **Solutions:**
+
 - Review and improve extraction patterns
 - Add support for new email providers
 - Fine-tune confidence scoring algorithm
@@ -638,7 +655,7 @@ export async function refreshAccessToken(refreshToken: string) {
 // lib/debug-gmail.ts
 export function enableGmailDebug() {
   if (process.env.NODE_ENV !== 'development') return
-  
+
   // Log all Gmail API calls
   const originalFetch = global.fetch
   global.fetch = async (url, options) => {
@@ -652,7 +669,7 @@ export function enableGmailDebug() {
 // Debug component for development
 export function GmailDebugPanel({ travelInfos }) {
   if (process.env.NODE_ENV !== 'development') return null
-  
+
   return (
     <div className="bg-gray-100 p-4 rounded mt-4">
       <h4 className="font-bold mb-2">Debug Information</h4>
@@ -669,57 +686,60 @@ export function GmailDebugPanel({ travelInfos }) {
 ### Performance Optimization
 
 1. **Caching Strategy**
+
    ```typescript
    // Implement result caching
-   const cache = new Map()
-   
+   const cache = new Map();
+
    async function getCachedAnalysis(cacheKey: string) {
      if (cache.has(cacheKey)) {
-       return cache.get(cacheKey)
+       return cache.get(cacheKey);
      }
-     
-     const result = await performAnalysis()
-     cache.set(cacheKey, result)
-     return result
+
+     const result = await performAnalysis();
+     cache.set(cacheKey, result);
+     return result;
    }
    ```
 
 2. **Batch Processing**
+
    ```typescript
    // Process emails in batches to avoid timeouts
    async function batchProcessEmails(emails: any[], batchSize = 10) {
-     const results = []
-     
+     const results = [];
+
      for (let i = 0; i < emails.length; i += batchSize) {
-       const batch = emails.slice(i, i + batchSize)
+       const batch = emails.slice(i, i + batchSize);
        const batchResults = await Promise.all(
          batch.map(email => analyzeEmail(email))
-       )
-       results.push(...batchResults)
+       );
+       results.push(...batchResults);
      }
-     
-     return results
+
+     return results;
    }
    ```
 
 3. **Progressive Loading**
+
    ```tsx
    function ProgressiveGmailResults({ travelInfos }) {
-     const [displayCount, setDisplayCount] = useState(10)
-     
+     const [displayCount, setDisplayCount] = useState(10);
+
      return (
        <div>
          {travelInfos.slice(0, displayCount).map(info => (
            <TravelInfoCard key={info.emailId} info={info} />
          ))}
-         
+
          {displayCount < travelInfos.length && (
            <button onClick={() => setDisplayCount(prev => prev + 10)}>
              Load More
            </button>
          )}
        </div>
-     )
+     );
    }
    ```
 
@@ -746,50 +766,55 @@ export function GmailDebugPanel({ travelInfos }) {
 ### Testing Recommendations
 
 1. **Unit Testing**
+
    ```typescript
    // Test email parsing functions
    describe('extractTravelInfo', () => {
      it('should extract flight information correctly', () => {
        const emailContent = {
          subject: 'Your flight KE123 confirmation',
-         body: 'Flight KE123 Seoul (ICN) to Paris (CDG) on 2024-02-15'
-       }
-       
-       const result = extractTravelInfo(emailContent)
-       
-       expect(result.flightNumber).toBe('KE123')
-       expect(result.departure).toBe('ICN')
-       expect(result.destination).toBe('CDG')
-     })
-   })
+         body: 'Flight KE123 Seoul (ICN) to Paris (CDG) on 2024-02-15',
+       };
+
+       const result = extractTravelInfo(emailContent);
+
+       expect(result.flightNumber).toBe('KE123');
+       expect(result.departure).toBe('ICN');
+       expect(result.destination).toBe('CDG');
+     });
+   });
    ```
 
 2. **Integration Testing**
+
    ```typescript
    // Test API endpoints
    describe('Gmail API', () => {
      it('should return travel information', async () => {
-       const response = await fetch('/api/gmail/analyze?maxResults=5')
-       const data = await response.json()
-       
-       expect(response.ok).toBe(true)
-       expect(data.success).toBe(true)
-       expect(Array.isArray(data.travelInfos)).toBe(true)
-     })
-   })
+       const response = await fetch('/api/gmail/analyze?maxResults=5');
+       const data = await response.json();
+
+       expect(response.ok).toBe(true);
+       expect(data.success).toBe(true);
+       expect(Array.isArray(data.travelInfos)).toBe(true);
+     });
+   });
    ```
 
 3. **E2E Testing**
+
    ```typescript
    // Test complete user workflow
    test('Gmail integration workflow', async ({ page }) => {
-     await page.goto('/gmail')
-     await page.click('[data-testid="analyze-emails-btn"]')
-     await page.waitForText('Analysis complete')
-     
-     const resultCount = await page.locator('[data-testid="result-count"]').textContent()
-     expect(parseInt(resultCount)).toBeGreaterThan(0)
-   })
+     await page.goto('/gmail');
+     await page.click('[data-testid="analyze-emails-btn"]');
+     await page.waitForText('Analysis complete');
+
+     const resultCount = await page
+       .locator('[data-testid="result-count"]')
+       .textContent();
+     expect(parseInt(resultCount)).toBeGreaterThan(0);
+   });
    ```
 
 ## Deployment Considerations
@@ -797,6 +822,7 @@ export function GmailDebugPanel({ travelInfos }) {
 ### Environment Configuration
 
 **Production Environment Variables:**
+
 ```env
 # Production OAuth settings
 GOOGLE_CLIENT_ID=prod_client_id
@@ -822,12 +848,12 @@ export function trackGmailUsage(event: string, metadata: any) {
   analytics.track('Gmail Integration', {
     event,
     timestamp: new Date(),
-    ...metadata
-  })
-  
+    ...metadata,
+  });
+
   // Error monitoring
   if (event === 'error') {
-    console.error('Gmail Integration Error:', metadata)
+    console.error('Gmail Integration Error:', metadata);
     // Send to monitoring service
   }
 }

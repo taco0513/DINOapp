@@ -5,7 +5,7 @@
     "limit": "100 KB"
   },
   {
-    "name": "Framework Bundle", 
+    "name": "Framework Bundle",
     "path": ".next/static/chunks/framework-*.js",
     "limit": "150 KB"
   },

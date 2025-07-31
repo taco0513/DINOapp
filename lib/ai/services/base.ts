@@ -1,12 +1,12 @@
 // AI 서비스 기본 추상 클래스
 
-import { 
-  AIResponse, 
-  AIError, 
-  CodeSpec, 
-  GeneratedCode, 
-  TravelAnalysis, 
-  AIServiceConfig 
+import {
+  AIResponse,
+  AIError,
+  CodeSpec,
+  GeneratedCode,
+  TravelAnalysis,
+  AIServiceConfig,
 } from '../types';
 
 export abstract class BaseAIService {
@@ -18,19 +18,15 @@ export abstract class BaseAIService {
 
   // 기본 텍스트 생성
   abstract generateResponse(
-    prompt: string, 
+    prompt: string,
     context?: Record<string, any>
   ): Promise<AIResponse>;
 
   // 코드 생성
-  abstract generateCode(
-    spec: CodeSpec
-  ): Promise<GeneratedCode>;
+  abstract generateCode(spec: CodeSpec): Promise<GeneratedCode>;
 
   // 여행 분석
-  abstract analyzeTravel(
-    tripData: any
-  ): Promise<TravelAnalysis>;
+  abstract analyzeTravel(tripData: any): Promise<TravelAnalysis>;
 
   // 스트리밍 응답 (선택적)
   async *streamResponse(
@@ -46,7 +42,8 @@ export abstract class BaseAIService {
   protected estimateTokens(text: string): number {
     // 간단한 추정: 4자 = 1토큰 (영어 기준)
     // 한국어는 약 2-3자 = 1토큰
-    const koreanRatio = (text.match(/[\u3131-\uD79D]/g) || []).length / text.length;
+    const koreanRatio =
+      (text.match(/[\u3131-\uD79D]/g) || []).length / text.length;
     const avgCharsPerToken = koreanRatio > 0.5 ? 2.5 : 4;
     return Math.ceil(text.length / avgCharsPerToken);
   }
@@ -63,14 +60,14 @@ export abstract class BaseAIService {
       return {
         code: error.response.status?.toString() || 'UNKNOWN',
         message: error.response.data?.error?.message || error.message,
-        details: error.response.data
+        details: error.response.data,
       };
     }
-    
+
     return {
       code: 'NETWORK_ERROR',
       message: error.message || 'Unknown error occurred',
-      details: error
+      details: error,
     };
   }
 

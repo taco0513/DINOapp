@@ -3,6 +3,7 @@
 ## 1. Docker 컨테이너 배포 (기본 권장)
 
 ### 로컬 Docker 실행
+
 ```bash
 # 이미지 빌드
 docker build -t dino-app .
@@ -20,6 +21,7 @@ docker-compose up -d
 ```
 
 ### Docker Hub 배포
+
 ```bash
 # 태그 생성 및 푸시
 docker tag dino-app your-username/dino-app:latest
@@ -29,6 +31,7 @@ docker push your-username/dino-app:latest
 ## 2. Vercel (최고 권장 - Next.js 최적화)
 
 ### 설정 파일
+
 ```json
 // vercel.json
 {
@@ -50,6 +53,7 @@ docker push your-username/dino-app:latest
 ```
 
 ### 환경 변수 설정
+
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL` (자동 설정됨)
 - `GOOGLE_CLIENT_ID`
@@ -57,6 +61,7 @@ docker push your-username/dino-app:latest
 - `DATABASE_URL` (Vercel Postgres 또는 PlanetScale)
 
 ### 배포 명령
+
 ```bash
 npx vercel --prod
 ```
@@ -64,6 +69,7 @@ npx vercel --prod
 ## 3. Netlify
 
 ### netlify.toml 설정
+
 ```toml
 [build]
   command = "npm run build"
@@ -84,6 +90,7 @@ npx vercel --prod
 ```
 
 ### 배포
+
 ```bash
 npm install -g netlify-cli
 netlify deploy --prod --dir=.next
@@ -92,6 +99,7 @@ netlify deploy --prod --dir=.next
 ## 4. Railway
 
 ### railway.json
+
 ```json
 {
   "deploy": {
@@ -103,6 +111,7 @@ netlify deploy --prod --dir=.next
 ```
 
 ### 배포
+
 ```bash
 npm install -g @railway/cli
 railway login
@@ -113,12 +122,14 @@ railway up
 ## 5. Heroku
 
 ### Procfile 생성
+
 ```
 web: npm start
 release: npx prisma migrate deploy && npx prisma generate
 ```
 
 ### 배포
+
 ```bash
 # Heroku CLI 설치 후
 heroku create dino-app-prod
@@ -130,36 +141,38 @@ git push heroku main
 ## 6. Digital Ocean App Platform
 
 ### .do/app.yaml
+
 ```yaml
 name: dino-app
 services:
-- name: web
-  source_dir: /
-  github:
-    repo: your-username/DINOapp
-    branch: main
-  run_command: npm start
-  environment_slug: node-js
-  instance_count: 1
-  instance_size_slug: basic-xxs
-  routes:
-  - path: /
-  envs:
-  - key: NODE_ENV
-    value: production
-  - key: DATABASE_URL
-    value: ${db.DATABASE_URL}
+  - name: web
+    source_dir: /
+    github:
+      repo: your-username/DINOapp
+      branch: main
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
 databases:
-- engine: PG
-  name: db
-  num_nodes: 1
-  size: db-s-dev-database
-  version: "14"
+  - engine: PG
+    name: db
+    num_nodes: 1
+    size: db-s-dev-database
+    version: '14'
 ```
 
 ## 7. AWS (Elastic Beanstalk/ECS)
 
 ### Elastic Beanstalk
+
 ```json
 // .ebextensions/nodejs.config
 {
@@ -179,6 +192,7 @@ databases:
 ```
 
 ### ECS (Docker)
+
 ```json
 // ecs-task-definition.json
 {
@@ -208,32 +222,39 @@ databases:
 ## 8. Google Cloud Platform
 
 ### Cloud Run
+
 ```yaml
 # cloudbuild.yaml
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/dino-app', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/dino-app']
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: [
-    'run', 'deploy', 'dino-app',
-    '--image', 'gcr.io/$PROJECT_ID/dino-app',
-    '--region', 'asia-northeast1',
-    '--platform', 'managed',
-    '--allow-unauthenticated'
-  ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/dino-app', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/dino-app']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      [
+        'run',
+        'deploy',
+        'dino-app',
+        '--image',
+        'gcr.io/$PROJECT_ID/dino-app',
+        '--region',
+        'asia-northeast1',
+        '--platform',
+        'managed',
+        '--allow-unauthenticated',
+      ]
 ```
 
 ## 성능 비교
 
-| 플랫폼 | 비용 | 성능 | 설정 복잡도 | Next.js 최적화 | 권장도 |
-|--------|------|------|-------------|---------------|--------|
-| Vercel | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Docker | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| Railway | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-| Netlify | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ |
-| Heroku | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ |
+| 플랫폼  | 비용       | 성능       | 설정 복잡도 | Next.js 최적화 | 권장도     |
+| ------- | ---------- | ---------- | ----------- | -------------- | ---------- |
+| Vercel  | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐     | ⭐⭐⭐⭐⭐ |
+| Docker  | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐      | ⭐⭐⭐⭐       | ⭐⭐⭐⭐   |
+| Railway | ⭐⭐⭐     | ⭐⭐⭐⭐   | ⭐⭐⭐⭐    | ⭐⭐⭐         | ⭐⭐⭐⭐   |
+| Netlify | ⭐⭐⭐⭐   | ⭐⭐⭐     | ⭐⭐⭐⭐    | ⭐⭐⭐         | ⭐⭐⭐     |
+| Heroku  | ⭐⭐       | ⭐⭐⭐     | ⭐⭐⭐      | ⭐⭐           | ⭐⭐       |
 
 ## 권장 배포 전략
 

@@ -14,7 +14,12 @@ import { SwipeableCard } from '@/components/mobile/SwipeableCard';
 import { Calculator, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CountryUtils } from '@/constants/countries';
-import { StandardPageLayout, StandardCard, StatsCard, EmptyState } from '@/components/layout/StandardPageLayout';
+import {
+  StandardPageLayout,
+  StandardCard,
+  StatsCard,
+  EmptyState,
+} from '@/components/layout/StandardPageLayout';
 
 export default function SchengenPage() {
   const { data: session, status } = useSession();
@@ -177,7 +182,7 @@ export default function SchengenPage() {
       ]}
       headerActions={
         hasTrips ? (
-          <Button variant="outline" size="sm" asChild>
+          <Button variant='outline' size='sm' asChild>
             <Link href='/trips'>
               <TrendingUp className='h-4 w-4 mr-2' />
               여행 기록 보기
@@ -186,7 +191,6 @@ export default function SchengenPage() {
         ) : null
       }
     >
-
       {loading ? (
         <StandardCard>
           <div className='text-center py-12'>
@@ -199,7 +203,11 @@ export default function SchengenPage() {
           <StandardCard title='현재 셰겐 상태'>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
               <StatsCard
-                value={schengenData ? `${schengenData.status.usedDays} / 90` : '0 / 90'}
+                value={
+                  schengenData
+                    ? `${schengenData.status.usedDays} / 90`
+                    : '0 / 90'
+                }
                 label='사용된 일수'
                 color='blue'
               />
@@ -220,8 +228,8 @@ export default function SchengenPage() {
               <div className='mt-6'>
                 <div
                   className={`text-center font-semibold p-4 rounded-lg border ${
-                    schengenData.status.isCompliant 
-                      ? 'bg-green-50 border-green-200 text-green-800' 
+                    schengenData.status.isCompliant
+                      ? 'bg-green-50 border-green-200 text-green-800'
                       : 'bg-red-50 border-red-200 text-red-800'
                   }`}
                 >
@@ -230,21 +238,20 @@ export default function SchengenPage() {
                     : '⚠️ 셰겐 규정 위반'}
                 </div>
 
-                {schengenData.warnings &&
-                  schengenData.warnings.length > 0 && (
-                    <div className='mt-4 space-y-2'>
-                      {schengenData.warnings.map(
-                        (warning: string, index: number) => (
-                          <div
-                            key={index}
-                            className='bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg'
-                          >
-                            {warning}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  )}
+                {schengenData.warnings && schengenData.warnings.length > 0 && (
+                  <div className='mt-4 space-y-2'>
+                    {schengenData.warnings.map(
+                      (warning: string, index: number) => (
+                        <div
+                          key={index}
+                          className='bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg'
+                        >
+                          {warning}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </StandardCard>
@@ -262,7 +269,9 @@ export default function SchengenPage() {
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>여행 시작일</label>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  여행 시작일
+                </label>
                 <input
                   type='date'
                   className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -273,7 +282,9 @@ export default function SchengenPage() {
               </div>
 
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>체류 일수</label>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  체류 일수
+                </label>
                 <input
                   type='number'
                   className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -289,7 +300,9 @@ export default function SchengenPage() {
               </div>
 
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>방문 국가</label>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  방문 국가
+                </label>
                 <select
                   className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                   value={futureCountry}
@@ -321,9 +334,7 @@ export default function SchengenPage() {
                 }`}
               >
                 <h4 className='text-lg font-semibold mb-4'>
-                  {futureAnalysis.isAllowed
-                    ? '✅ 여행 가능!'
-                    : '❌ 여행 불가!'}
+                  {futureAnalysis.isAllowed ? '✅ 여행 가능!' : '❌ 여행 불가!'}
                 </h4>
 
                 <div className='space-y-3'>
@@ -341,7 +352,9 @@ export default function SchengenPage() {
                   <div className='flex justify-between'>
                     <span>여행 후 총 사용일수:</span>
                     <strong
-                      className={futureAnalysis.totalAfterTrip > 90 ? 'text-red-600' : ''}
+                      className={
+                        futureAnalysis.totalAfterTrip > 90 ? 'text-red-600' : ''
+                      }
                     >
                       {futureAnalysis.totalAfterTrip}일 / 90일
                     </strong>
@@ -357,8 +370,8 @@ export default function SchengenPage() {
             {!futureAnalysis && (
               <div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
                 <p className='text-sm text-blue-800'>
-                  💡 팁: 여행 날짜와 기간을 입력하면 셰겐 규정 준수 여부를
-                  미리 확인할 수 있습니다
+                  💡 팁: 여행 날짜와 기간을 입력하면 셰겐 규정 준수 여부를 미리
+                  확인할 수 있습니다
                 </p>
               </div>
             )}
@@ -371,9 +384,7 @@ export default function SchengenPage() {
           description='여행 기록을 추가하면 자동으로 셰겐 지역 체류 일수가 계산됩니다'
           action={
             <Button asChild>
-              <Link href='/trips'>
-                여행 기록 추가하기
-              </Link>
+              <Link href='/trips'>여행 기록 추가하기</Link>
             </Button>
           }
         >

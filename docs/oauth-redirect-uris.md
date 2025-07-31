@@ -5,6 +5,7 @@
 Google Cloud Console의 OAuth 2.0 Client ID 설정에서 다음 URI들을 모두 추가해야 합니다:
 
 ### Production URLs
+
 ```
 https://dinoapp.net/api/auth/callback/google
 https://www.dinoapp.net/api/auth/callback/google
@@ -12,7 +13,9 @@ https://app.dinoapp.net/api/auth/callback/google
 ```
 
 ### Vercel Preview URLs
+
 각 배포마다 고유한 URL이 생성됩니다. 현재 사용 중인 URL을 추가하세요:
+
 ```
 https://dino-jc2n8enjx-zimos-projects-6824b9bc.vercel.app/api/auth/callback/google
 https://dino-musiaqnpe-zimos-projects-6824b9bc.vercel.app/api/auth/callback/google
@@ -20,6 +23,7 @@ https://dino-app-psi.vercel.app/api/auth/callback/google
 ```
 
 ### Development URL
+
 ```
 http://localhost:3000/api/auth/callback/google
 ```
@@ -44,6 +48,7 @@ http://localhost:3000/api/auth/callback/google
 ## 에러 해결
 
 "Error 400: redirect_uri_mismatch" 발생 시:
+
 1. 브라우저 개발자 도구 → Network 탭
 2. "authorize" 요청 찾기
 3. Query parameters에서 redirect_uri 값 확인

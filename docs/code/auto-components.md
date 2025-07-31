@@ -68,12 +68,12 @@
 - [textarea.tsx](#textarea-tsx)
 - [QuickVisaCheck.tsx](#quickvisacheck-tsx)
 
-
 ## WireframeTripCard.tsx
 
 **파일 경로:** `components/WireframeTripCard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 2809 bytes
 - 📄 라인 수: 81
 - 🔧 함수: 3개
@@ -82,6 +82,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `WireframeTripCard`
 
 ### 🔧 Functions
@@ -96,12 +97,12 @@
 
 #### `WireframeTripCardProps`
 
-
 ## WireframeTripForm.tsx
 
 **파일 경로:** `components/WireframeTripForm.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 5986 bytes
 - 📄 라인 수: 190
 - 🔧 함수: 2개
@@ -110,6 +111,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `WireframeTripForm`
 
 ### 🔧 Functions
@@ -124,12 +126,12 @@
 
 #### `WireframeTripFormProps`
 
-
 ## AIAssistant.tsx
 
 **파일 경로:** `components/ai/AIAssistant.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 9747 bytes
 - 📄 라인 수: 274
 - 🔧 함수: 4개
@@ -138,6 +140,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `AIAssistant`
 
 ### 🔧 Functions
@@ -158,12 +161,12 @@
 
 #### `AISuggestion`
 
-
 ## AIPairProgramming.tsx
 
 **파일 경로:** `components/ai/AIPairProgramming.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 14774 bytes
 - 📄 라인 수: 413
 - 🔧 함수: 5개
@@ -172,6 +175,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `AIPairProgramming`
 
 ### 🔧 Functions
@@ -194,12 +198,12 @@
 
 #### `AINavigation`
 
-
 ## CodeGenerator.tsx
 
 **파일 경로:** `components/ai/CodeGenerator.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 12876 bytes
 - 📄 라인 수: 365
 - 🔧 함수: 5개
@@ -208,6 +212,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `CodeGenerator`
 
 ### 🔧 Functions
@@ -230,12 +235,12 @@
 
 #### `GeneratedCode`
 
-
 ## ProblemSolver.tsx
 
 **파일 경로:** `components/ai/ProblemSolver.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 10913 bytes
 - 📄 라인 수: 329
 - 🔧 함수: 3개
@@ -244,6 +249,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `ProblemSolver`
 
 ### 🔧 Functions
@@ -262,12 +268,12 @@
 
 #### `Solution`
 
-
 ## AdvancedAnalyticsDashboard.tsx
 
 **파일 경로:** `components/analytics/AdvancedAnalyticsDashboard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 13417 bytes
 - 📄 라인 수: 357
 - 🔧 함수: 2개
@@ -276,6 +282,7 @@
 - 🔗 인터페이스: 3개
 
 **Exports:**
+
 - `AdvancedAnalyticsDashboard`
 
 ### 🔧 Functions
@@ -294,12 +301,12 @@
 
 #### `RetentionData`
 
-
 ## SessionCheck.tsx
 
 **파일 경로:** `components/auth/SessionCheck.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 628 bytes
 - 📄 라인 수: 25
 - 🔧 함수: 1개
@@ -308,18 +315,19 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `SessionCheck`
 
 ### 🔧 Functions
 
 #### `SessionCheck`
 
-
 ## PricingCard.tsx
 
 **파일 경로:** `components/billing/PricingCard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 6703 bytes
 - 📄 라인 수: 241
 - 🔧 함수: 3개
@@ -328,6 +336,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `PricingCard`
 - `PricingSection`
 
@@ -349,12 +358,12 @@
 
 #### `PricingCardProps`
 
-
 ## CalendarSync.tsx
 
 **파일 경로:** `components/calendar/CalendarSync.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 20541 bytes
 - 📄 라인 수: 588
 - 🔧 함수: 6개
@@ -363,6 +372,7 @@
 - 🔗 인터페이스: 4개
 
 **Exports:**
+
 - `CalendarSync`
 
 ### 🔧 Functions
@@ -393,12 +403,12 @@
 
 #### `SyncProgress`
 
-
 ## PageHeader.tsx
 
 **파일 경로:** `components/common/PageHeader.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1299 bytes
 - 📄 라인 수: 53
 - 🔧 함수: 1개
@@ -407,6 +417,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `PageHeader`
 
 ### 🔧 Functions
@@ -419,12 +430,12 @@
 
 #### `PageHeaderProps`
 
-
 ## DataExportImport.tsx
 
 **파일 경로:** `components/data/DataExportImport.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 10430 bytes
 - 📄 라인 수: 320
 - 🔧 함수: 4개
@@ -433,6 +444,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `DataExportImport`
 
 ### 🔧 Functions
@@ -453,12 +465,12 @@
 
 #### `DataExportImportProps`
 
-
 ## ApiDocumentation.tsx
 
 **파일 경로:** `components/docs/ApiDocumentation.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 15381 bytes
 - 📄 라인 수: 458
 - 🔧 함수: 3개
@@ -467,6 +479,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `ApiDocumentation`
 
 ### 🔧 Functions
@@ -481,12 +494,12 @@
 
 #### `ApiEndpoint`
 
-
 ## ErrorBoundary.tsx
 
 **파일 경로:** `components/error/ErrorBoundary.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 5446 bytes
 - 📄 라인 수: 175
 - 🔧 함수: 1개
@@ -495,6 +508,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `ErrorBoundary`
 - `useErrorHandler`
 
@@ -516,12 +530,12 @@
 
 #### `State`
 
-
 ## ErrorFallback.tsx
 
 **파일 경로:** `components/error/ErrorFallback.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 2712 bytes
 - 📄 라인 수: 88
 - 🔧 함수: 2개
@@ -530,6 +544,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `ErrorFallback`
 
 ### 🔧 Functions
@@ -544,12 +559,12 @@
 
 #### `ErrorFallbackProps`
 
-
 ## FeedbackButton.stories.tsx
 
 **파일 경로:** `components/feedback/FeedbackButton.stories.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1659 bytes
 - 📄 라인 수: 87
 - 🔧 함수: 0개
@@ -558,6 +573,7 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `meta`
 - `Default`
 - `WithMockData`
@@ -569,12 +585,12 @@
 
 - `Story`
 
-
 ## FeedbackButton.tsx
 
 **파일 경로:** `components/feedback/FeedbackButton.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 4609 bytes
 - 📄 라인 수: 153
 - 🔧 함수: 2개
@@ -583,6 +599,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `FeedbackButton`
 
 ### 🔧 Functions
@@ -597,12 +614,12 @@
 
 #### `FeedbackData`
 
-
 ## GmailAnalyzer.tsx
 
 **파일 경로:** `components/gmail/GmailAnalyzer.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 21168 bytes
 - 📄 라인 수: 583
 - 🔧 함수: 5개
@@ -611,6 +628,7 @@
 - 🔗 인터페이스: 3개
 
 **Exports:**
+
 - `GmailAnalyzer`
 
 ### 🔧 Functions
@@ -635,12 +653,12 @@
 
 #### `FilterOptions`
 
-
 ## GmailIntegration.tsx
 
 **파일 경로:** `components/gmail/GmailIntegration.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 21274 bytes
 - 📄 라인 수: 611
 - 🔧 함수: 5개
@@ -649,6 +667,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `GmailIntegration`
 
 ### 🔧 Functions
@@ -673,12 +692,12 @@
 
 #### `TravelEmail`
 
-
 ## Container.tsx
 
 **파일 경로:** `components/layout/Container.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 544 bytes
 - 📄 라인 수: 26
 - 🔧 함수: 1개
@@ -687,6 +706,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `Container`
 
 ### 🔧 Functions
@@ -697,12 +717,12 @@
 
 #### `ContainerProps`
 
-
 ## Footer.tsx
 
 **파일 경로:** `components/layout/Footer.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 3938 bytes
 - 📄 라인 수: 112
 - 🔧 함수: 1개
@@ -711,18 +731,19 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `Footer`
 
 ### 🔧 Functions
 
 #### `Footer`
 
-
 ## Header.tsx
 
 **파일 경로:** `components/layout/Header.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 5653 bytes
 - 📄 라인 수: 167
 - 🔧 함수: 4개
@@ -731,6 +752,7 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `Header`
 
 ### 🔧 Functions
@@ -745,12 +767,12 @@
 
 #### `isActive`
 
-
 ## MainLayout.tsx
 
 **파일 경로:** `components/layout/MainLayout.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 2505 bytes
 - 📄 라인 수: 77
 - 🔧 함수: 1개
@@ -759,6 +781,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `MainLayout`
 
 ### 🔧 Functions
@@ -769,12 +792,12 @@
 
 #### `MainLayoutProps`
 
-
 ## BackButton.tsx
 
 **파일 경로:** `components/legal/BackButton.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 291 bytes
 - 📄 라인 수: 16
 - 🔧 함수: 1개
@@ -783,6 +806,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `BackButton`
 
 ### 🔧 Functions
@@ -793,12 +817,12 @@
 
 #### `BackButtonProps`
 
-
 ## BusinessMetricsDashboard.tsx
 
 **파일 경로:** `components/metrics/BusinessMetricsDashboard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 14133 bytes
 - 📄 라인 수: 376
 - 🔧 함수: 4개
@@ -807,6 +831,7 @@
 - 🔗 인터페이스: 3개
 
 **Exports:**
+
 - `BusinessMetricsDashboard`
 
 ### 🔧 Functions
@@ -829,12 +854,12 @@
 
 #### `ChartData`
 
-
 ## PerformanceMetricsDashboard.tsx
 
 **파일 경로:** `components/metrics/PerformanceMetricsDashboard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 13061 bytes
 - 📄 라인 수: 352
 - 🔧 함수: 3개
@@ -843,6 +868,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `PerformanceMetricsDashboard`
 
 ### 🔧 Functions
@@ -861,12 +887,12 @@
 
 #### `WebVitals`
 
-
 ## MobileActionSheet.tsx
 
 **파일 경로:** `components/mobile/MobileActionSheet.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 4606 bytes
 - 📄 라인 수: 166
 - 🔧 함수: 1개
@@ -875,6 +901,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `MobileActionSheet`
 
 ### 🔧 Functions
@@ -887,12 +914,12 @@
 
 #### `MobileActionSheetProps`
 
-
 ## MobileBottomNav.tsx
 
 **파일 경로:** `components/mobile/MobileBottomNav.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 3545 bytes
 - 📄 라인 수: 141
 - 🔧 함수: 2개
@@ -901,6 +928,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `MobileBottomNav`
 
 ### 🔧 Functions
@@ -913,12 +941,12 @@
 
 #### `NavItem`
 
-
 ## PerformanceDashboard.tsx
 
 **파일 경로:** `components/monitoring/PerformanceDashboard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 6306 bytes
 - 📄 라인 수: 184
 - 🔧 함수: 4개
@@ -927,6 +955,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `PerformanceDashboard`
 
 ### 🔧 Functions
@@ -945,12 +974,12 @@
 
 #### `WebVital`
 
-
 ## NotificationIcon.tsx
 
 **파일 경로:** `components/notifications/NotificationIcon.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 6091 bytes
 - 📄 라인 수: 181
 - 🔧 함수: 3개
@@ -959,6 +988,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `NotificationIcon`
 
 ### 🔧 Functions
@@ -977,12 +1007,12 @@
 
 #### `NotificationIconProps`
 
-
 ## NotificationList.tsx
 
 **파일 경로:** `components/notifications/NotificationList.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 8693 bytes
 - 📄 라인 수: 270
 - 🔧 함수: 5개
@@ -991,6 +1021,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `NotificationList`
 
 ### 🔧 Functions
@@ -1009,12 +1040,12 @@
 
 #### `NotificationListProps`
 
-
 ## NotificationSettings.tsx
 
 **파일 경로:** `components/notifications/NotificationSettings.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 8185 bytes
 - 📄 라인 수: 236
 - 🔧 함수: 5개
@@ -1023,6 +1054,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `NotificationSettings`
 
 ### 🔧 Functions
@@ -1045,12 +1077,12 @@
 
 #### `NotificationSettingsProps`
 
-
 ## OnboardingFlow.tsx
 
 **파일 경로:** `components/onboarding/OnboardingFlow.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 18970 bytes
 - 📄 라인 수: 596
 - 🔧 함수: 12개
@@ -1059,6 +1091,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `OnboardingFlow`
 
 ### 🔧 Functions
@@ -1101,12 +1134,12 @@
 
 #### `OnboardingProgress`
 
-
 ## PerformanceMonitor.tsx
 
 **파일 경로:** `components/performance/PerformanceMonitor.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 10604 bytes
 - 📄 라인 수: 327
 - 🔧 함수: 10개
@@ -1115,6 +1148,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `PerformanceMonitor`
 - `usePerformanceMetrics`
 
@@ -1150,12 +1184,12 @@
 
 #### `PerformanceMonitorProps`
 
-
 ## MonitoringProvider.tsx
 
 **파일 경로:** `components/providers/MonitoringProvider.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 2041 bytes
 - 📄 라인 수: 63
 - 🔧 함수: 2개
@@ -1164,6 +1198,7 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `MonitoringProvider`
 
 ### 🔧 Functions
@@ -1172,12 +1207,12 @@
 
 #### `return`
 
-
 ## SessionProvider.tsx
 
 **파일 경로:** `components/providers/SessionProvider.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 423 bytes
 - 📄 라인 수: 17
 - 🔧 함수: 1개
@@ -1186,6 +1221,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `SessionProvider`
 
 ### 🔧 Functions
@@ -1196,12 +1232,12 @@
 
 #### `SessionProviderProps`
 
-
 ## OfflineIndicator.tsx
 
 **파일 경로:** `components/pwa/OfflineIndicator.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 966 bytes
 - 📄 라인 수: 45
 - 🔧 함수: 1개
@@ -1210,18 +1246,19 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `OfflineIndicator`
 
 ### 🔧 Functions
 
 #### `OfflineIndicator`
 
-
 ## PWAInstallButton.tsx
 
 **파일 경로:** `components/pwa/PWAInstallButton.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1163 bytes
 - 📄 라인 수: 51
 - 🔧 함수: 1개
@@ -1230,18 +1267,19 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `PWAInstallButton`
 
 ### 🔧 Functions
 
 #### `PWAInstallButton`
 
-
 ## FutureTripPlanner.tsx
 
 **파일 경로:** `components/schengen/FutureTripPlanner.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 7681 bytes
 - 📄 라인 수: 227
 - 🔧 함수: 3개
@@ -1250,6 +1288,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `FutureTripPlanner`
 
 ### 🔧 Functions
@@ -1264,12 +1303,12 @@
 
 #### `FutureTripPlannerProps`
 
-
 ## SchengenCalculator.tsx
 
 **파일 경로:** `components/schengen/SchengenCalculator.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 12955 bytes
 - 📄 라인 수: 323
 - 🔧 함수: 4개
@@ -1278,6 +1317,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `SchengenCalculator`
 
 ### 🔧 Functions
@@ -1296,12 +1336,12 @@
 
 #### `SchengenCalculatorProps`
 
-
 ## SchengenChart.tsx
 
 **파일 경로:** `components/schengen/SchengenChart.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 9366 bytes
 - 📄 라인 수: 265
 - 🔧 함수: 2개
@@ -1310,6 +1350,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `SchengenChart`
 
 ### 🔧 Functions
@@ -1324,12 +1365,12 @@
 
 #### `SchengenChartProps`
 
-
 ## EnhancedTripForm.tsx
 
 **파일 경로:** `components/travel/EnhancedTripForm.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 14369 bytes
 - 📄 라인 수: 432
 - 🔧 함수: 4개
@@ -1338,6 +1379,7 @@
 - 🔗 인터페이스: 2개
 
 **Exports:**
+
 - `EnhancedTripForm`
 
 ### 🔧 Functions
@@ -1362,12 +1404,12 @@
 
 #### `EnhancedTripFormProps`
 
-
 ## TravelInsightsDashboard.tsx
 
 **파일 경로:** `components/travel/TravelInsightsDashboard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 8346 bytes
 - 📄 라인 수: 234
 - 🔧 함수: 2개
@@ -1376,6 +1418,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `TravelInsightsDashboard`
 
 ### 🔧 Functions
@@ -1392,12 +1435,12 @@
 
 #### `TravelInsightsDashboardProps`
 
-
 ## TravelManagementPage.tsx
 
 **파일 경로:** `components/travel/TravelManagementPage.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 15051 bytes
 - 📄 라인 수: 413
 - 🔧 함수: 8개
@@ -1406,6 +1449,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `TravelManagementPage`
 
 ### 🔧 Functions
@@ -1440,12 +1484,12 @@
 
 #### `TravelManagementPageProps`
 
-
 ## TripCard.tsx
 
 **파일 경로:** `components/trips/TripCard.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 5898 bytes
 - 📄 라인 수: 198
 - 🔧 함수: 4개
@@ -1454,6 +1498,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `TripCard`
 
 ### 🔧 Functions
@@ -1472,12 +1517,12 @@
 
 #### `TripCardProps`
 
-
 ## TripForm.tsx
 
 **파일 경로:** `components/trips/TripForm.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 11453 bytes
 - 📄 라인 수: 362
 - 🔧 함수: 3개
@@ -1486,6 +1531,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `TripForm`
 
 ### 🔧 Functions
@@ -1502,12 +1548,12 @@
 
 #### `TripFormProps`
 
-
 ## LanguageSelector.tsx
 
 **파일 경로:** `components/ui/LanguageSelector.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 3274 bytes
 - 📄 라인 수: 97
 - 🔧 함수: 2개
@@ -1516,6 +1562,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `LanguageSelector`
 
 ### 🔧 Functions
@@ -1528,12 +1575,12 @@
 
 #### `LanguageSelectorProps`
 
-
 ## LanguageTest.tsx
 
 **파일 경로:** `components/ui/LanguageTest.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 661 bytes
 - 📄 라인 수: 26
 - 🔧 함수: 1개
@@ -1542,18 +1589,19 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `LanguageTest`
 
 ### 🔧 Functions
 
 #### `LanguageTest`
 
-
 ## LoadingSpinner.tsx
 
 **파일 경로:** `components/ui/LoadingSpinner.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 500 bytes
 - 📄 라인 수: 22
 - 🔧 함수: 1개
@@ -1562,6 +1610,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `LoadingSpinner`
 
 ### 🔧 Functions
@@ -1572,12 +1621,12 @@
 
 #### `LoadingSpinnerProps`
 
-
 ## OfflineIndicator.tsx
 
 **파일 경로:** `components/ui/OfflineIndicator.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1591 bytes
 - 📄 라인 수: 62
 - 🔧 함수: 3개
@@ -1586,6 +1635,7 @@
 - 🔗 인터페이스: 0개
 
 **Exports:**
+
 - `OfflineIndicator`
 
 ### 🔧 Functions
@@ -1598,12 +1648,12 @@
 
 #### `handleOffline`
 
-
 ## PageHeader.tsx
 
 **파일 경로:** `components/ui/PageHeader.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1353 bytes
 - 📄 라인 수: 56
 - 🔧 함수: 1개
@@ -1612,6 +1662,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `PageHeader`
 
 ### 🔧 Functions
@@ -1622,12 +1673,12 @@
 
 #### `PageHeaderProps`
 
-
 ## alert.tsx
 
 **파일 경로:** `components/ui/alert.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1582 bytes
 - 📄 라인 수: 58
 - 🔧 함수: 0개
@@ -1635,12 +1686,12 @@
 - 🏷️ 타입: 0개
 - 🔗 인터페이스: 0개
 
-
 ## badge.tsx
 
 **파일 경로:** `components/ui/badge.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1126 bytes
 - 📄 라인 수: 35
 - 🔧 함수: 1개
@@ -1649,6 +1700,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `BadgeProps`
 
 ### 🔧 Functions
@@ -1661,12 +1713,12 @@
 
 **특성:** `exported`
 
-
 ## button.tsx
 
 **파일 경로:** `components/ui/button.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1815 bytes
 - 📄 라인 수: 55
 - 🔧 함수: 0개
@@ -1675,6 +1727,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `ButtonProps`
 
 ### 🔗 Interfaces
@@ -1683,12 +1736,12 @@
 
 **특성:** `exported`
 
-
 ## card.tsx
 
 **파일 경로:** `components/ui/card.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1875 bytes
 - 📄 라인 수: 78
 - 🔧 함수: 0개
@@ -1696,12 +1749,12 @@
 - 🏷️ 타입: 0개
 - 🔗 인터페이스: 0개
 
-
 ## checkbox.tsx
 
 **파일 경로:** `components/ui/checkbox.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1054 bytes
 - 📄 라인 수: 27
 - 🔧 함수: 0개
@@ -1709,12 +1762,12 @@
 - 🏷️ 타입: 0개
 - 🔗 인터페이스: 0개
 
-
 ## dropdown-menu.tsx
 
 **파일 경로:** `components/ui/dropdown-menu.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 7327 bytes
 - 📄 라인 수: 198
 - 🔧 함수: 1개
@@ -1726,12 +1779,12 @@
 
 #### `DropdownMenuShortcut`
 
-
 ## optimized-image.tsx
 
 **파일 경로:** `components/ui/optimized-image.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 6302 bytes
 - 📄 라인 수: 286
 - 🔧 함수: 5개
@@ -1740,6 +1793,7 @@
 - 🔗 인터페이스: 4개
 
 **Exports:**
+
 - `OptimizedImage`
 - `OptimizedAvatar`
 - `ImageGallery`
@@ -1773,12 +1827,12 @@
 
 #### `HeroImageProps`
 
-
 ## progress.tsx
 
 **파일 경로:** `components/ui/progress.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 775 bytes
 - 📄 라인 수: 25
 - 🔧 함수: 0개
@@ -1786,12 +1840,12 @@
 - 🏷️ 타입: 0개
 - 🔗 인터페이스: 0개
 
-
 ## select.tsx
 
 **파일 경로:** `components/ui/select.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 5636 bytes
 - 📄 라인 수: 158
 - 🔧 함수: 0개
@@ -1799,12 +1853,12 @@
 - 🏷️ 타입: 0개
 - 🔗 인터페이스: 0개
 
-
 ## tabs.tsx
 
 **파일 경로:** `components/ui/tabs.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 1881 bytes
 - 📄 라인 수: 52
 - 🔧 함수: 0개
@@ -1812,12 +1866,12 @@
 - 🏷️ 타입: 0개
 - 🔗 인터페이스: 0개
 
-
 ## textarea.tsx
 
 **파일 경로:** `components/ui/textarea.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 777 bytes
 - 📄 라인 수: 24
 - 🔧 함수: 0개
@@ -1826,6 +1880,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `TextareaProps`
 
 ### 🔗 Interfaces
@@ -1834,12 +1889,12 @@
 
 **특성:** `exported`
 
-
 ## QuickVisaCheck.tsx
 
 **파일 경로:** `components/visa/QuickVisaCheck.tsx`
 
 **파일 정보:**
+
 - 📏 크기: 8604 bytes
 - 📄 라인 수: 237
 - 🔧 함수: 3개
@@ -1848,6 +1903,7 @@
 - 🔗 인터페이스: 1개
 
 **Exports:**
+
 - `QuickVisaCheck`
 
 ### 🔧 Functions
@@ -1864,8 +1920,7 @@
 
 #### `VisaInfo`
 
-
 ---
 
-*📅 생성일: 2025. 7. 29. 오후 5:23:13*
-*📊 총 63개 파일 문서화*
+_📅 생성일: 2025. 7. 29. 오후 5:23:13_
+_📊 총 63개 파일 문서화_

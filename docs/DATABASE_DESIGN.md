@@ -3,6 +3,7 @@
 ## 🗄️ Database Architecture Overview
 
 ### Technology Stack
+
 - **Development**: SQLite (lightweight, zero-config)
 - **Production**: PostgreSQL 15+ (scalable, reliable)
 - **ORM**: Prisma (type-safe, auto-generated client)
@@ -10,6 +11,7 @@
 - **Hosting**: Vercel Postgres (serverless-optimized)
 
 ### Design Principles
+
 1. **Normalization**: 3NF to minimize redundancy
 2. **Performance**: Strategic indexing and query optimization
 3. **Scalability**: Designed for horizontal scaling
@@ -24,7 +26,7 @@ erDiagram
     User ||--o{ Session : has
     User ||--o{ CountryVisit : records
     User ||--o| NotificationSettings : configures
-    
+
     User {
         string id PK
         string email UK
@@ -37,7 +39,7 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
-    
+
     Account {
         string id PK
         string userId FK
@@ -52,14 +54,14 @@ erDiagram
         string id_token
         string session_state
     }
-    
+
     Session {
         string id PK
         string sessionToken UK
         string userId FK
         datetime expires
     }
-    
+
     CountryVisit {
         string id PK
         string userId FK
@@ -73,7 +75,7 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
-    
+
     NotificationSettings {
         string id PK
         string userId FK UK
@@ -83,7 +85,7 @@ erDiagram
         boolean pushEnabled
         datetime updatedAt
     }
-    
+
     VerificationToken {
         string identifier
         string token UK
@@ -94,6 +96,7 @@ erDiagram
 ## 🔑 Schema Details
 
 ### User Table
+
 Primary entity storing user information and preferences.
 
 ```sql
@@ -108,18 +111,20 @@ CREATE TABLE User (
     timezone VARCHAR(50) DEFAULT 'UTC',
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     INDEX idx_email (email),
     INDEX idx_googleId (googleId)
 );
 ```
 
 **Key Points:**
+
 - `passportCountry`: Enum values: US, UK, EU, CA, AU, JP, OTHER
 - `timezone`: IANA timezone format (e.g., 'America/New_York')
 - Soft delete not implemented (GDPR compliance - true deletion)
 
 ### CountryVisit Table
+
 Core table for trip tracking and Schengen calculations.
 
 ```sql
@@ -135,9 +140,9 @@ CREATE TABLE CountryVisit (
     notes TEXT,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
-    
+
     -- Optimized indexes for common queries
     INDEX idx_user_trips (userId),
     INDEX idx_country (country),
@@ -153,16 +158,19 @@ CREATE TABLE CountryVisit (
 ```
 
 **Visa Types:**
+
 - Tourist, Business, Student, Working Holiday, Digital Nomad
 - Transit, Work, Investor, Retirement, Volunteer
 - Visa Run, Extension, Spouse, Medical
 
 **Index Strategy:**
+
 - `idx_user_entry`: Most common query pattern
 - `idx_schengen_calc`: Optimized for 90/180 day calculations
 - `idx_date_range`: Date-based filtering and sorting
 
 ### Account Table
+
 OAuth provider information (NextAuth.js requirement).
 
 ```sql
@@ -179,13 +187,14 @@ CREATE TABLE Account (
     scope TEXT,
     id_token TEXT,
     session_state TEXT,
-    
+
     FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
     UNIQUE KEY (provider, providerAccountId)
 );
 ```
 
 ### Session Table
+
 Active user sessions (NextAuth.js requirement).
 
 ```sql
@@ -194,7 +203,7 @@ CREATE TABLE Session (
     sessionToken VARCHAR(255) UNIQUE NOT NULL,
     userId VARCHAR(30) NOT NULL,
     expires TIMESTAMP NOT NULL,
-    
+
     FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
     INDEX idx_session_token (sessionToken),
     INDEX idx_expires (expires)
@@ -202,6 +211,7 @@ CREATE TABLE Session (
 ```
 
 ### NotificationSettings Table
+
 User notification preferences.
 
 ```sql
@@ -213,7 +223,7 @@ CREATE TABLE NotificationSettings (
     emailEnabled BOOLEAN DEFAULT true,
     pushEnabled BOOLEAN DEFAULT false,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
 );
 ```
@@ -223,31 +233,34 @@ CREATE TABLE NotificationSettings (
 ### Common Query Patterns
 
 #### 1. Get User's Recent Trips
+
 ```sql
 -- Optimized by idx_user_entry
-SELECT * FROM CountryVisit 
-WHERE userId = ? 
-ORDER BY entryDate DESC 
+SELECT * FROM CountryVisit
+WHERE userId = ?
+ORDER BY entryDate DESC
 LIMIT 20;
 ```
 
 #### 2. Schengen Calculation Query
+
 ```sql
 -- Optimized by idx_schengen_calc
-SELECT country, entryDate, exitDate 
-FROM CountryVisit 
-WHERE userId = ? 
+SELECT country, entryDate, exitDate
+FROM CountryVisit
+WHERE userId = ?
   AND entryDate >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
   AND country IN (/* Schengen countries */)
 ORDER BY entryDate;
 ```
 
 #### 3. Country Statistics
+
 ```sql
 -- Optimized by idx_user_country
-SELECT country, COUNT(*) as visits, 
+SELECT country, COUNT(*) as visits,
        SUM(DATEDIFF(COALESCE(exitDate, CURRENT_DATE), entryDate)) as totalDays
-FROM CountryVisit 
+FROM CountryVisit
 WHERE userId = ?
 GROUP BY country
 ORDER BY visits DESC;
@@ -256,6 +269,7 @@ ORDER BY visits DESC;
 ## 🔄 Migration Strategy
 
 ### Initial Schema (V1)
+
 ```prisma
 model CountryVisit {
   id              String    @id @default(cuid())
@@ -269,9 +283,9 @@ model CountryVisit {
   notes           String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId])
   @@index([entryDate])
   @@index([userId, entryDate])
@@ -279,6 +293,7 @@ model CountryVisit {
 ```
 
 ### Future Migrations
+
 ```sql
 -- V2: Add trip purpose
 ALTER TABLE CountryVisit ADD COLUMN purpose VARCHAR(50);
@@ -300,6 +315,7 @@ CREATE TABLE TripExpense (
 ## 🚀 Performance Considerations
 
 ### Connection Pooling
+
 ```typescript
 // Prisma connection configuration
 datasource db {
@@ -314,32 +330,35 @@ datasource db {
 ```
 
 ### Query Optimization Tips
+
 1. **Use indexes**: All foreign keys and commonly filtered columns
 2. **Limit results**: Always paginate large result sets
-3. **Select specific columns**: Avoid SELECT * in production
+3. **Select specific columns**: Avoid SELECT \* in production
 4. **Use prepared statements**: Prisma handles this automatically
 5. **Monitor slow queries**: Log queries >100ms
 
 ### Caching Strategy
+
 ```typescript
 // Query result caching
-const cacheKey = `user_trips_${userId}_${page}`
-const cached = await cache.get(cacheKey)
-if (cached) return cached
+const cacheKey = `user_trips_${userId}_${page}`;
+const cached = await cache.get(cacheKey);
+if (cached) return cached;
 
 const trips = await prisma.countryVisit.findMany({
   where: { userId },
   orderBy: { entryDate: 'desc' },
   take: 20,
-  skip: (page - 1) * 20
-})
+  skip: (page - 1) * 20,
+});
 
-await cache.set(cacheKey, trips, 300) // 5 min TTL
+await cache.set(cacheKey, trips, 300); // 5 min TTL
 ```
 
 ## 🔒 Security Measures
 
 ### Data Protection
+
 1. **Encryption at Rest**: Database-level encryption
 2. **Encryption in Transit**: SSL/TLS connections
 3. **Access Control**: Row-level security for multi-tenant
@@ -347,22 +366,24 @@ await cache.set(cacheKey, trips, 300) // 5 min TTL
 5. **PII Protection**: Sensitive data masking
 
 ### SQL Injection Prevention
+
 ```typescript
 // Prisma prevents SQL injection automatically
 // Bad (if using raw SQL):
 const trips = await prisma.$queryRaw`
   SELECT * FROM CountryVisit WHERE country = ${userInput}
-`
+`;
 
 // Good (parameterized):
 const trips = await prisma.countryVisit.findMany({
-  where: { country: userInput }
-})
+  where: { country: userInput },
+});
 ```
 
 ## 🔨 Maintenance Operations
 
 ### Regular Maintenance Tasks
+
 ```sql
 -- Vacuum and analyze (PostgreSQL)
 VACUUM ANALYZE CountryVisit;
@@ -384,6 +405,7 @@ WHERE tablename = 'countryvisit'
 ```
 
 ### Backup Strategy
+
 1. **Continuous Backups**: Point-in-time recovery
 2. **Daily Snapshots**: Full database backup
 3. **Geographic Redundancy**: Backups in multiple regions
@@ -393,6 +415,7 @@ WHERE tablename = 'countryvisit'
 ## 📊 Monitoring & Metrics
 
 ### Key Metrics to Track
+
 - Query response time (p50, p95, p99)
 - Connection pool utilization
 - Slow query log (>100ms)
@@ -401,6 +424,7 @@ WHERE tablename = 'countryvisit'
 - Cache hit rates
 
 ### Alerting Thresholds
+
 - Connection pool >80% utilized
 - Query time p95 >200ms
 - Failed queries >1% of total

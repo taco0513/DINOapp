@@ -11,23 +11,27 @@
 ## 🎯 주요 기능
 
 ### 여행 통계 개요
+
 - **총 방문 국가**: 누적 방문 국가 수
 - **총 여행 일수**: 전체 여행 기간 합계
 - **셰겐 사용 일수**: 90일 규정 대비 사용 현황
 - **올해 활동**: 현재 연도 여행 활동 요약
 
 ### 데이터 시각화
+
 - **가장 많이 방문한 국가**: 방문 횟수별 랭킹
 - **비자 유형별 분포**: 비자 종류별 통계 및 비율
 - **최근 여행 타임라인**: 시간순 여행 기록
 - **셰겐 국가 표시**: 셰겐 협정국 구분 표시
 
 ### 인터랙티브 요소
+
 - **새로고침 기능**: 실시간 데이터 업데이트
 - **풀 투 리프레시**: 모바일에서 당겨서 새로고침
 - **반응형 차트**: 화면 크기에 따른 차트 최적화
 
 ### 추가 위젯
+
 - **여행 통계 위젯**: 고급 분석 및 인사이트
 - **국가별 상세 정보**: 국기, 셰겐 여부, 방문 통계
 
@@ -40,12 +44,14 @@
 ## 🔄 사용자 플로우
 
 ### 데이터 조회
+
 1. 분석 페이지 접근
 2. 자동으로 여행 통계 로드
 3. 시각화된 데이터 확인
 4. 필요시 새로고침으로 최신 데이터 갱신
 
 ### 모바일 사용
+
 1. 모바일에서 페이지 접근
 2. 풀 투 리프레시로 데이터 갱신
 3. 터치 최적화된 인터페이스 사용
@@ -54,6 +60,7 @@
 ## 🎨 UI/UX 요소
 
 ### 헤더
+
 - **PageHeader 컴포넌트**: 표준화된 헤더
 - **제목**: "여행 분석"
 - **설명**: "당신의 여행 패턴과 통계를 자세히 분석해보세요"
@@ -62,11 +69,13 @@
 - **액션 버튼**: 새로고침 버튼 (스피너 애니메이션 포함)
 
 ### 통계 카드
+
 - **그리드 레이아웃**: 반응형 2-3열 그리드
 - **통계 값 강조**: 큰 폰트와 색상으로 주요 수치 표시
 - **라벨링**: 명확한 설명과 단위 표시
 
 ### 데이터 시각화
+
 - **국가별 랭킹**: 국기 아이콘과 방문 횟수
 - **진행률 바**: 비자 유형별 비율 표시
 - **타임라인**: 시간순 여행 기록 카드
@@ -75,6 +84,7 @@
 ## 🔧 기술 구현
 
 ### 컴포넌트 구조
+
 ```typescript
 - AnalyticsPage (메인 컴포넌트)
   ├── PageHeader (헤더 + 새로고침 버튼)
@@ -88,28 +98,32 @@
 ```
 
 ### 상태 관리
+
 ```typescript
-const [statsData, setStatsData] = useState<any>(null)
-const [loading, setLoading] = useState(true)
-const [isMobile, setIsMobile] = useState(false)
+const [statsData, setStatsData] = useState<any>(null);
+const [loading, setLoading] = useState(true);
+const [isMobile, setIsMobile] = useState(false);
 ```
 
 ### API 연동
+
 ```typescript
 const loadStats = async () => {
-  const response = await ApiClient.getStats()
+  const response = await ApiClient.getStats();
   if (response.success && response.data) {
-    setStatsData(response.data)
+    setStatsData(response.data);
   }
-}
+};
 ```
 
 ### 반응형 디자인
+
 - **모바일 감지**: `window.innerWidth < 768`
 - **이벤트 리스너**: resize 이벤트로 실시간 감지
 - **조건부 렌더링**: 모바일/데스크톱 별도 레이아웃
 
 ### 데이터 변환
+
 - **국가 정보**: `getCountryByName()` 함수로 국기, 셰겐 정보 조회
 - **날짜 포맷**: `toLocaleDateString('ko-KR')` 한국어 날짜 형식
 - **비율 계산**: 진행률 바를 위한 퍼센트 계산
@@ -130,6 +144,7 @@ const loadStats = async () => {
 ## 📱 모바일 지원
 
 ### Pull-to-Refresh
+
 ```typescript
 return (
   <main style={{ minHeight: '100vh' }}>
@@ -145,6 +160,7 @@ return (
 ```
 
 ### 반응형 요소
+
 - **그리드 시스템**: `grid-cols-1 sm:grid-cols-2 md:grid-cols-3`
 - **간격 조정**: 모바일에서 더 컴팩트한 간격
 - **터치 타겟**: 최소 44px 크기 보장
@@ -164,16 +180,19 @@ return (
 ## 🚀 개선 계획
 
 ### 단기 (1-2주)
+
 - [ ] 데이터 캐싱 구현
 - [ ] 로딩 스켈레톤 UI 추가
 - [ ] 에러 상태 개선
 
 ### 중기 (1-2개월)
+
 - [ ] 고급 차트 라이브러리 (Chart.js, D3.js) 도입
 - [ ] 데이터 필터링 (기간별, 국가별)
 - [ ] 비교 분석 기능
 
 ### 장기 (3-6개월)
+
 - [ ] 예측 분석 (AI 기반)
 - [ ] 여행 추천 시스템
 - [ ] 소셜 분석 (그룹 여행 통계)
@@ -188,6 +207,7 @@ return (
 ## 데이터 구조
 
 ### 통계 데이터 형식
+
 ```typescript
 interface StatsData {
   overview: {
@@ -223,11 +243,13 @@ interface StatsData {
 ## 관련 컴포넌트
 
 ### 핵심 컴포넌트
+
 - **TravelStatsWidget**: 고급 여행 통계 위젯
 - **PullToRefresh**: 모바일 새로고침 컴포넌트
 - **PageHeader**: 표준 페이지 헤더
 
 ### 데이터 유틸리티
+
 - **ApiClient**: API 호출 클라이언트
 - **getCountryByName**: 국가 정보 조회 함수
 

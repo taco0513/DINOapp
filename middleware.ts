@@ -28,18 +28,18 @@ const RATE_LIMITS = {
 
 export async function middleware(request: NextRequest) {
   const start = Date.now();
-  let response = NextResponse.next();
+  const response = NextResponse.next();
   const { pathname } = request.nextUrl;
   const method = request.method;
-  
+
   // Error recovery middleware (database health, circuit breaker, etc.)
   const recoveryResponse = await errorRecoveryMiddleware(request, {
     enableDbHealthCheck: false, // Disabled to prevent Prisma client issues in middleware
     enableCircuitBreaker: true,
     enableGracefulDegradation: true,
-    maintenanceMode: process.env.MAINTENANCE_MODE === 'true'
+    maintenanceMode: process.env.MAINTENANCE_MODE === 'true',
   });
-  
+
   if (recoveryResponse) {
     const duration = Date.now() - start;
     httpMetrics.requestEnd(method, pathname, 503);
@@ -50,14 +50,14 @@ export async function middleware(request: NextRequest) {
 
   // Apply security headers to all routes
   applySecurityHeaders(response);
-  
+
   // Generate CSRF token for authenticated users
   if (process.env.ENABLE_CSRF_PROTECTION === 'true') {
     const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
     });
-    
+
     if (token && token.sub) {
       const csrfToken = CSRFProtection.generateToken(token.sub);
       response.cookies.set('csrf-token', csrfToken, {
@@ -123,7 +123,10 @@ export async function middleware(request: NextRequest) {
       const token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
-        cookieName: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+        cookieName:
+          process.env.NODE_ENV === 'production'
+            ? '__Secure-next-auth.session-token'
+            : 'next-auth.session-token',
       });
 
       // Checking auth for protected route
@@ -162,7 +165,7 @@ export async function middleware(request: NextRequest) {
   const duration = Date.now() - start;
   httpMetrics.requestEnd(method, pathname, 200);
   // TODO: Add histogram metric when implemented in httpMetrics
-  
+
   return response;
 }
 

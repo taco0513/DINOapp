@@ -1,10 +1,10 @@
 /* 모바일 터치 인터페이스 최적화 CSS */
 
 /* 터치 영역 최소 크기 보장 (44px x 44px) */
-button, 
-input[type="button"], 
-input[type="submit"], 
-input[type="reset"],
+button,
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
 a,
 .touch-target {
   min-height: 44px;
@@ -15,8 +15,8 @@ a,
 
 /* 터치 피드백 강화 */
 button:active,
-input[type="button"]:active,
-input[type="submit"]:active,
+input[type='button']:active,
+input[type='submit']:active,
 a:active,
 .touch-target:active {
   transform: scale(0.98);
@@ -31,18 +31,20 @@ a:active,
 }
 
 /* 입력 필드 터치 최적화 */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="tel"],
-input[type="date"],
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='tel'],
+input[type='date'],
 textarea,
 select {
   font-size: 16px; /* iOS 줌 방지 */
   padding: 12px 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   touch-action: manipulation;
 }
 
@@ -121,9 +123,15 @@ select:focus {
 }
 
 /* 햅틱 피드백 지원 클래스 */
-.haptic-light { /* JS에서 햅틱 피드백 트리거 */ }
-.haptic-medium { /* JS에서 햅틱 피드백 트리거 */ }
-.haptic-heavy { /* JS에서 햅틱 피드백 트리거 */ }
+.haptic-light {
+  /* JS에서 햅틱 피드백 트리거 */
+}
+.haptic-medium {
+  /* JS에서 햅틱 피드백 트리거 */
+}
+.haptic-heavy {
+  /* JS에서 햅틱 피드백 트리거 */
+}
 
 /* 모바일 모달 최적화 */
 .mobile-modal {
@@ -232,7 +240,9 @@ select:focus {
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 99;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .floating-action-button:active {
@@ -247,34 +257,40 @@ select:focus {
     display: flex;
     justify-content: space-around;
   }
-  
+
   /* 데스크톱 네비게이션 숨김 */
   .desktop-nav {
     display: none;
   }
-  
+
   /* 컨테이너 패딩 조정 */
   .container {
     padding-left: 16px;
     padding-right: 16px;
   }
-  
+
   /* 텍스트 크기 조정 */
-  h1 { font-size: 24px; }
-  h2 { font-size: 20px; }
-  h3 { font-size: 18px; }
-  
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+
   /* 카드 간격 조정 */
   .card {
     margin-bottom: 16px;
   }
-  
+
   /* 테이블 스크롤 */
   .table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   table {
     min-width: 600px;
   }
@@ -286,15 +302,17 @@ select:focus {
     padding-left: 12px;
     padding-right: 12px;
   }
-  
+
   /* 버튼 패딩 증가 */
   button {
     padding: 14px 20px;
     font-size: 16px;
   }
-  
+
   /* 입력 필드 패딩 증가 */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     padding: 14px 16px;
     font-size: 16px;
   }
@@ -306,7 +324,7 @@ select:focus {
   *:hover {
     /* 호버 스타일 제거 */
   }
-  
+
   /* 터치 피드백 강화 */
   button:active,
   a:active,
@@ -320,7 +338,7 @@ select:focus {
   .mobile-modal {
     max-height: 70vh;
   }
-  
+
   .floating-action-button {
     bottom: 20px;
   }
@@ -332,26 +350,26 @@ select:focus {
     background: #1a1a1a;
     border-top-color: #333;
   }
-  
+
   .mobile-nav-item {
     color: #ccc;
   }
-  
+
   .mobile-nav-item:active {
     color: #fff;
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .mobile-modal,
   .action-sheet {
     background: #1a1a1a;
     color: #fff;
   }
-  
+
   .action-sheet-item {
     border-bottom-color: #333;
   }
-  
+
   .action-sheet-cancel {
     background: #1a1a1a;
     border-color: #333;

@@ -34,59 +34,65 @@ Calendar Integration System
 #### Features Overview
 
 ##### Multi-Tab Interface
+
 - **Setup Tab**: Calendar selection, sync options, and travel info selection
 - **Preview Tab**: Visual preview of events to be created
 - **Progress Tracking**: Real-time synchronization progress with detailed steps
 - **Result Display**: Comprehensive sync results with success/error reporting
 
 ##### Advanced Synchronization Options
+
 - **Duplicate Prevention**: Intelligent detection and skipping of existing events
 - **Selective Sync**: Choose specific travel information to synchronize
 - **Calendar Selection**: Target specific Google Calendar for event creation
 - **Progress Monitoring**: Step-by-step progress tracking with visual indicators
 
 #### Props Interface
+
 ```typescript
 interface CalendarSyncProps {
-  travelInfos: TravelInfo[]                    // Travel data from Gmail analysis
-  onSyncComplete?: (result: SyncResult) => void // Optional completion callback
+  travelInfos: TravelInfo[]; // Travel data from Gmail analysis
+  onSyncComplete?: (result: SyncResult) => void; // Optional completion callback
 }
 ```
 
 #### State Management
+
 ```typescript
 // Calendar management
-const [calendars, setCalendars] = useState<CalendarInfo[]>([])
-const [selectedCalendarId, setSelectedCalendarId] = useState<string>('')
+const [calendars, setCalendars] = useState<CalendarInfo[]>([]);
+const [selectedCalendarId, setSelectedCalendarId] = useState<string>('');
 
 // Travel information selection
-const [selectedTravelInfos, setSelectedTravelInfos] = useState<string[]>([])
+const [selectedTravelInfos, setSelectedTravelInfos] = useState<string[]>([]);
 
 // Synchronization options
-const [preventDuplicates, setPreventDuplicates] = useState(true)
-const [showAdvancedOptions, setShowAdvancedOptions] = useState(false)
+const [preventDuplicates, setPreventDuplicates] = useState(true);
+const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
 // Process state
-const [isLoadingCalendars, setIsLoadingCalendars] = useState(false)
-const [isSyncing, setIsSyncing] = useState(false)
+const [isLoadingCalendars, setIsLoadingCalendars] = useState(false);
+const [isSyncing, setIsSyncing] = useState(false);
 const [syncProgress, setSyncProgress] = useState<SyncProgress>({
   currentStep: '',
   progress: 0,
   processedCount: 0,
-  totalCount: 0
-})
+  totalCount: 0,
+});
 
 // Results and errors
-const [syncResult, setSyncResult] = useState<SyncResult | null>(null)
-const [error, setError] = useState<string>('')
-const [activeView, setActiveView] = useState<'setup' | 'preview'>('setup')
+const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
+const [error, setError] = useState<string>('');
+const [activeView, setActiveView] = useState<'setup' | 'preview'>('setup');
 ```
 
 #### Key Functions
 
 ##### `loadCalendars()`
+
 **Purpose**: Retrieve user's Google Calendar list
 **Features**:
+
 - Fetches all accessible calendars from Google Calendar API
 - Automatically selects primary calendar as default
 - Handles authentication and permission errors
@@ -95,33 +101,36 @@ const [activeView, setActiveView] = useState<'setup' | 'preview'>('setup')
 ```typescript
 const loadCalendars = async () => {
   try {
-    const response = await fetch('/api/calendar/calendars')
-    const data = await response.json()
-    
+    const response = await fetch('/api/calendar/calendars');
+    const data = await response.json();
+
     if (data.success && data.calendars) {
-      setCalendars(data.calendars)
-      
+      setCalendars(data.calendars);
+
       // Auto-select primary calendar
-      const primaryCalendar = data.calendars.find(cal => cal.primary)
+      const primaryCalendar = data.calendars.find(cal => cal.primary);
       if (primaryCalendar) {
-        setSelectedCalendarId(primaryCalendar.id)
+        setSelectedCalendarId(primaryCalendar.id);
       }
     }
   } catch (err) {
-    setError('Failed to load calendars')
+    setError('Failed to load calendars');
   }
-}
+};
 ```
 
 ##### `syncToCalendar()`
+
 **Purpose**: Main synchronization orchestrator
 **Features**:
+
 - Multi-step progress tracking
 - Batch processing of travel information
 - Error handling and recovery
 - Result aggregation and reporting
 
 **Synchronization Steps**:
+
 1. **Validation** (10%): Verify calendar selection and travel info
 2. **Duplicate Check** (30%): Check for existing events to prevent duplicates
 3. **Event Creation** (70%): Create calendar events from travel information
@@ -130,56 +139,59 @@ const loadCalendars = async () => {
 ```typescript
 const syncToCalendar = async () => {
   try {
-    setIsSyncing(true)
-    
+    setIsSyncing(true);
+
     // Step 1: Duplicate check
     setSyncProgress({
       currentStep: '중복 이벤트 확인 중...',
       progress: 10,
       processedCount: 0,
-      totalCount: infoToSync.length
-    })
-    
+      totalCount: infoToSync.length,
+    });
+
     // Step 2: Event creation
     setSyncProgress(prev => ({
       ...prev,
       currentStep: 'Calendar 이벤트 생성 중...',
-      progress: 30
-    }))
-    
+      progress: 30,
+    }));
+
     const response = await fetch('/api/calendar/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         calendarId: selectedCalendarId,
         travelInfos: infoToSync,
-        preventDuplicates
-      })
-    })
-    
+        preventDuplicates,
+      }),
+    });
+
     // Step 3: Process results
-    const result = await response.json()
-    setSyncResult(result)
-    
+    const result = await response.json();
+    setSyncResult(result);
   } catch (err) {
-    setError('Synchronization failed')
+    setError('Synchronization failed');
   } finally {
-    setIsSyncing(false)
+    setIsSyncing(false);
   }
-}
+};
 ```
 
 ##### `toggleTravelInfo()` & `toggleSelectAll()`
+
 **Purpose**: Manage travel information selection
 **Features**:
+
 - Individual item selection/deselection
 - Bulk select/deselect all items
 - Auto-selection of high-confidence items (≥50%)
 - Visual feedback for selected items
 
 ##### `getConfidenceBadge()`
+
 **Purpose**: Visual confidence level indicators
 **Logic**:
+
 - **High (≥80%)**: Green badge - Reliable information
 - **Medium (60-79%)**: Yellow badge - Good information with minor gaps
 - **Low (<60%)**: Red badge - Uncertain information requiring review
@@ -189,6 +201,7 @@ const syncToCalendar = async () => {
 ##### Setup Tab Features
 
 **Calendar Selection Interface**:
+
 ```typescript
 <select
   value={selectedCalendarId}
@@ -204,12 +217,14 @@ const syncToCalendar = async () => {
 ```
 
 **Travel Information Selection Grid**:
+
 - Checkbox-based selection interface
 - Confidence badges for each travel item
 - Compact display of key travel details (dates, destinations, hotels)
 - Click-to-toggle selection with visual feedback
 
 **Synchronization Options**:
+
 - Duplicate prevention toggle
 - Advanced options expandable section
 - Selection counter and bulk actions
@@ -217,6 +232,7 @@ const syncToCalendar = async () => {
 ##### Preview Tab Features
 
 **Event Preview Cards**:
+
 - Visual representation of calendar events to be created
 - Color-coded event types (departure, return, hotel)
 - Timeline view of travel itinerary
@@ -236,12 +252,14 @@ const syncToCalendar = async () => {
 ##### Progress Tracking Interface
 
 **Multi-Stage Progress Bar**:
+
 - Animated progress indicator
 - Current step description
 - Percentage completion
 - Processed/total item counter
 
 **Real-time Status Updates**:
+
 - Step-by-step progress descriptions
 - Visual loading indicators
 - Error state handling
@@ -255,14 +273,15 @@ The component implements intelligent auto-selection based on confidence scores:
 useEffect(() => {
   if (travelInfos.length > 0 && selectedTravelInfos.length === 0) {
     const highConfidenceInfos = travelInfos
-      .filter(info => info.confidence >= 0.5)  // 50% minimum threshold
-      .map(info => info.emailId)
-    setSelectedTravelInfos(highConfidenceInfos)
+      .filter(info => info.confidence >= 0.5) // 50% minimum threshold
+      .map(info => info.emailId);
+    setSelectedTravelInfos(highConfidenceInfos);
   }
-}, [travelInfos])
+}, [travelInfos]);
 ```
 
 **Selection Criteria**:
+
 - **Automatic**: Travel info with ≥50% confidence
 - **Manual Override**: User can modify selection at any time
 - **Visual Indication**: Selected items highlighted with blue border
@@ -277,6 +296,7 @@ useEffect(() => {
 **Rate Limiting**: Standard API limits apply
 
 #### Response Structure
+
 ```typescript
 {
   success: boolean,
@@ -293,11 +313,12 @@ useEffect(() => {
 ```
 
 #### Integration Logic
+
 ```typescript
 // Auto-select primary calendar on load
-const primaryCalendar = data.calendars.find(cal => cal.primary)
+const primaryCalendar = data.calendars.find(cal => cal.primary);
 if (primaryCalendar) {
-  setSelectedCalendarId(primaryCalendar.id)
+  setSelectedCalendarId(primaryCalendar.id);
 }
 ```
 
@@ -310,6 +331,7 @@ if (primaryCalendar) {
 **Security**: CSRF protection enabled
 
 #### Request Body Schema
+
 ```typescript
 {
   calendarId: string,           // Target calendar ID
@@ -325,32 +347,34 @@ When `preventDuplicates` is enabled, the system performs intelligent duplicate d
 ```typescript
 if (preventDuplicates) {
   const duplicateChecks = await Promise.all(
-    travelInfos.map(async (travelInfo) => {
+    travelInfos.map(async travelInfo => {
       const existingEvents = await findExistingTravelEvents(
         accessToken,
         calendarId,
         travelInfo.emailId
-      )
+      );
       return {
         travelInfo,
-        hasDuplicates: existingEvents.length > 0
-      }
+        hasDuplicates: existingEvents.length > 0,
+      };
     })
-  )
-  
+  );
+
   // Filter out duplicates
   filteredTravelInfos = duplicateChecks
     .filter(check => !check.hasDuplicates)
-    .map(check => check.travelInfo)
+    .map(check => check.travelInfo);
 }
 ```
 
 **Duplicate Detection Criteria**:
+
 - Events with same email ID reference in description
 - Events with identical titles and dates
 - Events within same date range with similar content
 
 #### Response Structure
+
 ```typescript
 {
   success: boolean,         // Overall operation success
@@ -363,6 +387,7 @@ if (preventDuplicates) {
 ```
 
 #### Error Handling
+
 - **400 Bad Request**: Missing required fields or invalid data
 - **401 Unauthorized**: Authentication required
 - **403 Forbidden**: Insufficient calendar permissions
@@ -376,25 +401,25 @@ Input data structure from Gmail analysis:
 
 ```typescript
 interface TravelInfo {
-  emailId: string              // Unique email identifier
-  subject: string              // Email subject line
-  from: string                 // Email sender
-  departureDate?: string       // ISO date string for departure
-  returnDate?: string          // ISO date string for return
-  destination?: string         // Destination location
-  departure?: string           // Departure location
-  flightNumber?: string        // Flight number if available
-  bookingReference?: string    // Booking confirmation code
-  hotelName?: string           // Hotel name if available
-  passengerName?: string       // Passenger name
-  confidence: number           // Confidence score (0-1)
+  emailId: string; // Unique email identifier
+  subject: string; // Email subject line
+  from: string; // Email sender
+  departureDate?: string; // ISO date string for departure
+  returnDate?: string; // ISO date string for return
+  destination?: string; // Destination location
+  departure?: string; // Departure location
+  flightNumber?: string; // Flight number if available
+  bookingReference?: string; // Booking confirmation code
+  hotelName?: string; // Hotel name if available
+  passengerName?: string; // Passenger name
+  confidence: number; // Confidence score (0-1)
   extractedData?: {
-    dates: string[]
-    airports: string[]
-    flights: string[]
-    bookingCodes: string[]
-    matchedPatterns: string[]
-  }
+    dates: string[];
+    airports: string[];
+    flights: string[];
+    bookingCodes: string[];
+    matchedPatterns: string[];
+  };
 }
 ```
 
@@ -404,13 +429,13 @@ Google Calendar metadata:
 
 ```typescript
 interface CalendarInfo {
-  id: string                   // Google Calendar ID
-  name: string                 // Calendar display name
-  description?: string         // Calendar description
-  primary: boolean             // Is user's primary calendar
-  accessRole: string           // User's permission level
-  backgroundColor?: string     // Calendar color theme
-  foregroundColor?: string     // Text color theme
+  id: string; // Google Calendar ID
+  name: string; // Calendar display name
+  description?: string; // Calendar description
+  primary: boolean; // Is user's primary calendar
+  accessRole: string; // User's permission level
+  backgroundColor?: string; // Calendar color theme
+  foregroundColor?: string; // Text color theme
 }
 ```
 
@@ -420,12 +445,12 @@ Synchronization outcome data:
 
 ```typescript
 interface SyncResult {
-  success: boolean             // Overall operation success
-  created: number              // Events successfully created
-  skipped: number              // Events skipped (duplicates)
-  errors: string[]             // Error messages
-  eventIds: string[]           // Created event IDs
-  message: string              // Summary message
+  success: boolean; // Overall operation success
+  created: number; // Events successfully created
+  skipped: number; // Events skipped (duplicates)
+  errors: string[]; // Error messages
+  eventIds: string[]; // Created event IDs
+  message: string; // Summary message
 }
 ```
 
@@ -435,10 +460,10 @@ Real-time progress tracking:
 
 ```typescript
 interface SyncProgress {
-  currentStep: string          // Current operation description
-  progress: number             // Completion percentage (0-100)
-  processedCount: number       // Items processed so far
-  totalCount: number           // Total items to process
+  currentStep: string; // Current operation description
+  progress: number; // Completion percentage (0-100)
+  processedCount: number; // Items processed so far
+  totalCount: number; // Total items to process
 }
 ```
 
@@ -449,6 +474,7 @@ interface SyncProgress {
 The system creates different types of calendar events based on available travel information:
 
 #### 1. Flight Events
+
 ```typescript
 // Departure flight
 {
@@ -470,6 +496,7 @@ The system creates different types of calendar events based on available travel 
 ```
 
 #### 2. Hotel Events
+
 ```typescript
 {
   summary: `🏨 ${hotelName}`,
@@ -481,6 +508,7 @@ The system creates different types of calendar events based on available travel 
 ```
 
 #### 3. Trip Duration Events
+
 ```typescript
 {
   summary: `🌍 ${destination} 여행`,
@@ -502,7 +530,7 @@ All created events include standardized metadata for tracking and duplicate prev
   start: { date: string },
   end: { date: string },
   location?: string,
-  
+
   // DINO-specific metadata
   extendedProperties: {
     shared: {
@@ -520,11 +548,13 @@ All created events include standardized metadata for tracking and duplicate prev
 ### Authentication & Authorization
 
 **Google OAuth Scopes Required**:
+
 - `https://www.googleapis.com/auth/calendar` - Full calendar access
 - `https://www.googleapis.com/auth/calendar.events` - Event management
 - `https://www.googleapis.com/auth/userinfo.email` - User identification
 
 **Security Measures**:
+
 1. **CSRF Protection**: Double-submit tokens for sync operations
 2. **Session Validation**: Valid user session required for all operations
 3. **Rate Limiting**: Prevents abuse of Google Calendar API
@@ -533,12 +563,14 @@ All created events include standardized metadata for tracking and duplicate prev
 ### Data Privacy
 
 **Privacy Protections**:
+
 - **Local Processing**: Travel analysis performed locally
 - **Minimal Data**: Only necessary information sent to Google Calendar
 - **User Control**: Users select which information to synchronize
 - **Transparency**: Clear indication of what data will be shared
 
 **Data Retention**:
+
 - **No Server Storage**: Travel information not permanently stored
 - **Session-Only**: Data exists only during user session
 - **User Deletion**: Users can delete calendar events at any time
@@ -548,6 +580,7 @@ All created events include standardized metadata for tracking and duplicate prev
 ### Common Error Scenarios
 
 #### 1. Authentication Errors
+
 ```typescript
 // Token expired or invalid
 {
@@ -558,6 +591,7 @@ All created events include standardized metadata for tracking and duplicate prev
 ```
 
 #### 2. Permission Errors
+
 ```typescript
 // Insufficient calendar permissions
 {
@@ -568,6 +602,7 @@ All created events include standardized metadata for tracking and duplicate prev
 ```
 
 #### 3. API Quota Errors
+
 ```typescript
 // Google Calendar API limits exceeded
 {
@@ -578,6 +613,7 @@ All created events include standardized metadata for tracking and duplicate prev
 ```
 
 #### 4. Network Errors
+
 ```typescript
 // Network connectivity issues
 {
@@ -590,11 +626,13 @@ All created events include standardized metadata for tracking and duplicate prev
 ### Recovery Strategies
 
 **Automatic Recovery**:
+
 - **Exponential Backoff**: Automatic retry with increasing delays
 - **Partial Success Handling**: Process successful events, report failures
 - **Session Recovery**: Automatic token refresh when possible
 
 **User-Guided Recovery**:
+
 - **Clear Error Messages**: Actionable error descriptions
 - **Retry Options**: Manual retry buttons for transient failures
 - **Alternative Actions**: Fallback options when automatic recovery fails
@@ -604,30 +642,33 @@ All created events include standardized metadata for tracking and duplicate prev
 ### Batch Processing
 
 **Event Creation Batching**:
+
 ```typescript
 // Process events in batches to avoid rate limits
-const batchSize = 10
+const batchSize = 10;
 for (let i = 0; i < travelInfos.length; i += batchSize) {
-  const batch = travelInfos.slice(i, i + batchSize)
-  await processBatch(batch)
-  
+  const batch = travelInfos.slice(i, i + batchSize);
+  await processBatch(batch);
+
   // Update progress
   setSyncProgress(prev => ({
     ...prev,
     processedCount: Math.min(i + batchSize, travelInfos.length),
-    progress: Math.round((i + batchSize) / travelInfos.length * 100)
-  }))
+    progress: Math.round(((i + batchSize) / travelInfos.length) * 100),
+  }));
 }
 ```
 
 ### Caching Strategy
 
 **Calendar List Caching**:
+
 - Cache calendar list for 5 minutes
 - Refresh on user request or permission changes
 - Reduce API calls for repeated access
 
 **Duplicate Detection Optimization**:
+
 - Batch duplicate checks where possible
 - Cache results during session
 - Use efficient search queries
@@ -635,6 +676,7 @@ for (let i = 0; i < travelInfos.length; i += batchSize) {
 ### Progress Tracking Optimization
 
 **Real-time Updates**:
+
 - Granular progress reporting (every 10% or significant step)
 - Non-blocking UI updates
 - Smooth progress bar animations
@@ -651,20 +693,20 @@ describe('CalendarSync Component', () => {
       { emailId: '2', confidence: 0.3 },
       { emailId: '3', confidence: 0.6 }
     ]
-    
+
     render(<CalendarSync travelInfos={travelInfos} />)
-    
+
     // Should auto-select items with confidence >= 0.5
     expect(getSelectedItems()).toEqual(['1', '3'])
   })
-  
+
   it('should handle sync errors gracefully', async () => {
     mockCalendarAPI.mockRejectedValue(new Error('API Error'))
-    
+
     const component = render(<CalendarSync travelInfos={mockData} />)
-    
+
     await userEvent.click(component.getByText('동기화'))
-    
+
     expect(component.getByText('API Error')).toBeInTheDocument()
   })
 })
@@ -675,26 +717,28 @@ describe('CalendarSync Component', () => {
 ```typescript
 describe('Calendar Sync API', () => {
   it('should create calendar events successfully', async () => {
-    const travelData = [{
-      emailId: 'test-123',
-      departureDate: '2024-01-01',
-      destination: 'Paris',
-      confidence: 0.9
-    }]
-    
+    const travelData = [
+      {
+        emailId: 'test-123',
+        departureDate: '2024-01-01',
+        destination: 'Paris',
+        confidence: 0.9,
+      },
+    ];
+
     const response = await request(app)
       .post('/api/calendar/sync')
       .send({
         calendarId: 'test-calendar',
         travelInfos: travelData,
-        preventDuplicates: true
+        preventDuplicates: true,
       })
-      .expect(200)
-    
-    expect(response.body.success).toBe(true)
-    expect(response.body.created).toBe(1)
-  })
-})
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.created).toBe(1);
+  });
+});
 ```
 
 ### E2E Testing
@@ -702,29 +746,34 @@ describe('Calendar Sync API', () => {
 ```typescript
 test('Calendar sync workflow', async ({ page }) => {
   // Setup
-  await page.goto('/gmail')
-  await page.click('[data-testid="analyze-emails"]')
-  await page.waitForText('Analysis complete')
-  
+  await page.goto('/gmail');
+  await page.click('[data-testid="analyze-emails"]');
+  await page.waitForText('Analysis complete');
+
   // Navigate to calendar sync
-  await page.click('[data-testid="calendar-tab"]')
-  
+  await page.click('[data-testid="calendar-tab"]');
+
   // Select calendar
-  await page.selectOption('[data-testid="calendar-select"]', 'primary-calendar')
-  
+  await page.selectOption(
+    '[data-testid="calendar-select"]',
+    'primary-calendar'
+  );
+
   // Select travel info
-  await page.check('[data-testid="travel-info-1"]')
-  await page.check('[data-testid="travel-info-2"]')
-  
+  await page.check('[data-testid="travel-info-1"]');
+  await page.check('[data-testid="travel-info-2"]');
+
   // Start sync
-  await page.click('[data-testid="sync-button"]')
-  
+  await page.click('[data-testid="sync-button"]');
+
   // Wait for completion
-  await page.waitForText('동기화 완료!')
-  
+  await page.waitForText('동기화 완료!');
+
   // Verify results
-  await expect(page.locator('[data-testid="sync-result"]')).toContainText('2개의 여행 일정이 캘린더에 추가')
-})
+  await expect(page.locator('[data-testid="sync-result"]')).toContainText(
+    '2개의 여행 일정이 캘린더에 추가'
+  );
+});
 ```
 
 ## Best Practices

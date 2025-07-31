@@ -10,9 +10,12 @@ import { AIServiceType, AIServiceConfig } from './types';
 export class AIServiceFactory {
   private static instances: Map<string, BaseAIService> = new Map();
 
-  static create(type: AIServiceType, config?: Partial<AIServiceConfig>): BaseAIService {
+  static create(
+    type: AIServiceType,
+    config?: Partial<AIServiceConfig>
+  ): BaseAIService {
     const key = `${type}-${JSON.stringify(config)}`;
-    
+
     // 캐시된 인스턴스 확인
     if (this.instances.has(key)) {
       return this.instances.get(key)!;
@@ -24,7 +27,7 @@ export class AIServiceFactory {
       maxTokens: 2000,
       temperature: 0.7,
       topP: 0.9,
-      ...config
+      ...config,
     };
 
     let service: BaseAIService;
@@ -35,19 +38,19 @@ export class AIServiceFactory {
         console.warn('Gemini service not implemented yet, using mock');
         service = new MockAIService(defaultConfig);
         break;
-        
+
       case 'openai':
         // TODO: OpenAI 서비스 구현
         console.warn('OpenAI service not implemented yet, using mock');
         service = new MockAIService(defaultConfig);
         break;
-        
+
       case 'claude':
         // TODO: Claude 서비스 구현
         console.warn('Claude service not implemented yet, using mock');
         service = new MockAIService(defaultConfig);
         break;
-        
+
       case 'mock':
       default:
         service = new MockAIService(defaultConfig);
@@ -61,7 +64,8 @@ export class AIServiceFactory {
 
   // 환경변수 기반 자동 선택
   static createFromEnv(): BaseAIService {
-    const aiService = process.env.AI_SERVICE_PRIMARY as AIServiceType || 'mock';
+    const aiService =
+      (process.env.AI_SERVICE_PRIMARY as AIServiceType) || 'mock';
     const config: Partial<AIServiceConfig> = {
       apiKey: process.env[`${aiService.toUpperCase()}_API_KEY`],
       model: process.env[`${aiService.toUpperCase()}_MODEL`],
@@ -72,12 +76,13 @@ export class AIServiceFactory {
 
   // 프리미엄 서비스 생성
   static createPremium(): BaseAIService {
-    const aiService = process.env.AI_SERVICE_PREMIUM as AIServiceType || 'mock';
+    const aiService =
+      (process.env.AI_SERVICE_PREMIUM as AIServiceType) || 'mock';
     const config: Partial<AIServiceConfig> = {
       apiKey: process.env[`${aiService.toUpperCase()}_API_KEY`],
       model: process.env[`${aiService.toUpperCase()}_MODEL`],
       maxTokens: 4000,
-      temperature: 0.8
+      temperature: 0.8,
     };
 
     return this.create(aiService, config);

@@ -8,15 +8,18 @@ This document provides practical TypeScript code examples from the DINO applicat
 
 ```typescript
 // Real implementation from lib/actions/trips.ts
-import { CountryVisit, TripStatus } from '@/types/global'
-import { prisma } from '@/lib/prisma'
+import { CountryVisit, TripStatus } from '@/types/global';
+import { prisma } from '@/lib/prisma';
 
-export async function createTrip(userId: string, tripData: {
-  countryCode: string
-  entryDate: Date
-  exitDate: Date
-  purpose: string
-}) {
+export async function createTrip(
+  userId: string,
+  tripData: {
+    countryCode: string;
+    entryDate: Date;
+    exitDate: Date;
+    purpose: string;
+  }
+) {
   return await prisma.countryVisit.create({
     data: {
       userId,
@@ -27,22 +30,22 @@ export async function createTrip(userId: string, tripData: {
       status: 'PLANNED' as TripStatus,
       isSchengenArea: SCHENGEN_COUNTRIES.includes(tripData.countryCode),
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  })
+      updatedAt: new Date(),
+    },
+  });
 }
 
 // Usage example in API route
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const tripData = await request.json()
-  const trip = await createTrip(session.user.id, tripData)
-  
-  return NextResponse.json(trip, { status: 201 })
+  const tripData = await request.json();
+  const trip = await createTrip(session.user.id, tripData);
+
+  return NextResponse.json(trip, { status: 201 });
 }
 ```
 
@@ -54,21 +57,21 @@ import { SchengenCalculation, CountryVisit } from '@/types/global'
 
 export function calculateSchengenDays(visits: CountryVisit[]): SchengenCalculation {
   const schengenVisits = visits.filter(visit => visit.isSchengenArea)
-  const sortedVisits = schengenVisits.sort((a, b) => 
+  const sortedVisits = schengenVisits.sort((a, b) =>
     new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
   )
 
   let totalDays = 0
   let violations: string[] = []
-  
+
   for (const visit of sortedVisits) {
     const stayDuration = Math.ceil(
-      (new Date(visit.exitDate).getTime() - new Date(visit.entryDate).getTime()) 
+      (new Date(visit.exitDate).getTime() - new Date(visit.entryDate).getTime())
       / (1000 * 60 * 60 * 24)
     )
-    
+
     totalDays += stayDuration
-    
+
     // Check 90/180 rule
     if (totalDays > 90) {
       violations.push(`Exceeded 90 days in 180-day period ending ${visit.exitDate}`)
@@ -87,7 +90,7 @@ export function calculateSchengenDays(visits: CountryVisit[]): SchengenCalculati
 // Component usage
 export function SchengenStatus({ userId }: { userId: string }) {
   const [calculation, setCalculation] = useState<SchengenCalculation | null>(null)
-  
+
   useEffect(() => {
     async function loadCalculation() {
       const visits = await fetchUserVisits(userId)
@@ -106,20 +109,20 @@ export function SchengenStatus({ userId }: { userId: string }) {
           {calculation.isCompliant ? "Compliant" : "Violation"}
         </Badge>
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
-        <StatCard 
-          label="Days Used" 
+        <StatCard
+          label="Days Used"
           value={calculation.totalDays}
           total={90}
         />
-        <StatCard 
-          label="Days Remaining" 
+        <StatCard
+          label="Days Remaining"
           value={calculation.remainingDays}
           className={calculation.remainingDays < 10 ? "text-orange-600" : ""}
         />
       </div>
-      
+
       {calculation.violations.length > 0 && (
         <Alert variant="destructive" className="mt-4">
           <AlertTriangle className="h-4 w-4" />
@@ -416,7 +419,7 @@ export function TripForm({ onSubmit, initialData }: {
 
 ```typescript
 // Real implementation from lib/api/api-client.ts
-import { APIClient } from '@/lib/api/api-client'
+import { APIClient } from '@/lib/api/api-client';
 
 // Initialize API client with configuration
 const apiClient = new APIClient({
@@ -430,73 +433,80 @@ const apiClient = new APIClient({
     delay: 1000,
     backoff: 'exponential',
   },
-})
+});
 
 // Authentication helper
 export function setAuthToken(token: string) {
-  apiClient.setAuthToken(token)
+  apiClient.setAuthToken(token);
 }
 
 // Trip management API calls
 export async function fetchTrips(userId: string): Promise<CountryVisit[]> {
   return await apiClient.get('/trips', {
-    params: { userId }
-  })
+    params: { userId },
+  });
 }
 
-export async function createTrip(tripData: CreateTripRequest): Promise<CountryVisit> {
-  return await apiClient.post('/trips', tripData)
+export async function createTrip(
+  tripData: CreateTripRequest
+): Promise<CountryVisit> {
+  return await apiClient.post('/trips', tripData);
 }
 
-export async function updateTrip(tripId: string, updates: Partial<CountryVisit>): Promise<CountryVisit> {
-  return await apiClient.put(`/trips/${tripId}`, updates)
+export async function updateTrip(
+  tripId: string,
+  updates: Partial<CountryVisit>
+): Promise<CountryVisit> {
+  return await apiClient.put(`/trips/${tripId}`, updates);
 }
 
 export async function deleteTrip(tripId: string): Promise<void> {
-  await apiClient.delete(`/trips/${tripId}`)
+  await apiClient.delete(`/trips/${tripId}`);
 }
 
 // Schengen calculation API
-export async function calculateSchengen(userId: string): Promise<SchengenCalculation> {
+export async function calculateSchengen(
+  userId: string
+): Promise<SchengenCalculation> {
   return await apiClient.get('/schengen/calculate', {
-    params: { userId }
-  })
+    params: { userId },
+  });
 }
 
 // Usage in React components
 export function useTripData(userId: string) {
-  const [trips, setTrips] = useState<CountryVisit[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [trips, setTrips] = useState<CountryVisit[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadTrips() {
       try {
-        setLoading(true)
-        const data = await fetchTrips(userId)
-        setTrips(data)
+        setLoading(true);
+        const data = await fetchTrips(userId);
+        setTrips(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load trips')
+        setError(err instanceof Error ? err.message : 'Failed to load trips');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
     if (userId) {
-      loadTrips()
+      loadTrips();
     }
-  }, [userId])
+  }, [userId]);
 
   const addTrip = async (tripData: CreateTripRequest) => {
-    const newTrip = await createTrip(tripData)
-    setTrips(prev => [...prev, newTrip])
-    return newTrip
-  }
+    const newTrip = await createTrip(tripData);
+    setTrips(prev => [...prev, newTrip]);
+    return newTrip;
+  };
 
   const removeTrip = async (tripId: string) => {
-    await deleteTrip(tripId)
-    setTrips(prev => prev.filter(trip => trip.id !== tripId))
-  }
+    await deleteTrip(tripId);
+    setTrips(prev => prev.filter(trip => trip.id !== tripId));
+  };
 
   return {
     trips,
@@ -504,8 +514,8 @@ export function useTripData(userId: string) {
     error,
     addTrip,
     removeTrip,
-    refetch: () => loadTrips()
-  }
+    refetch: () => loadTrips(),
+  };
 }
 ```
 
@@ -515,31 +525,34 @@ export function useTripData(userId: string) {
 
 ```typescript
 // Real implementation from lib/actions/database.ts
-import { prisma } from '@/lib/prisma'
-import { CountryVisit, Prisma } from '@prisma/client'
+import { prisma } from '@/lib/prisma';
+import { CountryVisit, Prisma } from '@prisma/client';
 
 // Complex query with relations and filtering
-export async function getUserTripsWithCalculations(userId: string, options?: {
-  startDate?: Date
-  endDate?: Date
-  countries?: string[]
-  includeSchengenOnly?: boolean
-}) {
+export async function getUserTripsWithCalculations(
+  userId: string,
+  options?: {
+    startDate?: Date;
+    endDate?: Date;
+    countries?: string[];
+    includeSchengenOnly?: boolean;
+  }
+) {
   const whereClause: Prisma.CountryVisitWhereInput = {
     userId,
     ...(options?.startDate && {
-      entryDate: { gte: options.startDate }
+      entryDate: { gte: options.startDate },
     }),
     ...(options?.endDate && {
-      exitDate: { lte: options.endDate }
+      exitDate: { lte: options.endDate },
     }),
     ...(options?.countries && {
-      countryCode: { in: options.countries }
+      countryCode: { in: options.countries },
     }),
     ...(options?.includeSchengenOnly && {
-      isSchengenArea: true
-    })
-  }
+      isSchengenArea: true,
+    }),
+  };
 
   const trips = await prisma.countryVisit.findMany({
     where: whereClause,
@@ -548,23 +561,24 @@ export async function getUserTripsWithCalculations(userId: string, options?: {
         select: {
           id: true,
           email: true,
-          name: true
-        }
-      }
+          name: true,
+        },
+      },
     },
     orderBy: {
-      entryDate: 'asc'
-    }
-  })
+      entryDate: 'asc',
+    },
+  });
 
   // Calculate Schengen statistics
-  const schengenTrips = trips.filter(trip => trip.isSchengenArea)
+  const schengenTrips = trips.filter(trip => trip.isSchengenArea);
   const totalSchengenDays = schengenTrips.reduce((total, trip) => {
     const days = Math.ceil(
-      (trip.exitDate.getTime() - trip.entryDate.getTime()) / (1000 * 60 * 60 * 24)
-    )
-    return total + days
-  }, 0)
+      (trip.exitDate.getTime() - trip.entryDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+    return total + days;
+  }, 0);
 
   return {
     trips,
@@ -573,25 +587,28 @@ export async function getUserTripsWithCalculations(userId: string, options?: {
       schengenTrips: schengenTrips.length,
       totalSchengenDays,
       remainingSchengenDays: Math.max(0, 90 - totalSchengenDays),
-      uniqueCountries: new Set(trips.map(trip => trip.countryCode)).size
-    }
-  }
+      uniqueCountries: new Set(trips.map(trip => trip.countryCode)).size,
+    },
+  };
 }
 
 // Batch operations with transaction
-export async function importTripsFromFile(userId: string, tripData: CreateTripRequest[]) {
-  return await prisma.$transaction(async (tx) => {
+export async function importTripsFromFile(
+  userId: string,
+  tripData: CreateTripRequest[]
+) {
+  return await prisma.$transaction(async tx => {
     // First, validate all trip data
     for (const trip of tripData) {
       if (trip.exitDate <= trip.entryDate) {
-        throw new Error(`Invalid date range for trip to ${trip.countryCode}`)
+        throw new Error(`Invalid date range for trip to ${trip.countryCode}`);
       }
     }
 
     // Delete existing trips if requested
     await tx.countryVisit.deleteMany({
-      where: { userId }
-    })
+      where: { userId },
+    });
 
     // Create new trips
     const createdTrips = await Promise.all(
@@ -602,20 +619,20 @@ export async function importTripsFromFile(userId: string, tripData: CreateTripRe
             userId,
             isSchengenArea: SCHENGEN_COUNTRIES.includes(trip.countryCode),
             createdAt: new Date(),
-            updatedAt: new Date()
-          }
+            updatedAt: new Date(),
+          },
         })
       )
-    )
+    );
 
     // Update user's last activity
     await tx.user.update({
       where: { id: userId },
-      data: { updatedAt: new Date() }
-    })
+      data: { updatedAt: new Date() },
+    });
 
-    return createdTrips
-  })
+    return createdTrips;
+  });
 }
 ```
 
@@ -638,7 +655,7 @@ describe('TripForm', () => {
 
   it('submits form with valid data', async () => {
     const user = userEvent.setup()
-    
+
     render(<TripForm onSubmit={mockOnSubmit} />)
 
     // Fill out the form
@@ -669,7 +686,7 @@ describe('TripForm', () => {
 
   it('shows validation errors for invalid data', async () => {
     const user = userEvent.setup()
-    
+
     render(<TripForm onSubmit={mockOnSubmit} />)
 
     // Try to submit empty form
@@ -691,13 +708,13 @@ describe('TripForm', () => {
 
 ```typescript
 // Real implementation from __tests__/api/trips.test.ts
-import { createMocks } from 'node-mocks-http'
-import handler from '@/app/api/trips/route'
-import { getServerSession } from 'next-auth'
+import { createMocks } from 'node-mocks-http';
+import handler from '@/app/api/trips/route';
+import { getServerSession } from 'next-auth';
 
 jest.mock('next-auth', () => ({
-  getServerSession: jest.fn()
-}))
+  getServerSession: jest.fn(),
+}));
 
 jest.mock('@/lib/prisma', () => ({
   prisma: {
@@ -705,21 +722,21 @@ jest.mock('@/lib/prisma', () => ({
       create: jest.fn(),
       findMany: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn()
-    }
-  }
-}))
+      delete: jest.fn(),
+    },
+  },
+}));
 
 describe('/api/trips', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   it('creates a new trip successfully', async () => {
     const mockSession = {
-      user: { id: 'user-123', email: 'test@example.com' }
-    }
-    ;(getServerSession as jest.Mock).mockResolvedValue(mockSession)
+      user: { id: 'user-123', email: 'test@example.com' },
+    };
+    (getServerSession as jest.Mock).mockResolvedValue(mockSession);
 
     const mockTrip = {
       id: 'trip-123',
@@ -728,10 +745,10 @@ describe('/api/trips', () => {
       entryDate: new Date('2024-06-01'),
       exitDate: new Date('2024-06-07'),
       purpose: 'tourism',
-      isSchengenArea: true
-    }
+      isSchengenArea: true,
+    };
 
-    ;(prisma.countryVisit.create as jest.Mock).mockResolvedValue(mockTrip)
+    (prisma.countryVisit.create as jest.Mock).mockResolvedValue(mockTrip);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -739,11 +756,11 @@ describe('/api/trips', () => {
         countryCode: 'FR',
         entryDate: '2024-06-01',
         exitDate: '2024-06-07',
-        purpose: 'tourism'
-      }
-    })
+        purpose: 'tourism',
+      },
+    });
 
-    await handler.POST(req)
+    await handler.POST(req);
 
     expect(prisma.countryVisit.create).toHaveBeenCalledWith({
       data: {
@@ -755,11 +772,11 @@ describe('/api/trips', () => {
         isSchengenArea: true,
         status: 'PLANNED',
         createdAt: expect.any(Date),
-        updatedAt: expect.any(Date)
-      }
-    })
-  })
-})
+        updatedAt: expect.any(Date),
+      },
+    });
+  });
+});
 ```
 
 ## 🔧 Utility Functions
@@ -768,76 +785,87 @@ describe('/api/trips', () => {
 
 ```typescript
 // Real implementation from lib/utils/date.ts
-import { format, differenceInDays, addDays, isWithinInterval } from 'date-fns'
+import { format, differenceInDays, addDays, isWithinInterval } from 'date-fns';
 
 export function formatTripDate(date: Date | string): string {
-  return format(new Date(date), 'MMM dd, yyyy')
+  return format(new Date(date), 'MMM dd, yyyy');
 }
 
-export function calculateTripDuration(entryDate: Date | string, exitDate: Date | string): number {
-  return differenceInDays(new Date(exitDate), new Date(entryDate)) + 1
+export function calculateTripDuration(
+  entryDate: Date | string,
+  exitDate: Date | string
+): number {
+  return differenceInDays(new Date(exitDate), new Date(entryDate)) + 1;
 }
 
-export function isOverlapping(trip1: CountryVisit, trip2: CountryVisit): boolean {
+export function isOverlapping(
+  trip1: CountryVisit,
+  trip2: CountryVisit
+): boolean {
   const trip1Interval = {
     start: new Date(trip1.entryDate),
-    end: new Date(trip1.exitDate)
-  }
-  
+    end: new Date(trip1.exitDate),
+  };
+
   const trip2Interval = {
     start: new Date(trip2.entryDate),
-    end: new Date(trip2.exitDate)
-  }
+    end: new Date(trip2.exitDate),
+  };
 
-  return isWithinInterval(trip1Interval.start, trip2Interval) ||
-         isWithinInterval(trip1Interval.end, trip2Interval) ||
-         isWithinInterval(trip2Interval.start, trip1Interval) ||
-         isWithinInterval(trip2Interval.end, trip1Interval)
+  return (
+    isWithinInterval(trip1Interval.start, trip2Interval) ||
+    isWithinInterval(trip1Interval.end, trip2Interval) ||
+    isWithinInterval(trip2Interval.start, trip1Interval) ||
+    isWithinInterval(trip2Interval.end, trip1Interval)
+  );
 }
 
 export function getSchengenPeriods(visits: CountryVisit[]): Array<{
-  start: Date
-  end: Date
-  days: number
-  countries: string[]
+  start: Date;
+  end: Date;
+  days: number;
+  countries: string[];
 }> {
   const schengenVisits = visits
     .filter(visit => visit.isSchengenArea)
-    .sort((a, b) => new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime())
+    .sort(
+      (a, b) =>
+        new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
+    );
 
   const periods: Array<{
-    start: Date
-    end: Date
-    days: number
-    countries: string[]
-  }> = []
+    start: Date;
+    end: Date;
+    days: number;
+    countries: string[];
+  }> = [];
 
   for (const visit of schengenVisits) {
-    const entryDate = new Date(visit.entryDate)
-    const periodStart = addDays(entryDate, -180)
-    const periodEnd = addDays(entryDate, 0)
+    const entryDate = new Date(visit.entryDate);
+    const periodStart = addDays(entryDate, -180);
+    const periodEnd = addDays(entryDate, 0);
 
     // Find all visits within this 180-day period
     const visitsInPeriod = schengenVisits.filter(v => {
-      const vEntry = new Date(v.entryDate)
-      return vEntry >= periodStart && vEntry <= periodEnd
-    })
+      const vEntry = new Date(v.entryDate);
+      return vEntry >= periodStart && vEntry <= periodEnd;
+    });
 
     const totalDays = visitsInPeriod.reduce((sum, v) => {
-      return sum + calculateTripDuration(v.entryDate, v.exitDate)
-    }, 0)
+      return sum + calculateTripDuration(v.entryDate, v.exitDate);
+    }, 0);
 
-    const countries = [...new Set(visitsInPeriod.map(v => v.countryCode))]
+    const countries = [...new Set(visitsInPeriod.map(v => v.countryCode))];
 
     periods.push({
       start: periodStart,
       end: periodEnd,
       days: totalDays,
-      countries
-    })
+      countries,
+    });
   }
 
-  return periods
+  return periods;
 }
 ```
 

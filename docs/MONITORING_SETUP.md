@@ -15,11 +15,13 @@ DINO 애플리케이션은 다음과 같은 모니터링 도구들을 통합하�
 ### 1. Sentry 설정
 
 #### 1.1 Sentry 프로젝트 생성
+
 1. [Sentry.io](https://sentry.io) 계정 생성
 2. 새 프로젝트 생성 (Next.js 선택)
 3. DSN 복사
 
 #### 1.2 환경 변수 설정
+
 ```bash
 # .env.local (개발)
 SENTRY_DSN=your-sentry-dsn
@@ -33,6 +35,7 @@ SENTRY_AUTH_TOKEN=your-auth-token
 ```
 
 #### 1.3 Sentry 기능
+
 - 자동 에러 캡처
 - 성능 모니터링 (트랜잭션)
 - 사용자 컨텍스트 추적
@@ -42,12 +45,15 @@ SENTRY_AUTH_TOKEN=your-auth-token
 ### 2. Vercel Analytics 설정
 
 #### 2.1 활성화
+
 Vercel 대시보드에서:
+
 1. 프로젝트 선택
 2. Analytics 탭 클릭
 3. "Enable Analytics" 클릭
 
 #### 2.2 자동 추적 항목
+
 - 페이지 뷰
 - Core Web Vitals (LCP, FID, CLS)
 - 방문자 통계
@@ -56,18 +62,22 @@ Vercel 대시보드에서:
 ### 3. Google Analytics 설정
 
 #### 3.1 GA4 속성 생성
+
 1. [Google Analytics](https://analytics.google.com) 접속
 2. 새 속성 생성 (GA4)
 3. 측정 ID 복사 (G-XXXXXXXXXX)
 
 #### 3.2 환경 변수 설정
+
 ```bash
 # .env.local
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
 #### 3.3 추적 이벤트
+
 구현된 커스텀 이벤트:
+
 - `login` - 로그인
 - `trip_added` - 여행 기록 추가
 - `schengen_calculated` - 셴겐 계산
@@ -78,11 +88,13 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ### 4. 성능 모니터링 대시보드
 
 #### 4.1 접근 방법
+
 ```
 /dashboard/monitoring
 ```
 
 #### 4.2 모니터링 지표
+
 - **LCP** (Largest Contentful Paint): < 2.5초 (Good)
 - **FID** (First Input Delay): < 100ms (Good)
 - **CLS** (Cumulative Layout Shift): < 0.1 (Good)
@@ -92,18 +104,21 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ### 5. 알림 시스템
 
 #### 5.1 알림 타입
+
 - **Error**: 심각한 문제
 - **Warning**: 주의 필요
 - **Info**: 정보성 알림
 - **Success**: 성공 알림
 
 #### 5.2 알림 카테고리
+
 - **Performance**: 성능 관련
 - **Security**: 보안 관련
 - **Usage**: 사용량 관련
 - **System**: 시스템 관련
 
 #### 5.3 임계값 설정
+
 ```typescript
 // lib/monitoring/alerts.ts
 export const alertThresholds = {
@@ -122,27 +137,31 @@ export const alertThresholds = {
     failedLoginAttempts: 5,
     suspiciousActivityScore: 0.8,
   },
-}
+};
 ```
 
 ## 📈 모니터링 활용 방법
 
 ### 1. 에러 추적
+
 - Sentry 대시보드에서 실시간 에러 확인
 - 에러 발생 시 이메일/Slack 알림
 - 에러 그룹화 및 우선순위 지정
 
 ### 2. 성능 최적화
+
 - Core Web Vitals 모니터링
 - 느린 API 엔드포인트 식별
 - 프론트엔드 성능 병목 지점 발견
 
 ### 3. 사용자 행동 분석
+
 - Google Analytics에서 사용자 플로우 확인
 - 인기 기능 파악
 - 사용자 이탈 지점 분석
 
 ### 4. 실시간 알림
+
 - 성능 저하 시 즉시 알림
 - 보안 이슈 발생 시 경고
 - 리소스 사용량 초과 시 통지
@@ -150,16 +169,19 @@ export const alertThresholds = {
 ## 🔍 트러블슈팅
 
 ### Sentry 이슈
+
 - DSN이 올바른지 확인
 - 네트워크 차단 여부 확인
 - 소스맵 업로드 실패 시 AUTH_TOKEN 확인
 
 ### Analytics 이슈
+
 - 광고 차단기가 GA를 차단할 수 있음
 - Vercel Analytics는 자동 활성화 확인
 - 개발 환경에서는 일부 기능 제한
 
 ### 성능 대시보드 이슈
+
 - PerformanceObserver API 지원 브라우저 확인
 - HTTPS 환경에서만 일부 API 작동
 
@@ -180,12 +202,14 @@ export const alertThresholds = {
 ## 📊 보고서 생성
 
 ### 주간 보고서 항목
+
 - 주요 에러 및 해결 상태
 - 성능 지표 트렌드
 - 사용자 증가율
 - 기능별 사용 통계
 
 ### 월간 보고서 항목
+
 - 전체 시스템 건강도
 - 성능 개선 사항
 - 사용자 만족도 지표

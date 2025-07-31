@@ -26,7 +26,7 @@ const envExamplePath = path.join(process.cwd(), '.env.example');
 
 if (!fs.existsSync(envPath)) {
   console.log('📝 Creating .env.local from .env.example...\n');
-  
+
   if (fs.existsSync(envExamplePath)) {
     fs.copyFileSync(envExamplePath, envPath);
   } else {
@@ -63,8 +63,8 @@ const checklist = [
       'Set NODE_ENV="production" in production',
       'Never commit .env.local to version control',
       'Use environment variables in hosting platform',
-      'Rotate keys regularly (every 90 days)'
-    ]
+      'Rotate keys regularly (every 90 days)',
+    ],
   },
   {
     item: 'Database Security',
@@ -72,8 +72,8 @@ const checklist = [
       'Use SSL/TLS connection (sslmode=require)',
       'Limit database user permissions',
       'Enable connection pooling',
-      'Regular backups'
-    ]
+      'Regular backups',
+    ],
   },
   {
     item: 'Authentication',
@@ -81,8 +81,8 @@ const checklist = [
       'Configure Google OAuth credentials',
       'Set proper redirect URLs',
       'Enable 2FA for admin accounts',
-      'Monitor failed login attempts'
-    ]
+      'Monitor failed login attempts',
+    ],
   },
   {
     item: 'Security Features',
@@ -90,8 +90,8 @@ const checklist = [
       'Enable all security flags in production',
       'Configure rate limiting thresholds',
       'Set up error monitoring (Sentry)',
-      'Enable security logging'
-    ]
+      'Enable security logging',
+    ],
   },
   {
     item: 'Deployment',
@@ -99,9 +99,9 @@ const checklist = [
       'Use HTTPS only',
       'Enable HSTS',
       'Configure firewall rules',
-      'Set up DDoS protection'
-    ]
-  }
+      'Set up DDoS protection',
+    ],
+  },
 ];
 
 checklist.forEach(section => {
@@ -146,10 +146,14 @@ Remember:
 - Use different keys for each environment
 - Store production keys securely
 
-${checklist.map(section => `
+${checklist
+  .map(
+    section => `
 ${section.item}:
 ${section.checks.map(check => `- ${check}`).join('\n')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 `;
 
 fs.writeFileSync(reportPath, report);

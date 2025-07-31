@@ -126,6 +126,7 @@ DiNoCal은 Next.js 15 기반의 풀스택 애플리케이션으로, 디지털 �
 ## 🔧 Technology Stack
 
 ### Frontend Technologies
+
 - **Framework**: Next.js 15.4.4 with App Router
 - **Language**: TypeScript 5.0+ (strict mode)
 - **UI Library**: React 18 with Server Components
@@ -136,6 +137,7 @@ DiNoCal은 Next.js 15 기반의 풀스택 애플리케이션으로, 디지털 �
 - **PWA**: Next-PWA for offline capabilities
 
 ### Backend Technologies
+
 - **Runtime**: Node.js 20+ on Vercel Edge Runtime
 - **API**: Next.js API Routes with middleware chain
 - **Authentication**: NextAuth.js 4.x with Google OAuth 2.0
@@ -145,6 +147,7 @@ DiNoCal은 Next.js 15 기반의 풀스택 애플리케이션으로, 디지털 �
 - **File Storage**: Vercel Blob for user uploads
 
 ### External Integrations
+
 - **Google APIs**: OAuth 2.0, Gmail API, Calendar API
 - **Deployment**: Vercel platform with Edge Functions
 - **Monitoring**: Vercel Analytics + custom error tracking
@@ -153,6 +156,7 @@ DiNoCal은 Next.js 15 기반의 풀스택 애플리케이션으로, 디지털 �
 ## 🔒 Security Architecture
 
 ### Authentication & Authorization
+
 ```typescript
 // Authentication Flow
 Google OAuth 2.0 → NextAuth.js → JWT Tokens → Session Management
@@ -171,6 +175,7 @@ interface SecurityMiddleware {
 ```
 
 ### Data Protection
+
 - **Encryption**: AES-256 for sensitive data at rest
 - **Transport**: TLS 1.3 for all communications
 - **API Security**: API key rotation and scoped permissions
@@ -178,18 +183,20 @@ interface SecurityMiddleware {
 - **Audit Logging**: Comprehensive security event logging
 
 ### Google API Security
+
 ```typescript
 interface GoogleAPISecurityConfig {
-  scopes: ['openid', 'email', 'profile', 'gmail.readonly', 'calendar']
-  tokenRefresh: AutomaticTokenRefreshConfig
-  rateLimit: GoogleAPIRateLimitConfig
-  errorHandling: APIErrorRecoveryConfig
+  scopes: ['openid', 'email', 'profile', 'gmail.readonly', 'calendar'];
+  tokenRefresh: AutomaticTokenRefreshConfig;
+  rateLimit: GoogleAPIRateLimitConfig;
+  errorHandling: APIErrorRecoveryConfig;
 }
 ```
 
 ## 📊 Database Design
 
 ### Core Schema
+
 ```sql
 -- Users table
 CREATE TABLE users (
@@ -216,7 +223,7 @@ CREATE TABLE country_visits (
   notes TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
+
   -- Indexes for performance
   INDEX idx_user_dates (user_id, entry_date, exit_date),
   INDEX idx_country_visa (country, visa_type)
@@ -243,6 +250,7 @@ CREATE TABLE cache_entries (
 ```
 
 ### Data Relationships
+
 ```
 Users (1) ←→ (N) CountryVisits
 Users (1) ←→ (1) NotificationSettings
@@ -252,27 +260,29 @@ Users (1) ←→ (N) CacheEntries (scoped by user)
 ## ⚡ Performance Architecture
 
 ### Caching Strategy
+
 ```typescript
 interface CacheConfig {
   // Multi-level caching
   levels: {
-    browser: ServiceWorkerCache        // 24h TTL
-    edge: VercelEdgeCache             // 5min TTL
-    server: RedisCache                // 1h TTL
-    database: QueryResultCache       // 15min TTL
-  }
-  
+    browser: ServiceWorkerCache; // 24h TTL
+    edge: VercelEdgeCache; // 5min TTL
+    server: RedisCache; // 1h TTL
+    database: QueryResultCache; // 15min TTL
+  };
+
   // Cache invalidation
   invalidation: {
-    userVisits: 'immediate'           // On CRUD operations
-    schengenCalc: 'immediate'         // On visit changes
-    countryData: 'weekly'             // Static data updates
-    userProfile: 'on-change'          // Profile updates
-  }
+    userVisits: 'immediate'; // On CRUD operations
+    schengenCalc: 'immediate'; // On visit changes
+    countryData: 'weekly'; // Static data updates
+    userProfile: 'on-change'; // Profile updates
+  };
 }
 ```
 
 ### Performance Optimizations
+
 - **Code Splitting**: Automatic route-based code splitting
 - **Image Optimization**: Next.js Image component with Vercel optimization
 - **Font Optimization**: Self-hosted fonts with font-display: swap
@@ -280,25 +290,27 @@ interface CacheConfig {
 - **Critical CSS**: Inline critical CSS for above-the-fold content
 
 ### Database Performance
+
 ```typescript
 interface DatabaseOptimizations {
   indexes: {
-    composite: ['user_id', 'entry_date', 'exit_date']
-    partial: ['exit_date IS NULL']  // For current stays
-    expression: ['EXTRACT(year FROM entry_date)']  // For yearly queries
-  }
-  
+    composite: ['user_id', 'entry_date', 'exit_date'];
+    partial: ['exit_date IS NULL']; // For current stays
+    expression: ['EXTRACT(year FROM entry_date)']; // For yearly queries
+  };
+
   queryOptimization: {
-    schengenQueries: 'Optimized for 180-day rolling windows'
-    pagination: 'Cursor-based for large datasets'
-    aggregations: 'Pre-computed for dashboard stats'
-  }
+    schengenQueries: 'Optimized for 180-day rolling windows';
+    pagination: 'Cursor-based for large datasets';
+    aggregations: 'Pre-computed for dashboard stats';
+  };
 }
 ```
 
 ## 🔄 Data Flow Architecture
 
 ### User Journey Data Flow
+
 ```mermaid
 graph TD
     A[User Login] --> B[Google OAuth]
@@ -309,7 +321,7 @@ graph TD
     E -->|Cache Miss| G[Database Query]
     G --> H[Cache Update]
     H --> F
-    
+
     F --> I[User Action]
     I --> J[Input Validation]
     J --> K[Business Logic]
@@ -319,6 +331,7 @@ graph TD
 ```
 
 ### Gmail Integration Flow
+
 ```mermaid
 graph TD
     A[Gmail Scan Request] --> B[OAuth Token Validation]
@@ -333,17 +346,18 @@ graph TD
 ## 🧮 Schengen Calculation Engine
 
 ### Algorithm Architecture
+
 ```typescript
 interface SchengenCalculator {
   calculateRemainingDays(visits: CountryVisit[]): SchengenStatus {
     const rollingWindow = 180 // days
     const maxDays = 90
-    
+
     // Calculate used days in any 180-day period
     const usedDays = this.calculateUsedDaysInPeriod(visits, rollingWindow)
     const remainingDays = maxDays - usedDays
     const nextResetDate = this.calculateNextResetDate(visits)
-    
+
     return {
       usedDays,
       remainingDays,
@@ -352,7 +366,7 @@ interface SchengenCalculator {
       violations: this.detectViolations(visits)
     }
   }
-  
+
   validateFutureTrip(
     existingVisits: CountryVisit[],
     plannedVisit: PlannedVisit
@@ -365,6 +379,7 @@ interface SchengenCalculator {
 ```
 
 ### Edge Cases Handling
+
 - **Overlapping Visits**: Detection and user notification
 - **Data Gaps**: Handling incomplete entry/exit data
 - **Clock Changes**: Timezone-aware date calculations
@@ -373,20 +388,21 @@ interface SchengenCalculator {
 ## 🔌 Google Services Integration
 
 ### Gmail API Integration
+
 ```typescript
 interface GmailParser {
   scanTravelEmails(): Promise<TravelEmailData[]> {
     // Search for travel-related emails
     const query = 'from:(airline.com OR booking.com OR airbnb.com) ' +
                   'subject:(booking confirmation OR e-ticket OR itinerary)'
-    
+
     const messages = await gmail.users.messages.list({ q: query })
-    
+
     return Promise.all(
       messages.data.messages.map(msg => this.parseEmailContent(msg))
     )
   }
-  
+
   parseEmailContent(message: GmailMessage): TravelEmailData {
     // Extract flight dates, destinations, booking references
     const patterns = {
@@ -394,13 +410,14 @@ interface GmailParser {
       destination: /to\s+([A-Z]{3})\s*[-–]\s*([^,\n]+)/gi,
       flightNumber: /[A-Z]{2}\s*\d{3,4}/g
     }
-    
+
     return this.extractStructuredData(message.payload.body, patterns)
   }
 }
 ```
 
 ### Calendar Sync Architecture
+
 ```typescript
 interface CalendarSync {
   syncVisitToCalendar(visit: CountryVisit): Promise<CalendarEvent> {
@@ -411,10 +428,10 @@ interface CalendarSync {
       end: { date: visit.exit_date || this.calculateEndDate(visit) },
       colorId: this.getVisaTypeColor(visit.visa_type)
     }
-    
+
     return calendar.events.insert({ calendarId: 'primary', resource: event })
   }
-  
+
   handleCalendarWebhook(notification: CalendarNotification): void {
     // Handle bi-directional sync when calendar events change
     this.updateVisitFromCalendarEvent(notification.resourceId)
@@ -425,35 +442,37 @@ interface CalendarSync {
 ## 🚀 Deployment Architecture
 
 ### Vercel Platform Configuration
+
 ```typescript
 // next.config.js
 const nextConfig = {
   experimental: {
     appDir: true,
-    serverComponentsExternalPackages: ['sqlite3']
+    serverComponentsExternalPackages: ['sqlite3'],
   },
-  
+
   images: {
     domains: ['lh3.googleusercontent.com'],
-    formats: ['image/webp', 'image/avif']
+    formats: ['image/webp', 'image/avif'],
   },
-  
-  headers: async () => [{
-    source: '/api/:path*',
-    headers: [
-      { key: 'X-Content-Type-Options', value: 'nosniff' },
-      { key: 'X-Frame-Options', value: 'DENY' },
-      { key: 'X-XSS-Protection', value: '1; mode=block' }
-    ]
-  }],
-  
-  rewrites: async () => [
-    { source: '/health', destination: '/api/health' }
-  ]
-}
+
+  headers: async () => [
+    {
+      source: '/api/:path*',
+      headers: [
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-XSS-Protection', value: '1; mode=block' },
+      ],
+    },
+  ],
+
+  rewrites: async () => [{ source: '/health', destination: '/api/health' }],
+};
 ```
 
 ### Environment Management
+
 ```bash
 # Production Environment Variables
 NEXTAUTH_URL=https://dinocal.app
@@ -468,48 +487,51 @@ VERCEL_URL=<auto-populated>
 ## 📈 Monitoring and Analytics
 
 ### Performance Monitoring
+
 ```typescript
 interface MonitoringConfig {
   vitals: {
-    FCP: '<1.8s',      // First Contentful Paint
-    LCP: '<2.5s',      // Largest Contentful Paint
-    FID: '<100ms',     // First Input Delay
-    CLS: '<0.1',       // Cumulative Layout Shift
-    TTFB: '<600ms'     // Time to First Byte
-  },
-  
+    FCP: '<1.8s'; // First Contentful Paint
+    LCP: '<2.5s'; // Largest Contentful Paint
+    FID: '<100ms'; // First Input Delay
+    CLS: '<0.1'; // Cumulative Layout Shift
+    TTFB: '<600ms'; // Time to First Byte
+  };
+
   business: {
-    visitCreationTime: '<2s',
-    schengenCalculationTime: '<500ms',
-    gmailScanSuccess: '>95%',
-    calendarSyncSuccess: '>98%'
-  }
+    visitCreationTime: '<2s';
+    schengenCalculationTime: '<500ms';
+    gmailScanSuccess: '>95%';
+    calendarSyncSuccess: '>98%';
+  };
 }
 ```
 
 ### Error Tracking
+
 ```typescript
 interface ErrorTrackingConfig {
-  levels: ['error', 'warn', 'info', 'debug']
-  
+  levels: ['error', 'warn', 'info', 'debug'];
+
   contexts: {
-    user: 'anonymized-user-id',
-    session: 'session-identifier',
-    feature: 'feature-being-used',
-    api: 'endpoint-called'
-  }
-  
+    user: 'anonymized-user-id';
+    session: 'session-identifier';
+    feature: 'feature-being-used';
+    api: 'endpoint-called';
+  };
+
   alerting: {
-    errorRate: '>1% over 5 minutes',
-    responseTime: '>2s average over 5 minutes',
-    apiFailures: '>5 consecutive failures'
-  }
+    errorRate: '>1% over 5 minutes';
+    responseTime: '>2s average over 5 minutes';
+    apiFailures: '>5 consecutive failures';
+  };
 }
 ```
 
 ## 🔄 CI/CD Pipeline
 
 ### Deployment Pipeline
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy to Vercel
@@ -528,13 +550,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run type-check
       - run: npm run lint
       - run: npm run test:unit
       - run: npm run test:integration
-      
+
   deploy:
     needs: test
     if: github.ref == 'refs/heads/main'
@@ -552,31 +574,33 @@ jobs:
 ## 🧪 Testing Strategy
 
 ### Test Pyramid
+
 ```typescript
 interface TestingStrategy {
   unit: {
-    coverage: '>90%',
-    focus: ['Business logic', 'Utilities', 'Components'],
-    tools: ['Jest', 'React Testing Library']
-  },
-  
+    coverage: '>90%';
+    focus: ['Business logic', 'Utilities', 'Components'];
+    tools: ['Jest', 'React Testing Library'];
+  };
+
   integration: {
-    coverage: '>80%',
-    focus: ['API routes', 'Database operations', 'Google API integration'],
-    tools: ['Jest', 'Supertest', 'Test containers']
-  },
-  
+    coverage: '>80%';
+    focus: ['API routes', 'Database operations', 'Google API integration'];
+    tools: ['Jest', 'Supertest', 'Test containers'];
+  };
+
   e2e: {
-    coverage: 'Critical user journeys',
-    focus: ['Login flow', 'Visit management', 'Schengen calculator'],
-    tools: ['Playwright', 'Visual regression testing']
-  }
+    coverage: 'Critical user journeys';
+    focus: ['Login flow', 'Visit management', 'Schengen calculator'];
+    tools: ['Playwright', 'Visual regression testing'];
+  };
 }
 ```
 
 ## 📚 API Documentation
 
 ### Core API Endpoints
+
 ```typescript
 // Visit Management
 POST   /api/visits              // Create new visit
@@ -614,12 +638,14 @@ GET    /api/visa-types          // List visa types
 ## 🚀 Scalability Considerations
 
 ### Horizontal Scaling
+
 - **Stateless Design**: No server-side sessions, JWT-based authentication
 - **Database Sharding**: User-based sharding for large-scale deployment
 - **CDN Distribution**: Global content distribution via Vercel Edge Network
 - **Microservices Ready**: Modular architecture for future service extraction
 
 ### Performance Scaling
+
 - **Edge Computing**: Computation moved to edge locations
 - **Database Read Replicas**: Read operations distributed across replicas
 - **Caching Layers**: Multi-level caching for frequently accessed data
@@ -627,4 +653,4 @@ GET    /api/visa-types          // List visa types
 
 ---
 
-*This architecture document provides a comprehensive foundation for building DiNoCal as a scalable, secure, and performant travel management platform. The modular design ensures maintainability while the chosen technologies provide a solid foundation for current needs and future growth.*
+_This architecture document provides a comprehensive foundation for building DiNoCal as a scalable, secure, and performant travel management platform. The modular design ensures maintainability while the chosen technologies provide a solid foundation for current needs and future growth._

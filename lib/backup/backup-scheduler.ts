@@ -3,37 +3,37 @@
  * Manages automated backup schedules
  */
 
-import { dbBackupManager } from './database-backup'
-import { fileBackupManager } from './file-backup'
-import { loggers } from '@/lib/monitoring/logger'
-import { metrics } from '@/lib/monitoring/metrics-collector'
-import { systemAlert } from '@/lib/notifications/alert-manager'
-import cron from 'node-cron'
+import { dbBackupManager } from './database-backup';
+import { fileBackupManager } from './file-backup';
+import { loggers } from '@/lib/monitoring/logger';
+import { metrics } from '@/lib/monitoring/metrics-collector';
+import { systemAlert } from '@/lib/notifications/alert-manager';
+import cron from 'node-cron';
 
-const logger = loggers.business.child({ module: 'backup-scheduler' })
+const logger = loggers.business.child({ module: 'backup-scheduler' });
 
 export interface BackupSchedule {
-  id: string
-  name: string
-  type: 'database' | 'files' | 'both'
-  schedule: string // cron expression
-  enabled: boolean
+  id: string;
+  name: string;
+  type: 'database' | 'files' | 'both';
+  schedule: string; // cron expression
+  enabled: boolean;
   options: {
-    compress: boolean
-    encrypt: boolean
-    retentionDays: number
-  }
-  lastRun?: Date
-  nextRun?: Date
-  lastStatus?: 'success' | 'failed'
+    compress: boolean;
+    encrypt: boolean;
+    retentionDays: number;
+  };
+  lastRun?: Date;
+  nextRun?: Date;
+  lastStatus?: 'success' | 'failed';
 }
 
 export class BackupScheduler {
-  private schedules: Map<string, cron.ScheduledTask> = new Map()
-  private configurations: Map<string, BackupSchedule> = new Map()
+  private schedules: Map<string, cron.ScheduledTask> = new Map();
+  private configurations: Map<string, BackupSchedule> = new Map();
 
   constructor() {
-    this.initializeDefaultSchedules()
+    this.initializeDefaultSchedules();
   }
 
   /**
@@ -50,9 +50,9 @@ export class BackupScheduler {
       options: {
         compress: true,
         encrypt: true,
-        retentionDays: 30
-      }
-    })
+        retentionDays: 30,
+      },
+    });
 
     // Weekly file backup on Sunday at 3 AM
     this.addSchedule({
@@ -64,9 +64,9 @@ export class BackupScheduler {
       options: {
         compress: true,
         encrypt: true,
-        retentionDays: 90
-      }
-    })
+        retentionDays: 90,
+      },
+    });
 
     // Hourly incremental database backup (business hours only)
     this.addSchedule({
@@ -78,26 +78,26 @@ export class BackupScheduler {
       options: {
         compress: true,
         encrypt: true,
-        retentionDays: 7
-      }
-    })
+        retentionDays: 7,
+      },
+    });
   }
 
   /**
    * Add or update a backup schedule
    */
   addSchedule(schedule: BackupSchedule): void {
-    logger.info('Adding backup schedule', { scheduleId: schedule.id })
+    logger.info('Adding backup schedule', { scheduleId: schedule.id });
 
     // Stop existing schedule if it exists
-    this.stopSchedule(schedule.id)
+    this.stopSchedule(schedule.id);
 
     // Store configuration
-    this.configurations.set(schedule.id, schedule)
+    this.configurations.set(schedule.id, schedule);
 
     // Create new schedule if enabled
     if (schedule.enabled) {
-      this.startSchedule(schedule)
+      this.startSchedule(schedule);
     }
   }
 
@@ -106,33 +106,37 @@ export class BackupScheduler {
    */
   private startSchedule(schedule: BackupSchedule): void {
     if (!cron.validate(schedule.schedule)) {
-      logger.error('Invalid cron expression', { 
-        scheduleId: schedule.id, 
-        expression: schedule.schedule 
-      })
-      return
+      logger.error('Invalid cron expression', {
+        scheduleId: schedule.id,
+        expression: schedule.schedule,
+      });
+      return;
     }
 
-    const task = cron.schedule(schedule.schedule, async () => {
-      await this.executeBackup(schedule)
-    }, {
-      scheduled: true,
-      timezone: 'UTC'
-    })
+    const task = cron.schedule(
+      schedule.schedule,
+      async () => {
+        await this.executeBackup(schedule);
+      },
+      {
+        scheduled: true,
+        timezone: 'UTC',
+      }
+    );
 
-    this.schedules.set(schedule.id, task)
-    logger.info('Backup schedule started', { scheduleId: schedule.id })
+    this.schedules.set(schedule.id, task);
+    logger.info('Backup schedule started', { scheduleId: schedule.id });
   }
 
   /**
    * Stop a backup schedule
    */
   stopSchedule(scheduleId: string): void {
-    const task = this.schedules.get(scheduleId)
+    const task = this.schedules.get(scheduleId);
     if (task) {
-      task.stop()
-      this.schedules.delete(scheduleId)
-      logger.info('Backup schedule stopped', { scheduleId })
+      task.stop();
+      this.schedules.delete(scheduleId);
+      logger.info('Backup schedule stopped', { scheduleId });
     }
   }
 
@@ -140,74 +144,79 @@ export class BackupScheduler {
    * Execute scheduled backup
    */
   private async executeBackup(schedule: BackupSchedule): Promise<void> {
-    const startTime = Date.now()
-    
-    logger.info('Executing scheduled backup', { 
+    const startTime = Date.now();
+
+    logger.info('Executing scheduled backup', {
       scheduleId: schedule.id,
-      type: schedule.type 
-    })
+      type: schedule.type,
+    });
 
     // Update last run time
-    schedule.lastRun = new Date()
-    
+    schedule.lastRun = new Date();
+
     try {
-      let success = true
+      let success = true;
 
       // Execute database backup
       if (schedule.type === 'database' || schedule.type === 'both') {
         const dbResult = await dbBackupManager.createBackup({
           type: schedule.id.includes('incremental') ? 'incremental' : 'full',
-          ...schedule.options
-        })
-        
+          ...schedule.options,
+        });
+
         if (dbResult.status !== 'success') {
-          success = false
-          await this.handleBackupFailure(schedule, 'database', dbResult.error)
+          success = false;
+          await this.handleBackupFailure(schedule, 'database', dbResult.error);
         }
       }
 
       // Execute file backup
       if (schedule.type === 'files' || schedule.type === 'both') {
-        const fileResult = await fileBackupManager.createBackup(schedule.options)
-        
+        const fileResult = await fileBackupManager.createBackup(
+          schedule.options
+        );
+
         if (fileResult.status !== 'success') {
-          success = false
-          await this.handleBackupFailure(schedule, 'files', fileResult.error)
+          success = false;
+          await this.handleBackupFailure(schedule, 'files', fileResult.error);
         }
       }
 
       // Update status
-      schedule.lastStatus = success ? 'success' : 'failed'
-      
-      // Record metrics
-      const duration = Date.now() - startTime
-      metrics.increment(`backup.scheduled.${success ? 'success' : 'failed'}`, 1, {
-        scheduleId: schedule.id,
-        type: schedule.type
-      })
-      metrics.histogram('backup.scheduled.duration', duration, {
-        scheduleId: schedule.id
-      })
+      schedule.lastStatus = success ? 'success' : 'failed';
 
-      logger.info('Scheduled backup completed', { 
+      // Record metrics
+      const duration = Date.now() - startTime;
+      metrics.increment(
+        `backup.scheduled.${success ? 'success' : 'failed'}`,
+        1,
+        {
+          scheduleId: schedule.id,
+          type: schedule.type,
+        }
+      );
+      metrics.histogram('backup.scheduled.duration', duration, {
+        scheduleId: schedule.id,
+      });
+
+      logger.info('Scheduled backup completed', {
         scheduleId: schedule.id,
         success,
-        duration 
-      })
-
+        duration,
+      });
     } catch (error) {
-      schedule.lastStatus = 'failed'
-      
-      logger.error('Scheduled backup failed', { 
+      schedule.lastStatus = 'failed';
+
+      logger.error('Scheduled backup failed', {
         scheduleId: schedule.id,
-        error 
-      })
-      
+        error,
+      });
+
       await this.handleBackupFailure(
-        schedule, 
-        'unknown', 
+        schedule,
+        'unknown',
         error instanceof Error ? error.message : 'Unknown error'
-      )
+      );
     }
   }
 
@@ -215,8 +224,8 @@ export class BackupScheduler {
    * Handle backup failure
    */
   private async handleBackupFailure(
-    schedule: BackupSchedule, 
-    backupType: string, 
+    schedule: BackupSchedule,
+    backupType: string,
     error?: string
   ): Promise<void> {
     // Send alert
@@ -228,27 +237,27 @@ export class BackupScheduler {
       metadata: {
         scheduleId: schedule.id,
         backupType,
-        error
-      }
-    })
+        error,
+      },
+    });
 
     // Check if we should disable the schedule after repeated failures
-    const recentFailures = await this.getRecentFailures(schedule.id)
+    const recentFailures = await this.getRecentFailures(schedule.id);
     if (recentFailures >= 3) {
-      logger.warn('Disabling schedule due to repeated failures', { 
-        scheduleId: schedule.id 
-      })
-      
-      schedule.enabled = false
-      this.stopSchedule(schedule.id)
-      
+      logger.warn('Disabling schedule due to repeated failures', {
+        scheduleId: schedule.id,
+      });
+
+      schedule.enabled = false;
+      this.stopSchedule(schedule.id);
+
       await systemAlert.sendAlert({
         type: 'BACKUP_SCHEDULE_DISABLED',
         severity: 'high',
         title: `Backup Schedule Disabled: ${schedule.name}`,
         message: `Schedule disabled after ${recentFailures} consecutive failures`,
-        metadata: { scheduleId: schedule.id }
-      })
+        metadata: { scheduleId: schedule.id },
+      });
     }
   }
 
@@ -258,73 +267,73 @@ export class BackupScheduler {
   private async getRecentFailures(scheduleId: string): Promise<number> {
     // In a real implementation, this would query a database
     // For now, return a mock value
-    return 0
+    return 0;
   }
 
   /**
    * Get all schedules
    */
   getSchedules(): BackupSchedule[] {
-    return Array.from(this.configurations.values())
+    return Array.from(this.configurations.values());
   }
 
   /**
    * Get schedule by ID
    */
   getSchedule(scheduleId: string): BackupSchedule | undefined {
-    return this.configurations.get(scheduleId)
+    return this.configurations.get(scheduleId);
   }
 
   /**
    * Enable/disable a schedule
    */
   toggleSchedule(scheduleId: string, enabled: boolean): void {
-    const schedule = this.configurations.get(scheduleId)
+    const schedule = this.configurations.get(scheduleId);
     if (!schedule) {
-      logger.error('Schedule not found', { scheduleId })
-      return
+      logger.error('Schedule not found', { scheduleId });
+      return;
     }
 
-    schedule.enabled = enabled
+    schedule.enabled = enabled;
 
     if (enabled) {
-      this.startSchedule(schedule)
+      this.startSchedule(schedule);
     } else {
-      this.stopSchedule(scheduleId)
+      this.stopSchedule(scheduleId);
     }
 
-    logger.info('Schedule toggled', { scheduleId, enabled })
+    logger.info('Schedule toggled', { scheduleId, enabled });
   }
 
   /**
    * Trigger manual backup for a schedule
    */
   async triggerBackup(scheduleId: string): Promise<void> {
-    const schedule = this.configurations.get(scheduleId)
+    const schedule = this.configurations.get(scheduleId);
     if (!schedule) {
-      throw new Error(`Schedule not found: ${scheduleId}`)
+      throw new Error(`Schedule not found: ${scheduleId}`);
     }
 
-    logger.info('Manually triggering backup', { scheduleId })
-    await this.executeBackup(schedule)
+    logger.info('Manually triggering backup', { scheduleId });
+    await this.executeBackup(schedule);
   }
 
   /**
    * Calculate next run time for a schedule
    */
   getNextRunTime(scheduleId: string): Date | null {
-    const schedule = this.configurations.get(scheduleId)
+    const schedule = this.configurations.get(scheduleId);
     if (!schedule || !schedule.enabled) {
-      return null
+      return null;
     }
 
     try {
       // Use cron parser to calculate next run
-      const interval = cron.parseExpression(schedule.schedule)
-      return interval.next().toDate()
+      const interval = cron.parseExpression(schedule.schedule);
+      return interval.next().toDate();
     } catch (error) {
-      logger.error('Failed to calculate next run time', { scheduleId, error })
-      return null
+      logger.error('Failed to calculate next run time', { scheduleId, error });
+      return null;
     }
   }
 
@@ -332,11 +341,11 @@ export class BackupScheduler {
    * Start all enabled schedules
    */
   startAll(): void {
-    logger.info('Starting all backup schedules')
-    
+    logger.info('Starting all backup schedules');
+
     for (const schedule of this.configurations.values()) {
       if (schedule.enabled) {
-        this.startSchedule(schedule)
+        this.startSchedule(schedule);
       }
     }
   }
@@ -345,52 +354,52 @@ export class BackupScheduler {
    * Stop all schedules
    */
   stopAll(): void {
-    logger.info('Stopping all backup schedules')
-    
+    logger.info('Stopping all backup schedules');
+
     for (const task of this.schedules.values()) {
-      task.stop()
+      task.stop();
     }
-    
-    this.schedules.clear()
+
+    this.schedules.clear();
   }
 
   /**
    * Get backup status summary
    */
   getStatus(): {
-    totalSchedules: number
-    enabledSchedules: number
-    runningSchedules: number
-    lastBackup?: Date
-    nextBackup?: Date
+    totalSchedules: number;
+    enabledSchedules: number;
+    runningSchedules: number;
+    lastBackup?: Date;
+    nextBackup?: Date;
   } {
-    const schedules = Array.from(this.configurations.values())
-    const enabledSchedules = schedules.filter(s => s.enabled)
-    
+    const schedules = Array.from(this.configurations.values());
+    const enabledSchedules = schedules.filter(s => s.enabled);
+
     // Find last and next backup times
-    let lastBackup: Date | undefined
-    let nextBackup: Date | undefined
-    
+    let lastBackup: Date | undefined;
+    let nextBackup: Date | undefined;
+
     for (const schedule of enabledSchedules) {
       if (schedule.lastRun && (!lastBackup || schedule.lastRun > lastBackup)) {
-        lastBackup = schedule.lastRun
+        lastBackup = schedule.lastRun;
       }
-      
-      const next = this.getNextRunTime(schedule.id)
+
+      const next = this.getNextRunTime(schedule.id);
       if (next && (!nextBackup || next < nextBackup)) {
-        nextBackup = next
+        nextBackup = next;
       }
     }
-    
+
     return {
       totalSchedules: schedules.length,
       enabledSchedules: enabledSchedules.length,
       runningSchedules: this.schedules.size,
       lastBackup,
-      nextBackup
-    }
+      nextBackup,
+    };
   }
 }
 
 // Export singleton instance
-export const backupScheduler = new BackupScheduler()
+export const backupScheduler = new BackupScheduler();

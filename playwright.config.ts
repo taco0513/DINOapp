@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -17,7 +17,7 @@ export default defineConfig({
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'playwright-results.json' }],
-    ['list']
+    ['list'],
   ],
   /* Shared settings for all the projects below. */
   use: {
@@ -26,10 +26,10 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. */
     trace: 'on-first-retry',
-    
+
     /* Capture screenshot on failure */
     screenshot: 'only-on-failure',
-    
+
     /* Record video on failure */
     video: 'retain-on-failure',
   },
@@ -79,21 +79,21 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes
   },
-  
+
   /* Global test timeout */
   timeout: 30 * 1000, // 30 seconds per test
-  
+
   /* Expect timeout */
   expect: {
     timeout: 10 * 1000, // 10 seconds for assertions
   },
-  
+
   /* Output directory for test artifacts */
   outputDir: 'test-results/',
-  
+
   /* Global setup and teardown */
   // globalSetup: require.resolve('./playwright.global-setup.ts'),
-  
+
   /* Test match pattern */
   testMatch: '**/*.spec.ts',
-})
+});

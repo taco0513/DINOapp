@@ -3,6 +3,7 @@
 ## 🌐 API Architecture Overview
 
 ### Design Principles
+
 1. **RESTful Design**: Follow REST conventions with proper HTTP methods
 2. **Consistency**: Uniform response structures and error handling
 3. **Security First**: Authentication, authorization, and input validation
@@ -10,6 +11,7 @@
 5. **Versioning**: Future-proof API design with version support
 
 ### Base URL Structure
+
 ```
 Production: https://api.dino.travel/v1
 Development: http://localhost:3000/api
@@ -18,6 +20,7 @@ Development: http://localhost:3000/api
 ## 🔑 Authentication & Authorization
 
 ### Authentication Flow
+
 ```mermaid
 sequenceDiagram
     Client->>API: POST /api/auth/signin
@@ -31,6 +34,7 @@ sequenceDiagram
 ```
 
 ### Authorization Headers
+
 ```http
 # Session-based (primary)
 Cookie: next-auth.session-token=...
@@ -44,7 +48,9 @@ X-CSRF-Token: <csrf-token>
 ### Authentication Endpoints
 
 #### `GET /api/auth/providers`
+
 Get available authentication providers
+
 ```json
 {
   "google": {
@@ -58,7 +64,9 @@ Get available authentication providers
 ```
 
 #### `GET /api/auth/session`
+
 Get current user session
+
 ```json
 {
   "user": {
@@ -75,12 +83,15 @@ Get current user session
 ### Trip Management Endpoints
 
 #### `GET /api/trips`
+
 Get user's trips with filtering and pagination
+
 ```http
 GET /api/trips?country=FR&year=2024&page=1&limit=20
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -110,7 +121,9 @@ Response:
 ```
 
 #### `POST /api/trips`
+
 Create a new trip
+
 ```json
 {
   "country": "France",
@@ -124,6 +137,7 @@ Create a new trip
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -146,7 +160,9 @@ Response:
 ```
 
 #### `GET /api/trips/:id`
+
 Get a specific trip
+
 ```json
 {
   "success": true,
@@ -168,7 +184,9 @@ Get a specific trip
 ```
 
 #### `PUT /api/trips/:id`
+
 Update a trip
+
 ```json
 {
   "exitDate": "2024-01-15",
@@ -177,7 +195,9 @@ Update a trip
 ```
 
 #### `DELETE /api/trips/:id`
+
 Delete a trip
+
 ```json
 {
   "success": true,
@@ -188,7 +208,9 @@ Delete a trip
 ### Schengen Calculator Endpoints
 
 #### `GET /api/schengen`
+
 Calculate current Schengen status
+
 ```json
 {
   "success": true,
@@ -223,7 +245,9 @@ Calculate current Schengen status
 ```
 
 #### `POST /api/schengen/simulate`
+
 Simulate a future trip
+
 ```json
 {
   "country": "Germany",
@@ -233,6 +257,7 @@ Simulate a future trip
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -251,7 +276,9 @@ Response:
 ### Google Calendar Integration
 
 #### `GET /api/calendar/calendars`
+
 Get user's Google calendars
+
 ```json
 {
   "success": true,
@@ -275,7 +302,9 @@ Get user's Google calendars
 ```
 
 #### `POST /api/calendar/sync`
+
 Sync trips with Google Calendar
+
 ```json
 {
   "calendarId": "primary",
@@ -288,6 +317,7 @@ Sync trips with Google Calendar
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -306,7 +336,9 @@ Response:
 ### Statistics & Analytics
 
 #### `GET /api/stats`
+
 Get user statistics
+
 ```json
 {
   "success": true,
@@ -338,12 +370,15 @@ Get user statistics
 ### Data Management
 
 #### `GET /api/export`
+
 Export user data
+
 ```http
 GET /api/export?format=json
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -363,7 +398,9 @@ Response:
 ```
 
 #### `POST /api/import`
+
 Import user data
+
 ```json
 {
   "data": {
@@ -378,7 +415,9 @@ Import user data
 ### Admin Endpoints
 
 #### `GET /api/admin/database`
+
 Database health check (admin only)
+
 ```json
 {
   "success": true,
@@ -402,7 +441,9 @@ Database health check (admin only)
 ## 🔒 Security Specifications
 
 ### Input Validation
+
 All inputs are validated using Zod schemas:
+
 ```typescript
 const tripSchema = z.object({
   country: z.string().min(2).max(100),
@@ -411,35 +452,39 @@ const tripSchema = z.object({
   visaType: z.enum(VISA_TYPES),
   maxDays: z.number().min(1).max(365),
   passportCountry: z.enum(PASSPORT_COUNTRIES),
-  notes: z.string().max(500).optional()
-})
+  notes: z.string().max(500).optional(),
+});
 ```
 
 ### Rate Limiting
+
 ```typescript
 // Rate limit configuration
 const rateLimits = {
   general: { requests: 100, window: '15m' },
   mutation: { requests: 20, window: '15m' },
   auth: { requests: 5, window: '15m' },
-  export: { requests: 10, window: '1h' }
-}
+  export: { requests: 10, window: '1h' },
+};
 ```
 
 ### CSRF Protection
+
 All mutation endpoints require CSRF token validation:
+
 ```typescript
 // CSRF validation
-const csrfToken = request.headers.get('X-CSRF-Token')
-const sessionToken = request.cookies.get('csrf-token')
+const csrfToken = request.headers.get('X-CSRF-Token');
+const sessionToken = request.cookies.get('csrf-token');
 if (csrfToken !== sessionToken) {
-  return createErrorResponse(ErrorCode.CSRF_ERROR)
+  return createErrorResponse(ErrorCode.CSRF_ERROR);
 }
 ```
 
 ## 📊 Error Handling
 
 ### Error Response Format
+
 ```json
 {
   "success": false,
@@ -457,6 +502,7 @@ if (csrfToken !== sessionToken) {
 ```
 
 ### Error Codes
+
 ```typescript
 enum ErrorCode {
   // Client errors (4xx)
@@ -467,38 +513,42 @@ enum ErrorCode {
   CONFLICT = 'CONFLICT',
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
-  
+
   // Server errors (5xx)
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
   DATABASE_ERROR = 'DATABASE_ERROR',
-  EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR'
+  EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR',
 }
 ```
 
 ## 🚀 Performance Optimization
 
 ### Caching Strategy
+
 ```typescript
 // Cache headers
 const cacheControl = {
   trips: 'private, max-age=300', // 5 minutes
   stats: 'private, max-age=600', // 10 minutes
   schengen: 'private, max-age=60', // 1 minute
-  static: 'public, max-age=86400' // 24 hours
-}
+  static: 'public, max-age=86400', // 24 hours
+};
 ```
 
 ### Pagination
+
 All list endpoints support pagination:
+
 ```typescript
 interface PaginationParams {
-  page?: number    // Default: 1
-  limit?: number   // Default: 20, Max: 100
-  sort?: string    // Format: field:asc|desc
+  page?: number; // Default: 1
+  limit?: number; // Default: 20, Max: 100
+  sort?: string; // Format: field:asc|desc
 }
 ```
 
 ### Query Optimization
+
 - Database connection pooling
 - Query result caching
 - Optimized indexes
@@ -507,6 +557,7 @@ interface PaginationParams {
 ## 🧪 API Testing
 
 ### Integration Test Example
+
 ```typescript
 describe('POST /api/trips', () => {
   it('creates a new trip', async () => {
@@ -520,22 +571,23 @@ describe('POST /api/trips', () => {
         exitDate: '2024-01-10',
         visaType: 'Tourist',
         maxDays: 90,
-        passportCountry: 'US'
-      })
-    
-    expect(response.status).toBe(201)
-    expect(response.body.success).toBe(true)
+        passportCountry: 'US',
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body.success).toBe(true);
     expect(response.body.data.trip).toMatchObject({
       country: 'France',
-      visaType: 'Tourist'
-    })
-  })
-})
+      visaType: 'Tourist',
+    });
+  });
+});
 ```
 
 ## 📝 API Documentation
 
 ### OpenAPI Specification
+
 ```yaml
 openapi: 3.0.0
 info:

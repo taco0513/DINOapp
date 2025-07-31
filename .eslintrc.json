@@ -13,6 +13,12 @@
     // General JavaScript
     "no-var": "error",
     "prefer-const": "error",
+    "semi": ["error", "always"],
+    "quotes": [
+      "error",
+      "single",
+      { "avoidEscape": true, "allowTemplateLiterals": true }
+    ],
 
     // Code quality
     "no-console": "warn",

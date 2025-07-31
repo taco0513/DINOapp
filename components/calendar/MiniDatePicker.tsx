@@ -103,13 +103,13 @@ export default function MiniDatePicker({
       <div className='mt-4 pt-4 border-t border-border flex gap-2'>
         <Button
           onClick={() => handleDateClick(new Date())}
-          variant="ghost"
-          size="sm"
-          className="flex-1"
+          variant='ghost'
+          size='sm'
+          className='flex-1'
         >
           오늘
         </Button>
-        <Button onClick={onClose} variant="ghost" size="sm" className="flex-1">
+        <Button onClick={onClose} variant='ghost' size='sm' className='flex-1'>
           취소
         </Button>
       </div>

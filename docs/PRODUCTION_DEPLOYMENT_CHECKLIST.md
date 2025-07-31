@@ -7,19 +7,23 @@
 Vercel 대시보드에서 다음 환경 변수를 설정해야 합니다:
 
 #### 인증 관련
+
 - [ ] `NEXTAUTH_URL` - 프로덕션 URL (예: https://dino.vercel.app)
 - [ ] `NEXTAUTH_SECRET` - 강력한 랜덤 문자열 (openssl rand -base64 32로 생성)
 - [ ] `GOOGLE_CLIENT_ID` - Google OAuth 클라이언트 ID
 - [ ] `GOOGLE_CLIENT_SECRET` - Google OAuth 클라이언트 시크릿
 
 #### 데이터베이스
+
 - [ ] `DATABASE_URL` - 프로덕션 데이터베이스 URL (SQLite 또는 PostgreSQL)
 
 #### 보안
+
 - [ ] `CSRF_SECRET` - CSRF 토큰용 시크릿
 - [ ] `JWT_SECRET` - JWT 토큰 서명용 시크릿
 
 #### 선택적 설정
+
 - [ ] `SENTRY_DSN` - 에러 모니터링용 (선택사항)
 - [ ] `GOOGLE_ANALYTICS_ID` - 분석용 (선택사항)
 
@@ -38,10 +42,12 @@ Google Cloud Console에서:
 ### 3. 데이터베이스 설정
 
 #### SQLite 사용 시 (개발/테스트용)
+
 - Vercel은 서버리스 환경이므로 SQLite 파일 시스템 제한 있음
 - 프로덕션에서는 PostgreSQL 또는 MySQL 권장
 
 #### PostgreSQL 사용 시 (권장)
+
 1. [ ] Vercel PostgreSQL 또는 Supabase 설정
 2. [ ] DATABASE_URL 환경 변수 설정
 3. [ ] Prisma 스키마 마이그레이션 실행
@@ -79,6 +85,7 @@ npm test
 ### 7. Vercel 배포
 
 #### CLI를 통한 배포
+
 ```bash
 # Vercel CLI 설치
 npm i -g vercel
@@ -88,6 +95,7 @@ vercel --prod
 ```
 
 #### GitHub 통합 (권장)
+
 1. [ ] GitHub 저장소를 Vercel에 연결
 2. [ ] main 브랜치를 프로덕션으로 설정
 3. [ ] 자동 배포 활성화
@@ -117,6 +125,7 @@ vercel --prod
 ## 📝 배포 명령어
 
 ### Vercel 배포 (권장)
+
 ```bash
 # 프리뷰 배포
 npm run deploy:preview
@@ -126,12 +135,14 @@ npm run deploy:production
 ```
 
 ### Docker 배포
+
 ```bash
 # Docker 이미지 빌드 및 실행
 npm run deploy:docker
 ```
 
 ### 기타 플랫폼
+
 ```bash
 # Railway
 npm run deploy:railway
@@ -151,6 +162,7 @@ npm run deploy:netlify
 ## 🎯 배포 완료 확인
 
 모든 체크리스트 항목을 완료했다면:
+
 1. 프로덕션 URL에서 애플리케이션 접속
 2. 모든 주요 기능 테스트
 3. 성능 및 보안 모니터링 확인

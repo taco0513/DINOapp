@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { StandardPageLayout, StandardCard } from '@/components/layout/StandardPageLayout';
+import {
+  StandardPageLayout,
+  StandardCard,
+} from '@/components/layout/StandardPageLayout';
 import { Button } from '@/components/ui/button';
 
 // 하이드레이션 안전한 세션 체크 컴포넌트
@@ -19,7 +22,9 @@ export default function HomePage() {
           <div className='container mx-auto px-4 pt-20 pb-16 md:pt-32 md:pb-24'>
             <div className='max-w-4xl mx-auto text-center'>
               {/* Large title */}
-              <h1 className='text-6xl md:text-7xl font-bold mb-4 text-foreground'>DINO</h1>
+              <h1 className='text-6xl md:text-7xl font-bold mb-4 text-foreground'>
+                DINO
+              </h1>
 
               {/* Subtitle */}
               <p className='text-xl md:text-2xl text-muted-foreground mb-6 font-medium'>
@@ -34,15 +39,11 @@ export default function HomePage() {
 
               {/* CTA Buttons */}
               <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-                <Button size="lg" asChild>
-                  <Link href='/auth/signin'>
-                    시작하기
-                  </Link>
+                <Button size='lg' asChild>
+                  <Link href='/auth/signin'>시작하기</Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href='/simple'>
-                    데모 체험
-                  </Link>
+                <Button size='lg' variant='outline' asChild>
+                  <Link href='/simple'>데모 체험</Link>
                 </Button>
               </div>
             </div>
@@ -274,7 +275,9 @@ export default function HomePage() {
                     <div className='text-sm font-medium text-foreground'>
                       이현우
                     </div>
-                    <div className='text-xs text-muted-foreground'>프리랜서</div>
+                    <div className='text-xs text-muted-foreground'>
+                      프리랜서
+                    </div>
                   </div>
                 </div>
               </StandardCard>
@@ -293,15 +296,11 @@ export default function HomePage() {
                 무료로 시작하고 언제든지 업그레이드할 수 있습니다
               </p>
               <div className='flex flex-col sm:flex-row gap-4 justify-center mb-6'>
-                <Button size="lg" asChild>
-                  <Link href='/auth/signin'>
-                    무료로 시작하기
-                  </Link>
+                <Button size='lg' asChild>
+                  <Link href='/auth/signin'>무료로 시작하기</Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href='/features'>
-                    더 알아보기
-                  </Link>
+                <Button size='lg' variant='outline' asChild>
+                  <Link href='/features'>더 알아보기</Link>
                 </Button>
               </div>
               <p className='text-sm text-muted-foreground/70'>

@@ -147,7 +147,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -155,8 +155,8 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: true,
@@ -167,15 +167,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
           'Proof of freelance work',
           'Health insurance',
           'Proof of accommodation',
-          'Financial evidence (€2,000+ per month)'
+          'Financial evidence (€2,000+ per month)',
         ],
         cost: { amount: 100, currency: 'EUR' },
-        processingTime: { min: 4, max: 8, unit: 'weeks' }
+        processingTime: { min: 4, max: 8, unit: 'weeks' },
       },
       internetQuality: 5,
       costOfLiving: 4,
       popularCities: ['Berlin', 'Munich', 'Hamburg', 'Frankfurt'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 3,
@@ -183,7 +183,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: false,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 45, currency: 'EUR', perDay: true }
+      minFunds: { amount: 45, currency: 'EUR', perDay: true },
     },
     healthRequirements: {
       yellowFever: false,
@@ -191,9 +191,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   {
     countryCode: 'FR',
@@ -210,7 +210,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -218,15 +218,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: false,
       internetQuality: 5,
       costOfLiving: 4,
       popularCities: ['Paris', 'Lyon', 'Marseille', 'Nice'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 3,
@@ -234,7 +234,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: false,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 65, currency: 'EUR', perDay: true }
+      minFunds: { amount: 65, currency: 'EUR', perDay: true },
     },
     healthRequirements: {
       yellowFever: false,
@@ -242,9 +242,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   {
     countryCode: 'ES',
@@ -261,7 +261,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -269,8 +269,8 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: true,
@@ -281,15 +281,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
           'Remote work contract',
           'Proof of income (€2,334+ per month)',
           'Health insurance',
-          'Clean criminal record'
+          'Clean criminal record',
         ],
         cost: { amount: 80, currency: 'EUR' },
-        processingTime: { min: 2, max: 4, unit: 'weeks' }
+        processingTime: { min: 2, max: 4, unit: 'weeks' },
       },
       internetQuality: 5,
       costOfLiving: 3,
       popularCities: ['Madrid', 'Barcelona', 'Valencia', 'Seville'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 3,
@@ -297,7 +297,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: false,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 65, currency: 'EUR', perDay: true }
+      minFunds: { amount: 65, currency: 'EUR', perDay: true },
     },
     healthRequirements: {
       yellowFever: false,
@@ -305,9 +305,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   // Non-Schengen European Countries
   {
@@ -325,7 +325,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 180,
         stayPeriod: 'per year',
         notes: 'Visitor visa, no work allowed',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -333,15 +333,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 180,
         stayPeriod: 'per year',
         notes: 'Visitor visa, no work allowed',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: false,
       internetQuality: 5,
       costOfLiving: 5,
       popularCities: ['London', 'Edinburgh', 'Manchester', 'Bristol'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 6,
@@ -349,7 +349,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: true,
       accommodation: true,
       sufficientFunds: true,
-      minFunds: { amount: 95, currency: 'GBP', perDay: true }
+      minFunds: { amount: 95, currency: 'GBP', perDay: true },
     },
     healthRequirements: {
       yellowFever: false,
@@ -357,9 +357,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   // Popular Digital Nomad Destinations
   {
@@ -377,7 +377,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -385,8 +385,8 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: true,
@@ -397,15 +397,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
           'Proof of accommodation',
           'Proof of means of subsistence (€760+ per month)',
           'Health insurance',
-          'Clean criminal record'
+          'Clean criminal record',
         ],
         cost: { amount: 83, currency: 'EUR' },
-        processingTime: { min: 2, max: 3, unit: 'weeks' }
+        processingTime: { min: 2, max: 3, unit: 'weeks' },
       },
       internetQuality: 4,
       costOfLiving: 2,
       popularCities: ['Lisbon', 'Porto', 'Braga', 'Coimbra'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 3,
@@ -413,7 +413,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: false,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 40, currency: 'EUR', perDay: true }
+      minFunds: { amount: 40, currency: 'EUR', perDay: true },
     },
     healthRequirements: {
       yellowFever: false,
@@ -421,9 +421,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   {
     countryCode: 'EE',
@@ -440,7 +440,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -448,8 +448,8 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per 180 days',
         notes: 'Schengen area rules apply',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: true,
@@ -460,16 +460,17 @@ export const VISA_DATABASE: VisaRequirement[] = [
           'Employment contract or business ownership',
           'Gross salary €3,500+ per month',
           'Health insurance',
-          'No criminal convictions'
+          'No criminal convictions',
         ],
         cost: { amount: 80, currency: 'EUR' },
-        applicationUrl: 'https://www.politsei.ee/en/instructions/applying-for-a-digital-nomad-visa',
-        processingTime: { min: 2, max: 4, unit: 'weeks' }
+        applicationUrl:
+          'https://www.politsei.ee/en/instructions/applying-for-a-digital-nomad-visa',
+        processingTime: { min: 2, max: 4, unit: 'weeks' },
       },
       internetQuality: 5,
       costOfLiving: 2,
       popularCities: ['Tallinn', 'Tartu'],
-      coworkingSpaces: 'moderate'
+      coworkingSpaces: 'moderate',
     },
     entryRequirements: {
       passportValidity: 3,
@@ -477,7 +478,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: false,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 30, currency: 'EUR', perDay: true }
+      minFunds: { amount: 30, currency: 'EUR', perDay: true },
     },
     healthRequirements: {
       yellowFever: false,
@@ -485,9 +486,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   // Asia-Pacific
   {
@@ -505,7 +506,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 60,
         stayPeriod: 'per entry',
         notes: 'Can extend once for 30 days',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -513,8 +514,8 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 60,
         stayPeriod: 'per entry',
         notes: 'Can extend once for 30 days',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: true,
@@ -525,15 +526,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
           'Remote work evidence',
           'Bank statement showing $5,000+ USD',
           'Employment letter or contract',
-          'Clean criminal record'
+          'Clean criminal record',
         ],
         cost: { amount: 10000, currency: 'THB' },
-        processingTime: { min: 1, max: 2, unit: 'weeks' }
+        processingTime: { min: 1, max: 2, unit: 'weeks' },
       },
       internetQuality: 4,
       costOfLiving: 1,
       popularCities: ['Bangkok', 'Chiang Mai', 'Phuket', 'Koh Samui'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 6,
@@ -541,7 +542,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: true,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 20000, currency: 'THB', perDay: false }
+      minFunds: { amount: 20000, currency: 'THB', perDay: false },
     },
     healthRequirements: {
       yellowFever: true,
@@ -550,9 +551,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   {
     countryCode: 'MY',
@@ -569,7 +570,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per entry',
         notes: 'Can be extended',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -577,8 +578,8 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 90,
         stayPeriod: 'per entry',
         notes: 'Can be extended',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: true,
@@ -589,15 +590,15 @@ export const VISA_DATABASE: VisaRequirement[] = [
           'Income proof of $24,000+ USD annually',
           'Valid passport with 12+ months validity',
           'Proof of accommodation',
-          'Health and travel insurance'
+          'Health and travel insurance',
         ],
         cost: { amount: 1000, currency: 'MYR' },
-        processingTime: { min: 2, max: 4, unit: 'weeks' }
+        processingTime: { min: 2, max: 4, unit: 'weeks' },
       },
       internetQuality: 4,
       costOfLiving: 1,
       popularCities: ['Kuala Lumpur', 'Penang', 'Johor Bahru', 'Kota Kinabalu'],
-      coworkingSpaces: 'abundant'
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 6,
@@ -605,7 +606,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: true,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 500, currency: 'MYR', perDay: false }
+      minFunds: { amount: 500, currency: 'MYR', perDay: false },
     },
     healthRequirements: {
       yellowFever: true,
@@ -614,9 +615,9 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
+        quarantine: false,
+      },
+    },
   },
   // Americas
   {
@@ -634,7 +635,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 180,
         stayPeriod: 'per entry',
         notes: 'Tourist card (FMM) required',
-        lastUpdated: '2024-07-30'
+        lastUpdated: '2024-07-30',
       },
       {
         passportCountry: 'US',
@@ -642,15 +643,20 @@ export const VISA_DATABASE: VisaRequirement[] = [
         maxStayDays: 180,
         stayPeriod: 'per entry',
         notes: 'Tourist card (FMM) required',
-        lastUpdated: '2024-07-30'
-      }
+        lastUpdated: '2024-07-30',
+      },
     ],
     digitalNomadInfo: {
       hasDigitalNomadVisa: false,
       internetQuality: 3,
       costOfLiving: 2,
-      popularCities: ['Mexico City', 'Playa del Carmen', 'Puerto Vallarta', 'Guadalajara'],
-      coworkingSpaces: 'abundant'
+      popularCities: [
+        'Mexico City',
+        'Playa del Carmen',
+        'Puerto Vallarta',
+        'Guadalajara',
+      ],
+      coworkingSpaces: 'abundant',
     },
     entryRequirements: {
       passportValidity: 6,
@@ -658,7 +664,7 @@ export const VISA_DATABASE: VisaRequirement[] = [
       returnTicket: true,
       accommodation: false,
       sufficientFunds: true,
-      minFunds: { amount: 500, currency: 'USD', perDay: false }
+      minFunds: { amount: 500, currency: 'USD', perDay: false },
     },
     healthRequirements: {
       yellowFever: false,
@@ -666,10 +672,10 @@ export const VISA_DATABASE: VisaRequirement[] = [
       covidRequirements: {
         vaccination: false,
         testing: false,
-        quarantine: false
-      }
-    }
-  }
+        quarantine: false,
+      },
+    },
+  },
 ];
 
 /**
@@ -711,9 +717,11 @@ export class VisaDatabase {
     const country = this.getCountryInfo(countryCode);
     if (!country) return null;
 
-    return country.visaRequirements.find(
-      req => req.passportCountry === passportCountry.toUpperCase()
-    ) || null;
+    return (
+      country.visaRequirements.find(
+        req => req.passportCountry === passportCountry.toUpperCase()
+      ) || null
+    );
   }
 
   /**
@@ -748,19 +756,24 @@ export class VisaDatabase {
 
     if (criteria.digitalNomadVisa !== undefined) {
       results = results.filter(
-        country => country.digitalNomadInfo.hasDigitalNomadVisa === criteria.digitalNomadVisa
+        country =>
+          country.digitalNomadInfo.hasDigitalNomadVisa ===
+          criteria.digitalNomadVisa
       );
     }
 
     if (criteria.maxCostOfLiving !== undefined) {
       results = results.filter(
-        country => country.digitalNomadInfo.costOfLiving <= criteria.maxCostOfLiving
+        country =>
+          country.digitalNomadInfo.costOfLiving <= criteria.maxCostOfLiving
       );
     }
 
     if (criteria.minInternetQuality !== undefined) {
       results = results.filter(
-        country => country.digitalNomadInfo.internetQuality >= criteria.minInternetQuality
+        country =>
+          country.digitalNomadInfo.internetQuality >=
+          criteria.minInternetQuality
       );
     }
 
@@ -781,33 +794,38 @@ export class VisaDatabase {
    */
   getDigitalNomadRanking(): Array<VisaRequirement & { score: number }> {
     const countries = Array.from(this.database.values());
-    
-    return countries.map(country => {
-      let score = 0;
-      
-      // Digital nomad visa bonus
-      if (country.digitalNomadInfo.hasDigitalNomadVisa) score += 30;
-      
-      // Internet quality (0-25 points)
-      score += country.digitalNomadInfo.internetQuality * 5;
-      
-      // Cost of living (lower is better, 0-20 points)
-      score += (6 - country.digitalNomadInfo.costOfLiving) * 4;
-      
-      // Coworking spaces (0-15 points)
-      const coworkingPoints = {
-        abundant: 15,
-        moderate: 10,
-        limited: 5,
-        rare: 0
-      };
-      score += coworkingPoints[country.digitalNomadInfo.coworkingSpaces];
-      
-      // Popular cities bonus (0-10 points)
-      score += Math.min(country.digitalNomadInfo.popularCities.length * 2, 10);
 
-      return { ...country, score };
-    }).sort((a, b) => b.score - a.score);
+    return countries
+      .map(country => {
+        let score = 0;
+
+        // Digital nomad visa bonus
+        if (country.digitalNomadInfo.hasDigitalNomadVisa) score += 30;
+
+        // Internet quality (0-25 points)
+        score += country.digitalNomadInfo.internetQuality * 5;
+
+        // Cost of living (lower is better, 0-20 points)
+        score += (6 - country.digitalNomadInfo.costOfLiving) * 4;
+
+        // Coworking spaces (0-15 points)
+        const coworkingPoints = {
+          abundant: 15,
+          moderate: 10,
+          limited: 5,
+          rare: 0,
+        };
+        score += coworkingPoints[country.digitalNomadInfo.coworkingSpaces];
+
+        // Popular cities bonus (0-10 points)
+        score += Math.min(
+          country.digitalNomadInfo.popularCities.length * 2,
+          10
+        );
+
+        return { ...country, score };
+      })
+      .sort((a, b) => b.score - a.score);
   }
 
   /**
@@ -815,15 +833,23 @@ export class VisaDatabase {
    */
   getStats() {
     const countries = Array.from(this.database.values());
-    
+
     return {
       totalCountries: countries.length,
       schengenCountries: countries.filter(c => c.schengenMember).length,
       euCountries: countries.filter(c => c.euMember).length,
-      digitalNomadVisas: countries.filter(c => c.digitalNomadInfo.hasDigitalNomadVisa).length,
-      averageInternetQuality: countries.reduce((sum, c) => sum + c.digitalNomadInfo.internetQuality, 0) / countries.length,
-      averageCostOfLiving: countries.reduce((sum, c) => sum + c.digitalNomadInfo.costOfLiving, 0) / countries.length,
-      lastUpdated: new Date().toISOString()
+      digitalNomadVisas: countries.filter(
+        c => c.digitalNomadInfo.hasDigitalNomadVisa
+      ).length,
+      averageInternetQuality:
+        countries.reduce(
+          (sum, c) => sum + c.digitalNomadInfo.internetQuality,
+          0
+        ) / countries.length,
+      averageCostOfLiving:
+        countries.reduce((sum, c) => sum + c.digitalNomadInfo.costOfLiving, 0) /
+        countries.length,
+      lastUpdated: new Date().toISOString(),
     };
   }
 

@@ -126,7 +126,7 @@ export function useOffline() {
 
   // 백그라운드 동기화 요청
   const requestBackgroundSync = useCallback(async () => {
-    if ('serviceWorker' in navigator && 'registration' in self && self.registration && 'sync' in self.registration) {
+    if ('serviceWorker' in navigator && typeof self !== 'undefined' && 'registration' in self && self.registration && 'sync' in (self.registration as any)) {
       try {
         await (self.registration as any).sync.register('background-sync')
         toast.info('백그라운드 동기화가 예약되었습니다')

@@ -179,7 +179,7 @@ export function handleError(error: unknown, requestId?: string): NextResponse {
   
   // Zod validation error
   if (error instanceof ZodError) {
-    const validationErrors = error.errors.reduce((acc, curr) => {
+    const validationErrors = (error as any).errors.reduce((acc: Record<string, string>, curr: any) => {
       const path = curr.path.join('.')
       acc[path] = curr.message
       return acc

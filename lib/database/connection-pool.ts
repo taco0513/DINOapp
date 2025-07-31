@@ -50,9 +50,11 @@ class DatabaseConnectionPool {
     const isSQLite = databaseUrl.includes('sqlite') || databaseUrl.startsWith('file:')
     
     // Development 환경에서는 글로벌 클라이언트 재사용
+    const globalWithPrisma = global as typeof globalThis & { __prisma?: PrismaClient }
+    
     if (process.env.NODE_ENV !== 'production') {
-      if (!global.__prisma) {
-        global.__prisma = new PrismaClient({
+      if (!globalWithPrisma.__prisma) {
+        globalWithPrisma.__prisma = new PrismaClient({
           log: ['error', 'warn'],
           datasources: {
             db: {
@@ -61,7 +63,7 @@ class DatabaseConnectionPool {
           }
         })
       }
-      return global.__prisma
+      return globalWithPrisma.__prisma
     }
 
     // Production 환경을 위한 최적화된 클라이언트

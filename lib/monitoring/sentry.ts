@@ -24,10 +24,10 @@ export function initSentry() {
     // 통합 설정
     integrations: [
       // HTTP 요청 추적
-      new Sentry.Integrations.Http({ tracing: true }),
+      // new Sentry.Integrations.Http({ tracing: true }),
       
       // Prisma 쿼리 추적
-      new Sentry.Integrations.Prisma({ client: true }),
+      // new Sentry.Integrations.Prisma({ client: true }),
     ],
     
     // 에러 필터링
@@ -96,7 +96,11 @@ export function captureMessage(message: string, level: Sentry.SeverityLevel = 'i
 
 // 성능 추적
 export function startTransaction(name: string, op: string) {
-  return Sentry.startTransaction({ name, op })
+  // @ts-ignore - startTransaction might not be available in all versions
+  if (typeof Sentry.startTransaction === 'function') {
+    return Sentry.startTransaction({ name, op })
+  }
+  return null
 }
 
 // 브레드크럼 추가

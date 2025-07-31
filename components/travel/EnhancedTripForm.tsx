@@ -451,7 +451,7 @@ export function EnhancedTripForm({
           )}
           <Button
             type='submit'
-            disabled={isSubmitting || (validation && !validation.canTravel)}
+            disabled={isSubmitting || (validation ? !validation.canTravel : false)}
           >
             {isSubmitting ? '저장 중...' : submitLabel}
           </Button>

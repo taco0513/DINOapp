@@ -9,7 +9,7 @@ interface VisaRequirement {
 
 // 간단한 비자 요구사항 데이터베이스 (실제로는 더 복잡)
 // 한국 여권 기준 주요 국가들
-const VISA_REQUIREMENTS: Record<PassportCountry, Record<string, VisaRequirement>> = {
+const VISA_REQUIREMENTS: Record<string, Record<string, VisaRequirement>> = {
   KR: {
     // 무비자 국가들
     US: { visaRequired: false, visaType: 'ESTA', maxStayDays: 90, notes: 'ESTA 사전 신청 필요 ($21)' },

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getDbHealth, isDbHealthy } from '@/lib/database/connection-manager'
 import { checkDatabaseHealth } from '@/lib/database/prisma-client'
 import { asyncHandler } from '@/lib/error/error-handler'

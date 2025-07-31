@@ -298,8 +298,7 @@ export class OptimizedQueries {
     const startTime = Date.now()
     
     const result = await prisma.countryVisit.createMany({
-      data: visits,
-      skipDuplicates: true
+      data: visits
     })
 
     const duration = Date.now() - startTime
@@ -457,31 +456,31 @@ export const dbConnectionPool = DatabaseConnectionPool.getInstance()
 
 // Performance middleware for API routes
 export function createDatabasePerformanceMiddleware() {
-  return (req: any, res: any, next: any) => {
-    const originalQuery = PrismaClient.prototype.$queryRaw
-    const startTime = Date.now()
+  return (_req: any, _res: any, _next: any) => {
+    // const originalQuery = PrismaClient.prototype.$queryRaw
+    // const startTime = Date.now()
     
     // Override query method to track performance
-    const trackQuery = function(this: any, query: any, ...args: any[]) {
-      const queryStartTime = Date.now()
-      const result = originalQuery.call(this, query, ...args)
-      
-      if (result instanceof Promise) {
-        result.then(() => {
-          const duration = Date.now() - queryStartTime
-          dbPerformanceMonitor.trackQuery(query.toString(), duration)
-        })
-      }
-      
-      return result
-    }
+    // const trackQuery = function(this: any, query: any, ...args: any[]) {
+    //   const queryStartTime = Date.now()
+    //   const result = originalQuery.call(this, query, ...args)
+    //   
+    //   if (result instanceof Promise) {
+    //     result.then(() => {
+    //       const duration = Date.now() - queryStartTime
+    //       dbPerformanceMonitor.trackQuery(query.toString(), duration)
+    //     })
+    //   }
+    //   
+    //   return result
+    // }
     
     // Restore original method after request
-    res.on('finish', () => {
-      PrismaClient.prototype.$queryRaw = originalQuery
-    })
+    // res.on('finish', () => {
+    //   PrismaClient.prototype.$queryRaw = originalQuery
+    // })
     
-    next()
+    // next()
   }
 }
 

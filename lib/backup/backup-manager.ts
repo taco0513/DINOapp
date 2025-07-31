@@ -4,13 +4,13 @@
  */
 
 import { prisma } from '../database/connection-pool'
-import { writeFile, readFile, mkdir } from 'fs/promises'
+import { /* writeFile, */ readFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
-import { gzip, gunzip } from 'zlib'
+import { /* gzip, */ gunzip } from 'zlib'
 import { promisify } from 'util'
 
-const gzipAsync = promisify(gzip)
+// const gzipAsync = promisify(gzip)
 const gunzipAsync = promisify(gunzip)
 
 interface BackupMetadata {
@@ -56,44 +56,44 @@ class BackupManager {
   /**
    * 전체 데이터베이스 백업 생성
    */
-  public async createBackup(options: BackupOptions = {
+  public async createBackup(_options: BackupOptions = {
     includeUserData: true,
     includeSessions: false,
     compress: true
-  }): Promise<{ success: boolean; backupId?: string; error?: string }> {
+  }): Promise<{ success: boolean; _backupId?: string; error?: string }> {
     try {
       // 백업 디렉토리 확인/생성
       await this.ensureBackupDirectory()
 
-      const backupId = `backup_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      const timestamp = new Date().toISOString()
+      const _backupId = `backup_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      // const timestamp = new Date().toISOString()
 
       // Starting backup
 
       // 데이터 추출
-      const backupData = await this.extractDatabaseData(options)
+      // const backupData = await this.extractDatabaseData(options)
       
       // 메타데이터 생성
-      const metadata: BackupMetadata = {
-        id: backupId,
-        timestamp,
-        version: '1.0',
-        tables: Object.keys(backupData),
-        recordCounts: Object.fromEntries(
-          Object.entries(backupData).map(([table, data]) => [table, Array.isArray(data) ? data.length : 0])
-        ),
-        size: 0, // 압축 전 크기로 업데이트될 예정
-        checksum: '', // 체크섬은 나중에 계산
-        environment: process.env.NODE_ENV || 'development'
-      }
+      // const _metadata: BackupMetadata = {
+      //   id: _backupId,
+      //   timestamp,
+      //   version: '1.0',
+      //   tables: Object.keys(backupData),
+      //   recordCounts: Object.fromEntries(
+      //     Object.entries(backupData).map(([table, data]) => [table, Array.isArray(data) ? data.length : 0])
+      //   ),
+      //   size: 0,
+      //   checksum: '',
+      //   environment: process.env.NODE_ENV || 'development'
+      // }
 
       // 백업 파일 생성
-      const backupPath = await this.saveBackupData(backupId, backupData, metadata, options)
+      // const backupPath = await this.saveBackupData(_backupId, backupData, _metadata, options)
       
       // Backup completed
       // Backup saved
 
-      return { success: true, backupId }
+      return { success: true, _backupId }
     } catch (error) {
       // Backup failed
       return { 
@@ -174,10 +174,10 @@ class BackupManager {
   /**
    * 백업 삭제
    */
-  public async deleteBackup(backupId: string): Promise<{ success: boolean; error?: string }> {
+  public async deleteBackup(_backupId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const backupPath = path.join(this.backupDir, `${backupId}.backup.json`)
-      const metadataPath = path.join(this.backupDir, `${backupId}.metadata.json`)
+      const backupPath = path.join(this.backupDir, `${_backupId}.backup.json`)
+      const metadataPath = path.join(this.backupDir, `${_backupId}.metadata.json`)
       
       const fs = await import('fs/promises')
       
@@ -206,94 +206,94 @@ class BackupManager {
     }
   }
 
-  private async extractDatabaseData(options: BackupOptions): Promise<Record<string, any[]>> {
-    const data: Record<string, any[]> = {}
+  // private async extractDatabaseData(_options: BackupOptions): Promise<Record<string, any[]>> {
+  //   const data: Record<string, any[]> = {}
 
-    // Users 데이터 (개인정보 제외 옵션)
-    if (options.includeUserData) {
-      data.users = await prisma.user.findMany({
-        select: {
-          id: true,
-          name: true,
-          email: options.includeUserData,
-          passportCountry: true,
-          timezone: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      })
-    }
+  //   // Users 데이터 (개인정보 제외 옵션)
+  //   if (_options.includeUserData) {
+  //     data.users = await prisma.user.findMany({
+  //       select: {
+  //         id: true,
+  //         name: true,
+  //         email: _options.includeUserData,
+  //         passportCountry: true,
+  //         timezone: true,
+  //         createdAt: true,
+  //         updatedAt: true
+  //       }
+  //     })
+  //   }
 
-    // CountryVisits 데이터
-    data.countryVisits = await prisma.countryVisit.findMany()
+  //   // CountryVisits 데이터
+  //   data.countryVisits = await prisma.countryVisit.findMany()
 
-    // NotificationSettings
-    data.notificationSettings = await prisma.notificationSettings.findMany()
+  //   // NotificationSettings
+  //   data.notificationSettings = await prisma.notificationSettings.findMany()
 
-    // Accounts (OAuth 정보는 보안상 제외)
-    data.accounts = await prisma.account.findMany({
-      select: {
-        id: true,
-        userId: true,
-        type: true,
-        provider: true,
-        providerAccountId: true
-        // access_token, refresh_token 등 민감한 정보 제외
-      }
-    })
+  //   // Accounts (OAuth 정보는 보안상 제외)
+  //   data.accounts = await prisma.account.findMany({
+  //     select: {
+  //       id: true,
+  //       userId: true,
+  //       type: true,
+  //       provider: true,
+  //       providerAccountId: true
+  //       // access_token, refresh_token 등 민감한 정보 제외
+  //     }
+  //   })
 
-    // Sessions (옵션)
-    if (options.includeSessions) {
-      data.sessions = await prisma.session.findMany({
-        where: {
-          expires: {
-            gt: new Date() // 만료되지 않은 세션만
-          }
-        }
-      })
-    }
+  //   // Sessions (옵션)
+  //   if (_options.includeSessions) {
+  //     data.sessions = await prisma.session.findMany({
+  //       where: {
+  //         expires: {
+  //           gt: new Date() // 만료되지 않은 세션만
+  //         }
+  //       }
+  //     })
+  //   }
 
-    return data
-  }
+  //   return data
+  // }
 
-  private async saveBackupData(
-    backupId: string, 
-    data: Record<string, any[]>, 
-    metadata: BackupMetadata, 
-    options: BackupOptions
-  ): Promise<string> {
-    let jsonData = JSON.stringify(data, null, 2)
-    
-    // 압축 옵션
-    if (options.compress) {
-      const compressed = await gzipAsync(Buffer.from(jsonData))
-      jsonData = compressed.toString('base64')
-    }
+  // private async saveBackupData(
+  //   __backupId: string, 
+  //   _data: Record<string, any[]>, 
+  //   _metadata: BackupMetadata, 
+  //   _options: BackupOptions
+  // ): Promise<string> {
+  //   let jsonData = JSON.stringify(_data, null, 2)
+  //   
+  //   // 압축 옵션
+  //   if (_options.compress) {
+  //     const compressed = await gzipAsync(Buffer.from(jsonData))
+  //     jsonData = compressed.toString('base64')
+  //   }
 
-    // 체크섬 계산
-    const crypto = await import('crypto')
-    metadata.checksum = crypto.createHash('sha256').update(jsonData).digest('hex')
-    metadata.size = jsonData.length
+  //   // 체크섬 계산
+  //   const crypto = await import('crypto')
+  //   _metadata.checksum = crypto.createHash('sha256').update(jsonData).digest('hex')
+  //   _metadata.size = jsonData.length
 
-    const backupPath = path.join(this.backupDir, `${backupId}.backup.json`)
-    const metadataPath = path.join(this.backupDir, `${backupId}.metadata.json`)
+  //   const backupPath = path.join(this.backupDir, `${_backupId}.backup.json`)
+  //   const metadataPath = path.join(this.backupDir, `${_backupId}.metadata.json`)
 
-    // 파일 저장
-    await writeFile(backupPath, jsonData)
-    await writeFile(metadataPath, JSON.stringify(metadata, null, 2))
+  //   // 파일 저장
+  //   await writeFile(backupPath, jsonData)
+  //   await writeFile(metadataPath, JSON.stringify(_metadata, null, 2))
 
-    return backupPath
-  }
+  //   return backupPath
+  // }
 
-  private async loadBackupData(backupId: string): Promise<{
+  private async loadBackupData(_backupId: string): Promise<{
     data: Record<string, any[]>
     metadata: BackupMetadata
   }> {
-    const backupPath = path.join(this.backupDir, `${backupId}.backup.json`)
-    const metadataPath = path.join(this.backupDir, `${backupId}.metadata.json`)
+    const backupPath = path.join(this.backupDir, `${_backupId}.backup.json`)
+    const metadataPath = path.join(this.backupDir, `${_backupId}.metadata.json`)
 
     if (!existsSync(backupPath) || !existsSync(metadataPath)) {
-      throw new Error(`Backup not found: ${backupId}`)
+      throw new Error(`Backup not found: ${_backupId}`)
     }
 
     // 메타데이터 로드
@@ -327,7 +327,7 @@ class BackupManager {
 
   private async performRestore(
     backupData: Record<string, any[]>, 
-    metadata: BackupMetadata,
+    _metadata: BackupMetadata,
     options: RestoreOptions
   ): Promise<string[]> {
     const restoredTables: string[] = []

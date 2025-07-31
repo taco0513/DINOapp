@@ -284,9 +284,9 @@ export class MonitoringAPI {
         const lcp =
           paint.find(entry => entry.name === 'largest-contentful-paint')
             ?.startTime || 0;
-        const fcp =
-          paint.find(entry => entry.name === 'first-contentful-paint')
-            ?.startTime || 0;
+        // const fcp =
+        //   paint.find(entry => entry.name === 'first-contentful-paint')
+        //     ?.startTime || 0;
 
         return {
           responseTime: {
@@ -360,7 +360,7 @@ export class MonitoringAPI {
       // const analytics = await googleAnalytics.getRealtimeData()
 
       // 현재는 시뮬레이션된 실제적인 데이터 반환
-      const now = new Date();
+      // const now = new Date();
       const baseStats = {
         totalUsers: 1247, // 실제 데이터베이스에서 가져올 값
         activeToday: 89, // 오늘 활성 사용자
@@ -475,8 +475,8 @@ export class MonitoringAPI {
       // const analyticsData = await googleAnalytics.getEvents()
 
       // 시뮬레이션된 실제적인 기능 사용량 데이터
-      const today = new Date();
-      const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      // const today = new Date();
+      // const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
       return {
         schengenCalculator: {

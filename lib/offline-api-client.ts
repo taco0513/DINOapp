@@ -138,8 +138,8 @@ export class OfflineApiClient {
         id: tempId,
         ...data,
         userId: userId || 'unknown',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         _isTemporary: true,
       };
 

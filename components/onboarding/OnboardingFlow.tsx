@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import {
   CheckCircle,
   MapPin,
@@ -37,7 +37,7 @@ interface OnboardingProgress {
 
 export default function OnboardingFlow() {
   const {} = useSession();
-  const router = useRouter();
+  // const router = useRouter();
   const [progress, setProgress] = useState<OnboardingProgress>({
     currentStep: 0,
     completedSteps: [],
@@ -120,25 +120,25 @@ export default function OnboardingFlow() {
     }
   };
 
-  const _handleComplete = async () => {
-    try {
-      // 온보딩 완료 상태 저장
-      await fetch('/api/user/onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          completed: true,
-          profile: progress.userProfile,
-          completedAt: new Date().toISOString(),
-        }),
-      });
+  // const _handleComplete = async () => {
+  //   try {
+  //     // 온보딩 완료 상태 저장
+  //     await fetch('/api/user/onboarding', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         completed: true,
+  //         profile: progress.userProfile,
+  //         completedAt: new Date().toISOString(),
+  //       }),
+  //     });
 
-      // 대시보드로 리다이렉트
-      router.push('/dashboard?welcome=true');
-    } catch (error) {
-      console.error('온보딩 완료 처리 실패:', error);
-    }
-  };
+  //     // 대시보드로 리다이렉트
+  //     router.push('/dashboard?welcome=true');
+  //   } catch (error) {
+  //     console.error('온보딩 완료 처리 실패:', error);
+  //   }
+  // };
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4'>

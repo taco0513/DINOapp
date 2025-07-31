@@ -256,13 +256,13 @@ export async function applyRateLimit(
 
 // 보안 로깅
 export function logSecurityEvent(
-  req: NextRequest,
-  event: 'rate_limit_exceeded' | 'suspicious_activity' | 'blocked_request',
-  details?: Record<string, any>
+  _req: NextRequest,
+  _event: 'rate_limit_exceeded' | 'suspicious_activity' | 'blocked_request',
+  _details?: Record<string, any>
 ) {
-  const clientId = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
-  const userAgent = req.headers.get('user-agent') || 'unknown'
-  const timestamp = new Date().toISOString()
+  // const clientId = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
+  // const userAgent = req.headers.get('user-agent') || 'unknown'
+  // const timestamp = new Date().toISOString()
 
   // Security event logged
 

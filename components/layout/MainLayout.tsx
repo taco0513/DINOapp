@@ -1,7 +1,7 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+// import { useSession } from 'next-auth/react';
+// import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
@@ -12,8 +12,8 @@ interface MainLayoutProps {
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
-  const { data: _session } = useSession();
-  const _pathname = usePathname();
+  // const { data: _session } = useSession();
+  // const _pathname = usePathname();
 
   // const _isLandingPage = _pathname === '/';
   // const _isAuthenticatedArea = _session && _pathname !== '/';

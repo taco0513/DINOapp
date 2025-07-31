@@ -10,7 +10,7 @@ export async function metricsMiddleware(
   request: NextRequest,
   response: NextResponse
 ): Promise<NextResponse> {
-  const { pathname, searchParams } = request.nextUrl
+  const { pathname /* , searchParams */ } = request.nextUrl
   const method = request.method
   
   // Start timing

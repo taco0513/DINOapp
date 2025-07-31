@@ -206,7 +206,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         <div className='flex items-center justify-between mb-4'>
           {[1, 2, 3, 4].map(step => {
             const status = getStepStatus(step);
-            const stepValid = isStepValid(step);
+            // const stepValid = isStepValid(step);
 
             return (
               <div key={step} className='flex items-center'>

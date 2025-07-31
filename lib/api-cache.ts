@@ -207,8 +207,8 @@ export function withCache<T extends any[], R>(
   ttl?: number
 ) {
   return function (
-    target: any,
-    propertyName: string,
+    _target: any,
+    _propertyName: string,
     descriptor: PropertyDescriptor
   ) {
     const method = descriptor.value;

@@ -181,7 +181,7 @@ export class Logger {
     this.buffer = []
   }
 
-  private async sendLogs(logs: LogEntry[]): Promise<void> {
+  private async sendLogs(_logs: LogEntry[]): Promise<void> {
     try {
       // Implement sending to logging service
       // await fetch(process.env.LOG_ENDPOINT, {
@@ -208,7 +208,7 @@ export const loggers = {
 
 // Request logger middleware helper
 export function createRequestLogger(logger: Logger) {
-  return (req: Request, context?: any) => {
+  return (req: Request, _context?: any) => {
     const requestId = crypto.randomUUID()
     const start = Date.now()
     

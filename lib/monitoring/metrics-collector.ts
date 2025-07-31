@@ -263,13 +263,13 @@ export class MetricsCollector {
   }
 
   // Get metrics history (required by monitoring route)
-  getMetricsHistory(count: number): SystemMetrics[] {
+  getMetricsHistory(_count: number): SystemMetrics[] {
     // Return empty array for now - would implement proper history storage
     return []
   }
 
   // Get average metrics (required by monitoring route)
-  getAverageMetrics(timeRangeMs: number): Partial<SystemMetrics> {
+  getAverageMetrics(_timeRangeMs: number): Partial<SystemMetrics> {
     // Return empty object for now - would implement proper averaging
     return {}
   }
@@ -317,12 +317,12 @@ export const httpMetrics = {
 
 export const dbMetrics = {
   queryStart: (operation: string, model?: string) => {
-    metrics.increment('db.queries.total', 1, { operation, model })
-    return metrics.timer('db.query', { operation, model })
+    metrics.increment('db.queries.total', 1, { operation, model: model || 'unknown' })
+    return metrics.timer('db.query', { operation, model: model || 'unknown' })
   },
 
   queryError: (operation: string, model?: string, error?: string) => {
-    metrics.increment('db.errors.total', 1, { operation, model, error })
+    metrics.increment('db.errors.total', 1, { operation, model: model || 'unknown', error: error || 'unknown' })
   },
 
   connectionPoolSize: (size: number) => {

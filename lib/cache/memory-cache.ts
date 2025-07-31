@@ -406,11 +406,11 @@ export class CacheManager {
       // If still high pressure, remove oldest items
       if (pressure === 'Critical' && cleanedCount < 10) {
         const items = Array.from(cache.cache.entries())
-          .sort(([, a], [, b]) => a.created - b.created)
-          .slice(0, Math.min(20, items.length / 2));
+          .sort((a: any, b: any) => a[1].created - b[1].created)
+          .slice(0, Math.min(20, cache.cache.size / 2));
 
-        items.forEach(([key]) => {
-          cache.delete(key);
+        items.forEach((item: any) => {
+          cache.delete(item[0]);
           cleanedCount++;
         });
       }

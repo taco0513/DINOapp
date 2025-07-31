@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 interface PerformanceMetrics {
   // Core Web Vitals
@@ -30,7 +30,7 @@ export default function PerformanceMonitor({
   reportInterval = 30000, // 30 seconds
   debug = false,
 }: PerformanceMonitorProps) {
-  const _router = useRouter();
+  // const _router = useRouter();
   const [metrics, setMetrics] = useState<PerformanceMetrics>({});
   const [isSupported, setIsSupported] = useState(false);
   const observerRef = useRef<PerformanceObserver | null>(null);

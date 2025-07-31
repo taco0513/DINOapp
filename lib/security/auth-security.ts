@@ -5,8 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
-import { createHash, randomBytes } from 'crypto'
-import { headers } from 'next/headers'
+import { createHash /* , randomBytes */ } from 'crypto'
+// import { headers } from 'next/headers'
 
 // CSRF Token Management
 export class CSRFProtection {

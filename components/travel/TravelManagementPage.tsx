@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { TravelInsightsDashboard } from './TravelInsightsDashboard'
 import { EnhancedTripForm } from './EnhancedTripForm'
 import { CountryVisit } from '@/types/database'
@@ -279,7 +279,10 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
                         <div>
                           <span className="text-gray-600">체류 기간:</span>
                           <p className="font-medium">
-                            {calculateDuration(trip.entryDate, trip.exitDate)}
+                            {calculateDuration(
+                              typeof trip.entryDate === 'string' ? trip.entryDate : trip.entryDate.toISOString(),
+                              trip.exitDate ? (typeof trip.exitDate === 'string' ? trip.exitDate : trip.exitDate.toISOString()) : null
+                            )}
                           </p>
                         </div>
                         

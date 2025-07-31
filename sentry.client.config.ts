@@ -19,20 +19,27 @@ if (SENTRY_DSN) {
     
     // 통합 설정
     integrations: [
-      new Sentry.BrowserTracing({
-        // Next.js 라우팅 추적
-        routingInstrumentation: Sentry.nextRouterInstrumentation,
-      }),
-      new Sentry.Replay({
-        // 마스킹 설정
-        maskAllText: true,
-        maskAllInputs: true,
-        blockAllMedia: true,
-      }),
+      // @ts-ignore - BrowserTracing might not be available in all versions
+      ...(Sentry.BrowserTracing ? [
+        new Sentry.BrowserTracing({
+          // Next.js 라우팅 추적
+          // @ts-ignore
+          routingInstrumentation: Sentry.nextRouterInstrumentation || undefined,
+        })
+      ] : []),
+      // @ts-ignore - Replay might not be available in all versions
+      ...(Sentry.Replay ? [
+        new Sentry.Replay({
+          // 마스킹 설정
+          maskAllText: true,
+          maskAllInputs: true,
+          blockAllMedia: true,
+        })
+      ] : []),
     ],
     
     // 에러 필터링
-    beforeSend(event, hint) {
+    beforeSend(event, _hint) {
       // 브라우저 확장 프로그램 에러 무시
       if (event.exception?.values?.[0]?.stacktrace?.frames?.some(
         frame => frame.filename?.includes('chrome-extension://')

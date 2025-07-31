@@ -157,7 +157,7 @@ export function handleApiError(
   return createErrorResponse(
     defaultCode,
     'An unexpected error occurred',
-    process.env.NODE_ENV === 'development' ? error : undefined,
+    process.env.NODE_ENV === 'development' ? String(error) : undefined,
     requestId
   )
 }

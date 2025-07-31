@@ -233,7 +233,7 @@ export class AuthMiddleware {
   }
 
   // 의심스러운 활동 감지
-  static detectSuspiciousActivity(req: NextRequest, context?: AuthContext): {
+  static detectSuspiciousActivity(req: NextRequest, _context?: AuthContext): {
     suspicious: boolean
     reasons: string[]
   } {

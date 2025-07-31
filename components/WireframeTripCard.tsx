@@ -31,7 +31,7 @@ export default function WireframeTripCard({ trip, onEdit, onDelete }: WireframeT
           </p>
           <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
             <span 
-              className={`badge ${trip.visaType === 'schengen' ? 'badge-success' : ''}`}
+              className={`badge ${trip.visaType === 'Tourist' ? 'badge-success' : ''}`}
               style={{ 
                 padding: 'var(--space-1) var(--space-2)', 
                 fontSize: 'var(--text-xs)' 

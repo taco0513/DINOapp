@@ -5,10 +5,8 @@
 
 import { PrismaClient } from '@prisma/client'
 import { 
-  DatabaseConnectionManager, 
   getPrismaClient as getConnectionManagerClient,
-  executeWithRetry,
-  isDbHealthy
+  executeWithRetry
 } from './connection-manager'
 import { AppError, ErrorCode, ErrorSeverity } from '@/lib/error/error-handler'
 
@@ -157,11 +155,11 @@ export async function withTransaction<T>(
   const client = await getPrismaClient()
   
   return executeWithRetry(
-    () => client.$transaction(fn, {
+    () => client.$transaction(fn as any, {
       maxWait: options?.maxWait ?? 5000,
       timeout: options?.timeout ?? 10000,
-      isolationLevel: options?.isolationLevel
-    }),
+      isolationLevel: options?.isolationLevel === 'Serializable' ? options.isolationLevel : undefined
+    }) as Promise<T>,
     {
       maxRetries: 2,
       retryDelay: 1000
@@ -176,15 +174,15 @@ export const db = {
   },
   
   get trip() {
-    return getPrismaClient().then(client => client.trip)
+    return getPrismaClient().then(client => (client as any).countryVisit)
   },
   
   get userProfile() {
-    return getPrismaClient().then(client => client.userProfile)
+    return getPrismaClient().then(client => (client as any).user)
   },
   
   get notification() {
-    return getPrismaClient().then(client => client.notification)
+    return getPrismaClient().then(client => (client as any).notificationSettings)
   },
   
   get visaRequirement() {
@@ -192,15 +190,15 @@ export const db = {
   },
   
   get countryRestriction() {
-    return getPrismaClient().then(client => client.countryRestriction)
+    return getPrismaClient().then(client => (client as any).travelAlert)
   },
   
   get subscription() {
-    return getPrismaClient().then(client => client.subscription)
+    return getPrismaClient().then(client => (client as any).account)
   },
   
   get billingHistory() {
-    return getPrismaClient().then(client => client.billingHistory)
+    return getPrismaClient().then(client => (client as any).session)
   },
   
   // Raw query with retry

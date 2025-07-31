@@ -20,14 +20,14 @@ const ALLOWED_ORIGINS = [
 const RATE_LIMIT_MAP = new Map();
 
 // Enhanced rate limit configurations
-const _RATE_LIMITS = {
-  general: { requests: 100, windowMs: 60000 }, // 100 requests per minute
-  auth: { requests: 10, windowMs: 900000 }, // 10 auth attempts per 15 minutes
-  mutation: { requests: 50, windowMs: 60000 }, // 50 mutations per minute
-};
+// const _RATE_LIMITS = {
+//   general: { requests: 100, windowMs: 60000 }, // 100 requests per minute
+//   auth: { requests: 10, windowMs: 900000 }, // 10 auth attempts per 15 minutes
+//   mutation: { requests: 50, windowMs: 60000 }, // 50 mutations per minute
+// };
 
 export async function middleware(request: NextRequest) {
-  const start = Date.now();
+  // const start = Date.now();
   let response = NextResponse.next();
   const { pathname } = request.nextUrl;
   const method = request.method;
@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
   });
   
   if (recoveryResponse) {
-    const duration = Date.now() - start;
+    // const duration = Date.now() - start;
     httpMetrics.requestEnd(method, pathname, 503);
     // TODO: Add histogram metric when implemented in httpMetrics
     httpMetrics.requestError(method, pathname, 'recovery-middleware');
@@ -76,7 +76,7 @@ export async function middleware(request: NextRequest) {
     // Apply rate limiting for API routes
     const rateLimitResult = await applyRateLimit(request);
     if (!rateLimitResult.allowed) {
-      const duration = Date.now() - start;
+      // const duration = Date.now() - start;
       httpMetrics.requestEnd(method, pathname, 429);
       // TODO: Add histogram and increment metrics when implemented in httpMetrics
       return new NextResponse('Too Many Requests', {
@@ -105,7 +105,7 @@ export async function middleware(request: NextRequest) {
   // Skip authentication check for auth pages and logout
   if (pathname.startsWith('/auth/') || pathname === '/logout') {
     // Record metrics before returning
-    const duration = Date.now() - start;
+    // const duration = Date.now() - start;
     httpMetrics.requestEnd(method, pathname, 200);
     // TODO: Add histogram metric when implemented in httpMetrics
     return response;
@@ -132,7 +132,7 @@ export async function middleware(request: NextRequest) {
         // No token, redirecting to signin
         const url = new URL('/auth/signin', request.url);
         url.searchParams.set('callbackUrl', encodeURIComponent(request.url));
-        const duration = Date.now() - start;
+        // const duration = Date.now() - start;
         httpMetrics.requestEnd(method, pathname, 302);
         // TODO: Add histogram metric when implemented in httpMetrics
         return NextResponse.redirect(url);
@@ -141,7 +141,7 @@ export async function middleware(request: NextRequest) {
       // Error checking token
       const url = new URL('/auth/signin', request.url);
       url.searchParams.set('callbackUrl', encodeURIComponent(request.url));
-      const duration = Date.now() - start;
+      // const duration = Date.now() - start;
       httpMetrics.requestEnd(method, pathname, 302);
       // TODO: Add histogram metric when implemented in httpMetrics
       httpMetrics.requestError(method, pathname, 'auth-token-error');
@@ -159,7 +159,7 @@ export async function middleware(request: NextRequest) {
   // }
 
   // Record metrics for successful requests
-  const duration = Date.now() - start;
+  // const duration = Date.now() - start;
   httpMetrics.requestEnd(method, pathname, 200);
   // TODO: Add histogram metric when implemented in httpMetrics
   

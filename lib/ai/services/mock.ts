@@ -91,7 +91,7 @@ function processData(input) {
     };
   }
 
-  async analyzeTravel(tripData: any): Promise<TravelAnalysis> {
+  async analyzeTravel(_tripData: any): Promise<TravelAnalysis> {
     return {
       recommendations: [
         {
@@ -122,7 +122,7 @@ function processData(input) {
     };
   }
 
-  protected calculateCost(inputTokens: number, outputTokens: number): number {
+  protected override calculateCost(_inputTokens: number, _outputTokens: number): number {
     // Mock 서비스는 무료
     return 0;
   }

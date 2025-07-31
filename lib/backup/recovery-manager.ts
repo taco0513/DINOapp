@@ -3,8 +3,11 @@
  * Coordinates backup and recovery operations
  */
 
-import { dbBackupManager, DatabaseBackupManager } from './database-backup'
-import { fileBackupManager, FileBackupManager } from './file-backup'
+import { _dbBackupManager, DatabaseBackupManager } from './database-backup'
+import { FileBackupManager } from './file-backup'
+
+// Create file backup manager instance
+const fileBackupManager = new FileBackupManager()
 import { loggers } from '@/lib/monitoring/logger'
 import { metrics } from '@/lib/monitoring/metrics-collector'
 import { systemAlert } from '@/lib/notifications/alert-manager'
@@ -57,7 +60,7 @@ export class DisasterRecoveryManager {
   private recoveryPlans: Map<RecoveryScenario, RecoveryPlan>
 
   constructor() {
-    this.dbBackup = dbBackupManager
+    this.dbBackup = new DatabaseBackupManager()
     this.fileBackup = fileBackupManager
     this.recoveryPlans = new Map()
     this.initializeRecoveryPlans()
@@ -207,13 +210,11 @@ export class DisasterRecoveryManager {
     logger.info('Starting disaster recovery', { scenario })
     
     // Send alert
-    await systemAlert.sendAlert({
-      type: 'RECOVERY_STARTED',
-      severity: 'critical',
-      title: `Disaster Recovery Started: ${scenario}`,
-      message: `Recovery process initiated for scenario: ${scenario}`,
-      metadata: { scenario, startTime: startTime.toISOString() }
-    })
+    await systemAlert.error(
+      `Disaster Recovery Started: ${scenario}`,
+      'recovery-manager',
+      { scenario, startTime: startTime.toISOString() }
+    )
 
     const plan = this.recoveryPlans.get(scenario)
     if (!plan) {
@@ -310,13 +311,19 @@ export class DisasterRecoveryManager {
       }
 
       // Send completion alert
-      await systemAlert.sendAlert({
-        type: result.success ? 'RECOVERY_COMPLETED' : 'RECOVERY_FAILED',
-        severity: result.success ? 'info' : 'critical',
-        title: `Recovery ${result.success ? 'Completed' : 'Failed'}: ${scenario}`,
-        message: `Recovery process ${result.success ? 'completed successfully' : 'failed'} after ${Math.round(result.duration / 60000)} minutes`,
-        metadata: result
-      })
+      if (result.success) {
+        await systemAlert.backup(
+          'success',
+          undefined,
+          `Recovery completed: ${scenario}`
+        )
+      } else {
+        await systemAlert.error(
+          `Recovery Failed: ${scenario}`,
+          'recovery-manager',
+          result
+        )
+      }
 
       logger.info('Recovery process completed', result)
       return result
@@ -485,7 +492,7 @@ export class DisasterRecoveryManager {
       
       // Check critical tables
       await prisma.user.count()
-      await prisma.trip.count()
+      await prisma.countryVisit.count()
       
       return true
     } catch (error) {

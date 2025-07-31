@@ -39,10 +39,10 @@ class DatabaseOptimizer {
   createOptimizedClient(config: ConnectionPoolConfig = {}): PrismaClient {
     const {
       maxConnections = 20,
-      minConnections = 2,
-      idleTimeout = 300000, // 5 minutes
+      // minConnections = 2,
+      // idleTimeout = 300000, // 5 minutes
       acquireTimeout = 60000, // 1 minute
-      retryAttempts = 3
+      // retryAttempts = 3
     } = config
 
     const databaseUrl = process.env.DATABASE_URL

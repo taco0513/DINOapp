@@ -203,7 +203,7 @@ class PerformanceMonitor {
   private sendToAnalytics(event: string, data: any) {
     // Send to Vercel Analytics or custom analytics service
     if (typeof window !== 'undefined' && window.va) {
-      window.va('track', event, data)
+      window.va('event', event)
     }
     
     // Also send to custom endpoint for detailed tracking

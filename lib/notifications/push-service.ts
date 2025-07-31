@@ -292,7 +292,7 @@ export class PushNotificationService {
     subscription: PushSubscription,
     payload: NotificationPayload,
     scheduledFor: Date,
-    context: NotificationContext
+    _context: NotificationContext
   ): Promise<void> {
     const delay = scheduledFor.getTime() - Date.now();
     

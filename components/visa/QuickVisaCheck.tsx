@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Search, Plane, Clock, FileText, AlertCircle } from 'lucide-react'
 import { COUNTRIES } from '@/constants/countries'
 import { getVisaRequirements } from '@/lib/visa-requirements'
@@ -18,10 +18,10 @@ interface VisaInfo {
 
 export function QuickVisaCheck() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
-  const [passportCountry, setPassportCountry] = useState<PassportCountry>('KR')
+  const [_selectedCountry, setSelectedCountry] = useState<string | null>(null)
+  const [passportCountry, setPassportCountry] = useState<PassportCountry>('KR' as PassportCountry)
   const [visaInfo, setVisaInfo] = useState<VisaInfo | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [_loading, setLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
 
   // 국가 검색

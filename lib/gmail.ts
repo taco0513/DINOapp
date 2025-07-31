@@ -2,7 +2,7 @@ import { google } from 'googleapis';
 import {
   allTravelPatterns,
   datePatterns,
-  timePatterns,
+  // timePatterns,
   airportCodes,
   airlineCodes,
   TravelEmailPattern,
@@ -280,7 +280,7 @@ export function extractTravelInfo(email: EmailMessage): TravelInfo | null {
  */
 function extractSpecializedInfo(
   fullText: string,
-  normalizedText: string,
+  _normalizedText: string,
   pattern: TravelEmailPattern,
   travelInfo: TravelInfo
 ) {
@@ -345,7 +345,7 @@ function extractSpecializedInfo(
  */
 function extractGeneralTravelInfo(
   fullText: string,
-  normalizedText: string,
+  _normalizedText: string,
   travelInfo: TravelInfo
 ) {
   // 날짜 패턴 검색
@@ -491,15 +491,15 @@ export async function analyzeTravelEmails(
       const travelInfo = extractTravelInfo(email);
       if (travelInfo) {
         // 이메일 컨텍스트 정보 추가
-        const emailContext = {
-          senderDomain: email.from.split('@')[1] || '',
-          hasMultipleBookings:
-            email.body.toLowerCase().split('booking').length > 2,
-          isForwardedEmail:
-            email.subject.toLowerCase().includes('fwd:') ||
-            email.subject.toLowerCase().includes('fw:'),
-          hasAttachments: false, // Gmail API에서 첨부파일 정보 확인 필요
-        };
+        // const emailContext = {
+        //   senderDomain: email.from.split('@')[1] || '',
+        //   hasMultipleBookings:
+        //     email.body.toLowerCase().split('booking').length > 2,
+        //   isForwardedEmail:
+        //     email.subject.toLowerCase().includes('fwd:') ||
+        //     email.subject.toLowerCase().includes('fw:'),
+        //   hasAttachments: false, // Gmail API에서 첨부파일 정보 확인 필요
+        // };
 
         // 컨텍스트 기반 신뢰도 조정 (email-intelligence 라이브러리 사용)
         // travelInfo.confidence = adjustConfidenceByContext(travelInfo, emailContext)

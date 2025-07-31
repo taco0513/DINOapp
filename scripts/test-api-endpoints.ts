@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
-import { GET as getTrips, POST as createTrip } from '../app/api/trips/route';
+import { GET as getTrips /* , POST as createTrip */ } from '../app/api/trips/route';
 import { GET as getTripInsights } from '../app/api/trips/insights/route';
-import { POST as validateTrip } from '../app/api/trips/validate/route';
+// import { POST as validateTrip } from '../app/api/trips/validate/route';
 
 // Mock NextAuth session
 jest.mock('next-auth', () => ({
@@ -63,8 +63,8 @@ async function testApiEndpoints() {
     console.log('- ✅ Security middleware chain functional');
     console.log('- ✅ Response format consistent');
   } catch (error) {
-    console.error('❌ API test failed:', error.message);
-    if (error.stack) console.error(error.stack);
+    console.error('❌ API test failed:', error instanceof Error ? error.message : 'Unknown error');
+    if (error instanceof Error && error.stack) console.error(error.stack);
   }
 }
 

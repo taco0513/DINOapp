@@ -23,9 +23,19 @@ export default function WireframeTripForm({ trip, onSuccess, onCancel }: Wirefra
     e.preventDefault()
     try {
       if (trip) {
-        await ApiClient.updateTrip(trip.id!, formData)
+        await ApiClient.updateTrip(trip.id!, {
+          ...formData,
+          visaType: formData.visaType as any,
+          maxDays: 90,
+          passportCountry: 'KR' as any
+        })
       } else {
-        await ApiClient.createTrip(formData)
+        await ApiClient.createTrip({
+          ...formData,
+          visaType: formData.visaType as any,
+          maxDays: 90,
+          passportCountry: 'KR' as any
+        })
       }
       onSuccess()
     } catch (error) {

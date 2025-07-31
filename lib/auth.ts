@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       // Allow Google sign in only
       if (account?.provider === 'google') {
         console.log('Google sign in successful for:', user.email);
@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
       return `${baseUrl}/dashboard`;
     },
 
-    async jwt({ token, user, account, trigger }) {
+    async jwt({ token, user, account }) {
       // Store user info and access token on first sign in
       if (user && account) {
         token.id = user.id;
@@ -89,7 +89,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Check token expiration
-      if (token.exp && Date.now() >= token.exp * 1000) {
+      if (token.exp && Date.now() >= (token.exp as number) * 1000) {
         // Token expired
         return {};
       }

@@ -165,7 +165,7 @@ export function recordServiceSuccess(service: string) {
 
 function handleDegradedService(request: NextRequest): NextResponse {
   // Implement graceful degradation strategies
-  const pathname = request.nextUrl.pathname
+  // const pathname = request.nextUrl.pathname
 
   // For read operations, try to serve from cache
   if (request.method === 'GET') {

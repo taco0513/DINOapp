@@ -106,7 +106,7 @@ export class SmartProblemSolver {
   /**
    * AI 분석을 통한 해결책 생성
    */
-  private async aiAnalysis(problem: ProblemContext): Promise<Solution> {
+  private async aiAnalysis(_problem: ProblemContext): Promise<Solution> {
     // 복잡한 문제에 대한 AI 분석
     return {
       source: 'ai',

@@ -136,10 +136,6 @@ const bookingPatterns: EmailPattern[] = [
         /주소:?\s*([가-힣\s\d,.-]+)/i,
         /Address:?\s*([A-Za-z0-9\s,.-]+)/i
       ],
-      hotelName: [
-        /호텔:?\s*([가-힣\s\w]+)/i,
-        /Property:?\s*([A-Za-z\s]+)/i
-      ],
       confirmation: [
         /예약\s*번호:?\s*(\d+)/i,
         /Booking\s*number:?\s*(\d+)/i
@@ -171,13 +167,6 @@ const agodaPatterns: EmailPattern[] = [
       ],
       location: [
         /호텔:?\s*([가-힣\s]+)/i,
-        /Property:?\s*([A-Za-z\s&-]+?)(?:\n|$)/i
-      ],
-      hotelName: [
-        /호텔:?\s*([가-힣\s\w]+)/i,
-        /Property:?\s*([A-Za-z\s&-]+?)(?:\n|$)/i
-      ],
-      name: [
         /Property:?\s*([A-Za-z\s&-]+?)(?:\n|$)/i
       ],
       confirmation: [

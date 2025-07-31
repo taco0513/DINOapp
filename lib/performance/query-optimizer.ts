@@ -3,7 +3,7 @@
  * Provides optimized queries and performance monitoring for database operations  
  */
 
-import { PrismaClient } from '@prisma/client'
+// import { PrismaClient } from '@prisma/client'
 import { loggers } from '@/lib/monitoring/logger'
 import { getPrismaClient } from '@/lib/database/connection-manager'
 

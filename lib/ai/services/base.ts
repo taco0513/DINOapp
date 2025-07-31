@@ -52,7 +52,7 @@ export abstract class BaseAIService {
   }
 
   // 비용 계산
-  protected calculateCost(inputTokens: number, outputTokens: number): number {
+  protected calculateCost(_inputTokens: number, _outputTokens: number): number {
     // 각 서비스별로 오버라이드
     return 0;
   }

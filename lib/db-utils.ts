@@ -1,6 +1,6 @@
 import { prisma } from './prisma'
 import { OptimizedQueries, dbPerformanceMonitor } from './db-performance'
-import type { VisaType, PassportCountry, CountryVisit, User } from '@/types/global'
+import type { VisaType, PassportCountry } from '@/types/global'
 
 // User operations with performance optimization
 export async function getUserByEmail(email: string) {
@@ -117,12 +117,18 @@ export async function updateNotificationSettings(userId: string, settings: {
 // Analytics with optimized aggregation
 export async function getUserTravelStats(userId: string) {
   // Use optimized country statistics query
-  const countryStats = await OptimizedQueries.getCountryStatistics(prisma, userId)
+  const countryStats = await OptimizedQueries.getCountryStatistics(prisma, userId) as Array<{
+    country: string
+    visit_count: number
+    total_days: number
+    first_visit: Date
+    last_visit: Date
+  }>
   
   // Calculate aggregate statistics
   const totalCountries = countryStats.length
-  const totalDays = countryStats.reduce((sum: number, stat: any) => sum + Number(stat.total_days || 0), 0)
-  const totalVisits = countryStats.reduce((sum: number, stat: any) => sum + Number(stat.visit_count || 0), 0)
+  const totalDays = countryStats.reduce((sum: number, stat) => sum + Number(stat.total_days || 0), 0)
+  const totalVisits = countryStats.reduce((sum: number, stat) => sum + Number(stat.visit_count || 0), 0)
   
   // Calculate Schengen-specific stats
   const schengenCountries = [
@@ -132,8 +138,8 @@ export async function getUserTravelStats(userId: string) {
     'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
   ]
   
-  const schengenStats = countryStats.filter((stat: any) => schengenCountries.includes(stat.country))
-  const schengenDays = schengenStats.reduce((sum: number, stat: any) => sum + Number(stat.total_days || 0), 0)
+  const schengenStats = countryStats.filter(stat => schengenCountries.includes(stat.country))
+  const schengenDays = schengenStats.reduce((sum: number, stat) => sum + Number(stat.total_days || 0), 0)
 
   return {
     totalCountries,

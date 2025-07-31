@@ -135,7 +135,7 @@ export function performanceMiddleware(options: PerformanceMiddlewareOptions = {}
       if (contentType.includes('application/json')) {
         await processJSONResponse(
           clonedResponse,
-          response,
+          response as NextResponse,
           cacheKey,
           config,
           duration,
@@ -179,7 +179,7 @@ async function processJSONResponse(
   originalResponse: NextResponse,
   cacheKey: string,
   config: PerformanceMiddlewareOptions,
-  duration: number,
+  _duration: number,
   path: string,
   method: string
 ): Promise<void> {
@@ -274,7 +274,7 @@ export function compressJSON(data: any): Buffer {
 // API route wrapper with performance optimizations
 export function withPerformance<T extends any[], R>(
   handler: (...args: T) => Promise<R>,
-  options: PerformanceMiddlewareOptions = {}
+  _options: PerformanceMiddlewareOptions = {}
 ) {
   return async (...args: T): Promise<R> => {
     const startTime = performance.now()
@@ -343,7 +343,7 @@ export async function batchProcess<T, R>(
   items: T[],
   processor: (item: T) => Promise<R>,
   batchSize = 10,
-  concurrency = 3
+  _concurrency = 3
 ): Promise<R[]> {
   const results: R[] = []
   

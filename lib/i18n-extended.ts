@@ -1,12 +1,6 @@
 // Enhanced i18n system for DINO with expanded language support
 type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'fr';
 
-interface Translations {
-  [key: string]: {
-    [locale in Locale]: string;
-  };
-}
-
 // Extended translations with new languages
 const extendedTranslations = {
   // Dashboard translations that were missing Spanish and French

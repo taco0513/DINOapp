@@ -1,7 +1,7 @@
 import { createTravelManager } from '../lib/travel-manager';
-import { getPrismaClient } from '../lib/database/dev-prisma';
+import { devPrisma } from '../lib/database/dev-prisma';
 
-const prisma = getPrismaClient();
+const prisma = devPrisma;
 
 async function testTravelManager() {
   console.log('🧪 Testing Travel Manager functionality...\n');
@@ -66,9 +66,9 @@ async function testTravelManager() {
       '2024-06-10'
     );
     console.log('✅ Trip validation completed:', {
-      isValid: validation.isValid,
+      canTravel: validation.canTravel,
       warnings: validation.warnings.length,
-      schengenDaysAfter: validation.schengenStatus?.remainingDays,
+      maxStayDays: validation.maxStayDays,
     });
 
     // Test 5: Update trip
@@ -108,8 +108,10 @@ async function testTravelManager() {
     await prisma.user.delete({ where: { id: testUser.id } });
     console.log('\n🧹 Test data cleaned up');
   } catch (error) {
-    console.error('❌ Test failed:', error.message);
-    console.error(error.stack);
+    console.error('❌ Test failed:', error instanceof Error ? error.message : 'Unknown error');
+    if (error instanceof Error && error.stack) {
+      console.error(error.stack);
+    }
     process.exit(1);
   } finally {
     await prisma.$disconnect();

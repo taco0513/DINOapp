@@ -754,13 +754,13 @@ export class VisaDatabase {
 
     if (criteria.maxCostOfLiving !== undefined) {
       results = results.filter(
-        country => country.digitalNomadInfo.costOfLiving <= criteria.maxCostOfLiving
+        country => country.digitalNomadInfo.costOfLiving <= criteria.maxCostOfLiving!
       );
     }
 
     if (criteria.minInternetQuality !== undefined) {
       results = results.filter(
-        country => country.digitalNomadInfo.internetQuality >= criteria.minInternetQuality
+        country => country.digitalNomadInfo.internetQuality >= criteria.minInternetQuality!
       );
     }
 

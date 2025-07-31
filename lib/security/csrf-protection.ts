@@ -239,11 +239,11 @@ export async function csrfProtection(
     // Origin 헤더 확인 (Same-Origin 정책)
     const origin = req.headers.get('origin')
     const host = req.headers.get('host')
-    const referer = req.headers.get('referer')
+    // const referer = req.headers.get('referer')
 
     // HTTPS에서 Origin 헤더 확인
     if (origin) {
-      const originUrl = new URL(origin)
+      // const originUrl = new URL(origin)
       const allowedOrigins = [
         `https://${host}`,
         `http://${host}`, // 개발 환경

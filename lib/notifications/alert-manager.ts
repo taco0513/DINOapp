@@ -246,13 +246,13 @@ class AlertManager {
     }
   }
 
-  private sendToConsole(alert: Alert): void {
-    const emoji = {
-      info: 'ℹ️',
-      warning: '⚠️',
-      error: '❌',
-      critical: '🚨'
-    }[alert.severity]
+  private sendToConsole(_alert: Alert): void {
+    // const emoji = {
+    //   info: 'ℹ️',
+    //   warning: '⚠️',
+    //   error: '❌',
+    //   critical: '🚨'
+    // }[alert.severity]
 
     // Alert: ${alert.title}
     // Message: ${alert.message}
@@ -260,26 +260,26 @@ class AlertManager {
   }
 
   private async sendToEmail(
-    alert: Alert, 
-    channel: AlertChannel, 
-    template?: NotificationTemplate
+    _alert: Alert, 
+    _channel: AlertChannel, 
+    _template?: NotificationTemplate
   ): Promise<void> {
     try {
       // 간단한 이메일 발송 구현 (실제 환경에서는 nodemailer 등 사용)
-      const emailData = {
-        to: channel.config.to,
-        from: channel.config.from,
-        subject: template?.subject || alert.title,
-        text: alert.message,
-        html: `
-          <h2>${alert.title}</h2>
-          <p><strong>Severity:</strong> ${alert.severity}</p>
-          <p><strong>Source:</strong> ${alert.source}</p>
-          <p><strong>Time:</strong> ${alert.timestamp.toISOString()}</p>
-          <p><strong>Message:</strong></p>
-          <p>${alert.message.replace(/\n/g, '<br>')}</p>
-        `
-      }
+      // const emailData = {
+      //   to: channel.config.to,
+      //   from: channel.config.from,
+      //   subject: template?.subject || alert.title,
+      //   text: alert.message,
+      //   html: `
+      //     <h2>${alert.title}</h2>
+      //     <p><strong>Severity:</strong> ${alert.severity}</p>
+      //     <p><strong>Source:</strong> ${alert.source}</p>
+      //     <p><strong>Time:</strong> ${alert.timestamp.toISOString()}</p>
+      //     <p><strong>Message:</strong></p>
+      //     <p>${alert.message.replace(/\n/g, '<br>')}</p>
+      //   `
+      // }
 
       // Email alert prepared
       // 실제 이메일 발송 로직은 여기에 구현
@@ -361,7 +361,7 @@ class AlertManager {
     }
   }
 
-  private async sendToDatabase(alert: Alert): Promise<void> {
+  private async sendToDatabase(_alert: Alert): Promise<void> {
     try {
       // 데이터베이스에 알림 로그 저장
       // 실제 구현에서는 Prisma를 사용하여 AlertLog 테이블에 저장

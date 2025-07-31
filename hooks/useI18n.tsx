@@ -8,7 +8,7 @@ import {
   useContext,
   ReactNode,
 } from 'react';
-import { getCurrentLocale, setLocale, t, type Locale } from '@/lib/i18n';
+import { getCurrentLocale, t, type Locale } from '@/lib/i18n';
 
 // Custom hook for i18n with real-time updates
 export function useI18n() {

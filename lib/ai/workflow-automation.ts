@@ -185,7 +185,7 @@ export class WorkflowAutomationEngine extends EventEmitter {
     }
   }
 
-  private async runTests(params?: any): Promise<any> {
+  private async runTests(_params?: any): Promise<any> {
     // 테스트 실행 시뮬레이션
     return {
       total: 50,
@@ -195,12 +195,12 @@ export class WorkflowAutomationEngine extends EventEmitter {
     };
   }
 
-  private async lintCode(params?: any): Promise<any> {
+  private async lintCode(_params?: any): Promise<any> {
     // 린트 실행 시뮬레이션
     return {
       errors: 0,
       warnings: 3,
-      fixed: params?.fix ? 3 : 0,
+      fixed: _params?.fix ? 3 : 0,
     };
   }
 
@@ -212,7 +212,7 @@ export class WorkflowAutomationEngine extends EventEmitter {
     };
   }
 
-  private async securityScan(params?: any): Promise<any> {
+  private async securityScan(_params?: any): Promise<any> {
     // 보안 스캔 시뮬레이션
     return {
       vulnerabilities: {
@@ -232,7 +232,7 @@ export class WorkflowAutomationEngine extends EventEmitter {
     };
   }
 
-  private async analyzeError(params?: any): Promise<any> {
+  private async analyzeError(_params?: any): Promise<any> {
     // 에러 분석 시뮬레이션
     return {
       type: 'TypeError',

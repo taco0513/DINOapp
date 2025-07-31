@@ -81,6 +81,7 @@ export function useNotifications() {
       toast(options.body, {
         description: options.title,
       })
+      return null
     }
   }, [permission])
 

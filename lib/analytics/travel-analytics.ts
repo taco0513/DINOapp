@@ -3,8 +3,16 @@
  * Comprehensive travel patterns, visa usage, and insights generation
  */
 
-import { Trip, User, Country } from '@prisma/client';
-import { differenceInDays, format, startOfYear, endOfYear, startOfMonth, endOfMonth } from 'date-fns';
+// import { Trip, User, Country } from '@prisma/client';
+import { differenceInDays } from 'date-fns';
+
+// Local Trip interface to replace Prisma import
+interface Trip {
+  id: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  country: string;
+}
 
 export interface TravelPattern {
   id: string;
@@ -704,7 +712,7 @@ export class TravelAnalyticsEngine {
     return countryNames[countryCode] || countryCode;
   }
 
-  private getVisaRequirement(countryCode: string, passportCountry: string = 'KR'): string {
+  private getVisaRequirement(countryCode: string, _passportCountry: string = 'KR'): string {
     // Simplified visa requirements for Korean passport
     const visaFree = ['US', 'JP', 'DE', 'FR', 'ES', 'IT', 'TH', 'MY', 'SG'];
     const visaRequired = ['CN', 'IN', 'RU'];
@@ -753,7 +761,7 @@ export class TravelAnalyticsEngine {
     return regionCounts;
   }
 
-  private generateDestinationSuggestions(trips: Trip[], patterns: TravelPattern[]): string[] {
+  private generateDestinationSuggestions(trips: Trip[], _patterns: TravelPattern[]): string[] {
     // This would use ML to suggest destinations based on patterns
     // Simplified implementation
     const visitedCountries = new Set(trips.map(t => t.country));

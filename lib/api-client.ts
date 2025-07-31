@@ -1,5 +1,5 @@
 import type { CountryVisit, VisaType, PassportCountry } from '@/types/global'
-import { withCache, generateCacheKey, CacheKeys, memoryCache } from '@/lib/cache/memory-cache'
+import { CacheKeys, memoryCache } from '@/lib/cache/memory-cache'
 import { toast } from 'sonner'
 
 /**

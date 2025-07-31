@@ -19,7 +19,7 @@ import {
 
 // Re-export for external use
 export type FutureTripValidation = SchengenFutureTripValidation;
-import { COUNTRIES, VISA_TYPES, getCountryByName } from '@/data/countries';
+import { /* COUNTRIES, */ VISA_TYPES, getCountryByName } from '@/data/countries';
 
 /**
  * Options for filtering and sorting trip queries
@@ -521,8 +521,8 @@ export class TravelManager {
         totalDaysAbroad,
         schengenDaysUsed: schengenStatus.usedDays,
         schengenDaysRemaining: schengenStatus.remainingDays,
-        lastTripDate: lastTripDate,
-        nextTripDate: nextTripDate,
+        lastTripDate: lastTripDate?.toISOString(),
+        nextTripDate: nextTripDate?.toISOString(),
       },
       popularDestinations,
       travelPatterns: {
@@ -532,7 +532,10 @@ export class TravelManager {
         mostCommonVisaType,
         totalSpent: totalSpent > 0 ? totalSpent : undefined,
       },
-      upcomingExpirations,
+      upcomingExpirations: upcomingExpirations.map(exp => ({
+        ...exp,
+        exitDate: exp.exitDate.toISOString()
+      })),
       recommendations,
     };
   }
@@ -561,7 +564,7 @@ export class TravelManager {
     country: string,
     entryDate: string | Date,
     exitDate: string | Date,
-    passportCountry?: string
+    _passportCountry?: string
   ): Promise<FutureTripValidation> {
     const trips = await this.getTrips();
 

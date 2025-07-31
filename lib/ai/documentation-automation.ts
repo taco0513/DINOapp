@@ -74,7 +74,7 @@ export class DocumentationAutomation extends EventEmitter {
   private async generateAPIDocumentation(
     fileName: string,
     content: string,
-    context: DocumentationContext
+    _context: DocumentationContext
   ): Promise<GeneratedDocumentation> {
     // HTTP 메서드 추출
     const methods = this.extractHTTPMethods(content);
@@ -106,9 +106,9 @@ export class DocumentationAutomation extends EventEmitter {
 
   // React 컴포넌트 문서화
   private async generateComponentDocumentation(
-    fileName: string,
+    _fileName: string,
     content: string,
-    context: DocumentationContext
+    _context: DocumentationContext
   ): Promise<GeneratedDocumentation> {
     // Props 추출
     const props = this.extractComponentProps(content);
@@ -141,7 +141,7 @@ export class DocumentationAutomation extends EventEmitter {
   private async generateFunctionDocumentation(
     fileName: string,
     content: string,
-    context: DocumentationContext
+    _context: DocumentationContext
   ): Promise<GeneratedDocumentation> {
     const functions = this.extractFunctions(content);
     
@@ -171,7 +171,7 @@ export class DocumentationAutomation extends EventEmitter {
   // 일반 문서화
   private async generateGenericDocumentation(
     fileName: string,
-    content: string,
+    _content: string,
     context: DocumentationContext
   ): Promise<GeneratedDocumentation> {
     const doc: GeneratedDocumentation = {
@@ -195,7 +195,7 @@ export class DocumentationAutomation extends EventEmitter {
 
   // 헬퍼 메서드들
   private extractHTTPMethods(content: string): string[] {
-    const methods = [];
+    const methods: string[] = [];
     const patterns = [
       /export\s+async\s+function\s+(GET|POST|PUT|DELETE|PATCH)/g,
       /\.get\s*\(/g,
@@ -219,7 +219,7 @@ export class DocumentationAutomation extends EventEmitter {
     if (!propsMatch) return [];
 
     const propsContent = propsMatch[1];
-    const props = [];
+    const props: any[] = [];
     const propLines = propsContent.split('\n').filter(line => line.trim());
 
     propLines.forEach(line => {
@@ -269,15 +269,15 @@ export class DocumentationAutomation extends EventEmitter {
     return '사용자 인터페이스를 구성하기';
   }
 
-  private generateAPIParameters(methods: string[]): string {
+  private generateAPIParameters(_methods: string[]): string {
     return `## Parameters\n\n| Method | Parameter | Type | Description |\n|--------|-----------|------|-------------|\n| GET | page | number | 페이지 번호 |\n| GET | limit | number | 페이지당 항목 수 |\n| POST | body | object | 요청 데이터 |`;
   }
 
-  private generateAPIResponses(methods: string[]): string {
+  private generateAPIResponses(_methods: string[]): string {
     return `## Responses\n\n### Success (200)\n\`\`\`json\n{\n  "success": true,\n  "data": {},\n  "message": "Success"\n}\n\`\`\`\n\n### Error (400)\n\`\`\`json\n{\n  "success": false,\n  "error": "Error message"\n}\n\`\`\``;
   }
 
-  private generateAPIExamples(methods: string[]): string {
+  private generateAPIExamples(_methods: string[]): string {
     return `## Examples\n\n### GET Request\n\`\`\`bash\ncurl -X GET https://api.example.com/endpoint\n\`\`\`\n\n### POST Request\n\`\`\`bash\ncurl -X POST https://api.example.com/endpoint \\\n  -H "Content-Type: application/json" \\\n  -d '{"key": "value"}'\n\`\`\``;
   }
 
@@ -313,7 +313,7 @@ export class DocumentationAutomation extends EventEmitter {
     return doc;
   }
 
-  private generateFunctionReturns(functions: any[]): string {
+  private generateFunctionReturns(_functions: any[]): string {
     return '## Return Values\n\n각 함수의 반환 값은 코드를 참고하세요.';
   }
 
@@ -322,7 +322,7 @@ export class DocumentationAutomation extends EventEmitter {
 
     let doc = '## Examples\n\n';
     functions.forEach(func => {
-      doc += `### Using ${func.name}\n\`\`\`javascript\n${func.name}(${func.params.map(p => `/* ${p} */`).join(', ')});\n\`\`\`\n\n`;
+      doc += `### Using ${func.name}\n\`\`\`javascript\n${func.name}(${func.params.map((p: any) => `/* ${p} */`).join(', ')});\n\`\`\`\n\n`;
     });
 
     return doc;

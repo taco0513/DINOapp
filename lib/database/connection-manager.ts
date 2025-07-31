@@ -4,7 +4,7 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { AppError, ErrorCode, ErrorSeverity, errors } from '@/lib/error/error-handler'
+import { errors } from '@/lib/error/error-handler'
 import { loggers } from '@/lib/monitoring/logger'
 
 export interface ConnectionOptions {
@@ -541,10 +541,10 @@ export class DatabaseConnectionManager {
   ): Promise<T> {
     const client = await this.getClient()
     
-    return client.$transaction(fn, {
+    return client.$transaction(fn as any, {
       maxWait: options?.maxWait ?? 5000,
       timeout: options?.timeout ?? this.options.queryTimeout
-    })
+    }) as Promise<T>
   }
 }
 

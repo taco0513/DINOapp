@@ -154,9 +154,9 @@ export function sanitizeTripData(data: any) {
 /**
  * Log security events
  */
-export function logSecurityEvent(event: string, details: any, request: NextRequest) {
-  const ip = getClientIP(request)
-  const userAgent = request.headers.get('user-agent') || 'unknown'
+export function logSecurityEvent(_event: string, _details: any, _request: NextRequest) {
+  // const ip = getClientIP(request)
+  // const userAgent = request.headers.get('user-agent') || 'unknown'
   
   // Security event logged
 }

@@ -16,12 +16,18 @@ if (SENTRY_DSN) {
     // 통합 설정
     integrations: [
       // HTTP 요청 추적
-      new Sentry.Integrations.Http({ tracing: true }),
+      // @ts-ignore - Integrations might have different structure
+      ...(Sentry.Integrations?.Http ? [
+        new Sentry.Integrations.Http({ tracing: true })
+      ] : []),
       
       // Prisma 에러 추적
-      new Sentry.Integrations.Prisma({
-        client: true,
-      }),
+      // @ts-ignore - Integrations might have different structure
+      ...(Sentry.Integrations?.Prisma ? [
+        new Sentry.Integrations.Prisma({
+          client: true,
+        })
+      ] : []),
     ],
     
     // 에러 필터링

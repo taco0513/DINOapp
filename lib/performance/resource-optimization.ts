@@ -9,33 +9,33 @@ export const preloadCriticalResources = () => {
   const head = document.head
 
   // Preload critical fonts
-  const preloadFont = (href: string, type = 'font/woff2') => {
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.href = href
-    link.as = 'font'
-    link.type = type
-    link.crossOrigin = 'anonymous'
-    head.appendChild(link)
-  }
+  // const preloadFont = (href: string, type = 'font/woff2') => {
+  //   const link = document.createElement('link')
+  //   link.rel = 'preload'
+  //   link.href = href
+  //   link.as = 'font'
+  //   link.type = type
+  //   link.crossOrigin = 'anonymous'
+  //   head.appendChild(link)
+  // }
 
   // Preload critical CSS
-  const preloadCSS = (href: string) => {
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.href = href
-    link.as = 'style'
-    head.appendChild(link)
-  }
+  // const preloadCSS = (href: string) => {
+  //   const link = document.createElement('link')
+  //   link.rel = 'preload'
+  //   link.href = href
+  //   link.as = 'style'
+  //   head.appendChild(link)
+  // }
 
   // Preload critical JavaScript
-  const preloadJS = (href: string) => {
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.href = href
-    link.as = 'script'
-    head.appendChild(link)
-  }
+  // const preloadJS = (href: string) => {
+  //   const link = document.createElement('link')
+  //   link.rel = 'preload'
+  //   link.href = href
+  //   link.as = 'script'
+  //   head.appendChild(link)
+  // }
 
   // DNS prefetch for external domains
   const dnsPrefetch = (href: string) => {
@@ -342,19 +342,19 @@ export const optimizeWebVitals = () => {
   // Optimize FID (First Input Delay)
   const optimizeFID = () => {
     // Break up long tasks
-    const breakUpLongTasks = (tasks: Function[]) => {
-      const runTask = (index: number) => {
-        if (index >= tasks.length) return
-        
-        tasks[index]()
-        
-        if (index < tasks.length - 1) {
-          setTimeout(() => runTask(index + 1), 0)
-        }
-      }
-      
-      runTask(0)
-    }
+    // const breakUpLongTasks = (tasks: Function[]) => {
+    //   const runTask = (index: number) => {
+    //     if (index >= tasks.length) return
+    //     
+    //     tasks[index]()
+    //     
+    //     if (index < tasks.length - 1) {
+    //       setTimeout(() => runTask(index + 1), 0)
+    //     }
+    //   }
+    //   
+    //   runTask(0)
+    // }
 
     // Use scheduler if available
     if ('scheduler' in window && 'postTask' in (window as any).scheduler) {

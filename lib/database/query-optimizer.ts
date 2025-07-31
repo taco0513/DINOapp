@@ -3,9 +3,9 @@
  * 프로덕션 성능을 위한 데이터베이스 쿼리 최적화
  */
 
-import { PrismaClient, Prisma } from '@prisma/client'
-import { getPrismaClient } from './dev-prisma'
-const prisma = getPrismaClient()
+import { Prisma } from '@prisma/client'
+import { devPrisma } from './dev-prisma'
+const prisma = devPrisma
 
 interface QueryMetrics {
   query: string
@@ -25,7 +25,7 @@ class QueryOptimizer {
   private queryMetrics: QueryMetrics[] = []
   private cache = new Map<string, { data: any; expires: number }>()
   private readonly MAX_METRICS = 1000 // 최대 메트릭 보관 수
-  private readonly DEFAULT_CACHE_TTL = 300 // 5분
+  // private readonly DEFAULT_CACHE_TTL = 300 // 5분
 
   private constructor() {}
 

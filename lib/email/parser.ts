@@ -7,11 +7,11 @@ import {
 } from '@/types/email';
 import { 
   EMAIL_PROVIDERS,
-  COMMON_DATE_PATTERNS,
+  // COMMON_DATE_PATTERNS,
   TIME_PATTERNS,
   AIRPORT_CODE_PATTERN,
-  FLIGHT_NUMBER_PATTERNS,
-  CONFIRMATION_PATTERNS
+  // FLIGHT_NUMBER_PATTERNS,
+  // CONFIRMATION_PATTERNS
 } from './patterns';
 
 /**
@@ -150,8 +150,8 @@ export class EmailParser {
    */
   private identifyProvider(
     senderEmail?: string, 
-    subject?: string, 
-    body?: string
+    _subject?: string, 
+    _body?: string
   ): EmailProvider | null {
     // 도메인 기반 식별
     if (senderEmail) {
@@ -165,12 +165,12 @@ export class EmailParser {
     }
 
     // 제목과 본문 기반 식별
-    const content = `${subject} ${body}`.toLowerCase();
+    // const content = `${subject} ${body}`.toLowerCase();
     
     for (const provider of this.providers) {
       for (const pattern of provider.patterns) {
         const subjectMatch = pattern.subjectPatterns.some(regex => 
-          regex.test(subject || '')
+          regex.test(_subject || '')
         );
         if (subjectMatch) return provider;
       }
@@ -190,7 +190,7 @@ export class EmailParser {
    * @private
    */
   private async extractData(
-    subject: string,
+    _subject: string,
     body: string,
     provider: EmailProvider
   ): Promise<Partial<ParsedEmailData> | null> {
@@ -451,8 +451,8 @@ export class EmailParser {
    */
   private calculateConfidence(
     data: Partial<ParsedEmailData>,
-    subject: string,
-    body: string
+    _subject: string,
+    _body: string
   ): number {
     let score = 0;
     let maxScore = 0;

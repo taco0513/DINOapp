@@ -29,7 +29,7 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
   }
 
   const days = calculateDays()
-  const isCurrentlyStaying = !exitDate
+  // const isCurrentlyStaying = !exitDate
 
   const handleDelete = async () => {
     if (!showDeleteConfirm) {

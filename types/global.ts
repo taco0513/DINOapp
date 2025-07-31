@@ -16,7 +16,7 @@ export type VisaType =
   | 'Spouse'
   | 'Medical'
 
-export type PassportCountry = 'US' | 'UK' | 'EU' | 'CA' | 'AU' | 'JP' | 'OTHER'
+export type PassportCountry = 'US' | 'UK' | 'EU' | 'CA' | 'AU' | 'JP' | 'FR' | 'DE' | 'ES' | 'IT' | 'KR' | 'OTHER'
 
 export interface CountryVisit {
   id: string

@@ -131,8 +131,8 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
     const touch = e.changedTouches[0]
     const deltaX = touch.clientX - touchStartRef.current.x
     const deltaY = touch.clientY - touchStartRef.current.y
-    const deltaTime = Date.now() - touchStartRef.current.time
-    const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime
+    // const deltaTime = Date.now() - touchStartRef.current.time
+    // const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime
 
     // 롱 프레스 타이머 정리
     if (longPressTimerRef.current) {

@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Activity, Zap, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle } from 'lucide-react';
 import {
   LineChart,
   Line,
   AreaChart,
   Area,
-  BarChart,
-  Bar,
+  // BarChart,
+  // Bar,
   XAxis,
   YAxis,
   CartesianGrid,

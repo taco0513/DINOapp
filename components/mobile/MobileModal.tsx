@@ -30,11 +30,11 @@ export const MobileModal: React.FC<MobileModalProps> = ({
       
       // Focus trap
       modalRef.current?.focus();
-      
-      return () => {
-        document.body.style.overflow = '';
-      };
     }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const handleTouchStart = (e: React.TouchEvent) => {

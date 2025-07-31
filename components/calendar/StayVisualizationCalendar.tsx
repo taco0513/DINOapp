@@ -156,8 +156,8 @@ export default function StayVisualizationCalendar({
     );
   };
 
-  // 수동 날짜 입력 처리
-  const _handleManualDateSubmit = () => {
+  // 수동 날짜 입력 처리 - 현재 미사용
+  /* const _handleManualDateSubmit = () => {
     // YYYY-MM-DD 또는 YYYY/MM/DD 형식 지원
     const dateRegex = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/;
     const match = manualDateInput.match(dateRegex);
@@ -188,7 +188,7 @@ export default function StayVisualizationCalendar({
     } else {
       console.error('날짜를 YYYY-MM-DD 형식으로 입력해주세요.');
     }
-  };
+  }; */
 
   // 날짜 계산기
   const handleDateCalculation = () => {

@@ -242,14 +242,14 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
     }
   }
 
-  const _getCategoryLabel = (category: string) => {
+  /* const _getCategoryLabel = (category: string) => {
     switch (category) {
       case 'airline': return '항공사'
       case 'hotel': return '호텔'
       case 'booking_platform': return '예약사이트'
       default: return '기타'
     }
-  }
+  } */
 
   return (
     <div className="space-y-6">

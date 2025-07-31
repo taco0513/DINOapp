@@ -15,8 +15,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  const _isLandingPage = pathname === '/';
-  const _isAuthenticatedArea = session && pathname !== '/';
+  // const _isLandingPage = pathname === '/';
+  // const _isAuthenticatedArea = session && pathname !== '/';
 
   return (
     <>

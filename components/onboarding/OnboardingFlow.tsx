@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import {
@@ -36,7 +36,7 @@ interface OnboardingProgress {
 }
 
 export default function OnboardingFlow() {
-  const { data: session } = useSession()
+  const { } = useSession()
   const router = useRouter()
   const [progress, setProgress] = useState<OnboardingProgress>({
     currentStep: 0,
@@ -82,7 +82,7 @@ export default function OnboardingFlow() {
     }
   ]
 
-  const [showOptionalSteps, setShowOptionalSteps] = useState(false)
+  const [showOptionalSteps] = useState(false)
   const steps = showOptionalSteps ? [...coreSteps, ...optionalSteps] : coreSteps
 
   const currentStepData = steps[progress.currentStep]
@@ -593,7 +593,7 @@ function IntegrationsStep() {
   )
 }
 
-function FirstTripStep() {
+/* function FirstTripStep() {
   const [tripData, setTripData] = useState({
     country: '',
     entryDate: '',
@@ -851,7 +851,7 @@ function QuickStartStep({ onSkip }: { onSkip: () => void }) {
       </div>
     </div>
   )
-}
+} */
 
 function CompleteStep({ onComplete }: { onComplete: () => void }) {
   return (

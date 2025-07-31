@@ -228,11 +228,24 @@ export default function RootLayout({
 
         <SkipLink />
         <SessionProvider>
-          <MainLayout>
-            <main id='main-content' tabIndex={-1}>
-              {children}
-            </main>
-          </MainLayout>
+          <MonitoringProvider>
+            <MainLayout>
+              <main id='main-content' tabIndex={-1}>
+                {children}
+              </main>
+
+              {/* Performance Monitoring */}
+              <PerformanceMonitor />
+
+              {/* PWA Features */}
+              <InstallPrompt />
+              <UpdatePrompt />
+              <OfflineIndicator />
+
+              {/* Analytics */}
+              <AnalyticsWrapper />
+            </MainLayout>
+          </MonitoringProvider>
         </SessionProvider>
       </body>
     </html>

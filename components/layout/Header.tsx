@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -21,7 +21,7 @@ const moreNavigation = [
 ];
 
 // 전체 네비게이션 (모바일 메뉴용)
-const allNavigation = [...coreNavigation, ...moreNavigation];
+// const allNavigation = [...coreNavigation, ...moreNavigation];
 
 export default function Header() {
   const { data: session, status } = useSession();

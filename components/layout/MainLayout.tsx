@@ -12,11 +12,11 @@ interface MainLayoutProps {
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const pathname = usePathname();
 
-  const isLandingPage = pathname === '/';
-  const isAuthenticatedArea = session && pathname !== '/';
+  const _isLandingPage = pathname === '/';
+  const _isAuthenticatedArea = session && pathname !== '/';
 
   return (
     <>

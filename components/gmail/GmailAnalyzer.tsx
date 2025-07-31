@@ -242,7 +242,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
     }
   }
 
-  const getCategoryLabel = (category: string) => {
+  const _getCategoryLabel = (category: string) => {
     switch (category) {
       case 'airline': return '항공사'
       case 'hotel': return '호텔'
@@ -468,7 +468,7 @@ export default function GmailAnalyzer({ onAnalysisComplete, onStatsUpdate }: Gma
 
             {selectedTab === 'results' && (
               <div className="space-y-3 max-h-96 overflow-y-auto">
-                {filteredTravelInfos.map((travelInfo, index) => (
+                {filteredTravelInfos.map((travelInfo) => (
                   <div key={travelInfo.emailId} className="card">
                     <div className="p-4">
                       <div className="flex items-start justify-between mb-2">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { TravelInfo } from '@/lib/gmail';
+// import { TravelInfo } from '@/lib/gmail';
 import {
   TravelStats,
   TravelInsight,
@@ -293,7 +293,7 @@ export default function GmailIntegration() {
 
             {activeTab === 'analysis' && (
               <div className='space-y-3 max-h-96 overflow-y-auto'>
-                {travelEmails.map((email, index) => (
+                {travelEmails.map((email) => (
                   <div key={email.emailId} className='card'>
                     <div className='flex justify-between items-start mb-2'>
                       <h5 className='font-medium truncate flex-1 mr-2'>
@@ -468,7 +468,7 @@ export default function GmailIntegration() {
                     matchedPatterns: [],
                   },
                 }))}
-                onSyncComplete={result => {
+                onSyncComplete={() => {
                   // Calendar sync completed
                 }}
               />
@@ -507,7 +507,7 @@ export default function GmailIntegration() {
                   <div className='card'>
                     <h4 className='font-medium mb-3'>🌍 자주 방문한 목적지</h4>
                     <div className='space-y-2'>
-                      {travelStats.mostVisitedDestinations.map((dest, idx) => (
+                      {travelStats.mostVisitedDestinations.map((dest) => (
                         <div
                           key={dest.code}
                           className='flex justify-between items-center'
@@ -526,7 +526,7 @@ export default function GmailIntegration() {
                   <div className='card'>
                     <h4 className='font-medium mb-3'>✈️ 선호 항공사</h4>
                     <div className='space-y-2'>
-                      {travelStats.preferredAirlines.map((airline, idx) => (
+                      {travelStats.preferredAirlines.map((airline) => (
                         <div
                           key={airline.code}
                           className='flex justify-between items-center'

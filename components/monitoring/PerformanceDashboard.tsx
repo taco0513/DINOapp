@@ -91,7 +91,7 @@ export function PerformanceDashboard() {
     }
   }, []);
 
-  const updateVital = (name: string, value: number) => {
+  const _updateVital = (name: string, value: number) => {
     const rating = getRating(name, value);
 
     setVitals(prevVitals => {
@@ -108,7 +108,7 @@ export function PerformanceDashboard() {
     });
   };
 
-  const getRating = (
+  const _getRating = (
     name: string,
     value: number
   ): 'good' | 'needs-improvement' | 'poor' => {
@@ -121,7 +121,7 @@ export function PerformanceDashboard() {
     return 'poor';
   };
 
-  const getColorByRating = (rating: string) => {
+  const _getColorByRating = (rating: string) => {
     switch (rating) {
       case 'good':
         return 'badge-success';
@@ -134,7 +134,7 @@ export function PerformanceDashboard() {
     }
   };
 
-  const getProgressValue = (name: string, value: number) => {
+  const _getProgressValue = (name: string, value: number) => {
     const threshold =
       performanceThresholds[name as keyof typeof performanceThresholds];
     if (!threshold) return 0;

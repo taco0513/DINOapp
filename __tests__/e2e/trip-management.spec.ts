@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   // Mock API responses
   await page.route('/api/trips', async route => {
     const method = route.request().method();
-    const url = route.request().url();
+    const _url = route.request().url();
 
     if (method === 'GET') {
       await route.fulfill({

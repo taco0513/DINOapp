@@ -10,17 +10,17 @@ import { httpMetrics } from '@/lib/monitoring/metrics-collector';
  * Includes CSRF protection, enhanced rate limiting, and security headers
  */
 
-const ALLOWED_ORIGINS = [
+const _ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'https://dino-app-psi.vercel.app',
   'https://dinoapp.net',
   'https://www.dinoapp.net',
 ];
 
-const RATE_LIMIT_MAP = new Map();
+const _RATE_LIMIT_MAP = new Map();
 
 // Enhanced rate limit configurations
-const RATE_LIMITS = {
+const _RATE_LIMITS = {
   general: { requests: 100, windowMs: 60000 }, // 100 requests per minute
   auth: { requests: 10, windowMs: 900000 }, // 10 auth attempts per 15 minutes
   mutation: { requests: 50, windowMs: 60000 }, // 50 mutations per minute
@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
   });
 
   if (recoveryResponse) {
-    const duration = Date.now() - start;
+    const _duration = Date.now() - start;
     httpMetrics.requestEnd(method, pathname, 503);
     // TODO: Add histogram metric when implemented in httpMetrics
     httpMetrics.requestError(method, pathname, 'recovery-middleware');
@@ -155,7 +155,7 @@ export async function middleware(request: NextRequest) {
   // Don't redirect root to dashboard - let the page handle it
   // This was causing issues with auth flow
   // if (pathname === '/') {
-  //   const token = await getToken({ req: request })
+  //   const _token = await getToken({ req: request })
   //   if (token) {
   //     return NextResponse.redirect(new URL('/dashboard', request.url))
   //   }
@@ -321,7 +321,7 @@ function cleanupRateLimit() {
   }
 }
 
-export const config = {
+export const _config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:

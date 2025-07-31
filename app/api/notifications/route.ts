@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
@@ -18,7 +18,7 @@ import {
 } from '@/lib/api/error-handler';
 
 // GET /api/notifications - Get all notifications for authenticated user
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     try {
       // TODO: Get from database when preferences table is implemented
       // For now, using defaults with userId
-    } catch (error) {
+    } catch (__error) {
       // Use defaults if no preferences found
     }
 
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/notifications/mark-read - Mark notification as read
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const requestId = generateRequestId();
 
   try {

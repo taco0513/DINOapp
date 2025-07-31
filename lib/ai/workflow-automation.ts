@@ -125,7 +125,7 @@ export class WorkflowAutomationEngine extends EventEmitter {
     }
 
     this.running.set(workflowId, true);
-    const startTime = Date.now();
+    const _startTime = Date.now();
     const results: WorkflowResult['results'] = [];
 
     try {
@@ -327,4 +327,4 @@ export class WorkflowAutomationEngine extends EventEmitter {
 }
 
 // 싱글톤 인스턴스
-export const workflowEngine = new WorkflowAutomationEngine();
+export const _workflowEngine = new WorkflowAutomationEngine();

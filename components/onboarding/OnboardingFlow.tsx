@@ -37,7 +37,7 @@ interface OnboardingProgress {
 
 export default function OnboardingFlow() {
   const { data: session } = useSession();
-  const router = useRouter();
+  const _router = useRouter();
   const [progress, setProgress] = useState<OnboardingProgress>({
     currentStep: 0,
     completedSteps: [],
@@ -94,9 +94,9 @@ export default function OnboardingFlow() {
     ? [...coreSteps, ...optionalSteps]
     : coreSteps;
 
-  const currentStepData = steps[progress.currentStep];
+  const _currentStepData = steps[progress.currentStep];
 
-  const nextStep = () => {
+  const _nextStep = () => {
     if (progress.currentStep < steps.length - 1) {
       const currentStepId = steps[progress.currentStep].id;
       setProgress(prev => ({
@@ -107,7 +107,7 @@ export default function OnboardingFlow() {
     }
   };
 
-  const prevStep = () => {
+  const _prevStep = () => {
     if (progress.currentStep > 0) {
       setProgress(prev => ({
         ...prev,
@@ -116,7 +116,7 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleComplete = async () => {
+  const _handleComplete = async () => {
     try {
       // 온보딩 완료 상태 저장
       await fetch('/api/user/onboarding', {
@@ -340,7 +340,7 @@ function ProfileStep({
     { value: 'advanced', label: '고급자 (21개국 이상)' },
   ];
 
-  const interests = [
+  const _interests = [
     '문화 탐방',
     '자연 경관',
     '음식 체험',
@@ -429,7 +429,7 @@ function IntegrationsStep() {
     calendar: false,
   });
 
-  const handleGmailConnect = async () => {
+  const _handleGmailConnect = async () => {
     try {
       // Gmail 연동 로직
       window.open('/api/auth/gmail', '_blank', 'width=500,height=600');
@@ -439,7 +439,7 @@ function IntegrationsStep() {
     }
   };
 
-  const handleCalendarConnect = async () => {
+  const _handleCalendarConnect = async () => {
     try {
       // Calendar 연동 로직
       window.open('/api/auth/calendar', '_blank', 'width=500,height=600');
@@ -638,7 +638,7 @@ function FirstTripStep() {
     purpose: 'tourism',
   });
 
-  const countries = [
+  const _countries = [
     { code: 'JP', name: '일본' },
     { code: 'US', name: '미국' },
     { code: 'DE', name: '독일' },
@@ -759,7 +759,7 @@ function QuickStartStep({ onSkip }: { onSkip: () => void }) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const router = useRouter();
 
-  const quickOptions = [
+  const _quickOptions = [
     {
       id: 'add-trip',
       title: '첫 여행 기록 추가',

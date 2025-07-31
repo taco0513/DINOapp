@@ -236,7 +236,7 @@ export function withCache<T extends any[], R>(
 /**
  * React Query 스타일의 캐시 키 생성 도우미
  */
-export const CacheKeys = {
+export const _CacheKeys = {
   analytics: {
     overview: (userId: string) => `analytics:overview:${userId}`,
     tripStats: (userId: string) => `analytics:trips:${userId}`,
@@ -267,7 +267,7 @@ export const CacheKeys = {
 /**
  * 캐시 관리 유틸리티
  */
-export const CacheManager = {
+export const _CacheManager = {
   /**
    * 사용자별 캐시 무효화
    */

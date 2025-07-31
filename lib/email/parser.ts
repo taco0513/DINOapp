@@ -70,7 +70,7 @@ export class EmailParser {
    *
    * @example
    * ```typescript
-   * const result = await parser.parseEmail(
+   * const _result = await parser.parseEmail(
    *   'Korean Air Booking Confirmation',
    *   'Confirmation: ABC123\nFlight: KE123...',
    *   'booking@koreanair.com'
@@ -195,7 +195,7 @@ export class EmailParser {
   ): Promise<Partial<ParsedEmailData> | null> {
     const content = body;
     let bestMatch: Partial<ParsedEmailData> | null = null;
-    let maxMatches = 0;
+    let _maxMatches = 0;
 
     for (const pattern of provider.patterns) {
       const extracted: Partial<ParsedEmailData> = {
@@ -534,7 +534,7 @@ export class EmailParser {
    *
    * @example
    * ```typescript
-   * const results = await parser.parseEmails([
+   * const _results = await parser.parseEmails([
    *   { subject: 'Flight 1', body: '...', senderEmail: 'airline@example.com' },
    *   { subject: 'Hotel 1', body: '...', senderEmail: 'hotel@example.com' }
    * ]);
@@ -574,7 +574,7 @@ export const defaultEmailParser = new EmailParser({
  *
  * @example
  * ```typescript
- * const result = await parseEmail(
+ * const _result = await parseEmail(
  *   'Flight Confirmation',
  *   'Your flight KE123...',
  *   'booking@airline.com'
@@ -596,7 +596,7 @@ export async function parseEmail(
  *
  * @example
  * ```typescript
- * const results = await parseEmails([
+ * const _results = await parseEmails([
  *   { subject: 'Flight 1', body: '...' },
  *   { subject: 'Hotel 1', body: '...' }
  * ]);

@@ -31,7 +31,7 @@ export function TravelInsightsDashboard({
       } else {
         setError('Failed to load travel insights');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Network error occurred');
     } finally {
       setLoading(false);

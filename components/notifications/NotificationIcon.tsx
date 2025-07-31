@@ -48,7 +48,7 @@ export default function NotificationIcon({
     }
   };
 
-  const markAsRead = async (notificationId: string) => {
+  const _markAsRead = async (notificationId: string) => {
     try {
       const response = await fetch('/api/notifications/mark-read', {
         method: 'POST',

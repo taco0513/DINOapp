@@ -9,7 +9,7 @@ interface IOSTabBarProps {
 }
 
 export default function IOSTabBar({ className = '' }: IOSTabBarProps) {
-  const pathname = usePathname();
+  const _pathname = usePathname();
 
   const tabItems = [
     {

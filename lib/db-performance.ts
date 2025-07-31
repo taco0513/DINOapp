@@ -6,7 +6,7 @@
 import { PrismaClient } from '@prisma/client';
 
 // Enhanced Prisma configuration for production performance
-export const createOptimizedPrismaClient = () => {
+export const _createOptimizedPrismaClient = () => {
   return new PrismaClient({
     log:
       process.env.NODE_ENV === 'development'
@@ -227,7 +227,7 @@ export class OptimizedQueries {
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     // Use optimized query with compound index [userId, entryDate, exitDate]
     const result = await prisma.countryVisit.findMany({
@@ -522,13 +522,13 @@ export class DatabaseMaintenance {
 
 // Export singleton instances
 export const dbPerformanceMonitor = DatabasePerformanceMonitor.getInstance();
-export const dbConnectionPool = DatabaseConnectionPool.getInstance();
+export const _dbConnectionPool = DatabaseConnectionPool.getInstance();
 
 // Performance middleware for API routes
 export function createDatabasePerformanceMiddleware() {
   return (req: any, res: any, next: any) => {
     const originalQuery = PrismaClient.prototype.$queryRaw;
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     // Override query method to track performance
     const trackQuery = function (this: any, query: any, ...args: any[]) {

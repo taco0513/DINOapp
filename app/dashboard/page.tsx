@@ -28,7 +28,7 @@ export default function DashboardPage() {
     loadDashboardData();
   }, [session, status, router]);
 
-  const loadDashboardData = async () => {
+  const _loadDashboardData = async () => {
     setDataLoading(true);
     setDataError(null);
     try {

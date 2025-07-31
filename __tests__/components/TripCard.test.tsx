@@ -29,7 +29,7 @@ jest.mock('@/data/countries', () => ({
   }),
 }));
 
-const mockApiClient = ApiClient as jest.Mocked<typeof ApiClient>;
+const _mockApiClient = ApiClient as jest.Mocked<typeof ApiClient>;
 
 describe('TripCard Component', () => {
   const mockTrip: CountryVisit = {

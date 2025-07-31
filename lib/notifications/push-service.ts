@@ -465,4 +465,4 @@ export class NotificationTemplates {
 }
 
 // Export singleton instance
-export const pushNotificationService = PushNotificationService.getInstance();
+export const _pushNotificationService = PushNotificationService.getInstance();

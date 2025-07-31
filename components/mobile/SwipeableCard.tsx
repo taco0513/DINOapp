@@ -17,7 +17,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
   threshold = 100,
   className = '',
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const _cardRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
   const [currentX, setCurrentX] = useState<number | null>(null);
   const [translateX, setTranslateX] = useState(0);
@@ -58,15 +58,15 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
   };
 
   // Touch events
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const _handleTouchStart = (e: React.TouchEvent) => {
     handleStart(e.touches[0].clientX);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const _handleTouchMove = (e: React.TouchEvent) => {
     handleMove(e.touches[0].clientX);
   };
 
-  const handleTouchEnd = () => {
+  const _handleTouchEnd = () => {
     handleEnd();
   };
 

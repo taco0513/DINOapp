@@ -1,4 +1,4 @@
-export const redis = {
+export const _redis = {
   get: jest.fn(),
   set: jest.fn(),
   incr: jest.fn(),

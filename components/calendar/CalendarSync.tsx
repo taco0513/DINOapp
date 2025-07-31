@@ -77,7 +77,7 @@ export default function CalendarSync({
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   // 캘린더 목록 로드
-  const loadCalendars = async () => {
+  const _loadCalendars = async () => {
     if (!session) return;
 
     try {
@@ -110,7 +110,7 @@ export default function CalendarSync({
   };
 
   // 여행 정보 동기화 (진행 상황 추적 개선)
-  const syncToCalendar = async () => {
+  const _syncToCalendar = async () => {
     if (!session || !selectedCalendarId) return;
 
     const infoToSync =
@@ -194,7 +194,7 @@ export default function CalendarSync({
   };
 
   // 여행 정보 선택/해제
-  const toggleTravelInfo = (emailId: string) => {
+  const _toggleTravelInfo = (emailId: string) => {
     setSelectedTravelInfos(prev =>
       prev.includes(emailId)
         ? prev.filter(id => id !== emailId)
@@ -203,7 +203,7 @@ export default function CalendarSync({
   };
 
   // 전체 선택/해제
-  const toggleSelectAll = () => {
+  const _toggleSelectAll = () => {
     if (selectedTravelInfos.length === travelInfos.length) {
       setSelectedTravelInfos([]);
     } else {
@@ -228,7 +228,7 @@ export default function CalendarSync({
     }
   }, [travelInfos]);
 
-  const getConfidenceBadge = (confidence: number) => {
+  const _getConfidenceBadge = (confidence: number) => {
     if (confidence >= 0.8) {
       return <span className='badge badge-success'>높음</span>;
     } else if (confidence >= 0.6) {

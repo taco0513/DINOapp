@@ -15,7 +15,7 @@ export interface AuthContext {
 }
 
 // 인증이 필요한 경로 패턴
-const PROTECTED_PATHS = [
+const _PROTECTED_PATHS = [
   '/api/trips',
   '/api/schengen',
   '/api/gmail',
@@ -26,10 +26,10 @@ const PROTECTED_PATHS = [
 ];
 
 // 관리자 권한이 필요한 경로
-const ADMIN_PATHS = ['/api/debug', '/api/auth-debug', '/api/test-db'];
+const _ADMIN_PATHS = ['/api/debug', '/api/auth-debug', '/api/test-db'];
 
 // 공개 경로 (인증 불필요)
-const PUBLIC_PATHS = ['/api/health', '/api/auth', '/manifest.json', '/sw.js'];
+const _PUBLIC_PATHS = ['/api/health', '/api/auth', '/manifest.json', '/sw.js'];
 
 export class AuthMiddleware {
   static async validateSession(req: NextRequest): Promise<{
@@ -235,7 +235,7 @@ export class AuthMiddleware {
   } {
     const reasons: string[] = [];
     const userAgent = req.headers.get('user-agent') || '';
-    const pathname = new URL(req.url).pathname;
+    const _pathname = new URL(req.url).pathname;
 
     // 봇/크롤러 감지
     const botPatterns = [

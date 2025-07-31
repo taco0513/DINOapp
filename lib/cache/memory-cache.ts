@@ -273,7 +273,7 @@ export type CacheKeyType = keyof typeof CacheKeys;
 /**
  * Cache TTL configurations for different data types
  */
-export const CacheTTL = {
+export const _CacheTTL = {
   // User data - moderate refresh rate
   USER_DATA: 5 * 60 * 1000, // 5 minutes
 

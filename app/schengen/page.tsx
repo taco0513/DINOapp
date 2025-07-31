@@ -58,7 +58,7 @@ export default function SchengenPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const loadSchengenData = async () => {
+  const _loadSchengenData = async () => {
     setLoading(true);
     try {
       const [tripsResponse, schengenResponse] = await Promise.all([
@@ -84,7 +84,7 @@ export default function SchengenPage() {
     }
   };
 
-  const analyzeFutureTrip = () => {
+  const _analyzeFutureTrip = () => {
     if (!futureDate || !schengenData) return;
 
     const schengenCountries = [

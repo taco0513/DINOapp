@@ -265,7 +265,7 @@ describe('Authentication Flow Tests (Simplified)', () => {
 
   describe('OAuth Flow', () => {
     it('should handle authorization URL generation', async () => {
-      const authUrl = await signIn('google', {
+      const _authUrl = await signIn('google', {
         redirect: false,
         callbackUrl: '/dashboard',
       });

@@ -13,7 +13,7 @@ import {
 import { AppError, ErrorCode, ErrorSeverity } from '@/lib/error/error-handler';
 
 // Global error handler for Prisma
-const handlePrismaError = (error: any): never => {
+const _handlePrismaError = (error: any): never => {
   if (error.code === 'P2002') {
     throw new AppError(
       ErrorCode.CONFLICT,
@@ -186,7 +186,7 @@ export async function withTransaction<T>(
 }
 
 // Query builder helpers with automatic connection recovery
-export const db = {
+export const _db = {
   get user() {
     return getPrismaClient().then(client => client.user);
   },

@@ -75,7 +75,7 @@ export interface EmailParserOptions {
 }
 
 // Korean airline codes and names
-export const KOREAN_AIRLINES = {
+export const _KOREAN_AIRLINES = {
   KE: '대한항공',
   OZ: '아시아나항공',
   LJ: '진에어',

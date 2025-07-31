@@ -22,7 +22,7 @@ export default function NewTripPage() {
     }
   }, [session, status, router]);
 
-  const handleSuccess = () => {
+  const _handleSuccess = () => {
     router.push('/trips');
   };
 

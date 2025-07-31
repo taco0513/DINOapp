@@ -5,7 +5,7 @@
 
 import { PrismaClient, Prisma } from '@prisma/client';
 import { getPrismaClient } from './dev-prisma';
-const prisma = getPrismaClient();
+const _prisma = getPrismaClient();
 
 interface QueryMetrics {
   query: string;
@@ -181,7 +181,7 @@ export async function getUserTripsOptimized(
     includeActive?: boolean;
   } = {}
 ) {
-  const cacheKey = `user_trips_${userId}_${JSON.stringify(options)}`;
+  const _cacheKey = `user_trips_${userId}_${JSON.stringify(options)}`;
 
   return queryOptimizer.executeWithCache(
     async () => {
@@ -227,7 +227,7 @@ export async function getSchengenTripsOptimized(
   fromDate: Date,
   toDate: Date
 ) {
-  const cacheKey = `schengen_${userId}_${fromDate.getTime()}_${toDate.getTime()}`;
+  const _cacheKey = `schengen_${userId}_${fromDate.getTime()}_${toDate.getTime()}`;
 
   return queryOptimizer.executeWithCache(
     async () => {
@@ -310,7 +310,7 @@ export async function getSchengenTripsOptimized(
  * 대시보드 통계를 위한 최적화된 쿼리
  */
 export async function getDashboardStatsOptimized(userId: string) {
-  const cacheKey = `dashboard_stats_${userId}`;
+  const _cacheKey = `dashboard_stats_${userId}`;
 
   return queryOptimizer.executeWithCache(
     async () => {

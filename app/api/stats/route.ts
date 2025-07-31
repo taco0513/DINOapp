@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
 
 // GET /api/stats - Get travel statistics for authenticated user
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -29,9 +29,9 @@ export async function GET(request: NextRequest) {
     const visits = user.countryVisits;
 
     // Calculate statistics
-    const uniqueCountries = new Set(visits.map(visit => visit.country));
+    const _uniqueCountries = new Set(visits.map(visit => visit.country));
 
-    const totalDays = visits.reduce((sum: number, visit) => {
+    const _totalDays = visits.reduce((sum: number, visit) => {
       if (visit.exitDate) {
         const days = Math.ceil(
           (visit.exitDate.getTime() - visit.entryDate.getTime()) /
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
       schengenCountries.includes(visit.country)
     );
 
-    const schengenDays = schengenVisits.reduce((sum: number, visit) => {
+    const _schengenDays = schengenVisits.reduce((sum: number, visit) => {
       if (visit.exitDate) {
         const days = Math.ceil(
           (visit.exitDate.getTime() - visit.entryDate.getTime()) /
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       visit => visit.entryDate.getFullYear() === currentYear
     );
 
-    const currentYearCountries = new Set(
+    const _currentYearCountries = new Set(
       currentYearVisits.map(visit => visit.country)
     );
 

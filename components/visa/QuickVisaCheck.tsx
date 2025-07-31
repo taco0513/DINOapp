@@ -25,7 +25,7 @@ export function QuickVisaCheck() {
   const [showResults, setShowResults] = useState(false);
 
   // 국가 검색
-  const filteredCountries = searchQuery
+  const _filteredCountries = searchQuery
     ? COUNTRIES.filter(
         country =>
           country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -74,7 +74,7 @@ export function QuickVisaCheck() {
   };
 
   // 엔터키 처리
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const _handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && filteredCountries.length > 0) {
       handleCountrySelect(filteredCountries[0].code);
     }

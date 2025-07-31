@@ -17,7 +17,7 @@ import { csrfProtection } from '@/lib/security/csrf-protection';
 
 // Admin-only database management endpoint
 export async function GET(request: NextRequest) {
-  const startTime = Date.now();
+  const _startTime = Date.now();
 
   try {
     // Rate limiting
@@ -157,7 +157,7 @@ export async function GET(request: NextRequest) {
 
 // Database maintenance operations
 export async function POST(request: NextRequest) {
-  const startTime = Date.now();
+  const _startTime = Date.now();
 
   try {
     // Rate limiting

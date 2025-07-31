@@ -27,11 +27,11 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
     endDate: Date;
   } | null>(null);
 
-  const schengenCountries = countries.filter(country =>
+  const _schengenCountries = countries.filter(country =>
     isSchengenCountry(country.name)
   );
 
-  const handleValidate = () => {
+  const _handleValidate = () => {
     if (!plannedCountry || !entryDate || !exitDate) {
       return;
     }
@@ -47,7 +47,7 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
     setValidation(result);
   };
 
-  const handleFindSafeDates = () => {
+  const _handleFindSafeDates = () => {
     if (!plannedCountry || !desiredDuration) {
       return;
     }

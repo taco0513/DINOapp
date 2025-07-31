@@ -48,7 +48,7 @@ export interface TripFormData {
  * Cache TTL configuration for different data types
  * Ensures optimal performance while maintaining data freshness
  */
-const CACHE_TIMES = {
+const _CACHE_TIMES = {
   /** 5 minutes for user-specific data that may change frequently */
   USER_DATA: 5 * 60 * 1000,
   /** 1 hour for semi-static data like analyzed emails */
@@ -274,7 +274,7 @@ export class ApiClient {
    *
    * @example
    * ```typescript
-   * const newTrip = await ApiClient.createTrip({
+   * const _newTrip = await ApiClient.createTrip({
    *   country: 'FR',
    *   entryDate: '2024-01-01',
    *   exitDate: '2024-01-15',

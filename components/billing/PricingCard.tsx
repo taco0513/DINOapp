@@ -87,7 +87,7 @@ export function PricingCard({
   onSelectPlan,
   loading,
 }: PricingCardProps) {
-  const isCurrentPlan = currentPlan === plan.id;
+  const _isCurrentPlan = currentPlan === plan.id;
   const isPopular = plan.popular;
 
   return (
@@ -173,7 +173,7 @@ export default function PricingSection() {
   const [loading, setLoading] = useState(false);
   const [currentPlan, setCurrentPlan] = useState<string>('free'); // 실제로는 사용자 상태에서 가져옴
 
-  const handleSelectPlan = async (planId: string) => {
+  const _handleSelectPlan = async (planId: string) => {
     if (planId === 'free') {
       // 무료 플랜은 즉시 전환
       setCurrentPlan(planId);

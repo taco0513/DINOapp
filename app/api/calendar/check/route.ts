@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { withGmailAuth, getRateLimitStatus } from '@/lib/gmail-middleware';
 import { checkCalendarConnection } from '@/lib/calendar';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   return withGmailAuth(request, async session => {
     const isConnected = await checkCalendarConnection(
       session.accessToken as string

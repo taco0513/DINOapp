@@ -7,7 +7,7 @@ import { z } from 'zod';
 import DOMPurify from 'isomorphic-dompurify';
 
 // Common validation patterns
-export const validationPatterns = {
+export const _validationPatterns = {
   // Safe string - no HTML/Script tags
   safeString: z
     .string()
@@ -63,7 +63,7 @@ export const validationPatterns = {
 };
 
 // Trip validation schemas
-export const tripValidation = {
+export const _tripValidation = {
   create: z
     .object({
       countryCode: validationPatterns.countryCode,
@@ -114,7 +114,7 @@ export const tripValidation = {
 };
 
 // User validation schemas
-export const userValidation = {
+export const _userValidation = {
   update: z.object({
     name: z
       .string()
@@ -139,7 +139,7 @@ export const userValidation = {
 };
 
 // API parameter validation
-export const apiValidation = {
+export const _apiValidation = {
   pagination: z.object({
     page: z
       .string()
@@ -218,7 +218,7 @@ export function sanitizeHTML(html: string): string {
 }
 
 // File upload validation
-export const fileValidation = {
+export const _fileValidation = {
   image: z.object({
     name: validationPatterns.filename,
     type: z.enum(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),

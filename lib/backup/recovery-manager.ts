@@ -9,7 +9,7 @@ import { loggers } from '@/lib/monitoring/logger';
 import { metrics } from '@/lib/monitoring/metrics-collector';
 import { systemAlert } from '@/lib/notifications/alert-manager';
 
-const logger = loggers.business.child({ module: 'recovery' });
+const _logger = loggers.business.child({ module: 'recovery' });
 
 export type RecoveryScenario =
   | 'database-corruption'
@@ -202,7 +202,7 @@ export class DisasterRecoveryManager {
    */
   async executeRecovery(scenario: RecoveryScenario): Promise<RecoveryResult> {
     const startTime = new Date();
-    const timer = metrics.timer('recovery.execution.duration');
+    const _timer = metrics.timer('recovery.execution.duration');
 
     logger.info('Starting disaster recovery', { scenario });
 
@@ -491,7 +491,7 @@ export class DisasterRecoveryManager {
 
       // Check critical tables
       await prisma.user.count();
-      await prisma.trip.count();
+      await prisma.travel.count();
 
       return true;
     } catch (error) {
@@ -522,4 +522,4 @@ export class DisasterRecoveryManager {
 }
 
 // Export singleton instance
-export const recoveryManager = new DisasterRecoveryManager();
+export const _recoveryManager = new DisasterRecoveryManager();

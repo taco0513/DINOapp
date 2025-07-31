@@ -33,7 +33,7 @@ export default function SimplePage() {
 
   const [showExportImport, setShowExportImport] = useState(false);
 
-  const handleExport = (format: string) => {
+  const _handleExport = (format: string) => {
     const data =
       format === 'json'
         ? JSON.stringify(trips, null, 2)

@@ -56,7 +56,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
     };
 
     // Page Load Time 측정
-    const measurePageLoadTime = () => {
+    const _measurePageLoadTime = () => {
       const navigation = performance.getEntriesByType(
         'navigation'
       )[0] as PerformanceNavigationTiming;
@@ -67,7 +67,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
     };
 
     // Core Web Vitals 측정
-    const measureWebVitals = () => {
+    const _measureWebVitals = () => {
       // First Contentful Paint (FCP)
       const measureFCP = () => {
         const observer = new PerformanceObserver(list => {
@@ -84,7 +84,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
       };
 
       // Largest Contentful Paint (LCP)
-      const measureLCP = () => {
+      const _measureLCP = () => {
         const observer = new PerformanceObserver(list => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
@@ -103,7 +103,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
       };
 
       // First Input Delay (FID)
-      const measureFID = () => {
+      const _measureFID = () => {
         const observer = new PerformanceObserver(list => {
           const entries = list.getEntries();
           entries.forEach((entry: any) => {
@@ -197,7 +197,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
   }, [enableLogging, reportToAnalytics, thresholds]);
 
   // 분석 도구로 메트릭 전송
-  const reportMetricsToAnalytics = (metrics: Partial<PerformanceMetrics>) => {
+  const _reportMetricsToAnalytics = (metrics: Partial<PerformanceMetrics>) => {
     // 실제 구현에서는 Google Analytics, Sentry 등으로 전송
     console.log('Reporting metrics to analytics:', metrics);
 
@@ -214,7 +214,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
   };
 
   // 성능 점수 계산 (0-100)
-  const calculatePerformanceScore = (): number => {
+  const _calculatePerformanceScore = (): number => {
     const { largestContentfulPaint, firstInputDelay, cumulativeLayoutShift } =
       metrics;
 

@@ -264,4 +264,4 @@ class OfflineStorage {
   }
 }
 
-export const offlineStorage = new OfflineStorage();
+export const _offlineStorage = new OfflineStorage();

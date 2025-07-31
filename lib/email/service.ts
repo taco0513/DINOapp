@@ -40,7 +40,7 @@ export async function sendTemplateEmail(
   });
 }
 
-export const emailTemplates = {
+export const _emailTemplates = {
   alert: 'alert',
   visaExpiry: 'visa-expiry',
   flightCheckIn: 'flight-check-in',

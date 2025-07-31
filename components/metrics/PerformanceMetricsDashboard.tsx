@@ -49,7 +49,7 @@ export default function PerformanceMetricsDashboard() {
     return () => clearInterval(interval);
   }, [timeRange]);
 
-  const fetchPerformanceData = async () => {
+  const _fetchPerformanceData = async () => {
     try {
       const response = await fetch(
         `/api/metrics/performance?range=${timeRange}`
@@ -64,7 +64,7 @@ export default function PerformanceMetricsDashboard() {
     }
   };
 
-  const getHealthStatus = (
+  const _getHealthStatus = (
     metric: number,
     thresholds: { good: number; warning: number }
   ) => {

@@ -48,10 +48,10 @@ jest.mock('@/lib/api-client', () => ({
   },
 }));
 
-const mockApiClient = ApiClient as jest.Mocked<typeof ApiClient>;
+const _mockApiClient = ApiClient as jest.Mocked<typeof ApiClient>;
 
 describe('SchengenCalculator Component', () => {
-  const mockSchengenData = {
+  const _mockSchengenData = {
     success: true,
     data: {
       status: {
@@ -73,7 +73,7 @@ describe('SchengenCalculator Component', () => {
     },
   };
 
-  const mockNonCompliantData = {
+  const _mockNonCompliantData = {
     success: true,
     data: {
       status: {

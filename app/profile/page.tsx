@@ -71,7 +71,7 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const _fileInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
     email: '',
@@ -157,7 +157,7 @@ export default function ProfilePage() {
   }, [session]);
 
   // 여행 통계 로드
-  const loadTravelStats = async () => {
+  const _loadTravelStats = async () => {
     try {
       const response = await fetch('/api/stats');
       if (response.ok) {
@@ -170,7 +170,7 @@ export default function ProfilePage() {
   };
 
   // 프로필 저장
-  const saveProfile = async () => {
+  const _saveProfile = async () => {
     setIsLoading(true);
     try {
       // 로컬스토리지에 저장
@@ -179,7 +179,7 @@ export default function ProfilePage() {
       setSaveMessage('프로필이 저장되었습니다.');
       setIsEditing(false);
       setTimeout(() => setSaveMessage(''), 3000);
-    } catch (error) {
+    } catch (__error) {
       setSaveMessage('프로필 저장에 실패했습니다.');
       setTimeout(() => setSaveMessage(''), 3000);
     } finally {
@@ -226,10 +226,10 @@ export default function ProfilePage() {
     return { level: '🌱', message: '프로필을 시작해보세요!', color: 'green' };
   };
 
-  const reward = getRewardLevel();
+  const _reward = getRewardLevel();
 
   // 입력 핸들러
-  const handleInputChange = (field: string, value: any) => {
+  const _handleInputChange = (field: string, value: any) => {
     const keys = field.split('.');
     if (keys.length === 1) {
       setProfile(prev => ({ ...prev, [field]: value }));
@@ -256,7 +256,7 @@ export default function ProfilePage() {
   };
 
   // 아바타 업로드
-  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -270,7 +270,7 @@ export default function ProfilePage() {
   };
 
   // 데이터 내보내기
-  const exportData = () => {
+  const _exportData = () => {
     const dataToExport = {
       profile,
       travelStats,
@@ -292,7 +292,7 @@ export default function ProfilePage() {
   };
 
   // 계정 삭제
-  const handleDeleteAccount = async () => {
+  const _handleDeleteAccount = async () => {
     if (deleteConfirmText !== '계정 삭제 동의') {
       return;
     }
@@ -306,7 +306,7 @@ export default function ProfilePage() {
       setTimeout(() => {
         window.location.href = '/api/auth/signout';
       }, 2000);
-    } catch (error) {
+    } catch (__error) {
       setSaveMessage('계정 삭제에 실패했습니다.');
       setTimeout(() => setSaveMessage(''), 3000);
     } finally {

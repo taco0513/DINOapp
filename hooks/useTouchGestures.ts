@@ -33,11 +33,11 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
     enableHapticFeedback = true,
   } = options;
 
-  const elementRef = useRef<HTMLElement | null>(null);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
+  const _elementRef = useRef<HTMLElement | null>(null);
+  const _touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
     null
   );
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const _longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const gestureStateRef = useRef<TouchGestureState>({
     isDragging: false,
     isPulling: false,
@@ -64,7 +64,7 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
               break;
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // 햅틱 피드백 실패는 무시
       }
     },
@@ -72,7 +72,7 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
   );
 
   // 터치 시작 핸들러
-  const handleTouchStart = useCallback(
+  const _handleTouchStart = useCallback(
     (e: TouchEvent) => {
       const touch = e.touches[0];
       touchStartRef.current = {
@@ -97,7 +97,7 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
   );
 
   // 터치 이동 핸들러
-  const handleTouchMove = useCallback(
+  const _handleTouchMove = useCallback(
     (e: TouchEvent) => {
       if (!touchStartRef.current) return;
 
@@ -147,7 +147,7 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
   );
 
   // 터치 종료 핸들러
-  const handleTouchEnd = useCallback(
+  const _handleTouchEnd = useCallback(
     (e: TouchEvent) => {
       if (!touchStartRef.current) return;
 
@@ -155,7 +155,7 @@ export function useTouchGestures(options: TouchGestureOptions = {}) {
       const deltaX = touch.clientX - touchStartRef.current.x;
       const deltaY = touch.clientY - touchStartRef.current.y;
       const deltaTime = Date.now() - touchStartRef.current.time;
-      const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime;
+      const _velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime;
 
       // 롱 프레스 타이머 정리
       if (longPressTimerRef.current) {

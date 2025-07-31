@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -24,7 +24,7 @@ interface Solution {
   }[];
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -75,10 +75,10 @@ async function findSolutions(
 const value = user.profile.name;
 
 // After - Optional Chaining
-const value = user?.profile?.name;
+const _value = user?.profile?.name;
 
 // 또는 기본값 설정
-const value = user?.profile?.name ?? '기본 이름';`,
+const _value = user?.profile?.name ?? '기본 이름';`,
       references: [
         {
           title: 'MDN: Optional Chaining',

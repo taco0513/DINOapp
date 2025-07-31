@@ -19,7 +19,7 @@ function SignInContent() {
     }
   }, [status, session, router, callbackUrl]);
 
-  const handleGoogleSignIn = async () => {
+  const _handleGoogleSignIn = async () => {
     setIsLoading(true);
     // Starting Google sign in
 

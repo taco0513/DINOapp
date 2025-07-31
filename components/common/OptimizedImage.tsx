@@ -61,19 +61,19 @@ export function OptimizedImage({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const handleLoad = () => {
+  const _handleLoad = () => {
     setIsLoading(false);
     onLoad?.();
   };
 
-  const handleError = () => {
+  const _handleError = () => {
     setIsLoading(false);
     setHasError(true);
     onError?.();
   };
 
   // Generate blur data URL if not provided
-  const dataUrl =
+  const _dataUrl =
     blurDataURL ||
     `data:image/svg+xml;base64,${toBase64(shimmer(width, height))}`;
 

@@ -62,7 +62,7 @@ export interface CountryData {
   popularDestinations?: boolean;
 }
 
-export const PASSPORT_COUNTRIES = [
+export const _PASSPORT_COUNTRIES = [
   { code: 'KR' as const, name: 'South Korea', flag: '🇰🇷' },
   { code: 'US' as const, name: 'United States', flag: '🇺🇸' },
   { code: 'JP' as const, name: 'Japan', flag: '🇯🇵' },

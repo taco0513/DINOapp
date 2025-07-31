@@ -152,7 +152,7 @@ export function getRateLimitConfig() {
  * Get security headers configuration
  */
 export function getSecurityConfig() {
-  const baseUrl = env.NEXTAUTH_URL;
+  const _baseUrl = env.NEXTAUTH_URL;
 
   return {
     contentSecurityPolicy: {
@@ -196,7 +196,7 @@ export function getSecurityConfig() {
 /**
  * Export configuration for different environments
  */
-export const config = {
+export const _config = {
   env,
   database: getDatabaseConfig(),
   cache: getCacheConfig(),

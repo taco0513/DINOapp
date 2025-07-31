@@ -51,7 +51,7 @@ export default function CodeGenerator() {
   );
   const [copied, setCopied] = useState(false);
 
-  const handleGenerate = async () => {
+  const _handleGenerate = async () => {
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
@@ -77,13 +77,13 @@ export default function CodeGenerator() {
     }
   };
 
-  const copyToClipboard = async (text: string) => {
+  const _copyToClipboard = async (text: string) => {
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const downloadCode = (code: string, filename: string) => {
+  const _downloadCode = (code: string, filename: string) => {
     const blob = new Blob([code], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -95,7 +95,7 @@ export default function CodeGenerator() {
     URL.revokeObjectURL(url);
   };
 
-  const getTypeIcon = (type: GeneratedCode['type']) => {
+  const _getTypeIcon = (type: GeneratedCode['type']) => {
     switch (type) {
       case 'component':
         return <Layout className='h-4 w-4' />;

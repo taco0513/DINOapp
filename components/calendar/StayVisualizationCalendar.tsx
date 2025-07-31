@@ -61,11 +61,11 @@ export default function StayVisualizationCalendar({
   const [calcResult, setCalcResult] = useState<Date | null>(null);
 
   // 16개월 기간 계산 (과거 6개월 + 현재 + 미래 9개월)
-  const startDate = subMonths(startOfMonth(currentDate), 6);
-  const endDate = addMonths(endOfMonth(currentDate), 9);
+  const _startDate = subMonths(startOfMonth(currentDate), 6);
+  const _endDate = addMonths(endOfMonth(currentDate), 9);
 
   // 365일 롤링 윈도우 계산
-  const calculateRollingStayDays = (
+  const _calculateRollingStayDays = (
     date: Date,
     country: string = currentCountry
   ): number => {
@@ -100,7 +100,7 @@ export default function StayVisualizationCalendar({
   };
 
   // 캘린더 데이터 생성
-  const calendarData = useMemo(() => {
+  const _calendarData = useMemo(() => {
     const months: { month: Date; days: DayInfo[] }[] = [];
 
     let currentMonth = startDate;
@@ -137,7 +137,7 @@ export default function StayVisualizationCalendar({
   }, [trips, currentDate, currentCountry, startDate, endDate]);
 
   // 날짜 선택 핸들러
-  const handleDateClick = (dayInfo: DayInfo) => {
+  const _handleDateClick = (dayInfo: DayInfo) => {
     setSelectedDate(dayInfo.date);
     if (onDateClick) {
       onDateClick(dayInfo.date, dayInfo.trips);
@@ -145,19 +145,19 @@ export default function StayVisualizationCalendar({
   };
 
   // 현재 날짜로 이동
-  const goToToday = () => {
+  const _goToToday = () => {
     setCurrentDate(new Date());
   };
 
   // 월 이동
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const _navigateMonth = (direction: 'prev' | 'next') => {
     setCurrentDate(prev =>
       direction === 'prev' ? subMonths(prev, 1) : addMonths(prev, 1)
     );
   };
 
   // 수동 날짜 입력 처리
-  const handleManualDateSubmit = () => {
+  const _handleManualDateSubmit = () => {
     // YYYY-MM-DD 또는 YYYY/MM/DD 형식 지원
     const dateRegex = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/;
     const match = manualDateInput.match(dateRegex);
@@ -191,7 +191,7 @@ export default function StayVisualizationCalendar({
   };
 
   // 날짜 계산기
-  const handleDateCalculation = () => {
+  const _handleDateCalculation = () => {
     if (!calcBaseDate || !calcDays) return;
 
     const baseDate = new Date(calcBaseDate);
@@ -204,7 +204,7 @@ export default function StayVisualizationCalendar({
   };
 
   // 날짜 셀 스타일 계산
-  const getDayCellStyle = (dayInfo: DayInfo) => {
+  const _getDayCellStyle = (dayInfo: DayInfo) => {
     const baseClasses =
       'relative p-2 text-center cursor-pointer transition-all hover:opacity-80';
 

@@ -212,7 +212,7 @@ test.describe('App Functionality Tests', () => {
       // Try to focus (if it's an input)
       try {
         await firstInput.focus();
-      } catch (e) {
+      } catch (_e) {
         // Ignore if element is not focusable
       }
     }

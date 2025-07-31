@@ -163,7 +163,7 @@ export default function MonitoringPage() {
     return () => clearInterval(interval);
   }, [autoRefresh, selectedTimeRange, session]);
 
-  const loadMonitoringData = async () => {
+  const _loadMonitoringData = async () => {
     if (!session) {
       setLoading(false);
       return;
@@ -185,14 +185,14 @@ export default function MonitoringPage() {
             : data.error?.error || 'Failed to load monitoring data';
         setError(errorMessage);
       }
-    } catch (err) {
+    } catch (__err) {
       setError('Network error while loading monitoring data');
     } finally {
       setLoading(false);
     }
   };
 
-  const formatUptime = (seconds: number) => {
+  const _formatUptime = (seconds: number) => {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -202,7 +202,7 @@ export default function MonitoringPage() {
     return `${minutes}m`;
   };
 
-  const formatBytes = (bytes: number) => {
+  const _formatBytes = (bytes: number) => {
     const units = ['B', 'KB', 'MB', 'GB'];
     let size = bytes;
     let unitIndex = 0;

@@ -46,7 +46,7 @@ export function useVisaFilter({
   bookmarkedCountries,
   showOnlyBookmarked,
 }: UseVisaFilterProps) {
-  const filteredCountries = useMemo(() => {
+  const _filteredCountries = useMemo(() => {
     let countries: FilteredCountry[] = Object.entries(VISA_DATABASE).map(
       ([countryCode, countryData]) => ({
         code: countryCode,

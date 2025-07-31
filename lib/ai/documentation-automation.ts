@@ -377,4 +377,4 @@ export class DocumentationAutomation extends EventEmitter {
 }
 
 // 싱글톤 인스턴스
-export const documentationEngine = new DocumentationAutomation();
+export const _documentationEngine = new DocumentationAutomation();

@@ -10,7 +10,7 @@ import {
 import { ko } from 'date-fns/locale';
 
 // Date utility functions that would be in lib/date-utils.ts
-const formatDate = (
+const _formatDate = (
   date: Date | string,
   formatString: string = 'yyyy-MM-dd'
 ): string => {
@@ -18,12 +18,12 @@ const formatDate = (
   return format(dateObj, formatString);
 };
 
-const formatDateKorean = (date: Date | string): string => {
+const _formatDateKorean = (date: Date | string): string => {
   const dateObj = typeof date === 'string' ? parseISO(date) : date;
   return format(dateObj, 'yyyy년 MM월 dd일', { locale: ko });
 };
 
-const getDaysBetween = (
+const _getDaysBetween = (
   startDate: Date | string,
   endDate: Date | string
 ): number => {
@@ -32,12 +32,12 @@ const getDaysBetween = (
   return differenceInDays(end, start);
 };
 
-const addDaysToDate = (date: Date | string, days: number): Date => {
+const _addDaysToDate = (date: Date | string, days: number): Date => {
   const dateObj = typeof date === 'string' ? parseISO(date) : date;
   return addDays(dateObj, days);
 };
 
-const isDateInRange = (
+const _isDateInRange = (
   date: Date | string,
   startDate: Date | string,
   endDate: Date | string
@@ -49,7 +49,7 @@ const isDateInRange = (
   return !isBefore(dateObj, start) && !isAfter(dateObj, end);
 };
 
-const getDateRangeOverlap = (
+const _getDateRangeOverlap = (
   range1Start: Date | string,
   range1End: Date | string,
   range2Start: Date | string,
@@ -74,7 +74,7 @@ const getDateRangeOverlap = (
   return getDaysBetween(overlapStart, overlapEnd) + 1;
 };
 
-const getSchengenWindow = (
+const _getSchengenWindow = (
   referenceDate: Date | string = new Date()
 ): { start: Date; end: Date } => {
   const end =
@@ -84,7 +84,7 @@ const getSchengenWindow = (
   return { start, end };
 };
 
-const isDateValid = (dateString: string): boolean => {
+const _isDateValid = (dateString: string): boolean => {
   try {
     const date = parseISO(dateString);
     return isValid(date) && dateString === format(date, 'yyyy-MM-dd');

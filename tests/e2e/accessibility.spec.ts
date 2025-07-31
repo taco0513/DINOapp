@@ -110,7 +110,7 @@ test.describe('Accessibility Tests', () => {
     for (let i = 0; i < inputCount; i++) {
       const input = inputs.nth(i);
       const id = await input.getAttribute('id');
-      const name = await input.getAttribute('name');
+      const _name = await input.getAttribute('name');
       const ariaLabel = await input.getAttribute('aria-label');
       const ariaLabelledBy = await input.getAttribute('aria-labelledby');
 

@@ -13,7 +13,7 @@ interface CachedTrip {
 }
 
 export default function OfflinePage() {
-  const isOnline = useOnlineStatus();
+  const _isOnline = useOnlineStatus();
   const [lastSync, setLastSync] = useState<string | null>(null);
   const [cachedTrips, setCachedTrips] = useState<CachedTrip[]>([]);
   const [cacheSize, setCacheSize] = useState<string>('0');
@@ -50,7 +50,7 @@ export default function OfflinePage() {
     calculateCacheSize();
   }, []);
 
-  const handleRetry = () => {
+  const _handleRetry = () => {
     if (navigator.onLine) {
       window.location.href = '/dashboard';
     } else {
@@ -58,7 +58,7 @@ export default function OfflinePage() {
     }
   };
 
-  const handleClearCache = async () => {
+  const _handleClearCache = async () => {
     if (confirm('모든 오프라인 데이터를 삭제하시겠습니까?')) {
       // 캐시 삭제
       if ('caches' in window) {

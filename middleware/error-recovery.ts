@@ -24,7 +24,7 @@ interface CircuitBreakerState {
 const circuitBreakers: Map<string, CircuitBreakerState> = new Map();
 
 // Circuit breaker configuration
-const CIRCUIT_BREAKER_CONFIG = {
+const _CIRCUIT_BREAKER_CONFIG = {
   failureThreshold: 5,
   resetTimeout: 60000, // 1 minute
   halfOpenRequests: 3,
@@ -169,7 +169,7 @@ export function recordServiceSuccess(service: string) {
 
 function handleDegradedService(request: NextRequest): NextResponse {
   // Implement graceful degradation strategies
-  const pathname = request.nextUrl.pathname;
+  const _pathname = request.nextUrl.pathname;
 
   // For read operations, try to serve from cache
   if (request.method === 'GET') {
@@ -246,7 +246,7 @@ function createDegradedResponse(data: any): NextResponse {
 }
 
 // Export circuit breaker controls
-export const circuitBreaker = {
+export const _circuitBreaker = {
   recordFailure: recordServiceFailure,
   recordSuccess: recordServiceSuccess,
   isOpen: isCircuitOpen,

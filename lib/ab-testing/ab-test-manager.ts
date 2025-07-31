@@ -336,4 +336,4 @@ export class ABTestManager {
 }
 
 // 싱글톤 인스턴스 export
-export const abTestManager = ABTestManager.getInstance();
+export const _abTestManager = ABTestManager.getInstance();

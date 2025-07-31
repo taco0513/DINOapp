@@ -30,9 +30,9 @@ export default function MiniDatePicker({
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
-  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const _days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-  const handleDateClick = (date: Date) => {
+  const _handleDateClick = (date: Date) => {
     onDateSelect(date);
     onClose();
   };

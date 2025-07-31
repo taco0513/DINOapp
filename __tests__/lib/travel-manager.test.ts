@@ -116,7 +116,7 @@ describe('TravelManager', () => {
     it('should filter by specific statuses', async () => {
       mockCountryVisit.findMany.mockResolvedValue([mockTrips[0]]);
 
-      const result = await travelManager.getTrips({
+      const _result = await travelManager.getTrips({
         includeCompleted: true,
         includePlanned: false,
         includeOngoing: false,
@@ -598,7 +598,7 @@ describe('TravelManager', () => {
           budgetRange: 'high',
         });
 
-        const result = await travelManager.updateTravelPreferences({
+        const _result = await travelManager.updateTravelPreferences({
           budgetRange: 'high',
           preferredRegions: ['Europe'],
         });

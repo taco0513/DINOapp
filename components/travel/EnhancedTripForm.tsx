@@ -63,7 +63,7 @@ export function EnhancedTripForm({
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const updateField = (field: keyof TripFormData, value: any) => {
+  const _updateField = (field: keyof TripFormData, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
@@ -79,7 +79,7 @@ export function EnhancedTripForm({
     }
   };
 
-  const validateTrip = async () => {
+  const _validateTrip = async () => {
     if (!formData.country || !formData.entryDate || !formData.exitDate) {
       return;
     }
@@ -103,13 +103,13 @@ export function EnhancedTripForm({
       if (data.success) {
         setValidation(data.data);
       }
-    } catch (error) {
+    } catch (_error) {
     } finally {
       setIsValidating(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const _handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Basic validation
@@ -136,7 +136,7 @@ export function EnhancedTripForm({
     setIsSubmitting(true);
     try {
       await onSubmit(formData);
-    } catch (error) {
+    } catch (_error) {
     } finally {
       setIsSubmitting(false);
     }

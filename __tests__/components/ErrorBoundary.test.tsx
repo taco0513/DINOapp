@@ -75,7 +75,7 @@ jest.mock('@/components/ui/alert', () => ({
 }));
 
 // Component that throws an error for testing
-const ThrowError = ({
+const _ThrowError = ({
   shouldThrow = false,
   message = 'Test error',
 }: {

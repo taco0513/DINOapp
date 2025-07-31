@@ -869,4 +869,4 @@ export class VisaDatabase {
 }
 
 // Export singleton instance
-export const visaDatabase = VisaDatabase.getInstance();
+export const _visaDatabase = VisaDatabase.getInstance();

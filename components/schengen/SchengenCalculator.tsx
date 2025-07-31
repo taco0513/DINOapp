@@ -26,7 +26,7 @@ export default function SchengenCalculator({
     loadSchengenStatus();
   }, []);
 
-  const loadSchengenStatus = async () => {
+  const _loadSchengenStatus = async () => {
     setLoading(true);
     try {
       const response = await ApiClient.getSchengenStatus();
@@ -36,7 +36,7 @@ export default function SchengenCalculator({
           onDataUpdate(response.data);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Error loading Schengen status
     } finally {
       setLoading(false);
@@ -69,7 +69,7 @@ export default function SchengenCalculator({
     };
   };
 
-  const selectedDateStatus = calculateDaysOnDate(selectedDate);
+  const _selectedDateStatus = calculateDaysOnDate(selectedDate);
 
   const handleFutureTripCalculation = () => {
     if (!futureTrip.entryDate || !futureTrip.exitDate) return null;
@@ -92,7 +92,7 @@ export default function SchengenCalculator({
     };
   };
 
-  const futureTripResult = futureTrip.enabled
+  const _futureTripResult = futureTrip.enabled
     ? handleFutureTripCalculation()
     : null;
 

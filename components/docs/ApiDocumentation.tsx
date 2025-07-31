@@ -217,10 +217,10 @@ export default function ApiDocumentation() {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedEndpoint, setSelectedEndpoint] = useState(0);
 
-  const currentEndpoint =
+  const _currentEndpoint =
     API_ENDPOINTS[selectedCategory]?.endpoints[selectedEndpoint];
 
-  const getMethodColor = (method: string) => {
+  const _getMethodColor = (method: string) => {
     switch (method) {
       case 'GET':
         return 'bg-green-100 text-green-800';
@@ -235,7 +235,7 @@ export default function ApiDocumentation() {
     }
   };
 
-  const copyToClipboard = (text: string) => {
+  const _copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     // TODO: Toast 알림 추가
   };

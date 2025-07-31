@@ -44,7 +44,7 @@ export default function OptimizedImage({
   const [hasError, setHasError] = useState(false);
 
   // Generate blur placeholder for better UX
-  const generateBlurDataURL = (w: number, h: number) => {
+  const _generateBlurDataURL = (w: number, h: number) => {
     if (blurDataURL) return blurDataURL;
 
     // Create a simple base64 blur placeholder
@@ -65,19 +65,19 @@ export default function OptimizedImage({
     return canvas.toDataURL('image/jpeg', 0.1);
   };
 
-  const handleLoad = useCallback(() => {
+  const _handleLoad = useCallback(() => {
     setIsLoading(false);
     onLoad?.();
   }, [onLoad]);
 
-  const handleError = useCallback(() => {
+  const _handleError = useCallback(() => {
     setIsLoading(false);
     setHasError(true);
     onError?.();
   }, [onError]);
 
   // Responsive sizes based on common breakpoints
-  const responsiveSizes =
+  const _responsiveSizes =
     sizes ||
     (fill
       ? '100vw'

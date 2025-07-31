@@ -90,7 +90,7 @@ class MemoryRateLimiter {
 }
 
 // 싱글톤 인스턴스
-const rateLimiter = new MemoryRateLimiter();
+const _rateLimiter = new MemoryRateLimiter();
 
 export class RateLimiter {
   private config: RateLimitConfig;
@@ -264,12 +264,12 @@ export function logSecurityEvent(
   event: 'rate_limit_exceeded' | 'suspicious_activity' | 'blocked_request',
   details?: Record<string, any>
 ) {
-  const clientId =
+  const _clientId =
     req.headers.get('x-forwarded-for') ||
     req.headers.get('x-real-ip') ||
     'unknown';
-  const userAgent = req.headers.get('user-agent') || 'unknown';
-  const timestamp = new Date().toISOString();
+  const _userAgent = req.headers.get('user-agent') || 'unknown';
+  const _timestamp = new Date().toISOString();
 
   // Security event logged
 

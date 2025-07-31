@@ -34,7 +34,7 @@ export default function PageHeader({
 }: PageHeaderProps) {
   const router = useRouter();
 
-  const handleBackClick = () => {
+  const _handleBackClick = () => {
     router.back();
   };
 
@@ -127,7 +127,7 @@ export default function PageHeader({
 export { PageHeader };
 
 // 미리 정의된 페이지별 아이콘들
-export const PageIcons = {
+export const _PageIcons = {
   Dashboard: (
     <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
       🏠

@@ -88,7 +88,7 @@ export const SW_CONFIG = {
 };
 
 // Helper functions for service worker
-export const swHelpers = {
+export const _swHelpers = {
   // Check if request should be cached
   shouldCache(request: Request): boolean {
     const url = new URL(request.url);
@@ -185,7 +185,7 @@ export const swHelpers = {
 };
 
 // IndexedDB configuration for offline data
-export const IDB_CONFIG = {
+export const _IDB_CONFIG = {
   DB_NAME: 'dino-offline-db',
   VERSION: 1,
   STORES: {
@@ -197,7 +197,7 @@ export const IDB_CONFIG = {
 };
 
 // Background sync queue configuration
-export const SYNC_CONFIG = {
+export const _SYNC_CONFIG = {
   MAX_RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 5000, // 5 seconds
   BATCH_SIZE: 10,

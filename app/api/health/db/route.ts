@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getDbHealth, isDbHealthy } from '@/lib/database/connection-manager';
 import { checkDatabaseHealth } from '@/lib/database/prisma-client';
 import { asyncHandler } from '@/lib/error/error-handler';
 
 // GET /api/health/db - Database health check endpoint
-export const GET = asyncHandler(async (request: NextRequest) => {
+export const _GET = asyncHandler(async (_request: Request) => {
   // Get connection manager health
   const connectionHealth = getDbHealth();
 

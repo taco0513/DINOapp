@@ -22,7 +22,7 @@ export function trackPageView(url: string) {
 }
 
 // 사용자 행동 추적
-export const trackingEvents = {
+export const _trackingEvents = {
   // 인증 관련
   login: (method: string) => trackEvent('login', { method }),
   logout: () => trackEvent('logout'),
@@ -98,7 +98,7 @@ export function reportWebVitals(metric: any) {
 }
 
 // 성능 메트릭 임계값
-export const performanceThresholds = {
+export const _performanceThresholds = {
   LCP: { good: 2500, needsImprovement: 4000 }, // Largest Contentful Paint
   FID: { good: 100, needsImprovement: 300 }, // First Input Delay
   CLS: { good: 0.1, needsImprovement: 0.25 }, // Cumulative Layout Shift

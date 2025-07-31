@@ -139,8 +139,8 @@ export class TravelAnalyticsEngine {
       return this.getEmptyStats();
     }
 
-    const totalTrips = trips.length;
-    const totalDays = trips.reduce(
+    const _totalTrips = trips.length;
+    const _totalDays = trips.reduce(
       (sum, trip) =>
         sum +
         differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) +
@@ -148,14 +148,14 @@ export class TravelAnalyticsEngine {
       0
     );
 
-    const durations = trips.map(
+    const _durations = trips.map(
       trip =>
         differenceInDays(new Date(trip.endDate), new Date(trip.startDate)) + 1
     );
 
-    const countries = [...new Set(trips.map(trip => trip.country))];
+    const _countries = [...new Set(trips.map(trip => trip.country))];
     const countryVisits = this.countryVisitFrequency(trips);
-    const mostVisitedCountry =
+    const _mostVisitedCountry =
       Object.entries(countryVisits).sort(([, a], [, b]) => b - a)[0]?.[0] || '';
 
     // Schengen analysis
@@ -961,4 +961,4 @@ export class TravelAnalyticsEngine {
 }
 
 // Export singleton instance
-export const travelAnalyticsEngine = TravelAnalyticsEngine.getInstance();
+export const _travelAnalyticsEngine = TravelAnalyticsEngine.getInstance();

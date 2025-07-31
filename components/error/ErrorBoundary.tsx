@@ -94,7 +94,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       const { error, errorCount } = this.state;
-      const isDevelopment = process.env.NODE_ENV === 'development';
+      const _isDevelopment = process.env.NODE_ENV === 'development';
 
       return (
         <div className='min-h-screen flex items-center justify-center p-4 bg-gray-50'>

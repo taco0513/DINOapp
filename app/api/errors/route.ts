@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { csrfProtection } from '@/lib/security/csrf-protection';
@@ -29,9 +29,9 @@ interface ErrorReport {
 
 // In-memory error store (in production, use proper logging service)
 const errorStore: ErrorReport[] = [];
-const MAX_ERRORS = 5000;
+const _MAX_ERRORS = 5000;
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint for error dashboard
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -326,7 +326,7 @@ async function sendToErrorTrackingService(error: ErrorReport) {
 
     // Could also send to custom logging service
     // await fetch('your-logging-service-url', { ... })
-  } catch (err) {
+  } catch (__err) {
     // Failed to send error to tracking service
   }
 }
@@ -340,7 +340,7 @@ async function sendCriticalErrorAlert(error: ErrorReport) {
     // - Send Slack/Discord notification
     // - Create incident in monitoring system
     // - Trigger automated rollback if needed
-  } catch (err) {
+  } catch (__err) {
     // Failed to send critical error alert
   }
 }

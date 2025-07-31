@@ -76,7 +76,7 @@ export default function AIPairProgramming() {
     };
   }, [isActive]);
 
-  const startPairSession = async () => {
+  const _startPairSession = async () => {
     const newSession: PairSession = {
       id: `pair_${Date.now()}`,
       startTime: new Date(),
@@ -106,7 +106,7 @@ export default function AIPairProgramming() {
     }
   };
 
-  const activateAINavigator = () => {
+  const _activateAINavigator = () => {
     // 초기 AI 제안 생성
     const initialSuggestions: AINavigation[] = [
       {
@@ -126,7 +126,7 @@ export default function AIPairProgramming() {
     setAiSuggestions(initialSuggestions);
   };
 
-  const switchRole = () => {
+  const _switchRole = () => {
     const newMode = currentMode === 'driver' ? 'navigator' : 'driver';
     setCurrentMode(newMode);
     if (session) {
@@ -134,14 +134,14 @@ export default function AIPairProgramming() {
     }
   };
 
-  const formatTime = (seconds: number): string => {
+  const _formatTime = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const endSession = () => {
+  const _endSession = () => {
     setIsActive(false);
     if (session) {
       setSession({

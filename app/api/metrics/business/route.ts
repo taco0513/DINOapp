@@ -76,11 +76,11 @@ export async function GET(request: NextRequest) {
         },
       }),
       // 현재 기간 여행 수
-      prisma.trip.count({
+      prisma.travel.count({
         where: { createdAt: { gte: startDate } },
       }),
       // 이전 기간 여행 수
-      prisma.trip.count({
+      prisma.travel.count({
         where: {
           createdAt: { gte: previousStartDate, lt: startDate },
         },
@@ -88,8 +88,7 @@ export async function GET(request: NextRequest) {
       // 현재 기간 활성 사용자 (여행을 생성한 사용자)
       prisma.user.count({
         where: {
-          trips: {
-            some: {
+          travels: { some: {
               createdAt: { gte: startDate },
             },
           },
@@ -98,8 +97,7 @@ export async function GET(request: NextRequest) {
       // 이전 기간 활성 사용자
       prisma.user.count({
         where: {
-          trips: {
-            some: {
+          travels: { some: {
               createdAt: { gte: previousStartDate, lt: startDate },
             },
           },
@@ -108,12 +106,12 @@ export async function GET(request: NextRequest) {
     ]);
 
     // 평균 여행 기간 계산
-    const tripDurations = await prisma.trip.findMany({
+    const tripDurations = await prisma.travel.findMany({
       where: { createdAt: { gte: startDate } },
       select: { entryDate: true, exitDate: true },
     });
 
-    const avgDuration =
+    const _avgDuration =
       tripDurations.reduce((acc, trip) => {
         const duration =
           (trip.exitDate.getTime() - trip.entryDate.getTime()) /
@@ -127,7 +125,7 @@ export async function GET(request: NextRequest) {
       return ((current - previous) / previous) * 100;
     };
 
-    const metrics = {
+    const _metrics = {
       activeUsers: {
         value: currentActiveUsers,
         change: Math.round(

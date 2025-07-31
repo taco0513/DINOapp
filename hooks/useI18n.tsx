@@ -61,7 +61,7 @@ interface I18nContextType {
   isLoading: boolean;
 }
 
-const I18nContext = createContext<I18nContextType | null>(null);
+const _I18nContext = createContext<I18nContextType | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [currentLocale, setCurrentLocale] = useState<Locale>('ko');

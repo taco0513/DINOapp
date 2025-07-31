@@ -30,7 +30,7 @@ jest.mock('@/lib/prisma', () => ({
 
 describe('VisaAlerts', () => {
   const mockPrisma = require('@/lib/prisma').prisma;
-  const mockAlertManager = require('@/lib/notifications/alert-manager');
+  const _mockAlertManager = require('@/lib/notifications/alert-manager');
 
   beforeEach(() => {
     jest.clearAllMocks();

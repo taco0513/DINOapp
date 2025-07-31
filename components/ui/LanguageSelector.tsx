@@ -23,7 +23,7 @@ export default function LanguageSelector({
     lang => lang.code === currentLocale
   );
 
-  const handleLanguageChange = (locale: Locale) => {
+  const _handleLanguageChange = (locale: Locale) => {
     setLocale(locale);
     setShowDropdown(false);
   };

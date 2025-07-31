@@ -99,7 +99,7 @@ export default function MonitoringDashboard() {
   const [showLogs, setShowLogs] = useState(false);
 
   // Fetch health data
-  const fetchHealth = async () => {
+  const _fetchHealth = async () => {
     try {
       const response = await fetch('/api/health');
       const data = await response.json();
@@ -110,7 +110,7 @@ export default function MonitoringDashboard() {
   };
 
   // Fetch metrics data
-  const fetchMetrics = async () => {
+  const _fetchMetrics = async () => {
     try {
       const response = await fetch('/api/metrics');
       if (response.ok) {
@@ -124,7 +124,7 @@ export default function MonitoringDashboard() {
   };
 
   // Fetch logs data
-  const fetchLogs = async () => {
+  const _fetchLogs = async () => {
     try {
       const response = await fetch(`/api/logs?level=${logLevel}&limit=50`);
       if (response.ok) {
@@ -137,7 +137,7 @@ export default function MonitoringDashboard() {
   };
 
   // Check for alerts based on health and metrics
-  const checkAlerts = () => {
+  const _checkAlerts = () => {
     const newAlerts: string[] = [];
 
     if (health) {

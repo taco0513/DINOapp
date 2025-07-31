@@ -15,7 +15,7 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
   const [loading, setLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const country = getCountryByName(trip.country);
+  const _country = getCountryByName(trip.country);
   const entryDate = new Date(trip.entryDate);
   const exitDate = trip.exitDate ? new Date(trip.exitDate) : null;
 
@@ -32,8 +32,8 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
     }
   };
 
-  const days = calculateDays();
-  const isCurrentlyStaying = !exitDate;
+  const _days = calculateDays();
+  const _isCurrentlyStaying = !exitDate;
 
   const handleDelete = async () => {
     if (!showDeleteConfirm) {
@@ -45,7 +45,7 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
     try {
       await ApiClient.deleteTrip(trip.id);
       onDelete();
-    } catch (error) {
+    } catch (_error) {
       // Error deleting trip
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
     }
   };
 
-  const formatDate = (date: Date) => {
+  const _formatDate = (date: Date) => {
     return date.toLocaleDateString('ko-KR');
   };
 

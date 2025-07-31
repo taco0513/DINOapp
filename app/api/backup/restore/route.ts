@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { backupManager } from '@/lib/backup/backup-manager';
@@ -7,7 +7,7 @@ import { securityMiddleware } from '@/lib/security/auth-middleware';
 import { csrfProtection } from '@/lib/security/csrf-protection';
 
 // POST /api/backup/restore - 백업에서 복원
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     // Rate limiting (복원은 매우 resource-intensive한 작업)
     const rateLimitResponse = await applyRateLimit(request, 'mutation');

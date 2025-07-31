@@ -35,7 +35,7 @@ interface ExtractedTrip {
 
 export default function GmailIntegrationPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
+  const _router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
@@ -95,7 +95,7 @@ export default function GmailIntegrationPage() {
     }
   }, []);
 
-  const handleConnect = async () => {
+  const _handleConnect = async () => {
     try {
       // Gmail OAuth 연결 시뮬레이션
       const mockAuth = await new Promise(resolve => {
@@ -106,20 +106,20 @@ export default function GmailIntegrationPage() {
         setIsConnected(true);
         localStorage.setItem('dino-gmail-connected', 'true');
       }
-    } catch (error) {
+    } catch (__error) {
       // Gmail 연결 실패 처리
       setIsConnected(false);
     }
   };
 
-  const handleDisconnect = () => {
+  const _handleDisconnect = () => {
     setIsConnected(false);
     localStorage.removeItem('dino-gmail-connected');
     localStorage.removeItem('dino-extracted-trips');
     setExtractedTrips([]);
   };
 
-  const handleScan = async () => {
+  const _handleScan = async () => {
     setIsScanning(true);
     setScanProgress(0);
 
@@ -209,7 +209,7 @@ export default function GmailIntegrationPage() {
     setIsScanning(false);
   };
 
-  const handleTogglePattern = (patternId: string) => {
+  const _handleTogglePattern = (patternId: string) => {
     setEmailPatterns(patterns =>
       patterns.map(p =>
         p.id === patternId ? { ...p, enabled: !p.enabled } : p
@@ -217,7 +217,7 @@ export default function GmailIntegrationPage() {
     );
   };
 
-  const handleSelectTrip = (tripId: string) => {
+  const _handleSelectTrip = (tripId: string) => {
     setSelectedTrips(prev => {
       const newSet = new Set(prev);
       if (newSet.has(tripId)) {
@@ -229,7 +229,7 @@ export default function GmailIntegrationPage() {
     });
   };
 
-  const handleSelectAll = () => {
+  const _handleSelectAll = () => {
     if (
       selectedTrips.size ===
       extractedTrips.filter(t => t.status === 'pending').length
@@ -244,7 +244,7 @@ export default function GmailIntegrationPage() {
     }
   };
 
-  const handleImportSelected = async () => {
+  const _handleImportSelected = async () => {
     // 선택된 여행 가져오기
     const tripsToImport = extractedTrips.filter(t => selectedTrips.has(t.id));
 
@@ -265,7 +265,7 @@ export default function GmailIntegrationPage() {
     // `${tripsToImport.length}개의 여행 기록을 가져왔습니다!`
   };
 
-  const handleIgnoreSelected = () => {
+  const _handleIgnoreSelected = () => {
     setExtractedTrips(trips =>
       trips.map(t =>
         selectedTrips.has(t.id) ? { ...t, status: 'ignored' as const } : t
@@ -274,8 +274,8 @@ export default function GmailIntegrationPage() {
     setSelectedTrips(new Set());
   };
 
-  const pendingTrips = extractedTrips.filter(t => t.status === 'pending');
-  const importedTrips = extractedTrips.filter(t => t.status === 'imported');
+  const _pendingTrips = extractedTrips.filter(t => t.status === 'pending');
+  const _importedTrips = extractedTrips.filter(t => t.status === 'imported');
 
   return (
     <StandardPageLayout

@@ -21,11 +21,11 @@ const moreNavigation = [
 ];
 
 // 전체 네비게이션 (모바일 메뉴용)
-const allNavigation = [...coreNavigation, ...moreNavigation];
+const _allNavigation = [...coreNavigation, ...moreNavigation];
 
 export default function Header() {
   const { data: session, status } = useSession();
-  const pathname = usePathname();
+  const _pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
@@ -57,12 +57,12 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSignOut = async () => {
+  const _handleSignOut = async () => {
     // Simply redirect to logout page which handles everything
     window.location.href = '/logout';
   };
 
-  const isActive = (href: string) => pathname === href;
+  const _isActive = (href: string) => pathname === href;
 
   // 헤더는 항상 보여주되, 로딩 상태만 체크
   if (status === 'loading') {

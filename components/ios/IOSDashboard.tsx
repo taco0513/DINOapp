@@ -21,7 +21,7 @@ export default function IOSDashboard({
 }: IOSDashboardProps) {
   const { data: session } = useSession();
 
-  const quickActions = [
+  const _quickActions = [
     {
       title: '새 여행 추가',
       subtitle: '여행을 기록하고 추적하세요',

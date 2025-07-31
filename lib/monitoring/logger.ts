@@ -101,7 +101,7 @@ export class Logger {
           .catch(() => {
             // Ignore if module not available
           });
-      } catch (error) {
+      } catch (__error) {
         // Ignore errors
       }
     }
@@ -202,7 +202,7 @@ export class Logger {
 }
 
 // Create loggers for different modules
-export const loggers = {
+export const _loggers = {
   api: new Logger('api'),
   auth: new Logger('auth'),
   db: new Logger('db'),

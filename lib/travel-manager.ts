@@ -100,7 +100,7 @@ export interface TravelInsights {
  * ```typescript
  * const manager = new TravelManager('user123');
  * const trips = await manager.getTrips();
- * const insights = await manager.getTravelInsights();
+ * const _insights = await manager.getTravelInsights();
  * ```
  */
 export class TravelManager {
@@ -124,7 +124,7 @@ export class TravelManager {
    * @example
    * ```typescript
    * // Get only completed trips, sorted by entry date
-   * const completedTrips = await manager.getTrips({
+   * const _completedTrips = await manager.getTrips({
    *   includeCompleted: true,
    *   includePlanned: false,
    *   includeOngoing: false,
@@ -174,7 +174,7 @@ export class TravelManager {
    *
    * @example
    * ```typescript
-   * const newTrip = await manager.createTrip({
+   * const _newTrip = await manager.createTrip({
    *   country: 'France',
    *   entryDate: '2024-06-01',
    *   exitDate: '2024-06-15',
@@ -251,7 +251,7 @@ export class TravelManager {
    *
    * @example
    * ```typescript
-   * const updated = await manager.updateTrip('trip123', {
+   * const _updated = await manager.updateTrip('trip123', {
    *   exitDate: '2024-06-20',
    *   notes: 'Extended stay',
    *   cost: 2500
@@ -360,12 +360,12 @@ export class TravelManager {
     });
 
     // Calculate basic summary
-    const totalTrips = trips.length;
-    const completedTrips = trips.filter(t => t.status === 'completed').length;
-    const ongoingTrips = trips.filter(t => t.status === 'ongoing').length;
-    const plannedTrips = trips.filter(t => t.status === 'planned').length;
+    const _totalTrips = trips.length;
+    const _completedTrips = trips.filter(t => t.status === 'completed').length;
+    const _ongoingTrips = trips.filter(t => t.status === 'ongoing').length;
+    const _plannedTrips = trips.filter(t => t.status === 'planned').length;
 
-    const countriesVisited = new Set(trips.map(t => t.country)).size;
+    const _countriesVisited = new Set(trips.map(t => t.country)).size;
 
     // Calculate total days abroad
     let totalDaysAbroad = 0;
@@ -382,7 +382,7 @@ export class TravelManager {
     });
 
     // Get Schengen status
-    const schengenStatus = calculateSchengenStatus(trips);
+    const _schengenStatus = calculateSchengenStatus(trips);
 
     // Popular destinations
     const countryFrequency: {
@@ -405,7 +405,7 @@ export class TravelManager {
       }
     });
 
-    const popularDestinations = Object.entries(countryFrequency)
+    const _popularDestinations = Object.entries(countryFrequency)
       .map(([country, data]) => ({ country, ...data }))
       .sort((a, b) => b.visits - a.visits)
       .slice(0, 10);
@@ -422,22 +422,22 @@ export class TravelManager {
           ) + 1
       );
 
-    const averageTripDuration =
+    const _averageTripDuration =
       durations.length > 0
         ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
         : 0;
-    const longestTrip = durations.length > 0 ? Math.max(...durations) : 0;
-    const shortestTrip = durations.length > 0 ? Math.min(...durations) : 0;
+    const _longestTrip = durations.length > 0 ? Math.max(...durations) : 0;
+    const _shortestTrip = durations.length > 0 ? Math.min(...durations) : 0;
 
     const visaTypeCounts: { [key: string]: number } = {};
     trips.forEach(trip => {
       visaTypeCounts[trip.visaType] = (visaTypeCounts[trip.visaType] || 0) + 1;
     });
-    const mostCommonVisaType =
+    const _mostCommonVisaType =
       Object.entries(visaTypeCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ||
       'Tourist';
 
-    const totalSpent = trips
+    const _totalSpent = trips
       .filter(t => t.cost)
       .reduce((sum, t) => sum + (t.cost || 0), 0);
 
@@ -612,7 +612,7 @@ export class TravelManager {
         requirements: [],
         note: 'Visa information not available. Please check with relevant embassy.',
       };
-    } catch (error) {
+    } catch (__error) {
       throw new Error('Failed to fetch visa requirements');
     }
   }
@@ -775,7 +775,7 @@ export async function getUserTravelSummary(
  *
  * @example
  * ```typescript
- * const validation = await validateUserTrip(
+ * const _validation = await validateUserTrip(
  *   'user123',
  *   'Spain',
  *   '2024-08-01',

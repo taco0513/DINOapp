@@ -8,9 +8,7 @@ import { getCountryByName } from '@/data/countries';
 import { TravelStatsWidget } from '@/components/dashboard/TravelStatsWidget';
 import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 import {
-  StandardPageLayout,
-  PageIcons,
-} from '@/components/layout/StandardPageLayout';
+  StandardPageLayout,} from '@/components/layout/StandardPageLayout';
 import { RefreshCw } from 'lucide-react';
 import { t } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
@@ -89,7 +87,7 @@ export default function AnalyticsPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const loadStats = async () => {
+  const _loadStats = async () => {
     setLoading(true);
     try {
       const response = await ApiClient.getStats();
@@ -113,7 +111,7 @@ export default function AnalyticsPage() {
           setTrips(convertedTrips);
         }
       }
-    } catch (error) {
+    } catch (__error) {
       // Error loading stats
     } finally {
       setLoading(false);
@@ -121,7 +119,7 @@ export default function AnalyticsPage() {
   };
 
   // Enhanced calculation functions
-  const calculateTravelPatterns = () => {
+  const _calculateTravelPatterns = () => {
     const dayOfWeekCounts = Array(7).fill(0);
     const monthCounts = Array(12).fill(0);
     const seasonCounts = { spring: 0, summer: 0, fall: 0, winter: 0 };
@@ -141,7 +139,7 @@ export default function AnalyticsPage() {
     return { dayOfWeekCounts, monthCounts, seasonCounts };
   };
 
-  const calculateMonthlyStats = (): MonthlyStats[] => {
+  const _calculateMonthlyStats = (): MonthlyStats[] => {
     const yearStart = startOfYear(new Date(selectedYear, 0));
     const yearEnd = endOfYear(new Date(selectedYear, 0));
     const months = eachMonthOfInterval({ start: yearStart, end: yearEnd });
@@ -160,7 +158,7 @@ export default function AnalyticsPage() {
         );
       });
 
-      const days = monthTrips.reduce((sum, trip) => {
+      const _days = monthTrips.reduce((sum, trip) => {
         const tripStart = new Date(trip.entryDate);
         const tripEnd = trip.exitDate ? new Date(trip.exitDate) : tripStart;
         const overlapStart = tripStart > monthStart ? tripStart : monthStart;
@@ -206,11 +204,11 @@ export default function AnalyticsPage() {
     );
   }
 
-  const pageContent = (
+  const _pageContent = (
     <StandardPageLayout
       title='여행 분석'
       description='당신의 여행 패턴과 통계를 자세히 분석해보세요'
-      icon={PageIcons.Analytics}
+      icon='Analytics'
       breadcrumbs={[
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: '여행 분석' },
@@ -451,8 +449,8 @@ export default function AnalyticsPage() {
                   <div className='flex flex-col gap-4'>
                     {statsData.timeline.map((trip: any, index: number) => {
                       const country = getCountryByName(trip.country);
-                      const entryDate = new Date(trip.entryDate);
-                      const exitDate = trip.exitDate
+                      const _entryDate = new Date(trip.entryDate);
+                      const _exitDate = trip.exitDate
                         ? new Date(trip.exitDate)
                         : null;
 

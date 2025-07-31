@@ -23,7 +23,7 @@ export default function FeedbackButton() {
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const _handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -60,7 +60,7 @@ export default function FeedbackButton() {
       } else {
         throw new Error('Failed to submit feedback');
       }
-    } catch (error) {
+    } catch (_error) {
       alert('피드백 전송에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);

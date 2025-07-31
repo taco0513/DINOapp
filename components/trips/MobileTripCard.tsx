@@ -21,7 +21,7 @@ export default function MobileTripCard({
   const [loading, setLoading] = useState(false);
   const [showActions, setShowActions] = useState(false);
 
-  const country = getCountryByName(trip.country);
+  const _country = getCountryByName(trip.country);
   const entryDate = new Date(trip.entryDate);
   const exitDate = trip.exitDate ? new Date(trip.exitDate) : null;
 
@@ -42,10 +42,10 @@ export default function MobileTripCard({
     }
   };
 
-  const days = calculateDays();
-  const isCurrentlyStaying = !exitDate;
+  const _days = calculateDays();
+  const _isCurrentlyStaying = !exitDate;
 
-  const handleDelete = async () => {
+  const _handleDelete = async () => {
     // Haptic feedback
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
@@ -65,7 +65,7 @@ export default function MobileTripCard({
     }
   };
 
-  const formatDate = (date: Date) => {
+  const _formatDate = (date: Date) => {
     return date.toLocaleDateString('ko-KR', {
       month: 'short',
       day: 'numeric',

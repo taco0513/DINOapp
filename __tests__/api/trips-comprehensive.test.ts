@@ -20,24 +20,24 @@ jest.mock('@/lib/security/input-sanitizer');
 jest.mock('@/lib/monitoring/metrics-collector');
 jest.mock('@/lib/monitoring/logger');
 
-const mockGetServerSession = getServerSession as jest.MockedFunction<
+const _mockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession
 >;
-const mockGetPrismaClient = getPrismaClient as jest.MockedFunction<
+const _mockGetPrismaClient = getPrismaClient as jest.MockedFunction<
   typeof getPrismaClient
 >;
-const mockCreateTravelManager = createTravelManager as jest.MockedFunction<
+const _mockCreateTravelManager = createTravelManager as jest.MockedFunction<
   typeof createTravelManager
 >;
 
 // Mock data
-const mockUser = {
+const _mockUser = {
   id: '1',
   email: 'test@example.com',
   name: 'Test User',
 };
 
-const mockTrips = [
+const _mockTrips = [
   {
     id: '1',
     userId: '1',

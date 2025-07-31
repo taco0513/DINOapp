@@ -24,7 +24,7 @@ interface NavigatorSuggestion {
   priority: 'high' | 'medium' | 'low';
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -104,12 +104,12 @@ function useUserData(userId: string) {
         suggestion:
           'filter와 map을 연속으로 사용하는 대신 reduce로 한 번에 처리하면 성능이 향상됩니다.',
         codeExample: `// 최적화 전
-const result = data
+const _result = data
   .filter(item => item.active)
   .map(item => item.value);
 
 // 최적화 후
-const result = data.reduce((acc, item) => {
+const _result = data.reduce((acc, item) => {
   if (item.active) acc.push(item.value);
   return acc;
 }, []);`,

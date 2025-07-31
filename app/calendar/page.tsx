@@ -56,7 +56,7 @@ export default function CalendarPage() {
 
   // 로컬 스토리지에서 여행 데이터 로드
   useEffect(() => {
-    const loadTrips = () => {
+    const _loadTrips = () => {
       const saved = localStorage.getItem('dino-trips');
       if (saved) {
         const parsedTrips = JSON.parse(saved);
@@ -140,28 +140,28 @@ export default function CalendarPage() {
     return calendarDays;
   };
 
-  const monthlySchengenDays = () => {
+  const _monthlySchengenDays = () => {
     const days = generateCalendarDays();
     return days.reduce((sum, day) => sum + (day.schengenDays || 0), 0);
   };
 
-  const handlePreviousMonth = () => {
+  const _handlePreviousMonth = () => {
     setCurrentDate(prev => subMonths(prev, 1));
   };
 
-  const handleNextMonth = () => {
+  const _handleNextMonth = () => {
     setCurrentDate(prev => addMonths(prev, 1));
   };
 
-  const handleToday = () => {
+  const _handleToday = () => {
     setCurrentDate(new Date());
   };
 
-  const handleDateClick = (date: Date) => {
+  const _handleDateClick = (date: Date) => {
     setSelectedDate(date);
   };
 
-  const getTripsForDate = (date: Date) => {
+  const _getTripsForDate = (date: Date) => {
     return trips.filter(trip => {
       const tripStart = new Date(trip.startDate);
       const tripEnd = new Date(trip.endDate);
@@ -169,8 +169,8 @@ export default function CalendarPage() {
     });
   };
 
-  const calendarDays = generateCalendarDays();
-  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+  const _calendarDays = generateCalendarDays();
+  const _weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   return (
     <StandardPageLayout
@@ -289,7 +289,7 @@ export default function CalendarPage() {
         {/* 날짜 그리드 */}
         <div className='grid grid-cols-7 gap-1'>
           {calendarDays.map((day, index) => {
-            const dayTrips = day.trips;
+            const _dayTrips = day.trips;
             const isSelected =
               selectedDate && isSameDay(day.date, selectedDate);
 

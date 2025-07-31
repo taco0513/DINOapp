@@ -76,7 +76,7 @@ export const COUNTRIES: CountryInfo[] = [
   { code: 'FJ', name: 'Fiji', flag: '🇫🇯', isSchengen: false },
 ];
 
-export const VISA_TYPES = [
+export const _VISA_TYPES = [
   'Tourist',
   'Business',
   'Student',
@@ -93,7 +93,7 @@ export const VISA_TYPES = [
   'Medical',
 ] as const;
 
-export const PASSPORT_COUNTRIES = [
+export const _PASSPORT_COUNTRIES = [
   { code: 'US', name: 'United States' },
   { code: 'UK', name: 'United Kingdom' },
   { code: 'EU', name: 'European Union' },
@@ -117,4 +117,4 @@ export function getNonSchengenCountries(): CountryInfo[] {
 
 // Default export for backward compatibility
 export default COUNTRIES;
-export const countries = COUNTRIES;
+export const _countries = COUNTRIES;

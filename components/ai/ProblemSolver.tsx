@@ -73,7 +73,7 @@ export default function ProblemSolver() {
     return () => clearInterval(timer);
   }, [isSearching, timeRemaining]);
 
-  const handleSearch = async () => {
+  const _handleSearch = async () => {
     if (!problem.trim()) return;
 
     setIsSearching(true);
@@ -103,13 +103,13 @@ export default function ProblemSolver() {
     }
   };
 
-  const formatTime = (seconds: number): string => {
+  const _formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getSolutionIcon = (type: Solution['type']) => {
+  const _getSolutionIcon = (type: Solution['type']) => {
     switch (type) {
       case 'quick_fix':
         return <Zap className='h-4 w-4' />;

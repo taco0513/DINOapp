@@ -5,7 +5,7 @@ import { generateCSRFResponse } from '@/lib/security/csrf-protection';
 import { applyRateLimit } from '@/lib/security/rate-limiter';
 
 // CSRF 토큰 생성 엔드포인트
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     // Rate limiting 적용
     const rateLimitResponse = await applyRateLimit(request, 'auth');

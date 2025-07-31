@@ -8,7 +8,7 @@ import {
   SynchronizerToken,
   CSRFConfig,
 } from '@/lib/security/csrf-protection';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 // Mock session storage
@@ -27,7 +27,7 @@ jest.mock('crypto', () => ({
   timingSafeEqual: jest.fn(),
 }));
 
-const mockSessionStore = require('@/lib/session-store').sessionStore;
+const _mockSessionStore = require('@/lib/session-store').sessionStore;
 const mockRandomBytes = crypto.randomBytes as jest.Mock;
 const mockTimingSafeEqual = crypto.timingSafeEqual as jest.Mock;
 

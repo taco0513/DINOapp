@@ -11,7 +11,7 @@ export const isPWASupported = () => {
 };
 
 // Check if app is installed as PWA
-export const isStandalone = () => {
+export const _isStandalone = () => {
   // iOS
   if ('standalone' in window.navigator) {
     return (window.navigator as any).standalone;
@@ -21,7 +21,7 @@ export const isStandalone = () => {
 };
 
 // Register service worker
-export const registerServiceWorker = async () => {
+export const _registerServiceWorker = async () => {
   if (!isPWASupported()) {
     console.log('PWA not supported on this browser');
     return null;
@@ -77,7 +77,7 @@ export const requestNotificationPermission = async () => {
 };
 
 // Subscribe to push notifications
-export const subscribeToPushNotifications = async (
+export const _subscribeToPushNotifications = async (
   registration: ServiceWorkerRegistration
 ) => {
   try {
@@ -128,7 +128,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 // Check for app updates
-export const checkForUpdates = async () => {
+export const _checkForUpdates = async () => {
   if (!navigator.serviceWorker.controller) return false;
 
   try {
@@ -150,7 +150,7 @@ export const checkForUpdates = async () => {
 };
 
 // Update service worker
-export const updateServiceWorker = async () => {
+export const _updateServiceWorker = async () => {
   const registration = await navigator.serviceWorker.getRegistration();
   if (registration) {
     await registration.update();
@@ -168,7 +168,7 @@ export const updateServiceWorker = async () => {
 };
 
 // Custom hook for PWA install prompt
-export const useInstallPrompt = () => {
+export const _useInstallPrompt = () => {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
@@ -207,7 +207,7 @@ export const useInstallPrompt = () => {
 };
 
 // Custom hook for online/offline status
-export const useOnlineStatus = () => {
+export const _useOnlineStatus = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
@@ -227,7 +227,7 @@ export const useOnlineStatus = () => {
 };
 
 // Custom hook for service worker updates
-export const useServiceWorkerUpdate = () => {
+export const _useServiceWorkerUpdate = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -254,7 +254,7 @@ export const useServiceWorkerUpdate = () => {
 };
 
 // Cache management utilities
-export const clearAppCache = async () => {
+export const _clearAppCache = async () => {
   if ('caches' in window) {
     const cacheNames = await caches.keys();
     const deletePromises = cacheNames.map(name => caches.delete(name));
@@ -263,7 +263,7 @@ export const clearAppCache = async () => {
   }
 };
 
-export const getCacheSize = async () => {
+export const _getCacheSize = async () => {
   if ('storage' in navigator && 'estimate' in navigator.storage) {
     const { usage, quota } = await navigator.storage.estimate();
     return {
@@ -277,7 +277,7 @@ export const getCacheSize = async () => {
 };
 
 // Offline data sync utilities
-export const syncOfflineData = async () => {
+export const _syncOfflineData = async () => {
   if (!navigator.onLine) {
     console.log('Cannot sync: offline');
     return false;
@@ -295,7 +295,7 @@ export const syncOfflineData = async () => {
 };
 
 // Save data for offline use
-export const saveForOffline = async (key: string, data: any) => {
+export const _saveForOffline = async (key: string, data: any) => {
   try {
     const cache = await caches.open('dino-offline-data');
     const response = new Response(JSON.stringify(data), {
@@ -310,7 +310,7 @@ export const saveForOffline = async (key: string, data: any) => {
 };
 
 // Get offline data
-export const getOfflineData = async (key: string) => {
+export const _getOfflineData = async (key: string) => {
   try {
     const cache = await caches.open('dino-offline-data');
     const response = await cache.match(`/offline-data/${key}`);

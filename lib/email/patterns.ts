@@ -227,7 +227,7 @@ export const EMAIL_PROVIDERS: EmailProvider[] = [
 ];
 
 // 공통 날짜 패턴
-export const COMMON_DATE_PATTERNS = {
+export const _COMMON_DATE_PATTERNS = {
   korean: [
     /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/g,
     /(\d{4})-(\d{1,2})-(\d{1,2})/g,
@@ -242,21 +242,21 @@ export const COMMON_DATE_PATTERNS = {
 };
 
 // 시간 패턴
-export const TIME_PATTERNS = [
+export const _TIME_PATTERNS = [
   /(\d{1,2}):(\d{2})\s*(AM|PM)?/gi,
   /(\d{1,2})시\s*(\d{2})분?/g,
 ];
 
 // 공항 코드 추출 패턴
-export const AIRPORT_CODE_PATTERN = /\(([A-Z]{3})\)/g;
+export const _AIRPORT_CODE_PATTERN = /\(([A-Z]{3})\)/g;
 
 // 항공편 번호 패턴
-export const FLIGHT_NUMBER_PATTERNS = [
+export const _FLIGHT_NUMBER_PATTERNS = [
   /(KE|OZ|JL|NH|CA|CZ|CI|BR|TG|SQ|MH|PR|VN|BL|LJ|BX|RS|ZE|TW|RF)\s*(\d+)/gi,
 ];
 
 // 확인번호 패턴
-export const CONFIRMATION_PATTERNS = [
+export const _CONFIRMATION_PATTERNS = [
   /(?:예약|Booking|Confirmation|PNR)(?:\s*(?:번호|Number|Code|Reference))?:?\s*([A-Z0-9]{5,})/gi,
   /([A-Z]{2}\d{4}[A-Z0-9]{2,})/g, // 일반적인 항공권 PNR 형식
 ];

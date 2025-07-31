@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import {
   DatabaseMaintenance,
@@ -19,8 +19,8 @@ interface MaintenanceTask {
 
 // Automated database maintenance cron job
 // Called by Vercel cron at 2 AM daily
-export async function GET(request: NextRequest) {
-  const startTime = Date.now();
+export async function GET(request: Request) {
+  const _startTime = Date.now();
   const requestId = generateRequestId();
 
   try {
@@ -204,13 +204,13 @@ export async function GET(request: NextRequest) {
     results['executionTime'] = duration;
 
     // Log summary
-    const successCount = results.tasks.filter(
+    const _successCount = results.tasks.filter(
       task => task.status === 'success'
     ).length;
     const errorCount = results.tasks.filter(
       task => task.status === 'error'
     ).length;
-    const warningCount = results.tasks.filter(
+    const _warningCount = results.tasks.filter(
       task => task.status === 'warning'
     ).length;
 

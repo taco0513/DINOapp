@@ -37,11 +37,11 @@ export const MobileModal: React.FC<MobileModalProps> = ({
     }
   }, [isOpen]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const _handleTouchStart = (e: React.TouchEvent) => {
     startY.current = e.touches[0].clientY;
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const _handleTouchMove = (e: React.TouchEvent) => {
     if (startY.current === null) return;
 
     currentY.current = e.touches[0].clientY;

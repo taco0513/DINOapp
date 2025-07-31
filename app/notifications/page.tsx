@@ -21,7 +21,7 @@ function WireframeNotificationList({ userId }: { userId: string }) {
     loadNotifications();
   }, [userId]);
 
-  const loadNotifications = () => {
+  const _loadNotifications = () => {
     setLoading(true);
 
     // Load from localStorage (in real app, this would be an API call)
@@ -81,7 +81,7 @@ function WireframeNotificationList({ userId }: { userId: string }) {
     setLoading(false);
   };
 
-  const markAsRead = (notificationId: string) => {
+  const _markAsRead = (notificationId: string) => {
     const updated = notifications.map(n =>
       n.id === notificationId ? { ...n, read: true } : n
     );
@@ -89,24 +89,24 @@ function WireframeNotificationList({ userId }: { userId: string }) {
     localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated));
   };
 
-  const markAllAsRead = () => {
+  const _markAllAsRead = () => {
     const updated = notifications.map(n => ({ ...n, read: true }));
     setNotifications(updated);
     localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated));
   };
 
-  const deleteNotification = (notificationId: string) => {
+  const _deleteNotification = (notificationId: string) => {
     const updated = notifications.filter(n => n.id !== notificationId);
     setNotifications(updated);
     localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated));
   };
 
-  const filteredNotifications =
+  const _filteredNotifications =
     filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const getNotificationIcon = (type: string) => {
+  const _getNotificationIcon = (type: string) => {
     switch (type) {
       case 'schengen_warning':
         return '⚠️';
@@ -119,7 +119,7 @@ function WireframeNotificationList({ userId }: { userId: string }) {
     }
   };
 
-  const formatTime = (date: Date) => {
+  const _formatTime = (date: Date) => {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -299,7 +299,7 @@ function WireframeNotificationSettings({
     }
   }, [userId]);
 
-  const handleSave = async () => {
+  const _handleSave = async () => {
     setSaving(true);
 
     // Save to localStorage
@@ -317,7 +317,7 @@ function WireframeNotificationSettings({
     alert('알림 설정이 저장되었습니다.');
   };
 
-  const handleRequestPermission = async () => {
+  const _handleRequestPermission = async () => {
     if ('Notification' in window) {
       const permission = await Notification.requestPermission();
       setBrowserPermission(permission);
@@ -532,7 +532,7 @@ export default function NotificationsPage() {
     }
   }, [session, status, router]);
 
-  const handleSaveSettings = async (preferences: any) => {
+  const _handleSaveSettings = async (preferences: any) => {
     // Saving notification preferences
     localStorage.setItem(
       `notification-prefs-${session?.user?.email}`,

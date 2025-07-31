@@ -8,7 +8,7 @@ interface Translations {
 }
 
 // Extended translations with new languages
-const extendedTranslations = {
+const _extendedTranslations = {
   // Dashboard translations that were missing Spanish and French
   'dashboard.welcome': {
     ko: '환영합니다, {name}님',

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -12,7 +12,7 @@ interface FeedbackData {
   timestamp: string;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     const body: FeedbackData = await request.json();
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
 }
 
 // 피드백 조회 (관리자용)
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
           feedbacks,
           total: feedbacks.length,
         });
-      } catch (error) {
+      } catch (__error) {
         return NextResponse.json({ feedbacks: [], total: 0 });
       }
     }

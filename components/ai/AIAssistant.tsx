@@ -51,7 +51,7 @@ export default function AIAssistant() {
     'pair' | 'generate' | 'solve' | 'review'
   >('pair');
 
-  const handleAIQuery = async () => {
+  const _handleAIQuery = async () => {
     if (!query.trim()) return;
 
     setLoading(true);
@@ -75,7 +75,7 @@ export default function AIAssistant() {
     }
   };
 
-  const getModeIcon = (mode: string) => {
+  const _getModeIcon = (mode: string) => {
     switch (mode) {
       case 'pair':
         return <Brain className='h-4 w-4' />;
@@ -90,7 +90,7 @@ export default function AIAssistant() {
     }
   };
 
-  const getModeDescription = (mode: string) => {
+  const _getModeDescription = (mode: string) => {
     switch (mode) {
       case 'pair':
         return 'AI가 Driver/Navigator 역할을 유연하게 전환하며 최적 협업';

@@ -19,7 +19,7 @@ export function InstallPrompt() {
     }
   }, [isInstallable]);
 
-  const handleInstall = async () => {
+  const _handleInstall = async () => {
     setIsInstalling(true);
     const accepted = await promptInstall();
 
@@ -31,7 +31,7 @@ export function InstallPrompt() {
     setIsInstalling(false);
   };
 
-  const handleDismiss = () => {
+  const _handleDismiss = () => {
     setIsVisible(false);
     // Don't show again for 7 days
     localStorage.setItem('dino-install-dismissed', new Date().toISOString());

@@ -334,7 +334,7 @@ export const TIMEZONES: TimezoneInfo[] = [
   { value: 'Pacific/Fiji', label: 'Fiji', offset: 'UTC+12', region: 'Pacific' },
 ];
 
-export const TIMEZONE_REGIONS = [
+export const _TIMEZONE_REGIONS = [
   'North America',
   'South America',
   'Europe',

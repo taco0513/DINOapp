@@ -37,7 +37,7 @@ export default function NotificationSettings({
     }
   }, [userId]);
 
-  const handleSave = async () => {
+  const _handleSave = async () => {
     setSaving(true);
 
     // Save to localStorage
@@ -55,12 +55,12 @@ export default function NotificationSettings({
     // Settings saved successfully
   };
 
-  const handleRequestPermission = async () => {
+  const _handleRequestPermission = async () => {
     const granted = await requestNotificationPermission();
     setBrowserPermission(granted ? 'granted' : 'denied');
   };
 
-  const handleVisaExpiryDaysChange = (days: string) => {
+  const _handleVisaExpiryDaysChange = (days: string) => {
     const daysArray = days
       .split(',')
       .map(d => parseInt(d.trim()))
@@ -71,7 +71,7 @@ export default function NotificationSettings({
     }));
   };
 
-  const handleTripReminderDaysChange = (days: string) => {
+  const _handleTripReminderDaysChange = (days: string) => {
     const daysArray = days
       .split(',')
       .map(d => parseInt(d.trim()))

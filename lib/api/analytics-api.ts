@@ -162,7 +162,7 @@ export class AnalyticsAPI {
    */
   private static calculateOverview(trips: CountryVisit[]): AnalyticsOverview {
     const countries = new Set(trips.map(trip => trip.country));
-    const totalDays = trips.reduce((sum, trip) => {
+    const _totalDays = trips.reduce((sum, trip) => {
       const entry = new Date(trip.entryDate);
       const exit = trip.exitDate ? new Date(trip.exitDate) : new Date();
       const days = Math.ceil(
@@ -175,7 +175,7 @@ export class AnalyticsAPI {
     const schengenTrips = trips.filter(trip =>
       this.isSchengenCountry(trip.country)
     );
-    const schengenDays = schengenTrips.reduce((sum, trip) => {
+    const _schengenDays = schengenTrips.reduce((sum, trip) => {
       const entry = new Date(trip.entryDate);
       const exit = trip.exitDate ? new Date(trip.exitDate) : new Date();
       const days = Math.ceil(

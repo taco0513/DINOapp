@@ -209,7 +209,7 @@ export const allTravelPatterns: TravelEmailPattern[] = [
 ];
 
 // 날짜 형식 패턴
-export const datePatterns = [
+export const _datePatterns = [
   // 한국식 날짜
   /(\d{4})[\/\-\.년]\s*(\d{1,2})[\/\-\.월]\s*(\d{1,2})[일]?/g,
   // 미국식 날짜
@@ -225,13 +225,13 @@ export const datePatterns = [
 ];
 
 // 시간 패턴
-export const timePatterns = [
+export const _timePatterns = [
   /(\d{1,2}):(\d{2})\s*(AM|PM|am|pm|오전|오후)?/g,
   /(\d{1,2})시\s*(\d{2})?분?/g,
 ];
 
 // 공항 코드 매핑 (주요 공항)
-export const airportCodes = {
+export const _airportCodes = {
   // 한국
   ICN: '인천국제공항',
   GMP: '김포국제공항',
@@ -270,7 +270,7 @@ export const airportCodes = {
 };
 
 // 항공사 코드 매핑
-export const airlineCodes = {
+export const _airlineCodes = {
   // 한국
   KE: '대한항공',
   OZ: '아시아나항공',

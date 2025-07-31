@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -45,7 +45,7 @@ const importDataSchema = z.object({
 });
 
 // POST /api/import - Import user's travel data
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     // CSRF 보호
     const csrfResult = await csrfProtection(request, {
@@ -79,9 +79,9 @@ export async function POST(request: NextRequest) {
     const replaceExisting = url.searchParams.get('replace') === 'true';
     const skipDuplicates = url.searchParams.get('skipDuplicates') !== 'false';
 
-    let importedCount = 0;
+    let _importedCount = 0;
     let skippedCount = 0;
-    let errorCount = 0;
+    let _errorCount = 0;
     const errors: string[] = [];
 
     // Handle existing data
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         });
 
         importedCount++;
-      } catch (error) {
+      } catch (__error) {
         errorCount++;
         errors.push(
           `Failed to import trip to ${tripData.country}: ${error instanceof Error ? error.message : 'Unknown error'}`

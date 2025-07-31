@@ -1,4 +1,4 @@
-export const db = {
+export const _db = {
   apiKey: {
     findUnique: jest.fn(),
     update: jest.fn(),

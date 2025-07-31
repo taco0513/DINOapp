@@ -20,9 +20,9 @@ import {
 } from '@/components/layout/StandardPageLayout';
 
 // Dynamic imports for better code splitting
-const TripForm = lazy(() => import('@/components/trips/TripForm'));
-const TripCard = lazy(() => import('@/components/trips/TripCard'));
-const MobileTripCard = lazy(() => import('@/components/trips/MobileTripCard'));
+const _TripForm = lazy(() => import('@/components/trips/TripForm'));
+const _TripCard = lazy(() => import('@/components/trips/TripCard'));
+const _MobileTripCard = lazy(() => import('@/components/trips/MobileTripCard'));
 
 export default function TripsPage() {
   const { data: session, status } = useSession();
@@ -75,34 +75,34 @@ export default function TripsPage() {
     }
   };
 
-  const handleAddTrip = () => {
+  const _handleAddTrip = () => {
     setEditingTrip(null);
     setShowForm(true);
   };
 
-  const handleEditTrip = (trip: CountryVisit) => {
+  const _handleEditTrip = (trip: CountryVisit) => {
     setEditingTrip(trip);
     setShowForm(true);
   };
 
-  const handleFormSuccess = async () => {
+  const _handleFormSuccess = async () => {
     setShowForm(false);
     setEditingTrip(null);
     // Force reload trips after successful creation/update
     await loadTrips();
   };
 
-  const handleFormCancel = () => {
+  const _handleFormCancel = () => {
     setShowForm(false);
     setEditingTrip(null);
   };
 
-  const handleDeleteTrip = async (trip: CountryVisit) => {
+  const _handleDeleteTrip = async (trip: CountryVisit) => {
     if (window.confirm('이 여행 기록을 삭제하시겠습니까?')) {
       try {
         await ApiClient.deleteTrip(trip.id!);
         loadTrips();
-      } catch (error) {
+      } catch (__error) {
         // Error deleting trip
       }
     }
@@ -155,7 +155,7 @@ export default function TripsPage() {
     );
   }
 
-  const filteredTrips = getFilteredTrips();
+  const _filteredTrips = getFilteredTrips();
 
   return (
     <>

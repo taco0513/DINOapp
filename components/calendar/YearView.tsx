@@ -29,7 +29,7 @@ interface YearViewProps {
 export function YearView({ year, trips, onMonthClick }: YearViewProps) {
   const yearStart = startOfYear(new Date(year, 0));
   const yearEnd = endOfYear(new Date(year, 0));
-  const months = eachMonthOfInterval({ start: yearStart, end: yearEnd });
+  const _months = eachMonthOfInterval({ start: yearStart, end: yearEnd });
 
   const getTripsForMonth = (monthDate: Date) => {
     const monthStart = startOfMonth(monthDate);
@@ -51,7 +51,7 @@ export function YearView({ year, trips, onMonthClick }: YearViewProps) {
     });
   };
 
-  const getSchengenDaysForMonth = (monthDate: Date) => {
+  const _getSchengenDaysForMonth = (monthDate: Date) => {
     const monthTrips = getTripsForMonth(monthDate);
     const monthStart = startOfMonth(monthDate);
     const monthEnd = new Date(
@@ -93,7 +93,7 @@ export function YearView({ year, trips, onMonthClick }: YearViewProps) {
         {months.map(month => {
           const monthTrips = getTripsForMonth(month);
           const schengenDays = getSchengenDaysForMonth(month);
-          const daysInMonth = getDaysInMonth(month);
+          const _daysInMonth = getDaysInMonth(month);
 
           return (
             <div

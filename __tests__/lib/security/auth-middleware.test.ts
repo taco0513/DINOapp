@@ -39,10 +39,10 @@ jest.mock('@/lib/database/db-client', () => ({
   },
 }));
 
-const mockDb = require('@/lib/database/db-client').db;
+const _mockDb = require('@/lib/database/db-client').db;
 const mockGetServerSession = getServerSession as jest.Mock;
-const mockJwtSign = jwt.sign as jest.Mock;
-const mockJwtVerify = jwt.verify as jest.Mock;
+const _mockJwtSign = jwt.sign as jest.Mock;
+const _mockJwtVerify = jwt.verify as jest.Mock;
 
 describe('AuthMiddleware', () => {
   let mockRequest: NextRequest;
@@ -230,7 +230,7 @@ describe('AuthMiddleware', () => {
       });
 
       const middleware = requirePermission('any:permission');
-      const response = await middleware(mockRequest, mockNext);
+      const _response = await middleware(mockRequest, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
     });

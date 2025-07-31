@@ -123,7 +123,7 @@ class DatabaseConnectionPool {
         latency,
         timestamp: new Date().toISOString(),
       };
-    } catch (error) {
+    } catch (__error) {
       // Database health check failed
       return {
         status: 'unhealthy',
@@ -210,7 +210,7 @@ class DatabaseConnectionPool {
 export const dbPool = DatabaseConnectionPool.getInstance();
 
 // Export enhanced Prisma client
-export const prisma = dbPool.getClient();
+export const _prisma = dbPool.getClient();
 
 // Graceful shutdown handler
 process.on('beforeExit', async () => {

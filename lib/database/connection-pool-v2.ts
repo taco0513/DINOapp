@@ -83,7 +83,7 @@ export class ConnectionPool {
       }
 
       return connection;
-    } catch (error) {
+    } catch (__error) {
       if (this.config.createRetries && this.config.createRetries > 0) {
         // Retry logic would go here
       }
@@ -162,7 +162,7 @@ export class ConnectionPool {
       if (this.config.events?.releaseConnection) {
         this.config.events.releaseConnection();
       }
-    } catch (error) {
+    } catch (__error) {
       // Connection is invalid, destroy it
       await this.destroy(connection);
     }
@@ -178,7 +178,7 @@ export class ConnectionPool {
 
     try {
       await connection.$disconnect();
-    } catch (error) {
+    } catch (__error) {
       // Ignore disconnect errors
     }
 

@@ -76,7 +76,7 @@ export async function checkCalendarConnection(
     });
 
     return true;
-  } catch (error) {
+  } catch (__error) {
     // Calendar connection failed
     return false;
   }
@@ -104,7 +104,7 @@ export async function getUserCalendars(accessToken: string) {
         foregroundColor: cal.foregroundColor,
       })) || []
     );
-  } catch (error) {
+  } catch (__error) {
     // Error fetching calendars
     throw new Error('캘린더 목록을 가져오는 중 오류가 발생했습니다.');
   }
@@ -304,7 +304,7 @@ export async function createCalendarEvent(
     });
 
     return response.data.id || null;
-  } catch (error) {
+  } catch (__error) {
     // Error creating calendar event
     throw new Error('캘린더 이벤트 생성 중 오류가 발생했습니다.');
   }
@@ -353,7 +353,7 @@ export async function syncTravelToCalendar(
             result.eventIds.push(eventId);
             result.created++;
           }
-        } catch (error) {
+        } catch (__error) {
           result.success = false;
           result.errors.push(
             `이벤트 생성 실패: ${event.summary} - ${error instanceof Error ? error.message : '알 수 없는 오류'}`
@@ -417,7 +417,7 @@ export async function findExistingTravelEvents(
           location: event.location || undefined,
         })) || []
     );
-  } catch (error) {
+  } catch (__error) {
     // Error finding existing events
     return [];
   }
@@ -440,7 +440,7 @@ export async function deleteCalendarEvent(
     });
 
     return true;
-  } catch (error) {
+  } catch (__error) {
     // Error deleting calendar event
     return false;
   }

@@ -3,7 +3,7 @@ import { getPrismaClient } from '@/lib/database/dev-prisma';
 import { getUserTripsOptimized } from '@/lib/database/query-optimizer';
 
 // Mock the actual function calls to return the mocked client
-const mockPrismaClient = {
+const _mockPrismaClient = {
   user: {
     findUnique: jest.fn(),
     findMany: jest.fn(),

@@ -61,7 +61,7 @@ interface TravelStats {
   };
 }
 
-const COLORS = [
+const _COLORS = [
   '#0088FE',
   '#00C49F',
   '#FFBB28',
@@ -98,7 +98,7 @@ interface TravelStatsWidgetProps {
   className?: string;
 }
 
-export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
+export const _TravelStatsWidget = memo<TravelStatsWidgetProps>(
   ({ className = '' }) => {
     const [stats, setStats] = useState<TravelStats | null>(null);
     const [loading, setLoading] = useState(true);
@@ -110,7 +110,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
       loadTravelStats();
     }, []);
 
-    const loadTravelStats = async () => {
+    const _loadTravelStats = async () => {
       setLoading(true);
       try {
         const response = await ApiClient.getTrips();
@@ -125,7 +125,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
       }
     };
 
-    const processTravelData = (trips: CountryVisit[]): TravelStats => {
+    const _processTravelData = (trips: CountryVisit[]): TravelStats => {
       if (trips.length === 0) {
         return {
           totalTrips: 0,
@@ -144,7 +144,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
       // Basic calculations
       const totalTrips = trips.length;
       const uniqueCountries = new Set(trips.map(trip => trip.country));
-      const totalCountries = uniqueCountries.size;
+      const _totalCountries = uniqueCountries.size;
 
       // Calculate trip durations
       const tripDurations = trips.map(trip => {
@@ -160,10 +160,10 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
       });
 
       const totalDays = tripDurations.reduce((sum, trip) => sum + trip.days, 0);
-      const averageTripLength = Math.round(totalDays / totalTrips);
+      const _averageTripLength = Math.round(totalDays / totalTrips);
 
       // Find longest trip
-      const longestTrip = tripDurations.reduce(
+      const _longestTrip = tripDurations.reduce(
         (longest, current) => (current.days > longest.days ? current : longest),
         { country: '', days: 0 }
       );
@@ -177,7 +177,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
         {} as Record<string, number>
       );
 
-      const mostVisited = Object.entries(countryVisits).reduce(
+      const _mostVisited = Object.entries(countryVisits).reduce(
         (most, [country, visits]) =>
           visits > most.visits ? { country, visits } : most,
         { country: '', visits: 0 }
@@ -209,7 +209,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
         >
       );
 
-      const yearlyStats = Object.entries(yearlyData)
+      const _yearlyStats = Object.entries(yearlyData)
         .map(([year, data]) => ({
           year: parseInt(year),
           trips: data.trips,
@@ -230,7 +230,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(
         {} as Record<string, number>
       );
 
-      const monthlyDistribution = Object.entries(monthlyData).map(
+      const _monthlyDistribution = Object.entries(monthlyData).map(
         ([month, trips]) => ({
           month,
           trips,

@@ -57,7 +57,7 @@ export default function BackupManagementDashboard() {
   }, []);
 
   // Create manual backup
-  const createBackup = async (type: 'database' | 'files' | 'both') => {
+  const _createBackup = async (type: 'database' | 'files' | 'both') => {
     setIsCreatingBackup(true);
 
     try {
@@ -95,7 +95,7 @@ export default function BackupManagementDashboard() {
   };
 
   // Test recovery plan
-  const testRecovery = async (scenario: string) => {
+  const _testRecovery = async (scenario: string) => {
     try {
       const response = await fetch('/api/recovery', {
         method: 'POST',

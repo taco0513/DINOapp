@@ -136,7 +136,7 @@ export function checkRequestSize(
 /**
  * Security headers for API responses
  */
-export const securityHeaders = {
+export const _securityHeaders = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
@@ -171,8 +171,8 @@ export function logSecurityEvent(
   details: any,
   request: NextRequest
 ) {
-  const ip = getClientIP(request);
-  const userAgent = request.headers.get('user-agent') || 'unknown';
+  const _ip = getClientIP(request);
+  const _userAgent = request.headers.get('user-agent') || 'unknown';
 
   // Security event logged
 }

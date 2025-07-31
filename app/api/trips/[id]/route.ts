@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
@@ -14,7 +14,7 @@ import {
 } from '@/lib/api/error-handler';
 
 // Zod schema for trip updates (enhanced)
-const updateTripSchema = z.object({
+const _updateTripSchema = z.object({
   country: z.string().min(1).optional(),
   entryDate: z
     .string()

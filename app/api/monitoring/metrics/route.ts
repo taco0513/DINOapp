@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
@@ -38,7 +38,7 @@ interface MetricsResponse {
 }
 
 // GET /api/monitoring/metrics - 실시간 시스템 메트릭 조회
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/monitoring/metrics/alerts - 알림 설정
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const requestId = generateRequestId();
 
   try {

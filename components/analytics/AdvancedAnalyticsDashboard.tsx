@@ -74,7 +74,7 @@ export default function AdvancedAnalyticsDashboard() {
     fetchAnalyticsData();
   }, [dateRange]);
 
-  const fetchAnalyticsData = async () => {
+  const _fetchAnalyticsData = async () => {
     try {
       setLoading(true);
       const [behavior, conversion, retention] = await Promise.all([
@@ -97,7 +97,7 @@ export default function AdvancedAnalyticsDashboard() {
     }
   };
 
-  const COLORS = [
+  const _COLORS = [
     '#000000',
     '#4f46e5',
     '#22c55e',

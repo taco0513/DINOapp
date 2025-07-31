@@ -65,7 +65,7 @@ export default function BusinessMetricsDashboard() {
     fetchMetrics();
   }, [timeRange]);
 
-  const fetchMetrics = async () => {
+  const _fetchMetrics = async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/metrics/business?range=${timeRange}`);
@@ -79,9 +79,9 @@ export default function BusinessMetricsDashboard() {
     }
   };
 
-  const COLORS = ['#000000', '#4f46e5', '#22c55e', '#f59e0b', '#ef4444'];
+  const _COLORS = ['#000000', '#4f46e5', '#22c55e', '#f59e0b', '#ef4444'];
 
-  const formatCurrency = (value: number) => {
+  const _formatCurrency = (value: number) => {
     return new Intl.NumberFormat('ko-KR', {
       style: 'currency',
       currency: 'KRW',
@@ -89,7 +89,7 @@ export default function BusinessMetricsDashboard() {
     }).format(value);
   };
 
-  const formatPercentage = (value: number) => {
+  const _formatPercentage = (value: number) => {
     return `${value.toFixed(1)}%`;
   };
 

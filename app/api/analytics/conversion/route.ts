@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     }
 
     const searchParams = request.nextUrl.searchParams;
-    const range = searchParams.get('range') || '30d';
+    const _range = searchParams.get('range') || '30d';
 
     // 모의 전환 데이터
     const mockData = {

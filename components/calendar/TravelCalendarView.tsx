@@ -38,7 +38,7 @@ interface TravelCalendarViewProps {
   initialDate?: Date;
 }
 
-const MONTH_NAMES = [
+const _MONTH_NAMES = [
   '1월',
   '2월',
   '3월',
@@ -53,9 +53,9 @@ const MONTH_NAMES = [
   '12월',
 ];
 
-const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+const _DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 
-export const TravelCalendarView = memo<TravelCalendarViewProps>(
+export const _TravelCalendarView = memo<TravelCalendarViewProps>(
   ({ className = '', onEventClick, onDateClick, initialDate = new Date() }) => {
     const [currentDate, setCurrentDate] = useState(initialDate);
     const [trips, setTrips] = useState<CountryVisit[]>([]);
@@ -89,7 +89,7 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(
       return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    const loadTrips = async () => {
+    const _loadTrips = async () => {
       setLoading(true);
       try {
         const response = await ApiClient.getTrips();
@@ -103,9 +103,9 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(
       }
     };
 
-    const generateEvents = () => {
+    const _generateEvents = () => {
       const calendarEvents: CalendarEvent[] = [];
-      const now = new Date();
+      const _now = new Date();
 
       let filteredTrips = trips;
       if (filter === 'schengen') {
@@ -214,21 +214,21 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(
       );
     };
 
-    const getDaysInMonth = (date: Date) => {
+    const _getDaysInMonth = (date: Date) => {
       return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     };
 
-    const getFirstDayOfMonth = (date: Date) => {
+    const _getFirstDayOfMonth = (date: Date) => {
       return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
     };
 
-    const getEventsForDate = (date: Date) => {
+    const _getEventsForDate = (date: Date) => {
       return events.filter(
         event => event.date.toDateString() === date.toDateString()
       );
     };
 
-    const navigateMonth = (direction: 'prev' | 'next') => {
+    const _navigateMonth = (direction: 'prev' | 'next') => {
       const newDate = new Date(currentDate);
       if (viewMode === 'year') {
         if (direction === 'prev') {
@@ -246,20 +246,20 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(
       setCurrentDate(newDate);
     };
 
-    const navigateToToday = () => {
+    const _navigateToToday = () => {
       setCurrentDate(new Date());
     };
 
-    const handleEventClick = (event: CalendarEvent) => {
+    const _handleEventClick = (event: CalendarEvent) => {
       setSelectedEvent(event);
       onEventClick?.(event);
     };
 
-    const handleDateClick = (date: Date) => {
+    const _handleDateClick = (date: Date) => {
       onDateClick?.(date);
     };
 
-    const getEventTypeColor = (type: CalendarEvent['type']) => {
+    const _getEventTypeColor = (type: CalendarEvent['type']) => {
       switch (type) {
         case 'entry':
           return 'bg-green-100 text-green-800 border-green-200';
@@ -274,7 +274,7 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(
       }
     };
 
-    const renderCalendarGrid = () => {
+    const _renderCalendarGrid = () => {
       if (viewMode === 'year') {
         return renderYearGrid();
       }
@@ -359,7 +359,7 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(
       return cells;
     };
 
-    const renderYearGrid = () => {
+    const _renderYearGrid = () => {
       const year = currentDate.getFullYear();
       const months = [];
 

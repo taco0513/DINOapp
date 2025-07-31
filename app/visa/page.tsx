@@ -80,7 +80,7 @@ export default function VisaPage() {
     showOnlyBookmarked,
   });
 
-  const toggleBookmark = (countryCode: string) => {
+  const _toggleBookmark = (countryCode: string) => {
     setBookmarkedCountries(prev =>
       prev.includes(countryCode)
         ? prev.filter(code => code !== countryCode)
@@ -88,7 +88,7 @@ export default function VisaPage() {
     );
   };
 
-  const getRequirementBadge = (requirement: VisaRequirement) => {
+  const _getRequirementBadge = (requirement: VisaRequirement) => {
     if (!requirement.visaRequired) {
       return (
         <Badge className='bg-green-100 text-green-800 border-green-200'>
@@ -125,7 +125,7 @@ export default function VisaPage() {
     }
   };
 
-  const getRequirementIcon = (requirement: VisaRequirement) => {
+  const _getRequirementIcon = (requirement: VisaRequirement) => {
     if (!requirement.visaRequired) {
       return <CheckCircle2 className='h-4 w-4 text-green-600' />;
     }
@@ -142,7 +142,7 @@ export default function VisaPage() {
     }
   };
 
-  const selectedCountryData = selectedCountry
+  const _selectedCountryData = selectedCountry
     ? Object.entries(VISA_DATABASE).find(
         ([code]) => code === selectedCountry
       )?.[1]
@@ -300,8 +300,8 @@ export default function VisaPage() {
       {/* Country Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {filteredCountries.map(country => {
-          const requirement = country.visaRequirement;
-          const isBookmarked = bookmarkedCountries.includes(country.code);
+          const _requirement = country.visaRequirement;
+          const _isBookmarked = bookmarkedCountries.includes(country.code);
 
           return (
             <Card

@@ -58,7 +58,7 @@ export default function GmailIntegration() {
   >('analysis');
 
   // Gmail 연결 상태 확인
-  const checkConnection = async () => {
+  const _checkConnection = async () => {
     if (!session) return;
 
     try {
@@ -82,7 +82,7 @@ export default function GmailIntegration() {
   };
 
   // 여행 이메일 분석
-  const analyzeTravelEmails = async (maxResults: number = 20) => {
+  const _analyzeTravelEmails = async (maxResults: number = 20) => {
     if (!session) return;
 
     try {
@@ -122,7 +122,7 @@ export default function GmailIntegration() {
     }
   }, [session]);
 
-  const getInsightIcon = (type: string) => {
+  const _getInsightIcon = (type: string) => {
     switch (type) {
       case 'achievement':
         return '🏆';
@@ -135,7 +135,7 @@ export default function GmailIntegration() {
     }
   };
 
-  const getInsightColor = (type: string) => {
+  const _getInsightColor = (type: string) => {
     switch (type) {
       case 'achievement':
         return 'alert alert-success';

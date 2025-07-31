@@ -3,7 +3,7 @@
 // RELATED: lib/schengen-calculator.ts, app/api/trips/route.ts, components/schengen/SchengenCalculator.tsx
 // GOTCHAS: 날짜는 UTC로 처리, 셰겐 계산은 참고용이며 법적 책임 없음
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
@@ -37,7 +37,7 @@ type VisaType =
 type PassportCountry = 'US' | 'UK' | 'EU' | 'CA' | 'AU' | 'JP' | 'OTHER';
 
 // GET /api/schengen - Calculate Schengen status for authenticated user
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
 
   try {

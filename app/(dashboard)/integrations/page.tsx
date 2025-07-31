@@ -52,7 +52,7 @@ function WireframeGmailAnalyzer({
         onStatsUpdate?.({ emailsScanned: 25 });
         setIsAnalyzing(false);
       }, 2000);
-    } catch (error) {
+    } catch (__error) {
       setIsAnalyzing(false);
     }
   };
@@ -194,7 +194,7 @@ export default function IntegrationsPage() {
     }
   }, [session, status, router]);
 
-  const checkConnections = async () => {
+  const _checkConnections = async () => {
     if (!session) return;
 
     setConnectionStatus(prev => ({ ...prev, loading: true }));
@@ -218,7 +218,7 @@ export default function IntegrationsPage() {
       if (gmailData.connected && calendarData.connected) {
         setCurrentStep('analyze');
       }
-    } catch (error) {
+    } catch (__error) {
       // Error checking connections
       setConnectionStatus({
         gmail: false,
@@ -228,7 +228,7 @@ export default function IntegrationsPage() {
     }
   };
 
-  const handleGmailAnalysisComplete = (travelInfos: any[]) => {
+  const _handleGmailAnalysisComplete = (travelInfos: any[]) => {
     setExtractedTravelInfos(travelInfos);
     setStats(prev => ({
       ...prev,
@@ -240,7 +240,7 @@ export default function IntegrationsPage() {
     }
   };
 
-  const handleCalendarSyncComplete = (result: {
+  const _handleCalendarSyncComplete = (result: {
     created: number;
     errors: string[];
   }) => {
@@ -255,7 +255,7 @@ export default function IntegrationsPage() {
     }
   };
 
-  const resetFlow = () => {
+  const _resetFlow = () => {
     setExtractedTravelInfos([]);
     setCurrentStep('analyze');
     setError(null);

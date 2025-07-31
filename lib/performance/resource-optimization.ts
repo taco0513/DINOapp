@@ -3,13 +3,13 @@
  */
 
 // Critical resource preloading
-export const preloadCriticalResources = () => {
+export const _preloadCriticalResources = () => {
   if (typeof window === 'undefined') return;
 
   const head = document.head;
 
   // Preload critical fonts
-  const preloadFont = (href: string, type = 'font/woff2') => {
+  const _preloadFont = (href: string, type = 'font/woff2') => {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.href = href;
@@ -20,7 +20,7 @@ export const preloadCriticalResources = () => {
   };
 
   // Preload critical CSS
-  const preloadCSS = (href: string) => {
+  const _preloadCSS = (href: string) => {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.href = href;
@@ -29,7 +29,7 @@ export const preloadCriticalResources = () => {
   };
 
   // Preload critical JavaScript
-  const preloadJS = (href: string) => {
+  const _preloadJS = (href: string) => {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.href = href;
@@ -67,7 +67,7 @@ export const preloadCriticalResources = () => {
 };
 
 // Service Worker registration for caching
-export const registerServiceWorker = async () => {
+export const _registerServiceWorker = async () => {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
     return false;
   }
@@ -105,7 +105,7 @@ export const registerServiceWorker = async () => {
 };
 
 // Critical CSS inlining
-export const inlineCriticalCSS = () => {
+export const _inlineCriticalCSS = () => {
   if (typeof window === 'undefined') return;
 
   // Critical CSS for above-the-fold content
@@ -289,11 +289,11 @@ export class ResourceOptimizer {
 }
 
 // Web Vitals optimization
-export const optimizeWebVitals = () => {
+export const _optimizeWebVitals = () => {
   if (typeof window === 'undefined') return;
 
   // Optimize LCP (Largest Contentful Paint)
-  const optimizeLCP = () => {
+  const _optimizeLCP = () => {
     // Preload LCP image
     const hero = document.querySelector('[data-lcp]') as HTMLImageElement;
     if (hero && hero.src) {
@@ -328,7 +328,7 @@ export const optimizeWebVitals = () => {
   };
 
   // Optimize CLS (Cumulative Layout Shift)
-  const optimizeCLS = () => {
+  const _optimizeCLS = () => {
     // Add size attributes to images
     const images = document.querySelectorAll('img:not([width]):not([height])');
     images.forEach(img => {
@@ -353,7 +353,7 @@ export const optimizeWebVitals = () => {
   // Optimize FID (First Input Delay)
   const optimizeFID = () => {
     // Break up long tasks
-    const breakUpLongTasks = (tasks: Function[]) => {
+    const _breakUpLongTasks = (tasks: Function[]) => {
       const runTask = (index: number) => {
         if (index >= tasks.length) return;
 
@@ -387,7 +387,7 @@ export const optimizeWebVitals = () => {
 };
 
 // Initialize all optimizations
-export const initializePerformanceOptimizations = () => {
+export const _initializePerformanceOptimizations = () => {
   if (typeof window === 'undefined') return;
 
   // Run immediately
@@ -415,7 +415,7 @@ export const initializePerformanceOptimizations = () => {
 };
 
 // Performance budget monitoring
-export const monitorPerformanceBudget = () => {
+export const _monitorPerformanceBudget = () => {
   if (typeof window === 'undefined' || !('PerformanceObserver' in window))
     return;
 
@@ -427,7 +427,7 @@ export const monitorPerformanceBudget = () => {
     ttfb: 600, // 600ms
   };
 
-  const observer = new PerformanceObserver(list => {
+  const _observer = new PerformanceObserver(list => {
     for (const entry of list.getEntries()) {
       let metric: keyof typeof budgets | null = null;
       let value: number = 0;

@@ -19,7 +19,7 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
     skipDuplicates: true,
   });
 
-  const handleExport = async (format: 'json' | 'csv') => {
+  const _handleExport = async (format: 'json' | 'csv') => {
     setExportLoading(true);
     setError(null);
 
@@ -52,7 +52,7 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImportFile(file);
@@ -61,7 +61,7 @@ export default function DataExportImport({ onSuccess }: DataExportImportProps) {
     }
   };
 
-  const handleImport = async () => {
+  const _handleImport = async () => {
     if (!importFile) return;
 
     setImportLoading(true);

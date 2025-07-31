@@ -49,7 +49,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
     }
   }, [formData.entryDate, formData.exitDate]);
 
-  const handleSubmit = async () => {
+  const _handleSubmit = async () => {
     setLoading(true);
     setError(null);
 
@@ -74,7 +74,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
     }
   };
 
-  const handleChange = (field: keyof TripFormData, value: any) => {
+  const _handleChange = (field: keyof TripFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

@@ -24,7 +24,7 @@ export default function EnhancedLanguageSelector({
     lang => lang.code === currentLocale
   );
 
-  const handleLanguageChange = (locale: Locale) => {
+  const _handleLanguageChange = (locale: Locale) => {
     changeLocale(locale); // No page refresh!
     setShowDropdown(false);
   };

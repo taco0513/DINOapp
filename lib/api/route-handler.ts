@@ -212,7 +212,7 @@ export function createRouteHandler<TBody = any, TQuery = any>(
 }
 
 // Helper functions for common responses
-export const responses = {
+export const _responses = {
   success: (data: any, status = 200) => NextResponse.json(data, { status }),
 
   created: (data: any) => NextResponse.json(data, { status: 201 }),

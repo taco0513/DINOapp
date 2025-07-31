@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { withGmailAuth, getRateLimitStatus } from '@/lib/gmail-middleware';
 import { checkGmailConnection } from '@/lib/gmail';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   return withGmailAuth(request, async session => {
     // Debug: Check if accessToken exists
     if (!session.accessToken) {

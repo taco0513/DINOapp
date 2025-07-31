@@ -346,7 +346,7 @@ export async function sanitizeRequestBody(
     const rules = { ...defaultRules, ...sanitizationRules };
 
     return InputSanitizer.sanitizeObject(body, rules);
-  } catch (error) {
+  } catch (__error) {
     // Request body sanitization failed
     return null;
   }

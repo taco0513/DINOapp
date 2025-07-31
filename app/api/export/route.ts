@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 // GET /api/export - Export user's travel data
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     // Get query parameter for format
     const url = new URL(request.url);
-    const format = url.searchParams.get('format') || 'json';
+    const _format = url.searchParams.get('format') || 'json';
 
     // Prepare export data
     const exportData = {

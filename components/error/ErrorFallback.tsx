@@ -28,7 +28,7 @@ export function ErrorFallback({
     }
   }, [error]);
 
-  const handleEmailSupport = () => {
+  const _handleEmailSupport = () => {
     const subject = encodeURIComponent('Error Report - DINO App');
     const body = encodeURIComponent(`
 I encountered an error in the DINO app:

@@ -12,7 +12,7 @@ import {
   checkPermissions,
   auditLog,
 } from '@/lib/security/api-security';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 // Mock dependencies
@@ -28,7 +28,7 @@ jest.mock('@/lib/database/db-client', () => ({
   },
 }));
 
-const mockDb = require('@/lib/database/db-client').db;
+const _mockDb = require('@/lib/database/db-client').db;
 
 describe('API Security', () => {
   beforeEach(() => {

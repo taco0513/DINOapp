@@ -50,7 +50,7 @@ export default function SchengenUsageChart({
   ];
 
   // 180일간의 데이터 계산
-  const calculateUsageData = () => {
+  const _calculateUsageData = () => {
     const today = new Date();
     const data: SchengenDay[] = [];
 

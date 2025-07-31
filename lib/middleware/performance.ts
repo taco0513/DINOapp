@@ -70,14 +70,14 @@ export function performanceMiddleware(
     request: NextRequest,
     handler: (req: NextRequest) => Promise<NextResponse>
   ): Promise<NextResponse> => {
-    const startTime = performance.now();
+    const _startTime = performance.now();
     const url = new URL(request.url);
     const path = url.pathname;
-    const method = request.method;
+    const _method = request.method;
     const clientIp = getClientIP(request);
 
     // Generate cache key
-    const cacheKey = generateCacheKey(request, config.cache?.includeQuery);
+    const _cacheKey = generateCacheKey(request, config.cache?.includeQuery);
 
     // Rate limiting
     if (config.rateLimit?.enabled) {

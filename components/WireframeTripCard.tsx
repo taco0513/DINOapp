@@ -13,11 +13,11 @@ export default function WireframeTripCard({
   onEdit,
   onDelete,
 }: WireframeTripCardProps) {
-  const formatDate = (dateString: string) => {
+  const _formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ko-KR');
   };
 
-  const calculateDays = () => {
+  const _calculateDays = () => {
     const entry = new Date(trip.entryDate);
     const exit = trip.exitDate ? new Date(trip.exitDate) : new Date();
     return Math.ceil(

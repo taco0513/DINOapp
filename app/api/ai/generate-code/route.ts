@@ -76,9 +76,9 @@ function generateComponentCode(
   _includeTests: boolean,
   _includeDocs: boolean
 ): GeneratedCode {
-  const componentName = 'UserProfileCard';
+  const _componentName = 'UserProfileCard';
 
-  const code = `import React from 'react';
+  const _code = `import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -149,7 +149,7 @@ export default function UserProfileCard({
   );
 }`;
 
-  const testCode = _includeTests
+  const _testCode = _includeTests
     ? `import { render, screen, fireEvent } from '@testing-library/react';
 import UserProfileCard from './UserProfileCard';
 
@@ -237,7 +237,7 @@ function generateAPICode(
   _includeTests: boolean,
   _includeDocs: boolean
 ): GeneratedCode {
-  const code = `import { NextRequest, NextResponse } from 'next/server';
+  const _code = `import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -506,7 +506,7 @@ model Tag {
 }
 
 function generateTestCode(_prompt: string, _framework: string): GeneratedCode {
-  const code = `import { test, expect } from '@playwright/test';
+  const _code = `import { test, expect } from '@playwright/test';
 
 test.describe('로그인 기능 E2E 테스트', () => {
   test.beforeEach(async ({ page }) => {

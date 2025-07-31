@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { dbBackupManager } from '@/lib/backup/database-backup';
@@ -8,8 +8,8 @@ import { asyncHandler } from '@/lib/error/error-handler';
 import { httpMetrics } from '@/lib/monitoring/metrics-collector';
 
 // GET /api/backup - List backups and schedules (admin only)
-export const GET = asyncHandler(async (request: NextRequest) => {
-  const endTimer = httpMetrics.requestStart('GET', '/api/backup');
+export const GET = asyncHandler(async (_request: Request) => {
+  const _endTimer = httpMetrics.requestStart('GET', '/api/backup');
 
   try {
     // Check authentication
@@ -60,8 +60,8 @@ export const GET = asyncHandler(async (request: NextRequest) => {
 });
 
 // POST /api/backup - Create manual backup (admin only)
-export const POST = asyncHandler(async (request: NextRequest) => {
-  const endTimer = httpMetrics.requestStart('POST', '/api/backup');
+export const POST = asyncHandler(async (_request: Request) => {
+  const _endTimer = httpMetrics.requestStart('POST', '/api/backup');
 
   try {
     // Check authentication

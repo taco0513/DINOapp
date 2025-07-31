@@ -48,7 +48,7 @@ jest.mock('googleapis', () => ({
 
 describe('Google API Integration Tests', () => {
   const mockAccessToken = 'mock-access-token';
-  const mockRefreshToken = 'mock-refresh-token';
+  const _mockRefreshToken = 'mock-refresh-token';
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -144,7 +144,7 @@ describe('Google API Integration Tests', () => {
     });
 
     it('should analyze multiple travel emails', async () => {
-      const emails = [
+      const _emails = [
         {
           id: '1',
           subject: 'Hotel Booking Confirmation',

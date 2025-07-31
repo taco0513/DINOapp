@@ -36,7 +36,7 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
     fetchTrips();
   }, [statusFilter, sortBy, sortOrder, fetchTrips]);
 
-  const fetchTrips = useCallback(async () => {
+  const _fetchTrips = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         includeCompleted:
@@ -64,14 +64,14 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
       } else {
         setError('Failed to load trips');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Network error occurred');
     } finally {
       setLoading(false);
     }
   }, [statusFilter, sortBy, sortOrder]);
 
-  const handleAddTrip = async (tripData: any) => {
+  const _handleAddTrip = async (tripData: any) => {
     try {
       const response = await fetch('/api/trips', {
         method: 'POST',
@@ -97,7 +97,7 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
     }
   };
 
-  const handleUpdateTrip = async (tripData: any) => {
+  const _handleUpdateTrip = async (tripData: any) => {
     if (!editingTrip) return;
 
     try {
@@ -123,7 +123,7 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
     }
   };
 
-  const handleDeleteTrip = async (tripId: string) => {
+  const _handleDeleteTrip = async (tripId: string) => {
     // TODO: Replace with proper modal dialog
     // eslint-disable-next-line no-alert
     if (!confirm('정말 이 여행 기록을 삭제하시겠습니까?')) {
@@ -146,7 +146,7 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const _getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
         return <Badge variant='default'>완료</Badge>;
@@ -159,12 +159,12 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
     }
   };
 
-  const getCountryFlag = (countryName: string) => {
+  const _getCountryFlag = (countryName: string) => {
     const country = getCountryByName(countryName);
     return country?.flag || '🌍';
   };
 
-  const calculateDuration = (entry: string, exit: string | null) => {
+  const _calculateDuration = (entry: string, exit: string | null) => {
     if (!exit) return '진행 중';
     const entryDate = new Date(entry);
     const exitDate = new Date(exit);

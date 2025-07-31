@@ -313,10 +313,10 @@ export class MetricsCollector {
 
 // Export singleton instance
 export const metrics = MetricsCollector.getInstance();
-export const metricsCollector = metrics; // Alias for compatibility
+export const _metricsCollector = metrics; // Alias for compatibility
 
 // Common metric helpers
-export const httpMetrics = {
+export const _httpMetrics = {
   requestStart: (method: string, path: string) => {
     metrics.increment('http.requests.total', 1, { method, path });
     return metrics.timer('http.request', { method, path });
@@ -335,7 +335,7 @@ export const httpMetrics = {
   },
 };
 
-export const dbMetrics = {
+export const _dbMetrics = {
   queryStart: (operation: string, model?: string) => {
     metrics.increment('db.queries.total', 1, { operation, model });
     return metrics.timer('db.query', { operation, model });
@@ -350,7 +350,7 @@ export const dbMetrics = {
   },
 };
 
-export const businessMetrics = {
+export const _businessMetrics = {
   tripCreated: (country: string, visaType: string) => {
     metrics.increment('trips.created.total', 1, { country, visaType });
   },

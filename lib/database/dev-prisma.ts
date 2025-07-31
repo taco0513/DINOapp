@@ -38,7 +38,7 @@ export const isDevelopment =
   process.env.DATABASE_URL.includes('file:');
 
 // Export the appropriate client based on environment
-export const getPrismaClient = async () => {
+export const _getPrismaClient = async () => {
   if (isDevelopment) {
     // In development, return the simple client without connection recovery
     // SQLite doesn't need connection recovery

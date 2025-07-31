@@ -429,7 +429,7 @@ describe('Security Validation Tests', () => {
 
   describe('Error Handling', () => {
     it('should not expose sensitive information in error messages', () => {
-      const sensitiveError = new Error(
+      const _sensitiveError = new Error(
         'Database connection failed: password=secret123'
       );
 

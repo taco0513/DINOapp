@@ -10,7 +10,7 @@ import { metrics } from '@/lib/monitoring/metrics-collector';
 import { systemAlert } from '@/lib/notifications/alert-manager';
 import cron from 'node-cron';
 
-const logger = loggers.business.child({ module: 'backup-scheduler' });
+const _logger = loggers.business.child({ module: 'backup-scheduler' });
 
 export interface BackupSchedule {
   id: string;
@@ -144,7 +144,7 @@ export class BackupScheduler {
    * Execute scheduled backup
    */
   private async executeBackup(schedule: BackupSchedule): Promise<void> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     logger.info('Executing scheduled backup', {
       scheduleId: schedule.id,
@@ -402,4 +402,4 @@ export class BackupScheduler {
 }
 
 // Export singleton instance
-export const backupScheduler = new BackupScheduler();
+export const _backupScheduler = new BackupScheduler();

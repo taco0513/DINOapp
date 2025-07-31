@@ -15,7 +15,7 @@ test.describe('Authentication E2E Tests', () => {
           window.sessionStorage.clear();
         }
       });
-    } catch (e) {
+    } catch (_e) {
       // Ignore storage access errors
     }
   });

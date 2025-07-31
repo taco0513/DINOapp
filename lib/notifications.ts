@@ -48,7 +48,7 @@ export function checkVisaExpiry(
   for (const visit of visits) {
     if (!visit.exitDate) continue; // Skip ongoing trips
 
-    const exitDate = new Date(visit.exitDate);
+    const _exitDate = new Date(visit.exitDate);
     const entryDate = new Date(visit.entryDate);
     const visaExpiryDate = addDays(entryDate, visit.maxDays - 1); // maxDays includes entry day
     const daysUntilExpiry = differenceInDays(visaExpiryDate, today);

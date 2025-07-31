@@ -171,7 +171,7 @@ export function getVisaRequirements(
 }
 
 // 인기 목적지 리스트
-export const POPULAR_DESTINATIONS = {
+export const _POPULAR_DESTINATIONS = {
   KR: ['US', 'JP', 'TH', 'VN', 'FR', 'ES', 'IT', 'GB'],
   US: ['MX', 'CA', 'GB', 'FR', 'JP', 'KR', 'IT', 'ES'],
   JP: ['US', 'KR', 'TW', 'TH', 'FR', 'GB', 'IT', 'ES'],

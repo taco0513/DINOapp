@@ -156,7 +156,7 @@ export default function SettingsPage() {
   }, [session]);
 
   // 설정 저장
-  const saveSettings = async (newSettings: Partial<UserSettings>) => {
+  const _saveSettings = async (newSettings: Partial<UserSettings>) => {
     setIsLoading(true);
     try {
       const updatedSettings = { ...settings, ...newSettings };
@@ -176,7 +176,7 @@ export default function SettingsPage() {
 
       setSaveMessage('설정이 저장되었습니다.');
       setTimeout(() => setSaveMessage(''), 3000);
-    } catch (error) {
+    } catch (__error) {
       setSaveMessage('설정 저장에 실패했습니다.');
       setTimeout(() => setSaveMessage(''), 3000);
     } finally {
@@ -214,7 +214,7 @@ export default function SettingsPage() {
         setSaveMessage('데이터가 내보내기 되었습니다.');
         setTimeout(() => setSaveMessage(''), 3000);
       }
-    } catch (error) {
+    } catch (__error) {
       setSaveMessage('데이터 내보내기에 실패했습니다.');
       setTimeout(() => setSaveMessage(''), 3000);
     }

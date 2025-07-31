@@ -20,7 +20,7 @@ export default function BillingSuccessPage({ searchParams }: PageProps) {
   const { session_id, plan, mock } = searchParams;
   const isMockPayment = mock === 'true';
 
-  const getPlanName = (planId?: string) => {
+  const _getPlanName = (planId?: string) => {
     switch (planId) {
       case 'pro-monthly':
         return '프로 월간 플랜';

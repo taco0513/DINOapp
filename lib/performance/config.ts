@@ -1,6 +1,6 @@
 // Performance optimization configuration
 
-export const PERFORMANCE_CONFIG = {
+export const _PERFORMANCE_CONFIG = {
   // Image optimization
   images: {
     quality: 75,

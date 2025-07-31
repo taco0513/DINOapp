@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { metrics } from '@/lib/monitoring/metrics-collector';
 import { asyncHandler } from '@/lib/error/error-handler';
 
 // GET /api/metrics - Get current metrics (admin only)
-export const GET = asyncHandler(async (request: NextRequest) => {
+export const _GET = asyncHandler(async (_request: Request) => {
   // Check authentication
   const session = await getServerSession(authOptions);
 

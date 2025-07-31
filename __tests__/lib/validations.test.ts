@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Import validation schemas (we'll need to create these)
-const CountryVisitSchema = z.object({
+const _CountryVisitSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   entryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
   exitDate: z
@@ -29,7 +29,7 @@ const CountryVisitSchema = z.object({
   notes: z.string().optional(),
 });
 
-const NotificationPreferencesSchema = z.object({
+const _NotificationPreferencesSchema = z.object({
   email: z.boolean(),
   push: z.boolean(),
   visaExpiryDays: z.array(z.number().int().min(1).max(365)),
@@ -44,14 +44,14 @@ const NotificationPreferencesSchema = z.object({
 });
 
 // Utility functions for date validation
-const isValidDateString = (dateString: string): boolean => {
+const _isValidDateString = (dateString: string): boolean => {
   const date = new Date(dateString);
   return (
     !isNaN(date.getTime()) && dateString === date.toISOString().split('T')[0]
   );
 };
 
-const isEntryBeforeExit = (
+const _isEntryBeforeExit = (
   entryDate: string,
   exitDate: string | null
 ): boolean => {
@@ -59,14 +59,14 @@ const isEntryBeforeExit = (
   return new Date(entryDate) < new Date(exitDate);
 };
 
-const isFutureDate = (dateString: string): boolean => {
+const _isFutureDate = (dateString: string): boolean => {
   const date = new Date(dateString);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return date >= today;
 };
 
-const calculateTripDuration = (
+const _calculateTripDuration = (
   entryDate: string,
   exitDate: string | null
 ): number => {

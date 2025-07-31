@@ -292,11 +292,11 @@ class VisaAlertsService {
 }
 
 // Export new service instance
-export const visaAlerts = new VisaAlertsService();
+export const _visaAlerts = new VisaAlertsService();
 
 // Legacy functions for backward compatibility
 export async function checkVisaAlerts(userId: string) {
-  const trips = await prisma.trip.findMany({
+  const trips = await prisma.travel.findMany({
     where: {
       userId,
       endDate: {

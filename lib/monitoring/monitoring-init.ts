@@ -307,7 +307,7 @@ class MonitoringSystem {
 
       this.initialized = false;
       // Monitoring system shutdown completed
-    } catch (error) {
+    } catch (__error) {
       // Error during monitoring system shutdown
     }
   }

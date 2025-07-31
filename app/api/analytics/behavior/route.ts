@@ -11,7 +11,7 @@ export async function GET(_request: NextRequest) {
 
     // Query parameter parsing for future use
     // const searchParams = request.nextUrl.searchParams;
-    // const range = searchParams.get('range') || '30d';
+    // const _range = searchParams.get('range') || '30d';
 
     // 모의 사용자 행동 데이터
     const mockData = {

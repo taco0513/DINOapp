@@ -23,7 +23,7 @@ export default function WireframeTripForm({
     purpose: trip?.purpose || '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const _handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (trip) {
@@ -32,7 +32,7 @@ export default function WireframeTripForm({
         await ApiClient.createTrip(formData);
       }
       onSuccess();
-    } catch (error) {
+    } catch (_error) {
       // Error saving trip
     }
   };

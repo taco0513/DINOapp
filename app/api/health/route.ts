@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { metrics } from '@/lib/monitoring/metrics-collector';
 
 // GET /api/health - Comprehensive health check
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const checks = {
     timestamp: new Date().toISOString(),
     status: 'healthy',

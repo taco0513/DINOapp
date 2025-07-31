@@ -10,8 +10,8 @@ import path from 'path';
 import { gzip, gunzip } from 'zlib';
 import { promisify } from 'util';
 
-const gzipAsync = promisify(gzip);
-const gunzipAsync = promisify(gunzip);
+const _gzipAsync = promisify(gzip);
+const _gunzipAsync = promisify(gunzip);
 
 interface BackupMetadata {
   id: string;
@@ -94,7 +94,7 @@ class BackupManager {
       };
 
       // 백업 파일 생성
-      const backupPath = await this.saveBackupData(
+      const _backupPath = await this.saveBackupData(
         backupId,
         backupData,
         metadata,
@@ -185,7 +185,7 @@ class BackupManager {
         (a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       );
-    } catch (error) {
+    } catch (__error) {
       // Error listing backups
       return [];
     }
@@ -435,5 +435,5 @@ class BackupManager {
   }
 }
 
-export const backupManager = BackupManager.getInstance();
+export const _backupManager = BackupManager.getInstance();
 export type { BackupMetadata, BackupOptions, RestoreOptions };

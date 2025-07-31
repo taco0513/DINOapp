@@ -30,11 +30,11 @@ export default function PerformanceMonitor({
   reportInterval = 30000, // 30 seconds
   debug = false,
 }: PerformanceMonitorProps) {
-  const router = useRouter();
+  const _router = useRouter();
   const [metrics, setMetrics] = useState<PerformanceMetrics>({});
   const [isSupported, setIsSupported] = useState(false);
   const observerRef = useRef<PerformanceObserver | null>(null);
-  const metricsRef = useRef<PerformanceMetrics>({});
+  const _metricsRef = useRef<PerformanceMetrics>({});
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') return;
@@ -50,7 +50,7 @@ export default function PerformanceMonitor({
     }
 
     // Initialize performance observer
-    const initializeObserver = () => {
+    const _initializeObserver = () => {
       try {
         observerRef.current = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
@@ -75,7 +75,7 @@ export default function PerformanceMonitor({
     };
 
     // Handle performance entries
-    const handlePerformanceEntry = (entry: PerformanceEntry) => {
+    const _handlePerformanceEntry = (entry: PerformanceEntry) => {
       const newMetrics = { ...metricsRef.current };
 
       switch (entry.entryType) {
@@ -177,7 +177,7 @@ export default function PerformanceMonitor({
   }, [enabled, reportInterval, debug]);
 
   // Report metrics to analytics/monitoring service
-  const reportMetrics = async (metrics: PerformanceMetrics) => {
+  const _reportMetrics = async (metrics: PerformanceMetrics) => {
     if (!enabled || Object.keys(metrics).length === 0) return;
 
     try {
@@ -221,7 +221,7 @@ export default function PerformanceMonitor({
   };
 
   // Web Vitals scoring
-  const getWebVitalsScore = (metrics: PerformanceMetrics) => {
+  const _getWebVitalsScore = (metrics: PerformanceMetrics) => {
     let score = 0;
     let total = 0;
 
@@ -271,7 +271,7 @@ export default function PerformanceMonitor({
   if (!isSupported) return null;
 
   const score = getWebVitalsScore(metrics);
-  const warnings = getPerformanceWarnings(metrics);
+  const _warnings = getPerformanceWarnings(metrics);
 
   return debug ? (
     <div className='fixed bottom-4 right-4 bg-black bg-opacity-90 text-white p-4 rounded-lg text-xs font-mono max-w-sm z-50'>

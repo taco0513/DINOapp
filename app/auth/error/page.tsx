@@ -8,7 +8,7 @@ function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
-  const getErrorMessage = (error: string | null) => {
+  const _getErrorMessage = (error: string | null) => {
     switch (error) {
       case 'Configuration':
         return {

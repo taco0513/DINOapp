@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const _currentYear = new Date().getFullYear();
 
   return (
     <footer className='bg-gradient-to-r from-muted to-blue-50 border-t border-border mt-auto'>

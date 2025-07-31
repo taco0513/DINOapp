@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import type { CountryVisit } from '@/types/global';
 
-const prisma = new PrismaClient();
+const _prisma = new PrismaClient();
 
 /**
  * Optimized database queries for DiNoCal

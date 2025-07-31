@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
@@ -9,7 +9,7 @@ import { asyncHandler } from '@/lib/error/error-handler';
 import { httpMetrics } from '@/lib/monitoring/metrics-collector';
 
 // POST /api/recovery/test - Test recovery plan (admin only)
-export const POST = asyncHandler(async (request: NextRequest) => {
+export const POST = asyncHandler(async (_request: Request) => {
   const endTimer = httpMetrics.requestStart('POST', '/api/recovery');
 
   try {

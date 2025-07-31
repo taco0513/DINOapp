@@ -102,7 +102,7 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
   const sixMonthsAgo = new Date(now);
   sixMonthsAgo.setMonth(now.getMonth() - 6);
 
-  const totalTrips = travelInfos.length;
+  const _totalTrips = travelInfos.length;
   const destinations = new Map<string, number>();
   const airlines = new Map<string, number>();
   const upcomingTrips: TravelInfo[] = [];
@@ -141,14 +141,14 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
         // 월별 통계
         const monthKey = `${departureDate.getFullYear()}-${(departureDate.getMonth() + 1).toString().padStart(2, '0')}`;
         monthlyTrips.set(monthKey, (monthlyTrips.get(monthKey) || 0) + 1);
-      } catch (error) {
+      } catch (__error) {
         // Invalid date format
       }
     }
   }
 
   // 상위 목적지
-  const mostVisitedDestinations = Array.from(destinations.entries())
+  const _mostVisitedDestinations = Array.from(destinations.entries())
     .map(([code, count]) => ({
       code,
       name: airportCodes[code as keyof typeof airportCodes] || code,
@@ -158,7 +158,7 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
     .slice(0, 5);
 
   // 선호 항공사
-  const preferredAirlines = Array.from(airlines.entries())
+  const _preferredAirlines = Array.from(airlines.entries())
     .map(([code, count]) => ({
       code,
       name: airlineCodes[code as keyof typeof airlineCodes] || code,
@@ -172,9 +172,9 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
   const domesticTrips = travelInfos.filter(
     trip => trip.destination && domesticAirports.includes(trip.destination)
   ).length;
-  const internationalTrips = totalTrips - domesticTrips;
+  const _internationalTrips = totalTrips - domesticTrips;
 
-  const averageTripsPerMonth =
+  const _averageTripsPerMonth =
     monthlyTrips.size > 0
       ? Array.from(monthlyTrips.values()).reduce(
           (sum, count) => sum + count,
@@ -190,7 +190,7 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
         const date = new Date(trip.departureDate);
         const month = date.getMonth();
         monthCounts.set(month, (monthCounts.get(month) || 0) + 1);
-      } catch (error) {
+      } catch (__error) {
         // 잘못된 날짜 형식 무시
       }
     }
@@ -215,10 +215,10 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
     (a, b) => b[1] - a[1]
   );
 
-  const busyMonths = sortedMonths
+  const _busyMonths = sortedMonths
     .slice(0, 3)
     .map(([month]) => monthNames[month]);
-  const quietMonths = sortedMonths
+  const _quietMonths = sortedMonths
     .slice(-3)
     .map(([month]) => monthNames[month]);
 
@@ -239,7 +239,7 @@ export function generateTravelStats(travelInfos: TravelInfo[]): TravelStats {
           totalDuration += duration;
           tripWithDuration++;
         }
-      } catch (error) {
+      } catch (__error) {
         // 잘못된 날짜 형식 무시
       }
     }
@@ -463,7 +463,7 @@ export function generateTravelCalendar(
             });
           }
         }
-      } catch (error) {
+      } catch (__error) {
         // Invalid date in trip
       }
     }

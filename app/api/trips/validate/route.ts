@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
@@ -28,7 +28,7 @@ const validateTripSchema = z.object({
 });
 
 // POST /api/trips/validate - Validate a planned trip
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const requestId = generateRequestId();
 
   try {

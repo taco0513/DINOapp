@@ -92,7 +92,7 @@ export default function GmailAnalyzer({
     setFilteredTravelInfos(filtered);
   }, [travelInfos, filters]);
 
-  const getCategoryFromEmail = (travelInfo: TravelInfo): string => {
+  const _getCategoryFromEmail = (travelInfo: TravelInfo): string => {
     const subject = travelInfo.subject.toLowerCase();
     const from = (travelInfo.from || '').toLowerCase();
 
@@ -114,7 +114,7 @@ export default function GmailAnalyzer({
     return 'booking_platform';
   };
 
-  const startAnalysis = async () => {
+  const _startAnalysis = async () => {
     if (!session) {
       setError('인증이 필요합니다.');
       return;
@@ -245,7 +245,7 @@ export default function GmailAnalyzer({
     }
   };
 
-  const getConfidenceBadge = (confidence: number) => {
+  const _getConfidenceBadge = (confidence: number) => {
     if (confidence >= 0.8) {
       return (
         <span className='badge badge-success'>
@@ -267,7 +267,7 @@ export default function GmailAnalyzer({
     }
   };
 
-  const getCategoryIcon = (category: string) => {
+  const _getCategoryIcon = (category: string) => {
     switch (category) {
       case 'airline':
         return <Plane className='h-4 w-4' />;
@@ -278,7 +278,7 @@ export default function GmailAnalyzer({
     }
   };
 
-  const getCategoryLabel = (category: string) => {
+  const _getCategoryLabel = (category: string) => {
     switch (category) {
       case 'airline':
         return '항공사';

@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { withGmailAuth } from '@/lib/gmail-middleware';
 import { syncTravelToCalendar, findExistingTravelEvents } from '@/lib/calendar';
 import { TravelInfo } from '@/lib/gmail';
 import { csrfProtection } from '@/lib/security/csrf-protection';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   // CSRF 보호
   const csrfResult = await csrfProtection(request, {
     requireDoubleSubmit: true,

@@ -32,7 +32,7 @@ export function VisaComparison({
     () => Object.keys(VISA_DATABASE).slice(0, 20) // Limit for demo
   );
 
-  const addCountry = (countryCode: string) => {
+  const _addCountry = (countryCode: string) => {
     if (
       selectedCountries.length < 4 &&
       !selectedCountries.includes(countryCode)
@@ -41,13 +41,13 @@ export function VisaComparison({
     }
   };
 
-  const removeCountry = (countryCode: string) => {
+  const _removeCountry = (countryCode: string) => {
     setSelectedCountries(
       selectedCountries.filter(code => code !== countryCode)
     );
   };
 
-  const getRequirementBadge = (requirement: VisaRequirement) => {
+  const _getRequirementBadge = (requirement: VisaRequirement) => {
     if (!requirement.visaRequired) {
       return (
         <Badge className='bg-green-100 text-green-800 border-green-200'>

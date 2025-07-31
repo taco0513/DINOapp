@@ -31,7 +31,7 @@ export default function CalendarPage() {
   >('overview');
 
   // Gmail에서 여행 정보 가져오기
-  const loadTravelInfos = async () => {
+  const _loadTravelInfos = async () => {
     if (!session) return;
 
     try {
@@ -72,7 +72,7 @@ export default function CalendarPage() {
           }
         );
       }
-    } catch (err) {
+    } catch (__err) {
       // Failed to load calendar stats
     }
   };
@@ -94,7 +94,7 @@ export default function CalendarPage() {
   };
 
   // 동기화 완료 후 콜백
-  const handleSyncComplete = (result: any) => {
+  const _handleSyncComplete = (result: any) => {
     if (result.success) {
       loadCalendarStats();
     }

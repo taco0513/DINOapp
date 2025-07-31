@@ -73,12 +73,12 @@ export async function searchTravelEmails(
   maxResults: number = 365
 ): Promise<EmailMessage[]> {
   try {
-    const gmail = createGmailClient(accessToken);
+    const _gmail = createGmailClient(accessToken);
 
     // 1년 전 날짜 계산
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    const dateFilter = oneYearAgo.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+    const _dateFilter = oneYearAgo.toISOString().split('T')[0]; // YYYY-MM-DD 형식
 
     // 고급 여행 관련 키워드로 검색 (한국어/영어 지원) + 1년 범위 제한
     const searchQuery =
@@ -168,14 +168,14 @@ export async function searchTravelEmails(
           body,
           snippet: messageDetail.data.snippet || '',
         });
-      } catch (error) {
+      } catch (__error) {
         // Error fetching message
         // 개별 메시지 오류는 건너뛰고 계속 진행
       }
     }
 
     return messages;
-  } catch (error) {
+  } catch (__error) {
     // Error searching travel emails
     throw new Error('Gmail API 요청 중 오류가 발생했습니다.');
   }
@@ -187,7 +187,7 @@ export async function searchTravelEmails(
  */
 export function extractTravelInfo(email: EmailMessage): TravelInfo | null {
   const fullText = `${email.subject} ${email.body} ${email.snippet}`;
-  const normalizedText = fullText.toLowerCase();
+  const _normalizedText = fullText.toLowerCase();
 
   // 기본 여행 정보 객체
   const travelInfo: TravelInfo = {
@@ -509,14 +509,14 @@ export async function analyzeTravelEmails(
     }
 
     // 지능형 중복 제거 및 병합 (향후 구현)
-    // const mergedInfos = deduplicateAndMergeTravelInfo(travelInfos)
+    // const _mergedInfos = deduplicateAndMergeTravelInfo(travelInfos)
 
     // 우선순위 정렬 (향후 구현)
     // return prioritizeTravelInfo(mergedInfos)
 
     // 현재는 기본 신뢰도 순으로 정렬
     return travelInfos.sort((a, b) => b.confidence - a.confidence);
-  } catch (error) {
+  } catch (__error) {
     // Error analyzing travel emails
     throw new Error('이메일 분석 중 오류가 발생했습니다.');
   }
@@ -538,7 +538,7 @@ export async function checkGmailConnection(
     });
 
     return true;
-  } catch (error) {
+  } catch (__error) {
     // Gmail connection failed
     return false;
   }

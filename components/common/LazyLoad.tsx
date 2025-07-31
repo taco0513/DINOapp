@@ -22,7 +22,7 @@ export const LoadingSkeleton = () => (
 );
 
 // Lazy load heavy components
-export const LazySchengenCalculator = dynamic(
+export const _LazySchengenCalculator = dynamic(
   () => import('@/components/schengen/SchengenCalculator'),
   {
     loading: () => <LoadingSpinner />,
@@ -30,7 +30,7 @@ export const LazySchengenCalculator = dynamic(
   }
 );
 
-export const LazyTravelStatsWidget = dynamic(
+export const _LazyTravelStatsWidget = dynamic(
   () => import('@/components/dashboard/TravelStatsWidget'),
   {
     loading: () => <LoadingSkeleton />,
@@ -38,7 +38,7 @@ export const LazyTravelStatsWidget = dynamic(
   }
 );
 
-export const LazyYearView = dynamic(
+export const _LazyYearView = dynamic(
   () =>
     import('@/components/calendar/YearView').then(mod => ({
       default: mod.YearView,

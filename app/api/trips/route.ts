@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
@@ -28,7 +28,7 @@ import {
 import { createRequestLogger, loggers } from '@/lib/monitoring/logger';
 
 // Zod schema for trip validation (enhanced)
-const createTripSchema = z.object({
+const _createTripSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   entryDate: z
     .string()
@@ -63,7 +63,7 @@ const createTripSchema = z.object({
   isEmergency: z.boolean().optional().default(false),
 });
 
-const updateTripSchema = z.object({
+const _updateTripSchema = z.object({
   country: z.string().min(1).optional(),
   entryDate: z
     .string()
@@ -99,10 +99,10 @@ const updateTripSchema = z.object({
 });
 
 // GET /api/trips - Get all trips for authenticated user
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
   const { logger, end: endRequest } = createRequestLogger(loggers.api)(request);
-  const endTimer = httpMetrics.requestStart('GET', '/api/trips');
+  const _endTimer = httpMetrics.requestStart('GET', '/api/trips');
 
   try {
     // Rate limiting
@@ -210,10 +210,10 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/trips - Create new trip
-export async function POST(request: NextRequest) {
-  const requestId = generateRequestId();
+export async function POST(request: Request) {
+  const _requestId = generateRequestId();
   const { logger, end: endRequest } = createRequestLogger(loggers.api)(request);
-  const endTimer = httpMetrics.requestStart('POST', '/api/trips');
+  const _endTimer = httpMetrics.requestStart('POST', '/api/trips');
 
   try {
     // Rate limiting (더 엄격한 제한)

@@ -69,7 +69,7 @@ export function useOffline() {
   );
 
   // 데이터 동기화
-  const syncData = useCallback(async () => {
+  const _syncData = useCallback(async () => {
     if (!isOnline) return;
 
     try {
@@ -94,7 +94,7 @@ export function useOffline() {
   }, [isOnline, saveForOffline]);
 
   // 오프라인 API 호출 래퍼
-  const offlineFetch = useCallback(
+  const _offlineFetch = useCallback(
     async (url: string, options?: RequestInit) => {
       try {
         const response = await fetch(url, options);
@@ -112,7 +112,7 @@ export function useOffline() {
         }
 
         return response;
-      } catch (error) {
+      } catch (_error) {
         // 오프라인일 때 캐시된 데이터 반환
         if (!isOnline) {
           if (url.includes('/api/trips')) {

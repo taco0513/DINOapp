@@ -63,7 +63,7 @@ export function reportWebVitals(
   } = {}
 ) {
   try {
-    onFID(metric => sendToAnalytics(metric, options));
+    onINP(metric => sendToAnalytics(metric, options));
     onTTFB(metric => sendToAnalytics(metric, options));
     onLCP(metric => sendToAnalytics(metric, options));
     onCLS(metric => sendToAnalytics(metric, options));

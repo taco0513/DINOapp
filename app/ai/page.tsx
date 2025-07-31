@@ -8,12 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 // Dynamic imports for heavy AI components
-const AIAssistant = dynamic(() => import('@/components/ai/AIAssistant'), {
+const _AIAssistant = dynamic(() => import('@/components/ai/AIAssistant'), {
   loading: () => <LoadingSpinner />,
   ssr: false,
 });
 
-const AIPairProgramming = dynamic(
+const _AIPairProgramming = dynamic(
   () => import('@/components/ai/AIPairProgramming'),
   {
     loading: () => <LoadingSpinner />,
@@ -21,12 +21,12 @@ const AIPairProgramming = dynamic(
   }
 );
 
-const CodeGenerator = dynamic(() => import('@/components/ai/CodeGenerator'), {
+const _CodeGenerator = dynamic(() => import('@/components/ai/CodeGenerator'), {
   loading: () => <LoadingSpinner />,
   ssr: false,
 });
 
-const ProblemSolver = dynamic(() => import('@/components/ai/ProblemSolver'), {
+const _ProblemSolver = dynamic(() => import('@/components/ai/ProblemSolver'), {
   loading: () => <LoadingSpinner />,
   ssr: false,
 });

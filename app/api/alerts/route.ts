@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { alertManager } from '@/lib/notifications/alert-manager';
@@ -13,7 +13,7 @@ import {
 } from '@/lib/api/error-handler';
 
 // GET /api/alerts - 알림 목록 조회
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/alerts - 새 알림 생성 (테스트용)
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
 }
 
 // PATCH /api/alerts - 알림 상태 업데이트
-export async function PATCH(request: NextRequest) {
+export async function PATCH(request: Request) {
   const requestId = generateRequestId();
 
   try {

@@ -16,7 +16,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
     loadChartData();
   }, [timeRange]);
 
-  const loadChartData = async () => {
+  const _loadChartData = async () => {
     setLoading(true);
     try {
       const response = await ApiClient.getTrips();
@@ -70,7 +70,7 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
             break;
         }
 
-        const dailyData = [];
+        const _dailyData = [];
         const currentDate = new Date(startDate);
 
         while (currentDate <= endDate) {
@@ -112,16 +112,16 @@ export default function SchengenChart({ className = '' }: SchengenChartProps) {
 
         setChartData(dailyData);
       }
-    } catch (error) {
+    } catch (_error) {
       // Error loading chart data
     } finally {
       setLoading(false);
     }
   };
 
-  const maxValue = 90;
-  const chartHeight = 200;
-  const chartWidth = 600;
+  const _maxValue = 90;
+  const _chartHeight = 200;
+  const _chartWidth = 600;
 
   if (loading) {
     return (

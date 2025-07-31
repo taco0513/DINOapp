@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { withGmailAuth, sanitizeGmailResponse } from '@/lib/gmail-middleware';
 import { searchTravelEmails } from '@/lib/gmail';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   return withGmailAuth(request, async (session, request) => {
     const { searchParams } = new URL(request.url);
     const maxResults = parseInt(searchParams.get('maxResults') || '365', 10);

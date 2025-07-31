@@ -3,7 +3,7 @@
  * Collects and reports client-side performance metrics
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { MetricsCollector } from '@/lib/monitoring/metrics-collector';
@@ -36,9 +36,9 @@ interface APIPerformanceMetric {
 }
 
 // Initialize metrics collector
-const metricsCollector = MetricsCollector.getInstance();
+const _metricsCollector = MetricsCollector.getInstance();
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email?.includes('admin')) {

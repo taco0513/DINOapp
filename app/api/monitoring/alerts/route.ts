@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
@@ -8,7 +8,7 @@ import {
 } from '@/lib/monitoring/alerts';
 
 // POST /api/monitoring/alerts - 알림 트리거
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/monitoring/alerts - 알림 조회
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     }
 
     // TODO: 데이터베이스에서 알림 로그 조회
-    // const alerts = await prisma.alertLog.findMany({
+    // const _alerts = await prisma.alertLog.findMany({
     //   where: {
     //     userId: session.user.id,
     //   },

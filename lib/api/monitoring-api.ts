@@ -284,7 +284,7 @@ export class MonitoringAPI {
         const lcp =
           paint.find(entry => entry.name === 'largest-contentful-paint')
             ?.startTime || 0;
-        const fcp =
+        const _fcp =
           paint.find(entry => entry.name === 'first-contentful-paint')
             ?.startTime || 0;
 
@@ -354,10 +354,10 @@ export class MonitoringAPI {
       // 실제 환경에서는 Prisma 또는 다른 ORM을 통한 데이터베이스 쿼리
       // const totalUsers = await prisma.user.count()
       // const activeToday = await prisma.user.count({ where: { lastActive: { gte: startOfDay(new Date()) } } })
-      // const totalTrips = await prisma.trip.count()
+      // const totalTrips = await prisma.travel.count()
 
       // 또는 Google Analytics API, Mixpanel 등 외부 분석 도구 사용
-      // const analytics = await googleAnalytics.getRealtimeData()
+      // const _analytics = await googleAnalytics.getRealtimeData()
 
       // 현재는 시뮬레이션된 실제적인 데이터 반환
       const now = new Date();
@@ -394,7 +394,7 @@ export class MonitoringAPI {
     // 예: Sentry, LogRocket, Winston 로그, CloudWatch 등
     try {
       // 실제 환경에서는 에러 로깅 서비스 API 호출
-      // const sentryStats = await Sentry.getProjectStats()
+      // const _sentryStats = await Sentry.getProjectStats()
       // const errorLogs = await winston.query({ timeframe: '24h' })
 
       // 시뮬레이션된 실제적인 에러 데이터
@@ -471,12 +471,12 @@ export class MonitoringAPI {
     // 예: Google Analytics, Mixpanel, Amplitude, PostHog 등
     try {
       // 실제 환경에서는 사용자 행동 추적 API 호출
-      // const mixpanelData = await mixpanel.query({ event: 'feature_usage', timeframe: 'today' })
+      // const _mixpanelData = await mixpanel.query({ event: 'feature_usage', timeframe: 'today' })
       // const analyticsData = await googleAnalytics.getEvents()
 
       // 시뮬레이션된 실제적인 기능 사용량 데이터
       const today = new Date();
-      const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const _thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
       return {
         schengenCalculator: {

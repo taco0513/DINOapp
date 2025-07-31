@@ -259,7 +259,7 @@ class RequestDeduplicator {
   }
 }
 
-export const requestDeduplicator = new RequestDeduplicator();
+export const _requestDeduplicator = new RequestDeduplicator();
 
 // API rate limiting
 class RateLimiter {
@@ -327,7 +327,7 @@ export async function optimizedFetch(
   const cacheKey = `fetch:${url}:${JSON.stringify(fetchOptions)}`;
 
   // Request function
-  const makeRequest = async (): Promise<Response> => {
+  const _makeRequest = async (): Promise<Response> => {
     // Check cache first
     if (cache && fetchOptions.method !== 'POST') {
       const cached = apiCache.get(cacheKey);
@@ -535,4 +535,4 @@ export class APIPerformanceMonitor {
   }
 }
 
-export const apiMonitor = new APIPerformanceMonitor();
+export const _apiMonitor = new APIPerformanceMonitor();

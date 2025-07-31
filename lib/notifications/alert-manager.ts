@@ -226,7 +226,7 @@ class AlertManager {
 
       try {
         await this.sendToChannel(alert, channel, template);
-      } catch (error) {
+      } catch (__error) {
         // Failed to send alert to channel
       }
     }
@@ -257,7 +257,7 @@ class AlertManager {
   }
 
   private sendToConsole(alert: Alert): void {
-    const emoji = {
+    const _emoji = {
       info: 'ℹ️',
       warning: '⚠️',
       error: '❌',
@@ -276,7 +276,7 @@ class AlertManager {
   ): Promise<void> {
     try {
       // 간단한 이메일 발송 구현 (실제 환경에서는 nodemailer 등 사용)
-      const emailData = {
+      const _emailData = {
         to: channel.config.to,
         from: channel.config.from,
         subject: template?.subject || alert.title,
@@ -293,7 +293,7 @@ class AlertManager {
 
       // Email alert prepared
       // 실제 이메일 발송 로직은 여기에 구현
-    } catch (error) {
+    } catch (__error) {
       // Email sending failed
     }
   }
@@ -318,7 +318,7 @@ class AlertManager {
       }
 
       // Webhook alert sent successfully
-    } catch (error) {
+    } catch (__error) {
       // Webhook sending failed
     }
   }
@@ -390,7 +390,7 @@ class AlertManager {
       // 데이터베이스에 알림 로그 저장
       // 실제 구현에서는 Prisma를 사용하여 AlertLog 테이블에 저장
       // Alert logged to database
-    } catch (error) {
+    } catch (__error) {
       // Database logging failed
     }
   }
@@ -494,7 +494,7 @@ class AlertManager {
 // 시스템 통합을 위한 편의 함수들
 export const alertManager = AlertManager.getInstance();
 
-export const systemAlert = {
+export const _systemAlert = {
   error: (message: string, source = 'system', metadata?: any) =>
     alertManager.sendAlert(
       'system_error',

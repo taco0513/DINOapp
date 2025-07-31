@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { signIn } from 'next-auth/react';
 
 export async function GET() {
   // Create a test signin URL

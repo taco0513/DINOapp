@@ -254,7 +254,7 @@ export function startAlertMonitoring() {
     // 서버 사이드에서만 실행
     setInterval(async () => {
       // TODO: 실제 메트릭 수집 및 체크
-      // const metrics = await collectMetrics()
+      // const _metrics = await collectMetrics()
       // checkPerformanceAlerts(metrics)
       // checkUsageAlerts(metrics)
     }, 60000); // 1분

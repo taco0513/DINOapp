@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { csrfProtection } from '@/lib/security/csrf-protection';
@@ -39,9 +39,9 @@ interface AnalyticsEvent {
 
 // In-memory store for analytics (in production, use a proper database)
 const analyticsStore: AnalyticsEvent[] = [];
-const MAX_EVENTS = 10000; // Keep last 10k events
+const _MAX_EVENTS = 10000; // Keep last 10k events
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint for analytics dashboard
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const requestId = generateRequestId();
 
   try {
@@ -178,9 +178,9 @@ export async function GET(request: NextRequest) {
     };
 
     // Process events
-    let totalApiCalls = 0;
-    let totalApiTime = 0;
-    let apiErrors = 0;
+    let _totalApiCalls = 0;
+    let _totalApiTime = 0;
+    let _apiErrors = 0;
 
     filteredEvents.forEach(event => {
       // Count event types

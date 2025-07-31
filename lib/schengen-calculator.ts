@@ -294,7 +294,7 @@ export function validateFutureTrip(
   }
 
   // Calculate planned trip duration
-  const plannedDays =
+  const _plannedDays =
     Math.ceil(
       (plannedExit.getTime() - plannedEntry.getTime()) / (1000 * 60 * 60 * 24)
     ) + 1;

@@ -18,7 +18,7 @@ import type { CountryVisit } from '@/types/global';
  * const trips = await OfflineApiClient.getTrips('user123');
  *
  * // Create trip offline - will sync when online
- * const newTrip = await OfflineApiClient.createTrip(tripData);
+ * const _newTrip = await OfflineApiClient.createTrip(tripData);
  * ```
  */
 export class OfflineApiClient {
@@ -65,7 +65,7 @@ export class OfflineApiClient {
 
         return response;
       }
-    } catch (error) {
+    } catch (__error) {
       // API call failed, checking offline storage
     }
 
@@ -127,7 +127,7 @@ export class OfflineApiClient {
 
         return response;
       }
-    } catch (error) {
+    } catch (__error) {
       // Online create failed, queuing for offline sync
     }
 
@@ -200,7 +200,7 @@ export class OfflineApiClient {
 
         return response;
       }
-    } catch (error) {
+    } catch (__error) {
       // Countries API failed, checking offline storage
     }
 
@@ -215,7 +215,7 @@ export class OfflineApiClient {
           message: '오프라인 데이터를 사용 중입니다',
         };
       }
-    } catch (error) {
+    } catch (__error) {
       // Offline countries fetch failed
     }
 
@@ -251,7 +251,7 @@ export class OfflineApiClient {
       if (this.isOnline()) {
         return await ApiClient.getSchengenStatus(userId);
       }
-    } catch (error) {
+    } catch (__error) {
       // Schengen API failed, calculating offline
     }
 
@@ -329,7 +329,7 @@ export class OfflineApiClient {
             await ApiClient.createTrip(item.data);
           }
           // 다른 작업 타입들 처리...
-        } catch (error) {
+        } catch (__error) {
           // Failed to sync item
           // 실패한 항목은 큐에 남겨둠
           continue;
@@ -340,7 +340,7 @@ export class OfflineApiClient {
       await offlineStorage.clearOfflineQueue();
 
       // Offline sync completed
-    } catch (error) {
+    } catch (__error) {
       // Offline sync failed
     }
   }
@@ -357,7 +357,7 @@ export class OfflineApiClient {
     try {
       await offlineStorage.deleteCachedApiResponse(`trips:${userId || 'all'}`);
       // 다른 관련 캐시들도 무효화...
-    } catch (error) {
+    } catch (__error) {
       // Cache invalidation failed
     }
   }
@@ -517,7 +517,7 @@ export class OfflineApiClient {
       await offlineStorage.cleanExpiredCache();
 
       // Offline data preloaded successfully
-    } catch (error) {
+    } catch (__error) {
       // Failed to preload offline data
     }
   }

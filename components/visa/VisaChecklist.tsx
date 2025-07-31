@@ -67,7 +67,7 @@ export function VisaChecklist({
 
   const [notes, setNotes] = useState<Record<number, string>>({});
 
-  const toggleItem = (index: number) => {
+  const _toggleItem = (index: number) => {
     setChecklist(prev =>
       prev.map((item, i) =>
         i === index ? { ...item, completed: !item.completed } : item
@@ -77,10 +77,10 @@ export function VisaChecklist({
 
   const completedItems = checklist.filter(item => item.completed).length;
   const totalItems = checklist.length;
-  const progressPercentage =
+  const _progressPercentage =
     totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
 
-  const urgentItems = checklist.filter(item => item.urgent && !item.completed);
+  const _urgentItems = checklist.filter(item => item.urgent && !item.completed);
   const daysUntilTravel = 30; // This would be calculated from actual travel date
 
   const getTimelineRecommendation = () => {
@@ -121,9 +121,9 @@ export function VisaChecklist({
     }
   };
 
-  const timeline = getTimelineRecommendation();
+  const _timeline = getTimelineRecommendation();
 
-  const exportChecklist = () => {
+  const _exportChecklist = () => {
     const checklistText = checklist
       .map(
         (item, index) =>

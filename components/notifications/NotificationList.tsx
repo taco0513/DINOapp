@@ -24,7 +24,7 @@ export default function NotificationList({
     loadNotifications();
   }, [userId]);
 
-  const loadNotifications = () => {
+  const _loadNotifications = () => {
     setLoading(true);
 
     // Load from localStorage (in real app, this would be an API call)
@@ -97,7 +97,7 @@ export default function NotificationList({
     setLoading(false);
   };
 
-  const markAsRead = (notificationId: string) => {
+  const _markAsRead = (notificationId: string) => {
     const updated = notifications.map(n =>
       n.id === notificationId ? { ...n, read: true } : n
     );
@@ -105,13 +105,13 @@ export default function NotificationList({
     localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated));
   };
 
-  const markAllAsRead = () => {
+  const _markAllAsRead = () => {
     const updated = notifications.map(n => ({ ...n, read: true }));
     setNotifications(updated);
     localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated));
   };
 
-  const deleteNotification = (notificationId: string) => {
+  const _deleteNotification = (notificationId: string) => {
     const updated = notifications.filter(n => n.id !== notificationId);
     setNotifications(updated);
     localStorage.setItem(`notifications-${userId}`, JSON.stringify(updated));
@@ -120,7 +120,7 @@ export default function NotificationList({
   const filteredNotifications =
     filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
 
-  const displayNotifications = limit
+  const _displayNotifications = limit
     ? filteredNotifications.slice(0, limit)
     : filteredNotifications;
 

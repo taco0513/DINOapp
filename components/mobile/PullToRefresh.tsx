@@ -21,7 +21,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [startY, setStartY] = useState<number | null>(null);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+  const _handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
 
     // Only start pull-to-refresh if we're at the top of the scroll
@@ -30,7 +30,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     }
   }, []);
 
-  const handleTouchMove = useCallback(
+  const _handleTouchMove = useCallback(
     (e: React.TouchEvent) => {
       if (startY === null || isRefreshing) return;
 

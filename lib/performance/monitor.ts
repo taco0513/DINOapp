@@ -87,7 +87,7 @@ class PerformanceMonitor {
             this.reportMetrics();
           }
         }, 5000);
-      } catch (e) {
+      } catch (__e) {
         // Long task timing not supported
       }
     }
@@ -115,7 +115,7 @@ class PerformanceMonitor {
     ) {
       try {
         window.performance.mark(`${name}-${value}`);
-      } catch (e) {
+      } catch (__e) {
         // Performance mark not supported
       }
     }
@@ -137,7 +137,7 @@ class PerformanceMonitor {
         if (entries.length > 0) {
           return entries[entries.length - 1].duration;
         }
-      } catch (e) {
+      } catch (__e) {
         // Performance measure not supported
       }
     }

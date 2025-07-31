@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const baseUrl = 'https://dinoapp.net';
+  const _baseUrl = 'https://dinoapp.net';
   const currentDate = new Date().toISOString();
 
   // Static pages with their priorities and update frequencies

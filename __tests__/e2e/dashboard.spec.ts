@@ -245,7 +245,7 @@ test.describe('Dashboard E2E Tests', () => {
       .filter({ hasText: '여행 기록' })
       .first()
       .locator('..');
-    const computedStyle = await gridContainer.evaluate(el =>
+    const _computedStyle = await gridContainer.evaluate(el =>
       window.getComputedStyle(el)
     );
 

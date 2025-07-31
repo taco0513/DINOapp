@@ -43,7 +43,7 @@ export class CSRFProtection {
 }
 
 // Session Security Configuration
-export const sessionConfig = {
+export const _sessionConfig = {
   maxAge: parseInt(process.env.SESSION_MAX_AGE || '604800'), // 7 days
   updateAge: parseInt(process.env.SESSION_UPDATE_AGE || '86400'), // 24 hours
 

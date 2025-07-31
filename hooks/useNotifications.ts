@@ -49,7 +49,7 @@ export function useNotifications() {
   }, [isSupported]);
 
   // 알림 표시
-  const showNotification = useCallback(
+  const _showNotification = useCallback(
     (options: NotificationOptions) => {
       if (permission !== 'granted') {
         toast(options.body, {
@@ -78,7 +78,7 @@ export function useNotifications() {
         };
 
         return notification;
-      } catch (error) {
+      } catch (_error) {
         // 폴백: toast 알림 사용
         toast(options.body, {
           description: options.title,

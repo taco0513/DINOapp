@@ -224,7 +224,7 @@ export class QueryOptimizer {
       }
     }
 
-    const executeQuery = async (): Promise<T> => {
+    const _executeQuery = async (): Promise<T> => {
       const startTime = performance.now();
 
       try {
@@ -541,7 +541,7 @@ export class OptimizedQueries {
 export const dbOptimizer = DatabaseOptimizer.getInstance();
 
 // Export default optimized client
-export const optimizedPrisma = ConnectionPoolManager.getPool('default', {
+export const _optimizedPrisma = ConnectionPoolManager.getPool('default', {
   maxConnections: 20,
   minConnections: 2,
   idleTimeout: 300000,

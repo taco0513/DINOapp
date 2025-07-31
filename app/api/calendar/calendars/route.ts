@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { withGmailAuth } from '@/lib/gmail-middleware';
 import { getUserCalendars } from '@/lib/calendar';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   return withGmailAuth(request, async session => {
     try {
       const calendars = await getUserCalendars(session.accessToken as string);

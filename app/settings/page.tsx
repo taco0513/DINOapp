@@ -48,6 +48,7 @@ import {
   ChevronDown,
   X,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface UserSettings {
   // Account Settings
@@ -232,9 +233,11 @@ export default function SettingsPage() {
           <p className='text-sm text-secondary mb-8'>
             설정을 관리하려면 먼저 로그인해주세요.
           </p>
-          <Link href='/auth/signin' className='btn btn-primary'>
-            로그인하기
-          </Link>
+          <Button asChild>
+            <Link href='/auth/signin'>
+              로그인하기
+            </Link>
+          </Button>
         </div>
       </main>
     );
@@ -274,18 +277,16 @@ export default function SettingsPage() {
                 { id: 'privacy', name: '개인정보', icon: Shield },
                 { id: 'data', name: '데이터 관리', icon: Download },
               ].map(({ id, name, icon: Icon }) => (
-                <button
+                <Button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                    activeTab === id
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-secondary hover:text-primary'
-                  }`}
+                  variant={activeTab === id ? "default" : "ghost"}
+                  size="sm"
+                  className="gap-2"
                 >
                   <Icon className='h-4 w-4' />
                   {name}
-                </button>
+                </Button>
               ))}
             </nav>
           </div>
@@ -309,24 +310,22 @@ export default function SettingsPage() {
 
                 <div className='grid md:grid-cols-2 gap-4'>
                   {getSupportedLocales().map(locale => (
-                    <button
+                    <Button
                       key={locale.code}
                       onClick={() => saveSettings({ language: locale.code })}
                       disabled={isLoading}
-                      className={`p-4 border rounded-lg flex items-center gap-3 transition-colors ${
-                        settings.language === locale.code
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border hover:bg-surface'
-                      }`}
+                      variant={settings.language === locale.code ? 'default' : 'outline'}
+                      size="lg"
+                      className="justify-start gap-3"
                     >
                       <span className='text-2xl'>{locale.flag}</span>
                       <div className='text-left'>
                         <div className='font-medium'>{locale.name}</div>
-                        <div className='text-sm text-secondary'>
+                        <div className='text-sm opacity-70'>
                           {locale.code.toUpperCase()}
                         </div>
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -349,19 +348,17 @@ export default function SettingsPage() {
                     { key: 'dark', name: '다크', icon: Moon },
                     { key: 'system', name: '시스템', icon: Monitor },
                   ].map(({ key, name, icon: Icon }) => (
-                    <button
+                    <Button
                       key={key}
                       onClick={() => saveSettings({ theme: key as any })}
                       disabled={isLoading}
-                      className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition-colors ${
-                        settings.theme === key
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border hover:bg-surface'
-                      }`}
+                      variant={settings.theme === key ? 'default' : 'outline'}
+                      size="lg"
+                      className="flex-col gap-2"
                     >
                       <Icon className='h-6 w-6' />
                       <span className='font-medium'>{name}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -435,30 +432,27 @@ export default function SettingsPage() {
                         </h4>
                         <div className='grid gap-2'>
                           {regionTimezones.map(timezone => (
-                            <button
+                            <Button
                               key={timezone.value}
                               onClick={() =>
                                 saveSettings({ timezone: timezone.value })
                               }
                               disabled={isLoading}
-                              className={`p-3 border rounded-lg flex items-center justify-between transition-colors ${
-                                settings.timezone === timezone.value
-                                  ? 'border-primary bg-primary/10 text-primary'
-                                  : 'border-border hover:bg-surface'
-                              }`}
+                              variant={settings.timezone === timezone.value ? 'default' : 'outline'}
+                              className="justify-between"
                             >
                               <div className='text-left'>
                                 <div className='font-medium'>
                                   {timezone.label}
                                 </div>
-                                <div className='text-sm text-secondary'>
+                                <div className='text-sm opacity-70'>
                                   {timezone.value}
                                 </div>
                               </div>
                               <div className='text-sm font-mono'>
                                 {timezone.offset}
                               </div>
-                            </button>
+                            </Button>
                           ))}
                         </div>
                       </div>
@@ -500,26 +494,23 @@ export default function SettingsPage() {
                         .toLowerCase()
                         .includes(countrySearch.toLowerCase())
                   ).map(country => (
-                    <button
+                    <Button
                       key={country.code}
                       onClick={() =>
                         saveSettings({ passportCountry: country.code })
                       }
                       disabled={isLoading}
-                      className={`p-3 border rounded-lg flex items-center gap-3 transition-colors ${
-                        settings.passportCountry === country.code
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border hover:bg-surface'
-                      }`}
+                      variant={settings.passportCountry === country.code ? 'default' : 'outline'}
+                      className="justify-start gap-3"
                     >
                       <span className='text-xl'>{country.flag}</span>
                       <div className='text-left'>
                         <div className='font-medium'>{country.name}</div>
-                        <div className='text-sm text-secondary'>
+                        <div className='text-sm opacity-70'>
                           {country.code}
                         </div>
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -543,17 +534,14 @@ export default function SettingsPage() {
                   </h4>
                   <div className='grid grid-cols-2 md:grid-cols-5 gap-3'>
                     {getPopularCurrencies().map(currency => (
-                      <button
+                      <Button
                         key={currency.code}
                         onClick={() =>
                           saveSettings({ currency: currency.code })
                         }
                         disabled={isLoading}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-colors ${
-                          settings.currency === currency.code
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:bg-surface'
-                        }`}
+                        variant={settings.currency === currency.code ? 'default' : 'outline'}
+                        className="flex-col gap-2"
                       >
                         <span className='text-lg font-bold'>
                           {currency.symbol}
@@ -563,7 +551,7 @@ export default function SettingsPage() {
                             {currency.code}
                           </div>
                         </div>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -575,30 +563,25 @@ export default function SettingsPage() {
                   </h4>
                   <div className='grid md:grid-cols-2 gap-3 max-h-64 overflow-y-auto'>
                     {CURRENCIES.map(currency => (
-                      <button
+                      <Button
                         key={currency.code}
                         onClick={() =>
                           saveSettings({ currency: currency.code })
                         }
                         disabled={isLoading}
-                        className={`p-3 border rounded-lg flex items-center justify-between transition-colors ${
-                          settings.currency === currency.code
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:bg-surface'
-                        }`}
+                        variant={settings.currency === currency.code ? 'default' : 'outline'}
+                        className="justify-start gap-3"
                       >
-                        <div className='flex items-center gap-3'>
-                          <span className='font-bold text-lg'>
-                            {currency.symbol}
-                          </span>
-                          <div className='text-left'>
-                            <div className='font-medium'>{currency.code}</div>
-                            <div className='text-sm text-secondary'>
-                              {currency.name}
-                            </div>
+                        <span className='font-bold text-lg'>
+                          {currency.symbol}
+                        </span>
+                        <div className='text-left'>
+                          <div className='font-medium'>{currency.code}</div>
+                          <div className='text-sm opacity-70'>
+                            {currency.name}
                           </div>
                         </div>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -631,22 +614,20 @@ export default function SettingsPage() {
                       examples: '거리: miles • 온도: °F • 무게: lbs',
                     },
                   ].map(({ key, name, description, examples }) => (
-                    <button
+                    <Button
                       key={key}
                       onClick={() => saveSettings({ units: key as any })}
                       disabled={isLoading}
-                      className={`p-4 border rounded-lg text-left transition-colors ${
-                        settings.units === key
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border hover:bg-surface'
-                      }`}
+                      variant={settings.units === key ? 'default' : 'outline'}
+                      size="lg"
+                      className="text-left justify-start flex-col items-start"
                     >
                       <div className='font-medium mb-1'>{name}</div>
-                      <div className='text-sm text-secondary mb-2'>
+                      <div className='text-sm opacity-70 mb-2'>
                         {description}
                       </div>
-                      <div className='text-xs text-secondary'>{examples}</div>
-                    </button>
+                      <div className='text-xs opacity-60'>{examples}</div>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -1009,7 +990,7 @@ export default function SettingsPage() {
                 <div className='flex gap-3'>
                   {settings.integration.gmailConnected ? (
                     <>
-                      <button
+                      <Button
                         onClick={() =>
                           saveSettings({
                             integration: {
@@ -1019,12 +1000,12 @@ export default function SettingsPage() {
                           })
                         }
                         disabled={isLoading}
-                        className='flex-1 btn btn-primary'
+                        className='flex-1'
                       >
                         <Mail className='h-4 w-4 mr-2' />
                         지금 동기화하기
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() =>
                           saveSettings({
                             integration: {
@@ -1034,13 +1015,13 @@ export default function SettingsPage() {
                           })
                         }
                         disabled={isLoading}
-                        className='btn btn-ghost text-red-600 border-red-200 hover:bg-red-50'
+                        variant="destructive-outline"
                       >
                         연동 해제
-                      </button>
+                      </Button>
                     </>
                   ) : (
-                    <button
+                    <Button
                       onClick={async () => {
                         // Gmail 연동 상태 확인 및 연결 테스트
                         try {
@@ -1070,11 +1051,11 @@ export default function SettingsPage() {
                         }
                       }}
                       disabled={isLoading}
-                      className='w-full btn btn-primary flex items-center justify-center gap-2'
+                      className='w-full gap-2'
                     >
                       <Mail className='h-5 w-5' />
                       Gmail 연동하기
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -1097,32 +1078,36 @@ export default function SettingsPage() {
                 </div>
 
                 <div className='grid md:grid-cols-2 gap-4'>
-                  <button
+                  <Button
                     onClick={exportData}
                     disabled={isLoading}
-                    className='p-4 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-3'
+                    variant="outline"
+                    size="lg"
+                    className='justify-start gap-3'
                   >
                     <Download className='h-5 w-5' />
                     <div className='text-left'>
                       <div className='font-medium'>데이터 내보내기</div>
-                      <div className='text-sm opacity-80'>
+                      <div className='text-sm opacity-70'>
                         모든 여행 데이터를 JSON으로 다운로드
                       </div>
                     </div>
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     disabled
-                    className='p-4 border border-border text-secondary rounded-lg opacity-50 flex items-center gap-3'
+                    variant="outline"
+                    size="lg"
+                    className='opacity-50 justify-start gap-3'
                   >
                     <Upload className='h-5 w-5' />
                     <div className='text-left'>
                       <div className='font-medium'>데이터 가져오기</div>
-                      <div className='text-sm'>
+                      <div className='text-sm opacity-70'>
                         백업 파일에서 데이터 복원 (준비중)
                       </div>
                     </div>
-                  </button>
+                  </Button>
                 </div>
 
                 {/* 자동 백업 설정 */}
@@ -1171,13 +1156,14 @@ export default function SettingsPage() {
 
                 {/* 삭제 확인 */}
                 {!showDeleteConfirm ? (
-                  <button
+                  <Button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2'
+                    variant="destructive"
+                    className='gap-2'
                   >
                     <Trash2 className='h-4 w-4' />
                     계정 삭제하기
-                  </button>
+                  </Button>
                 ) : (
                   <div className='space-y-4'>
                     <div className='p-4 bg-red-50 border border-red-200 rounded-lg'>
@@ -1195,18 +1181,20 @@ export default function SettingsPage() {
                       className='w-full px-3 py-2 border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500'
                     />
                     <div className='flex gap-3'>
-                      <button
+                      <Button
                         onClick={() => setShowDeleteConfirm(false)}
-                        className='flex-1 px-4 py-2 border border-border rounded-lg hover:bg-surface transition-colors'
+                        variant="outline"
+                        className='flex-1'
                       >
                         취소
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         disabled
-                        className='flex-1 px-4 py-2 bg-red-600 text-white rounded-lg opacity-50 cursor-not-allowed'
+                        variant="destructive"
+                        className='flex-1 opacity-50'
                       >
                         영구 삭제 (준비중)
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}

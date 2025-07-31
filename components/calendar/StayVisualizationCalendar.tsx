@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   Info,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   format,
   startOfMonth,
@@ -230,29 +231,32 @@ export default function StayVisualizationCalendar({
             체류 기간 시각화
           </h2>
           <div className='flex items-center gap-2'>
-            <button
+            <Button
               onClick={() => setShowManualInput(!showManualInput)}
-              className='btn btn-ghost btn-sm'
+              variant="ghost"
+              size="sm"
             >
               날짜 입력
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setShowDateCalculator(!showDateCalculator)}
-              className='btn btn-ghost btn-sm'
+              variant="ghost"
+              size="sm"
             >
               날짜 계산
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() =>
                 setViewMode(viewMode === 'month' ? 'year' : 'month')
               }
-              className='btn btn-ghost btn-sm'
+              variant="ghost"
+              size="sm"
             >
               {viewMode === 'month' ? '연간 보기' : '월간 보기'}
-            </button>
-            <button onClick={goToToday} className='btn btn-ghost btn-sm'>
+            </Button>
+            <Button onClick={goToToday} variant="ghost" size="sm">
               오늘
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -307,16 +311,17 @@ export default function StayVisualizationCalendar({
                   }}
                   className='px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                 />
-                <button
+                <Button
                   onClick={() => {
                     setShowManualInput(false);
                     setManualDateInput('');
                     setShowDatePicker(false);
                   }}
-                  className='btn btn-ghost btn-sm'
+                  variant="ghost"
+                  size="sm"
                 >
                   닫기
-                </button>
+                </Button>
               </div>
               <p className='text-xs text-secondary mt-2'>
                 날짜를 클릭하여 선택하거나 캘린더 아이콘을 클릭하세요
@@ -348,12 +353,12 @@ export default function StayVisualizationCalendar({
                   placeholder='+30 또는 -30'
                   className='flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
                 />
-                <button
+                <Button
                   onClick={handleDateCalculation}
-                  className='btn btn-primary btn-sm'
+                  size="sm"
                 >
                   계산
-                </button>
+                </Button>
               </div>
               {calcResult && (
                 <div className='flex items-center gap-2 p-3 bg-primary/10 rounded-md'>
@@ -363,27 +368,31 @@ export default function StayVisualizationCalendar({
                       locale: ko,
                     })}
                   </span>
-                  <button
+                  <Button
                     onClick={() => {
                       setCurrentDate(calcResult);
                       setSelectedDate(calcResult);
                       setShowDateCalculator(false);
                     }}
-                    className='btn btn-ghost btn-sm ml-auto'
+                    variant="ghost"
+                    size="sm"
+                    className="ml-auto"
                   >
                     이동
-                  </button>
+                  </Button>
                 </div>
               )}
-              <button
+              <Button
                 onClick={() => {
                   setShowDateCalculator(false);
                   setCalcResult(null);
                 }}
-                className='btn btn-ghost btn-sm w-full'
+                variant="ghost"
+                size="sm"
+                className="w-full"
               >
                 닫기
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -427,21 +436,23 @@ export default function StayVisualizationCalendar({
 
         {/* 캘린더 네비게이션 */}
         <div className='flex items-center justify-between mb-4'>
-          <button
+          <Button
             onClick={() => navigateMonth('prev')}
-            className='btn btn-ghost btn-sm'
+            variant="ghost"
+            size="sm"
           >
             <ChevronLeft className='h-4 w-4' />
-          </button>
+          </Button>
           <h3 className='text-lg font-medium'>
             {format(currentDate, 'yyyy년 MM월', { locale: ko })}
           </h3>
-          <button
+          <Button
             onClick={() => navigateMonth('next')}
-            className='btn btn-ghost btn-sm'
+            variant="ghost"
+            size="sm"
           >
             <ChevronRight className='h-4 w-4' />
-          </button>
+          </Button>
         </div>
 
         {/* 월간 보기 */}

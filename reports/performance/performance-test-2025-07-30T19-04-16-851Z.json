@@ -1,0 +1,403 @@
+{
+  "summary": {
+    "totalTests": 13,
+    "timestamp": "2025-07-30T19:02:30.233Z",
+    "environment": {
+      "node": "v22.17.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "memory": {
+        "total": 5,
+        "used": 4
+      }
+    },
+    "performance": {
+      "apiResponseTimes": [
+        {
+          "endpoint": "Get Trips",
+          "avgResponseTime": 159.5365387000001,
+          "p95ResponseTime": 232.96454200000153
+        },
+        {
+          "endpoint": "Schengen Calculator",
+          "avgResponseTime": 155.70249502000013,
+          "p95ResponseTime": 231.62325000000055
+        },
+        {
+          "endpoint": "Get Countries",
+          "avgResponseTime": 152.9086683299994,
+          "p95ResponseTime": 228.58962500000052
+        },
+        {
+          "endpoint": "User Profile",
+          "avgResponseTime": 155.5704791400004,
+          "p95ResponseTime": 221.3136250000025
+        },
+        {
+          "endpoint": "Notifications",
+          "avgResponseTime": 153.50121459000053,
+          "p95ResponseTime": 228.70287500000268
+        }
+      ],
+      "memoryUsage": [
+        {
+          "test": "Cache Memory Usage",
+          "memoryDelta": {
+            "heap": 5164088,
+            "external": 0
+          }
+        },
+        {
+          "test": "Data Processing Memory",
+          "memoryDelta": 9226872
+        },
+        {
+          "test": "Concurrent Operations Memory",
+          "memoryDelta": -5169504
+        }
+      ],
+      "databasePerformance": [
+        {
+          "operation": "Simple SELECT",
+          "avgTime": 21.486478360000476,
+          "complexity": 1
+        },
+        {
+          "operation": "JOIN Query",
+          "avgTime": 100.03884839999984,
+          "complexity": 3
+        },
+        {
+          "operation": "Complex Analytics",
+          "avgTime": 358.234793279999,
+          "complexity": 5
+        },
+        {
+          "operation": "INSERT Operation",
+          "avgTime": 42.679989139998796,
+          "complexity": 2
+        },
+        {
+          "operation": "UPDATE Operation",
+          "avgTime": 51.28142926,
+          "complexity": 2
+        }
+      ]
+    }
+  },
+  "detailed": {
+    "timestamp": "2025-07-30T19:02:30.233Z",
+    "environment": {
+      "node": "v22.17.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "memory": {
+        "total": 5,
+        "used": 4
+      }
+    },
+    "tests": [
+      {
+        "endpoint": "Get Trips",
+        "path": "/api/trips",
+        "method": "GET",
+        "responseTime": {
+          "min": 73.77629099999831,
+          "max": 244.64754100000005,
+          "avg": 159.5365387000001,
+          "median": 161.61904200000026,
+          "p95": 232.96454200000153,
+          "p99": 244.64754100000005
+        },
+        "memory": {
+          "heap": {
+            "min": -1432248,
+            "max": 308360,
+            "avg": 11339.44,
+            "median": 282432,
+            "p95": 298448,
+            "p99": 308360
+          },
+          "external": {
+            "min": -40,
+            "max": 0,
+            "avg": -0.4,
+            "median": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "totalAllocated": 22161416
+        },
+        "iterations": 100
+      },
+      {
+        "endpoint": "Schengen Calculator",
+        "path": "/api/schengen/calculate",
+        "method": "POST",
+        "responseTime": {
+          "min": 68.77058299999771,
+          "max": 247.16166599999997,
+          "avg": 155.70249502000013,
+          "median": 156.5918329999986,
+          "p95": 231.62325000000055,
+          "p99": 247.16166599999997
+        },
+        "memory": {
+          "heap": {
+            "min": -2877912,
+            "max": 289016,
+            "avg": 4813.2,
+            "median": 282432,
+            "p95": 284864,
+            "p99": 289016
+          },
+          "external": {
+            "min": 0,
+            "max": 0,
+            "avg": 0,
+            "median": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "totalAllocated": 25452320
+        },
+        "iterations": 100
+      },
+      {
+        "endpoint": "Get Countries",
+        "path": "/api/countries",
+        "method": "GET",
+        "responseTime": {
+          "min": 76.70908300000156,
+          "max": 247.59708300000057,
+          "avg": 152.9086683299994,
+          "median": 147.11437500000466,
+          "p95": 228.58962500000052,
+          "p99": 247.59708300000057
+        },
+        "memory": {
+          "heap": {
+            "min": -2896320,
+            "max": 288504,
+            "avg": 2097.84,
+            "median": 282432,
+            "p95": 285048,
+            "p99": 288504
+          },
+          "external": {
+            "min": 0,
+            "max": 0,
+            "avg": 0,
+            "median": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "totalAllocated": 25725456
+        },
+        "iterations": 100
+      },
+      {
+        "endpoint": "User Profile",
+        "path": "/api/user/profile",
+        "method": "GET",
+        "responseTime": {
+          "min": 68.93345799999952,
+          "max": 244.13424999999552,
+          "avg": 155.5704791400004,
+          "median": 155.4497909999991,
+          "p95": 221.3136250000025,
+          "p99": 244.13424999999552
+        },
+        "memory": {
+          "heap": {
+            "min": -6279568,
+            "max": 290480,
+            "avg": -9383.84,
+            "median": 282432,
+            "p95": 285120,
+            "p99": 290480
+          },
+          "external": {
+            "min": 0,
+            "max": 0,
+            "avg": 0,
+            "median": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "totalAllocated": 26874240
+        },
+        "iterations": 100
+      },
+      {
+        "endpoint": "Notifications",
+        "path": "/api/notifications",
+        "method": "GET",
+        "responseTime": {
+          "min": 82.06195799999114,
+          "max": 242.86929200000304,
+          "avg": 153.50121459000053,
+          "median": 153.45825000000332,
+          "p95": 228.70287500000268,
+          "p99": 242.86929200000304
+        },
+        "memory": {
+          "heap": {
+            "min": -6277752,
+            "max": 289960,
+            "avg": 22318.08,
+            "median": 282432,
+            "p95": 285416,
+            "p99": 289960
+          },
+          "external": {
+            "min": 0,
+            "max": 0,
+            "avg": 0,
+            "median": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "totalAllocated": 27156968
+        },
+        "iterations": 100
+      },
+      {
+        "test": "Cache Memory Usage",
+        "duration": 7.752916000012192,
+        "memory": {
+          "initial": {
+            "heapUsed": 7.67,
+            "heapTotal": 20.59,
+            "external": 1.55,
+            "rss": 57.63
+          },
+          "peak": {
+            "heapUsed": 12.6,
+            "heapTotal": 21.28,
+            "external": 1.55,
+            "rss": 59.59
+          },
+          "final": {
+            "heapUsed": 8.7,
+            "heapTotal": 21.05,
+            "external": 1.55,
+            "rss": 59.47
+          },
+          "delta": {
+            "heap": 5164088,
+            "external": 0
+          }
+        },
+        "operations": 10000,
+        "throughput": 1289837
+      },
+      {
+        "test": "Data Processing Memory",
+        "duration": 63.85662500000035,
+        "memory": {
+          "initial": {
+            "heapUsed": 8.71,
+            "heapTotal": 21.05,
+            "external": 1.55,
+            "rss": 59.47
+          },
+          "final": {
+            "heapUsed": 17.51,
+            "heapTotal": 38.84,
+            "external": 1.55,
+            "rss": 69.89
+          },
+          "delta": 9226872
+        },
+        "recordsProcessed": 16718
+      },
+      {
+        "test": "Concurrent Operations Memory",
+        "duration": 99.92450000000827,
+        "memory": {
+          "initial": {
+            "heapUsed": 17.52,
+            "heapTotal": 38.84,
+            "external": 1.55,
+            "rss": 69.91
+          },
+          "final": {
+            "heapUsed": 12.59,
+            "heapTotal": 38.84,
+            "external": 1.55,
+            "rss": 74.3
+          },
+          "delta": -5169504
+        },
+        "concurrentOperations": 20,
+        "totalResult": 10039366.0157433
+      },
+      {
+        "database": "Simple SELECT",
+        "complexity": 1,
+        "responseTime": {
+          "min": 11.029167000000598,
+          "max": 30.123749999998836,
+          "avg": 21.486478360000476,
+          "median": 22.095708999986527,
+          "p95": 30.05312500000582,
+          "p99": 30.123749999998836
+        },
+        "iterations": 50
+      },
+      {
+        "database": "JOIN Query",
+        "complexity": 3,
+        "responseTime": {
+          "min": 51.110582999986946,
+          "max": 149.17724999999336,
+          "avg": 100.03884839999984,
+          "median": 105.1347919999971,
+          "p95": 142.1567090000026,
+          "p99": 149.17724999999336
+        },
+        "iterations": 50
+      },
+      {
+        "database": "Complex Analytics",
+        "complexity": 5,
+        "responseTime": {
+          "min": 208.09979200000816,
+          "max": 493.08533299999544,
+          "avg": 358.234793279999,
+          "median": 370.2284580000123,
+          "p95": 484.17620799998986,
+          "p99": 493.08533299999544
+        },
+        "iterations": 50
+      },
+      {
+        "database": "INSERT Operation",
+        "complexity": 2,
+        "responseTime": {
+          "min": 20.538625000001048,
+          "max": 63.18641699998989,
+          "avg": 42.679989139998796,
+          "median": 44.09300000000803,
+          "p95": 58.939125000004424,
+          "p99": 63.18641699998989
+        },
+        "iterations": 50
+      },
+      {
+        "database": "UPDATE Operation",
+        "complexity": 2,
+        "responseTime": {
+          "min": 26.040291999990586,
+          "max": 70.10245900000155,
+          "avg": 51.28142926,
+          "median": 53.10312499999418,
+          "p95": 69.13412500001141,
+          "p99": 70.10245900000155
+        },
+        "iterations": 50
+      }
+    ]
+  }
+}

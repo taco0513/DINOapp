@@ -13,6 +13,7 @@ import {
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MiniDatePickerProps {
   selectedDate: Date | null;
@@ -100,15 +101,17 @@ export default function MiniDatePicker({
 
       {/* 빠른 선택 버튼 */}
       <div className='mt-4 pt-4 border-t border-border flex gap-2'>
-        <button
+        <Button
           onClick={() => handleDateClick(new Date())}
-          className='btn btn-ghost btn-sm flex-1'
+          variant="ghost"
+          size="sm"
+          className="flex-1"
         >
           오늘
-        </button>
-        <button onClick={onClose} className='btn btn-ghost btn-sm flex-1'>
+        </Button>
+        <Button onClick={onClose} variant="ghost" size="sm" className="flex-1">
           취소
-        </button>
+        </Button>
       </div>
     </div>
   );

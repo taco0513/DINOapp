@@ -4,6 +4,9 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+import { StandardPageLayout, StandardCard } from '@/components/layout/StandardPageLayout'
 
 // 인라인 알림 목록 컴포넌트
 function WireframeNotificationList({ userId }: { userId: string }) {
@@ -117,8 +120,8 @@ function WireframeNotificationList({ userId }: { userId: string }) {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px' }}>
-        <p style={{ color: '#666' }}>알림을 불러오는 중...</p>
+      <div className='text-center py-10'>
+        <p className='text-gray-600'>알림을 불러오는 중...</p>
       </div>
     )
   }
@@ -126,153 +129,111 @@ function WireframeNotificationList({ userId }: { userId: string }) {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000' }}>
+      <div className='flex justify-between items-center mb-6'>
+        <div className='flex items-center gap-6'>
+          <h3 className='text-lg font-bold text-gray-900'>
             알림
             {unreadCount > 0 && (
-              <span style={{ 
-                marginLeft: '8px', 
-                padding: '4px 8px', 
-                fontSize: '11px', 
-                backgroundColor: '#cc0000', 
-                color: '#fff',
-                borderRadius: '12px'
-              }}>
+              <span className='ml-2 px-2 py-1 text-xs bg-red-600 text-white rounded-full'>
                 {unreadCount}
               </span>
             )}
           </h3>
           
           {/* Filter */}
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
+          <div className='flex gap-2'>
+            <Button
               onClick={() => setFilter('all')}
-              style={{
-                padding: '6px 12px',
-                fontSize: '13px',
-                backgroundColor: filter === 'all' ? '#0066cc' : '#f0f0f0',
-                color: filter === 'all' ? '#fff' : '#666',
-                border: 'none',
-                cursor: 'pointer'
-              }}
+              variant={filter === 'all' ? 'default' : 'outline'}
+              size="sm"
             >
               전체
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setFilter('unread')}
-              style={{
-                padding: '6px 12px',
-                fontSize: '13px',
-                backgroundColor: filter === 'unread' ? '#0066cc' : '#f0f0f0',
-                color: filter === 'unread' ? '#fff' : '#666',
-                border: 'none',
-                cursor: 'pointer'
-              }}
+              variant={filter === 'unread' ? 'default' : 'outline'}
+              size="sm"
             >
               읽지 않음
-            </button>
+            </Button>
           </div>
         </div>
 
         {unreadCount > 0 && (
-          <button
+          <Button
             onClick={markAllAsRead}
-            style={{
-              fontSize: '13px',
-              color: '#0066cc',
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer'
-            }}
+            variant="ghost"
+            size="sm"
           >
             모두 읽음으로 표시
-          </button>
+          </Button>
         )}
       </div>
 
       {/* Notification List */}
       {filteredNotifications.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+        <div className='text-center py-10 text-gray-600'>
           {filter === 'unread' ? '읽지 않은 알림이 없습니다' : '알림이 없습니다'}
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div className='space-y-3'>
           {filteredNotifications.map(notification => (
             <div
               key={notification.id}
-              style={{
-                padding: '20px',
-                border: '1px solid #e0e0e0',
-                backgroundColor: notification.read ? '#fff' : '#f0f8ff'
-              }}
+              className={`p-5 border border-gray-200 rounded-lg ${
+                notification.read ? 'bg-white' : 'bg-blue-50'
+              }`}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                <span style={{ fontSize: '24px', flexShrink: 0 }}>
+              <div className='flex items-start gap-4'>
+                <span className='text-2xl flex-shrink-0'>
                   {getNotificationIcon(notification.type)}
                 </span>
                 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ 
-                        fontWeight: '500', 
-                        color: notification.priority === 'high' ? '#cc0000' : '#000',
-                        marginBottom: '5px'
-                      }}>
+                <div className='flex-1 min-w-0'>
+                  <div className='flex justify-between items-start gap-3'>
+                    <div className='flex-1'>
+                      <h4 className={`font-medium mb-1 ${
+                        notification.priority === 'high' ? 'text-red-600' : 'text-gray-900'
+                      }`}>
                         {notification.title}
                       </h4>
-                      <p style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>
+                      <p className='text-sm text-gray-600 mb-1'>
                         {notification.message}
                       </p>
-                      <p style={{ fontSize: '12px', color: '#999' }}>
+                      <p className='text-xs text-gray-500'>
                         {formatTime(new Date(notification.createdAt))}
                       </p>
                     </div>
                     
-                    <button
+                    <Button
                       onClick={() => deleteNotification(notification.id)}
-                      style={{
-                        color: '#999',
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '18px'
-                      }}
+                      variant="ghost"
+                      size="sm"
                       title="삭제"
                     >
                       ×
-                    </button>
+                    </Button>
                   </div>
                   
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '15px' }}>
+                  <div className='flex items-center gap-4 mt-4'>
                     {notification.actionUrl && (
                       <Link
                         href={notification.actionUrl}
                         onClick={() => markAsRead(notification.id)}
-                        style={{
-                          fontSize: '13px',
-                          color: '#0066cc',
-                          textDecoration: 'none'
-                        }}
+                        className='text-sm text-blue-600 hover:text-blue-800 no-underline'
                       >
                         자세히 보기 →
                       </Link>
                     )}
                     
                     {!notification.read && (
-                      <button
+                      <Button
                         onClick={() => markAsRead(notification.id)}
-                        style={{
-                          fontSize: '13px',
-                          color: '#666',
-                          backgroundColor: 'transparent',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
+                        variant="ghost"
+                        size="sm"
                       >
                         읽음으로 표시
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -341,66 +302,59 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       {/* 알림 채널 설정 */}
-      <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '30px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>알림 채널</h3>
+      <div className='bg-white border border-gray-200 rounded-lg p-8'>
+        <h3 className='text-lg font-bold mb-6 text-gray-900'>알림 채널</h3>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className='space-y-6'>
+          <label className='flex justify-between items-center'>
             <div>
-              <span style={{ fontWeight: '500', display: 'block', marginBottom: '4px' }}>이메일 알림</span>
-              <p style={{ fontSize: '14px', color: '#666' }}>중요한 알림을 이메일로 받습니다</p>
+              <span className='font-medium block mb-1'>이메일 알림</span>
+              <p className='text-sm text-gray-600'>중요한 알림을 이메일로 받습니다</p>
             </div>
             <input
               type="checkbox"
               checked={preferences.email}
               onChange={(e) => setPreferences(prev => ({ ...prev, email: e.target.checked }))}
-              style={{ width: '20px', height: '20px' }}
+              className='w-5 h-5'
             />
           </label>
 
-          <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <label className='flex justify-between items-center'>
             <div>
-              <span style={{ fontWeight: '500', display: 'block', marginBottom: '4px' }}>브라우저 푸시 알림</span>
-              <p style={{ fontSize: '14px', color: '#666' }}>브라우저에서 실시간 알림을 받습니다</p>
+              <span className='font-medium block mb-1'>브라우저 푸시 알림</span>
+              <p className='text-sm text-gray-600'>브라우저에서 실시간 알림을 받습니다</p>
             </div>
             <input
               type="checkbox"
               checked={preferences.push}
               onChange={(e) => setPreferences(prev => ({ ...prev, push: e.target.checked }))}
-              style={{ width: '20px', height: '20px' }}
+              className='w-5 h-5'
             />
           </label>
 
           {preferences.push && browserPermission !== 'granted' && (
-            <div style={{ backgroundColor: '#fffbf0', border: '1px solid #e0e0e0', padding: '20px' }}>
-              <p style={{ fontSize: '14px', color: '#cc9900', marginBottom: '10px' }}>
+            <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-5'>
+              <p className='text-sm text-yellow-800 mb-3'>
                 브라우저 알림을 받으려면 권한이 필요합니다.
               </p>
-              <button
+              <Button
                 onClick={handleRequestPermission}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#cc9900',
-                  color: '#fff',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
+                size="sm"
               >
                 알림 권한 요청
-              </button>
+              </Button>
             </div>
           )}
         </div>
       </div>
 
       {/* 알림 타이밍 설정 */}
-      <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '30px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>알림 타이밍</h3>
+      <div className='bg-white border border-gray-200 rounded-lg p-8'>
+        <h3 className='text-lg font-bold mb-6 text-gray-900'>알림 타이밍</h3>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className='space-y-6'>
           <div>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#333', marginBottom: '5px' }}>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>
               비자 만료 알림 (일 단위, 쉼표로 구분)
             </label>
             <input
@@ -411,18 +365,13 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
                 setPreferences(prev => ({ ...prev, visaExpiryDays: days }))
               }}
               placeholder="30, 7, 1"
-              style={{
-                width: '100%',
-                padding: '10px',
-                border: '1px solid #e0e0e0',
-                fontSize: '14px'
-              }}
+              className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
-            <p style={{ fontSize: '12px', color: '#999', marginTop: '5px' }}>예: 30일 전, 7일 전, 1일 전</p>
+            <p className='text-xs text-gray-500 mt-1'>예: 30일 전, 7일 전, 1일 전</p>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#333', marginBottom: '5px' }}>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>
               셰겐 경고 기준 (일)
             </label>
             <input
@@ -434,18 +383,13 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
               }))}
               min="1"
               max="90"
-              style={{
-                width: '100%',
-                padding: '10px',
-                border: '1px solid #e0e0e0',
-                fontSize: '14px'
-              }}
+              className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
-            <p style={{ fontSize: '12px', color: '#999', marginTop: '5px' }}>셰겐 지역 체류일이 이 값을 넘으면 경고</p>
+            <p className='text-xs text-gray-500 mt-1'>셰겐 지역 체류일이 이 값을 넘으면 경고</p>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#333', marginBottom: '5px' }}>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>
               여행 알림 (일 단위, 쉼표로 구분)
             </label>
             <input
@@ -456,24 +400,19 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
                 setPreferences(prev => ({ ...prev, tripReminderDays: days }))
               }}
               placeholder="7, 1"
-              style={{
-                width: '100%',
-                padding: '10px',
-                border: '1px solid #e0e0e0',
-                fontSize: '14px'
-              }}
+              className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
-            <p style={{ fontSize: '12px', color: '#999', marginTop: '5px' }}>예: 7일 전, 1일 전</p>
+            <p className='text-xs text-gray-500 mt-1'>예: 7일 전, 1일 전</p>
           </div>
         </div>
       </div>
 
       {/* 방해 금지 시간 설정 */}
-      <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '30px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#000' }}>방해 금지 시간</h3>
+      <div className='bg-white border border-gray-200 rounded-lg p-8'>
+        <h3 className='text-lg font-bold mb-6 text-gray-900'>방해 금지 시간</h3>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <label style={{ display: 'flex', alignItems: 'center' }}>
+        <div className='space-y-6'>
+          <label className='flex items-center'>
             <input
               type="checkbox"
               checked={preferences.quiet.enabled}
@@ -481,19 +420,15 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
                 ...prev, 
                 quiet: { ...prev.quiet, enabled: e.target.checked }
               }))}
-              style={{ width: '20px', height: '20px', marginRight: '12px' }}
+              className='w-5 h-5 mr-3'
             />
-            <span style={{ fontWeight: '500' }}>방해 금지 시간 사용</span>
+            <span className='font-medium'>방해 금지 시간 사용</span>
           </label>
 
           {preferences.quiet.enabled && (
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-              gap: '20px' 
-            }}>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#333', marginBottom: '5px' }}>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
                   시작 시간
                 </label>
                 <input
@@ -503,16 +438,11 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
                     ...prev, 
                     quiet: { ...prev.quiet, startTime: e.target.value }
                   }))}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #e0e0e0',
-                    fontSize: '14px'
-                  }}
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#333', marginBottom: '5px' }}>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
                   종료 시간
                 </label>
                 <input
@@ -522,12 +452,7 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
                     ...prev, 
                     quiet: { ...prev.quiet, endTime: e.target.value }
                   }))}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #e0e0e0',
-                    fontSize: '14px'
-                  }}
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 />
               </div>
             </div>
@@ -536,22 +461,13 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
       </div>
 
       {/* 저장 버튼 */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+      <div className='flex justify-end'>
+        <Button
           onClick={handleSave}
           disabled={saving}
-          style={{
-            padding: '12px 24px',
-            backgroundColor: '#0066cc',
-            color: '#fff',
-            border: 'none',
-            cursor: saving ? 'not-allowed' : 'pointer',
-            fontSize: '14px',
-            opacity: saving ? 0.6 : 1
-          }}
         >
           {saving ? '저장 중...' : '설정 저장'}
-        </button>
+        </Button>
       </div>
     </div>
   )
@@ -578,11 +494,11 @@ export default function NotificationsPage() {
 
   if (status === 'loading') {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>로딩 중...</div>
+      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+        <div className='text-center'>
+          <div className='text-sm text-gray-600'>로딩 중...</div>
         </div>
-      </main>
+      </div>
     )
   }
 
@@ -591,82 +507,53 @@ export default function NotificationsPage() {
   }
 
   return (
-    <main style={{ 
-      minHeight: '100vh', 
-      padding: '20px',
-      backgroundColor: '#ffffff',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ 
-          marginBottom: '40px',
-          paddingBottom: '20px',
-          borderBottom: '1px solid #e0e0e0'
-        }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#000', marginBottom: '8px' }}>
-            알림 센터
-          </h1>
-          <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
-            알림을 확인하고 설정을 관리하세요
-          </p>
-        </div>
+    <StandardPageLayout
+      title="알림 센터"
+      description="알림을 확인하고 설정을 관리하세요"
+      icon={PageIcons.Bell}
+      breadcrumbs={[
+        { label: '대시보드', href: '/dashboard' },
+        { label: '알림 센터' }
+      ]}
+    >
 
-        {/* Tab Navigation */}
-        <div style={{ display: 'flex', gap: '5px', marginBottom: '30px' }}>
-          <button
-            onClick={() => setActiveTab('list')}
-            style={{
-              padding: '10px 20px',
-              fontSize: '14px',
-              fontWeight: '500',
-              backgroundColor: activeTab === 'list' ? '#0066cc' : '#f0f0f0',
-              color: activeTab === 'list' ? '#fff' : '#666',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            알림 목록
-          </button>
-          <button
-            onClick={() => setActiveTab('settings')}
-            style={{
-              padding: '10px 20px',
-              fontSize: '14px',
-              fontWeight: '500',
-              backgroundColor: activeTab === 'settings' ? '#0066cc' : '#f0f0f0',
-              color: activeTab === 'settings' ? '#fff' : '#666',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            알림 설정
-          </button>
-        </div>
-
-        {/* Tab Content */}
-        <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '30px' }}>
-          {activeTab === 'list' ? (
-            <WireframeNotificationList userId={session.user?.email || ''} />
-          ) : (
-            <WireframeNotificationSettings 
-              userId={session.user?.email || ''}
-              onSave={handleSaveSettings}
-            />
-          )}
-        </div>
-
-        {/* Help Section */}
-        <div style={{ marginTop: '40px', backgroundColor: '#f8f9fa', border: '1px solid #e0e0e0', padding: '30px' }}>
-          <h3 style={{ fontWeight: 'bold', color: '#000', marginBottom: '15px' }}>💡 알림 도움말</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', color: '#333' }}>
-            <p>• <strong>비자 만료 알림</strong>: 설정한 일수 전에 미리 알려드립니다</p>
-            <p>• <strong>셰겐 경고</strong>: 90/180일 규칙 위반 위험이 있을 때 경고합니다</p>
-            <p>• <strong>여행 알림</strong>: 예정된 여행 일정을 미리 알려드립니다</p>
-            <p>• <strong>방해 금지 시간</strong>: 설정한 시간대에는 푸시 알림이 전송되지 않습니다</p>
-          </div>
-        </div>
+      {/* Tab Navigation */}
+      <div className='flex gap-2 mb-8'>
+        <Button
+          onClick={() => setActiveTab('list')}
+          variant={activeTab === 'list' ? 'default' : 'outline'}
+        >
+          알림 목록
+        </Button>
+        <Button
+          onClick={() => setActiveTab('settings')}
+          variant={activeTab === 'settings' ? 'default' : 'outline'}
+        >
+          알림 설정
+        </Button>
       </div>
-    </main>
+
+      {/* Tab Content */}
+      <StandardCard>
+        {activeTab === 'list' ? (
+          <WireframeNotificationList userId={session.user?.email || ''} />
+        ) : (
+          <WireframeNotificationSettings 
+            userId={session.user?.email || ''}
+            onSave={handleSaveSettings}
+          />
+        )}
+      </StandardCard>
+
+      {/* Help Section */}
+      <StandardCard title='💡 알림 도움말' className='mt-8 bg-gray-50'>
+        <div className='space-y-2 text-sm text-gray-600'>
+          <p>• <strong>비자 만료 알림</strong>: 설정한 일수 전에 미리 알려드립니다</p>
+          <p>• <strong>셰겐 경고</strong>: 90/180일 규칙 위반 위험이 있을 때 경고합니다</p>
+          <p>• <strong>여행 알림</strong>: 예정된 여행 일정을 미리 알려드립니다</p>
+          <p>• <strong>방해 금지 시간</strong>: 설정한 시간대에는 푸시 알림이 전송되지 않습니다</p>
+        </div>
+      </StandardCard>
+    </StandardPageLayout>
   )
 }

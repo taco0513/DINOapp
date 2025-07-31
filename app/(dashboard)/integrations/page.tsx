@@ -58,93 +58,41 @@ function WireframeGmailAnalyzer({
   };
 
   return (
-    <div
-      style={{
-        border: '1px solid var(--color-border)',
-        padding: 'var(--space-8)',
-      }}
-    >
-      <h3
-        style={{
-          fontSize: 'var(--text-lg)',
-          fontWeight: 'var(--font-bold)',
-          marginBottom: 'var(--space-4)',
-          color: 'var(--color-text-primary)',
-        }}
-      >
+    <div className="bg-card border border-border rounded-lg p-8">
+      <h3 className="text-lg font-bold mb-4 text-foreground">
         📧 Gmail 이메일 분석
       </h3>
-      <p
-        style={{
-          color: 'var(--color-text-secondary)',
-          marginBottom: 'var(--space-5)',
-        }}
-      >
+      <p className="text-muted-foreground mb-5">
         Gmail에서 여행 관련 이메일을 분석합니다.
       </p>
 
       <button
         onClick={startAnalysis}
         disabled={isAnalyzing}
-        style={{
-          padding: 'var(--space-3) var(--space-6)',
-          backgroundColor: isAnalyzing
-            ? 'var(--color-surface)'
-            : 'var(--color-accent)',
-          color: isAnalyzing
-            ? 'var(--color-text-tertiary)'
-            : 'var(--color-background)',
-          border: 'none',
-          cursor: isAnalyzing ? 'not-allowed' : 'pointer',
-          fontSize: 'var(--text-sm)',
-          marginBottom: 'var(--space-5)',
-        }}
+        className={`px-6 py-3 text-sm mb-5 border-0 cursor-pointer rounded ${
+          isAnalyzing
+            ? 'bg-muted text-muted-foreground cursor-not-allowed'
+            : 'bg-primary text-primary-foreground hover:bg-primary/90'
+        }`}
       >
         {isAnalyzing ? '분석 중...' : '이메일 분석 시작'}
       </button>
 
       {results.length > 0 && (
-        <div style={{ marginTop: 'var(--space-5)' }}>
-          <h4
-            style={{
-              fontSize: 'var(--text-base)',
-              fontWeight: 'var(--font-medium)',
-              marginBottom: 'var(--space-4)',
-              color: 'var(--color-text-primary)',
-            }}
-          >
+        <div className="mt-5">
+          <h4 className="text-base font-medium mb-4 text-foreground">
             분석 결과
           </h4>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-2)',
-            }}
-          >
+          <div className="flex flex-col gap-2">
             {results.map(result => (
               <div
                 key={result.id}
-                style={{
-                  padding: 'var(--space-4)',
-                  border: '1px solid var(--color-border)',
-                  backgroundColor: 'var(--color-surface)',
-                }}
+                className="p-4 border border-border bg-card rounded-lg"
               >
-                <div
-                  style={{
-                    fontWeight: 'var(--font-medium)',
-                    marginBottom: 'var(--space-1)',
-                  }}
-                >
+                <div className="font-medium mb-1">
                   {result.subject}
                 </div>
-                <div
-                  style={{
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--color-text-secondary)',
-                  }}
-                >
+                <div className="text-sm text-muted-foreground">
                   목적지: {result.destination} | 날짜: {result.date}
                 </div>
               </div>
@@ -175,62 +123,33 @@ function WireframeCalendarSync({
   };
 
   return (
-    <div
-      style={{
-        border: '1px solid var(--color-border)',
-        padding: 'var(--space-8)',
-      }}
-    >
-      <h3
-        style={{
-          fontSize: 'var(--text-lg)',
-          fontWeight: 'var(--font-bold)',
-          marginBottom: 'var(--space-4)',
-          color: 'var(--color-text-primary)',
-        }}
-      >
+    <div className="bg-card border border-border rounded-lg p-8">
+      <h3 className="text-lg font-bold mb-4 text-foreground">
         📅 Google Calendar 동기화
       </h3>
-      <p
-        style={{
-          color: 'var(--color-text-secondary)',
-          marginBottom: 'var(--space-5)',
-        }}
-      >
+      <p className="text-muted-foreground mb-5">
         추출된 여행 정보를 Google Calendar에 동기화합니다.
       </p>
 
       {travelInfos.length > 0 ? (
         <div>
-          <p
-            style={{
-              marginBottom: 'var(--space-4)',
-              color: 'var(--color-text-primary)',
-            }}
-          >
+          <p className="mb-4 text-foreground">
             {travelInfos.length}개의 여행 정보가 준비되었습니다.
           </p>
           <button
             onClick={startSync}
             disabled={isSyncing}
-            style={{
-              padding: 'var(--space-3) var(--space-6)',
-              backgroundColor: isSyncing
-                ? 'var(--color-surface)'
-                : 'var(--color-success)',
-              color: isSyncing
-                ? 'var(--color-text-tertiary)'
-                : 'var(--color-background)',
-              border: 'none',
-              cursor: isSyncing ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-            }}
+            className={`px-6 py-3 text-sm border-0 cursor-pointer rounded ${
+              isSyncing
+                ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                : 'bg-green-600 text-white hover:bg-green-700'
+            }`}
           >
             {isSyncing ? '동기화 중...' : 'Calendar에 동기화'}
           </button>
         </div>
       ) : (
-        <p style={{ color: 'var(--color-text-tertiary)' }}>
+        <p className="text-muted-foreground">
           동기화할 여행 정보가 없습니다. 먼저 Gmail 분석을 완료해주세요.
         </p>
       )}
@@ -346,23 +265,9 @@ export default function IntegrationsPage() {
 
   if (status === 'loading') {
     return (
-      <main
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#ffffff',
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <div
-            style={{
-              marginBottom: 'var(--space-5)',
-              fontSize: 'var(--text-sm)',
-              color: 'var(--color-text-secondary)',
-            }}
-          >
+      <main className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="mb-5 text-sm text-muted-foreground">
             로딩 중...
           </div>
         </div>
@@ -372,23 +277,10 @@ export default function IntegrationsPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <main
-        style={{
-          minHeight: '100vh',
-          padding: 'var(--space-5)',
-          backgroundColor: 'var(--color-background)',
-          fontFamily: 'system-ui, -apple-system, sans-serif',
-        }}
-      >
-        <div style={{ maxWidth: 'var(--max-width-6xl)', margin: '0 auto' }}>
-          <div
-            style={{
-              backgroundColor: 'var(--color-warning-light)',
-              border: '1px solid var(--color-border)',
-              padding: 'var(--space-5)',
-            }}
-          >
-            <p style={{ color: 'var(--color-warning)' }}>
+      <main className="min-h-screen p-5 bg-background font-sans">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-yellow-50 border border-border p-5 rounded-lg">
+            <p className="text-yellow-700">
               ⚠️ 이 기능을 사용하려면 Google 계정으로 로그인해야 합니다.
             </p>
           </div>
@@ -398,226 +290,83 @@ export default function IntegrationsPage() {
   }
 
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        padding: '20px',
-        backgroundColor: '#ffffff',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-      }}
-    >
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <main className="min-h-screen p-5 bg-background font-sans">
+      <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
-        <div
-          style={{
-            marginBottom: 'var(--space-10)',
-            paddingBottom: 'var(--space-5)',
-            borderBottom: '1px solid var(--color-border)',
-          }}
-        >
-          <h1
-            style={{
-              fontSize: 'var(--text-3xl)',
-              fontWeight: 'var(--font-bold)',
-              marginBottom: 'var(--space-2)',
-              color: 'var(--color-text-primary)',
-            }}
-          >
+        <div className="mb-10 pb-5 border-b border-border">
+          <h1 className="text-3xl font-bold mb-2 text-foreground">
             Gmail & Calendar 통합
           </h1>
-          <p
-            style={{
-              fontSize: 'var(--text-sm)',
-              color: 'var(--color-text-secondary)',
-              lineHeight: '1.5',
-            }}
-          >
+          <p className="text-sm text-muted-foreground leading-6">
             Gmail에서 여행 정보를 추출하고 Google Calendar에 자동으로
             동기화하세요
           </p>
         </div>
 
         {/* 연결 상태 카드 */}
-        <div
-          style={{
-            border: '1px solid var(--color-border)',
-            padding: 'var(--space-8)',
-            marginBottom: 'var(--space-10)',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              marginBottom: 'var(--space-4)',
-            }}
-          >
-            <span style={{ fontSize: 'var(--text-xl)' }}>⚙️</span>
-            <h2
-              style={{
-                fontSize: 'var(--text-xl)',
-                fontWeight: 'var(--font-bold)',
-                color: 'var(--color-text-primary)',
-              }}
-            >
+        <div className="bg-card border border-border rounded-lg p-8 mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-xl">⚙️</span>
+            <h2 className="text-xl font-bold text-foreground">
               서비스 연결 상태
             </h2>
           </div>
-          <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>
+          <p className="text-sm text-muted-foreground mb-5">
             Gmail과 Google Calendar 연결 상태를 확인하세요
           </p>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: 'var(--space-5)',
-            }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Gmail 상태 */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: 'var(--space-5)',
-                border: '1px solid var(--color-border)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--space-4)',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 'var(--text-3xl)',
-                    color: 'var(--color-accent)',
-                  }}
-                >
+            <div className="flex justify-between items-center p-5 border border-border rounded-lg">
+              <div className="flex items-center gap-4">
+                <span className="text-3xl text-blue-600">
                   📧
                 </span>
                 <div>
-                  <h3
-                    style={{
-                      fontWeight: 'var(--font-bold)',
-                      marginBottom: 'var(--space-1)',
-                      color: 'var(--color-text-primary)',
-                    }}
-                  >
+                  <h3 className="font-bold mb-1 text-foreground">
                     Gmail
                   </h3>
-                  <p
-                    style={{
-                      fontSize: 'var(--text-sm)',
-                      color: 'var(--color-text-secondary)',
-                    }}
-                  >
+                  <p className="text-sm text-muted-foreground">
                     이메일 분석
                   </p>
                 </div>
               </div>
               {connectionStatus.loading ? (
-                <span style={{ fontSize: 'var(--text-xl)' }}>🔄</span>
+                <span className="text-xl">🔄</span>
               ) : connectionStatus.gmail ? (
-                <div
-                  style={{
-                    padding: 'var(--space-1) var(--space-3)',
-                    backgroundColor: 'var(--color-success-light)',
-                    color: 'var(--color-success-dark)',
-                    fontSize: 'var(--text-xs)',
-                    border: '1px solid var(--color-success-light)',
-                  }}
-                >
+                <div className="px-3 py-1 bg-green-50 text-green-800 text-xs border border-green-200 rounded">
                   ✅ 연결됨
                 </div>
               ) : (
-                <div
-                  style={{
-                    padding: 'var(--space-1) var(--space-3)',
-                    backgroundColor: 'var(--color-error-light)',
-                    color: 'var(--color-error-dark)',
-                    fontSize: 'var(--text-xs)',
-                    border: '1px solid var(--color-error-light)',
-                  }}
-                >
+                <div className="px-3 py-1 bg-red-50 text-red-800 text-xs border border-red-200 rounded">
                   ❌ 연결 안됨
                 </div>
               )}
             </div>
 
             {/* Calendar 상태 */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: 'var(--space-5)',
-                border: '1px solid var(--color-border)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--space-4)',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 'var(--text-3xl)',
-                    color: 'var(--color-success)',
-                  }}
-                >
+            <div className="flex justify-between items-center p-5 border border-border rounded-lg">
+              <div className="flex items-center gap-4">
+                <span className="text-3xl text-green-600">
                   📅
                 </span>
                 <div>
-                  <h3
-                    style={{
-                      fontWeight: 'var(--font-bold)',
-                      marginBottom: 'var(--space-1)',
-                      color: 'var(--color-text-primary)',
-                    }}
-                  >
+                  <h3 className="font-bold mb-1 text-foreground">
                     Google Calendar
                   </h3>
-                  <p
-                    style={{
-                      fontSize: 'var(--text-sm)',
-                      color: 'var(--color-text-secondary)',
-                    }}
-                  >
+                  <p className="text-sm text-muted-foreground">
                     일정 동기화
                   </p>
                 </div>
               </div>
               {connectionStatus.loading ? (
-                <span style={{ fontSize: 'var(--text-xl)' }}>🔄</span>
+                <span className="text-xl">🔄</span>
               ) : connectionStatus.calendar ? (
-                <div
-                  style={{
-                    padding: 'var(--space-1) var(--space-3)',
-                    backgroundColor: 'var(--color-success-light)',
-                    color: 'var(--color-success-dark)',
-                    fontSize: 'var(--text-xs)',
-                    border: '1px solid var(--color-success-light)',
-                  }}
-                >
+                <div className="px-3 py-1 bg-green-50 text-green-800 text-xs border border-green-200 rounded">
                   ✅ 연결됨
                 </div>
               ) : (
-                <div
-                  style={{
-                    padding: 'var(--space-1) var(--space-3)',
-                    backgroundColor: 'var(--color-error-light)',
-                    color: 'var(--color-error-dark)',
-                    fontSize: 'var(--text-xs)',
-                    border: '1px solid var(--color-error-light)',
-                  }}
-                >
+                <div className="px-3 py-1 bg-red-50 text-red-800 text-xs border border-red-200 rounded">
                   ❌ 연결 안됨
                 </div>
               )}
@@ -625,20 +374,8 @@ export default function IntegrationsPage() {
           </div>
 
           {(!connectionStatus.gmail || !connectionStatus.calendar) && (
-            <div
-              style={{
-                marginTop: 'var(--space-5)',
-                backgroundColor: 'var(--color-warning-light)',
-                border: '1px solid var(--color-border)',
-                padding: 'var(--space-4)',
-              }}
-            >
-              <p
-                style={{
-                  color: 'var(--color-warning)',
-                  fontSize: 'var(--text-sm)',
-                }}
-              >
+            <div className="mt-5 bg-yellow-50 border border-border rounded-lg p-4">
+              <p className="text-yellow-700 text-sm">
                 ⚠️ Gmail과 Google Calendar 모두 연결되어야 이 기능을 사용할 수
                 있습니다. Google OAuth 인증을 통해 필요한 권한을 부여해주세요.
               </p>
@@ -650,96 +387,57 @@ export default function IntegrationsPage() {
         {(stats.emailsScanned > 0 ||
           stats.travelInfosExtracted > 0 ||
           stats.eventsCreated > 0) && (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '20px',
-              marginBottom: '40px',
-            }}
-          >
-            <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <span style={{ fontSize: '16px', color: '#0066cc' }}>📧</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+            <div className="bg-card border border-border rounded-lg p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-blue-600">📧</span>
                 <div>
-                  <p
-                    style={{
-                      fontSize: '24px',
-                      fontWeight: 'bold',
-                      color: '#000',
-                    }}
-                  >
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.emailsScanned}
                   </p>
-                  <p style={{ fontSize: '14px', color: '#666' }}>
+                  <p className="text-sm text-muted-foreground">
                     스캔된 이메일
                   </p>
                 </div>
               </div>
             </div>
 
-            <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <span style={{ fontSize: '16px', color: '#009900' }}>📥</span>
+            <div className="bg-card border border-border rounded-lg p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-green-600">📥</span>
                 <div>
-                  <p
-                    style={{
-                      fontSize: '24px',
-                      fontWeight: 'bold',
-                      color: '#000',
-                    }}
-                  >
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.travelInfosExtracted}
                   </p>
-                  <p style={{ fontSize: '14px', color: '#666' }}>
+                  <p className="text-sm text-muted-foreground">
                     추출된 여행정보
                   </p>
                 </div>
               </div>
             </div>
 
-            <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <span style={{ fontSize: '16px', color: '#6600cc' }}>📤</span>
+            <div className="bg-card border border-border rounded-lg p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-purple-600">📤</span>
                 <div>
-                  <p
-                    style={{
-                      fontSize: '24px',
-                      fontWeight: 'bold',
-                      color: '#000',
-                    }}
-                  >
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.eventsCreated}
                   </p>
-                  <p style={{ fontSize: '14px', color: '#666' }}>
+                  <p className="text-sm text-muted-foreground">
                     생성된 이벤트
                   </p>
                 </div>
               </div>
             </div>
 
-            <div style={{ border: '1px solid #e0e0e0', padding: '20px' }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <span style={{ fontSize: '16px', color: '#cc9900' }}>🔄</span>
+            <div className="bg-card border border-border rounded-lg p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-yellow-600">🔄</span>
                 <div>
-                  <p
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      color: '#000',
-                    }}
-                  >
+                  <p className="text-xs font-bold text-foreground">
                     마지막 동기화
                   </p>
-                  <p style={{ fontSize: '12px', color: '#666' }}>
+                  <p className="text-xs text-muted-foreground">
                     {stats.lastSync
                       ? new Date(stats.lastSync).toLocaleString('ko-KR')
                       : '없음'}
@@ -752,138 +450,76 @@ export default function IntegrationsPage() {
 
         {/* 에러 표시 */}
         {error && (
-          <div
-            style={{
-              marginBottom: '30px',
-              backgroundColor: '#ffe6e6',
-              border: '1px solid #ffcccc',
-              padding: '15px',
-            }}
-          >
-            <p style={{ color: '#cc0000' }}>⚠️ {error}</p>
+          <div className="mb-8 bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-700">⚠️ {error}</p>
           </div>
         )}
 
         {/* 진행 단계 표시 */}
-        <div style={{ marginBottom: '40px' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                color:
-                  currentStep === 'connect'
-                    ? '#0066cc'
-                    : currentStep === 'analyze' ||
-                        currentStep === 'sync' ||
-                        currentStep === 'complete'
-                      ? '#009900'
-                      : '#999',
-              }}
-            >
-              <div
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor:
-                    currentStep === 'connect'
-                      ? '#e6f3ff'
-                      : currentStep === 'analyze' ||
-                          currentStep === 'sync' ||
-                          currentStep === 'complete'
-                        ? '#e6ffe6'
-                        : '#f0f0f0',
-                }}
-              >
-                <span style={{ fontSize: '16px' }}>⚙️</span>
+        <div className="mb-10">
+          <div className="flex justify-between items-center">
+            <div className={`flex items-center gap-3 ${
+              currentStep === 'connect'
+                ? 'text-blue-600'
+                : currentStep === 'analyze' || currentStep === 'sync' || currentStep === 'complete'
+                  ? 'text-green-600'
+                  : 'text-gray-400'
+            }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep === 'connect'
+                  ? 'bg-blue-100'
+                  : currentStep === 'analyze' || currentStep === 'sync' || currentStep === 'complete'
+                    ? 'bg-green-100'
+                    : 'bg-gray-100'
+              }`}>
+                <span>⚙️</span>
               </div>
-              <span style={{ fontWeight: '500' }}>서비스 연결</span>
+              <span className="font-medium">서비스 연결</span>
             </div>
 
-            <span style={{ fontSize: '16px', color: '#999' }}>→</span>
+            <span className="text-gray-400">→</span>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                color:
-                  currentStep === 'analyze'
-                    ? '#0066cc'
-                    : currentStep === 'sync' || currentStep === 'complete'
-                      ? '#009900'
-                      : '#999',
-              }}
-            >
-              <div
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor:
-                    currentStep === 'analyze'
-                      ? '#e6f3ff'
-                      : currentStep === 'sync' || currentStep === 'complete'
-                        ? '#e6ffe6'
-                        : '#f0f0f0',
-                }}
-              >
-                <span style={{ fontSize: '16px' }}>📧</span>
+            <div className={`flex items-center gap-3 ${
+              currentStep === 'analyze'
+                ? 'text-blue-600'
+                : currentStep === 'sync' || currentStep === 'complete'
+                  ? 'text-green-600'
+                  : 'text-gray-400'
+            }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep === 'analyze'
+                  ? 'bg-blue-100'
+                  : currentStep === 'sync' || currentStep === 'complete'
+                    ? 'bg-green-100'
+                    : 'bg-gray-100'
+              }`}>
+                <span>📧</span>
               </div>
-              <span style={{ fontWeight: '500' }}>Gmail 분석</span>
+              <span className="font-medium">Gmail 분석</span>
             </div>
 
-            <span style={{ fontSize: '16px', color: '#999' }}>→</span>
+            <span className="text-gray-400">→</span>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                color:
-                  currentStep === 'sync'
-                    ? '#0066cc'
-                    : currentStep === 'complete'
-                      ? '#009900'
-                      : '#999',
-              }}
-            >
-              <div
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor:
-                    currentStep === 'sync'
-                      ? '#e6f3ff'
-                      : currentStep === 'complete'
-                        ? '#e6ffe6'
-                        : '#f0f0f0',
-                }}
-              >
-                <span style={{ fontSize: '16px' }}>📅</span>
+            <div className={`flex items-center gap-3 ${
+              currentStep === 'sync'
+                ? 'text-blue-600'
+                : currentStep === 'complete'
+                  ? 'text-green-600'
+                  : 'text-gray-400'
+            }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep === 'sync'
+                  ? 'bg-blue-100'
+                  : currentStep === 'complete'
+                    ? 'bg-green-100'
+                    : 'bg-gray-100'
+              }`}>
+                <span>📅</span>
               </div>
-              <span style={{ fontWeight: '500' }}>Calendar 동기화</span>
+              <span className="font-medium">Calendar 동기화</span>
             </div>
 
-            <span style={{ fontSize: '16px', color: '#999' }}>→</span>
+            <span className="text-gray-400">→</span>
 
             <div
               style={{

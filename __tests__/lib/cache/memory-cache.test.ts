@@ -163,6 +163,15 @@ describe('Memory Cache', () => {
   describe('cache statistics', () => {
     beforeEach(() => {
       jest.useFakeTimers()
+      memoryCache.clear()
+      // Reset internal stats
+      (memoryCache as any).stats = {
+        hits: 0,
+        misses: 0,
+        sets: 0,
+        deletes: 0,
+        evictions: 0,
+      };
     })
 
     afterEach(() => {

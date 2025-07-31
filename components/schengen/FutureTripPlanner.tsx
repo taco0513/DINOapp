@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { validateFutureTrip, getSafeTravelDates, isSchengenCountry } from '@/lib/schengen-calculator'
 import type { CountryVisit } from '@/types/global'
 import { countries } from '@/data/countries'
+import { Button } from '@/components/ui/button'
 
 interface FutureTripPlannerProps {
   visits: CountryVisit[]
@@ -110,12 +111,11 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
           </div>
         </div>
 
-        <button
+        <Button
           onClick={handleValidate}
-          className="btn btn-primary"
         >
           여행 계획 검증하기
-        </button>
+        </Button>
 
         {validation && (
           <div className={`mt-4 alert ${validation.canTravel ? 'alert-success' : 'alert-error'}`}>
@@ -173,12 +173,11 @@ export default function FutureTripPlanner({ visits }: FutureTripPlannerProps) {
           </div>
 
           <div className="flex items-end">
-            <button
+            <Button
               onClick={handleFindSafeDates}
-              className="btn btn-primary"
             >
               안전한 날짜 찾기
-            </button>
+            </Button>
           </div>
         </div>
 

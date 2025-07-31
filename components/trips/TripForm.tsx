@@ -117,7 +117,10 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
             </div>
             <button
               onClick={onCancel}
+              aria-label="모달 닫기"
               style={{
+                minHeight: '44px',
+                minWidth: '44px',
                 backgroundColor: 'rgba(255,255,255,0.2)',
                 border: 'none',
                 borderRadius: '8px',
@@ -137,10 +140,13 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
           {/* 도움말 토글 */}
           <button
             onClick={() => setShowHelp(!showHelp)}
+            aria-label={showHelp ? '도움말 숨기기' : '도움말 보기'}
+            aria-expanded={showHelp}
             style={{
               position: 'absolute',
               bottom: '-20px',
               right: '24px',
+              minHeight: '44px',
               backgroundColor: 'white',
               border: '1px solid var(--color-border)',
               borderRadius: '20px',
@@ -246,13 +252,15 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                     required
                     style={{
                       width: '100%',
+                      minHeight: '44px',
                       padding: '12px',
                       border: '2px solid var(--color-border)',
                       borderRadius: '8px',
                       fontSize: '16px',
                       backgroundColor: 'white',
                       cursor: 'pointer',
-                      transition: 'border-color 0.2s'
+                      transition: 'border-color 0.2s',
+                      touchAction: 'manipulation'
                     }}
                     onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
                     onBlur={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
@@ -332,13 +340,15 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                         required
                         style={{
                           width: '100%',
+                          minHeight: '44px',
                           padding: '12px',
                           border: '2px solid var(--color-border)',
                           borderRadius: '8px',
                           fontSize: '16px',
                           backgroundColor: 'white',
                           cursor: 'pointer',
-                          transition: 'border-color 0.2s'
+                          transition: 'border-color 0.2s',
+                          touchAction: 'manipulation'
                         }}
                         onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
                         onBlur={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
@@ -365,13 +375,15 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                         placeholder="체류 중이면 비워두세요"
                         style={{
                           width: '100%',
+                          minHeight: '44px',
                           padding: '12px',
                           border: '2px solid var(--color-border)',
                           borderRadius: '8px',
                           fontSize: '16px',
                           backgroundColor: 'white',
                           cursor: 'pointer',
-                          transition: 'border-color 0.2s'
+                          transition: 'border-color 0.2s',
+                          touchAction: 'manipulation'
                         }}
                         onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
                         onBlur={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
@@ -469,13 +481,15 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                         required
                         style={{
                           width: '100%',
+                          minHeight: '44px',
                           padding: '12px',
                           border: '2px solid var(--color-border)',
                           borderRadius: '8px',
                           fontSize: '16px',
                           backgroundColor: 'white',
                           cursor: 'pointer',
-                          transition: 'border-color 0.2s'
+                          transition: 'border-color 0.2s',
+                          touchAction: 'manipulation'
                         }}
                         onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
                         onBlur={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
@@ -508,12 +522,14 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                         required
                         style={{
                           width: '100%',
+                          minHeight: '44px',
                           padding: '12px',
                           border: '2px solid var(--color-border)',
                           borderRadius: '8px',
                           fontSize: '16px',
                           backgroundColor: 'white',
-                          transition: 'border-color 0.2s'
+                          transition: 'border-color 0.2s',
+                          touchAction: 'manipulation'
                         }}
                         onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
                         onBlur={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
@@ -599,13 +615,15 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   rows={3}
                   style={{
                     width: '100%',
+                    minHeight: '44px',
                     padding: '12px',
                     border: '1px solid var(--color-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                     resize: 'none',
                     fontFamily: 'inherit',
-                    transition: 'border-color 0.2s'
+                    transition: 'border-color 0.2s',
+                    touchAction: 'manipulation'
                   }}
                   placeholder="추가 정보나 메모를 입력하세요..."
                   onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
@@ -632,8 +650,10 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                   type="button"
                   onClick={handleSubmit}
                   disabled={loading}
+                  aria-label={trip ? '여행 기록 수정 완료' : '새 여행 기록 추가'}
                   style={{
                     flex: 1,
+                    minHeight: '44px',
                     backgroundColor: loading ? 'var(--color-border-strong)' : 'var(--color-primary)',
                     color: 'white',
                     padding: '14px 24px',
@@ -685,7 +705,9 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
                 <button
                   type="button"
                   onClick={onCancel}
+                  aria-label="여행 기록 작성 취소"
                   style={{
+                    minHeight: '44px',
                     padding: '14px 24px',
                     backgroundColor: 'white',
                     color: 'var(--color-text-secondary)',

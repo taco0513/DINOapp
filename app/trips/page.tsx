@@ -9,7 +9,9 @@ import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { t } from '@/lib/i18n'
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading'
 import { HelpCircle, Plus, Filter } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { MobileModal } from '@/components/mobile/MobileModal'
+import { StandardPageLayout, StandardCard, StatsCard, EmptyState, LoadingCard } from '@/components/layout/StandardPageLayout'
 
 // Dynamic imports for better code splitting
 const TripForm = lazy(() => import('@/components/trips/TripForm'))
@@ -120,9 +122,9 @@ export default function TripsPage() {
 
   if (status === 'loading' || !session) {
     return (
-      <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
         <HydrationSafeLoading />
-      </main>
+      </div>
     )
   }
 
@@ -130,162 +132,142 @@ export default function TripsPage() {
 
   return (
     <>
-      <main style={{ minHeight: '100vh' }}>
-        <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
-          <PageHeader
-            title={t('trips.title')}
-            description={t('trips.description')}
-            icon={PageIcons.Trips}
-            showHelp={trips.length > 0}
-            onHelpClick={() => setShowHelp(!showHelp)}
-            breadcrumbs={[
-              { label: t('nav.dashboard'), href: '/dashboard' },
-              { label: t('nav.trips') }
-            ]}
-            action={
-              <button 
-                onClick={handleAddTrip}
-                className="btn btn-primary"
-                style={{ flexShrink: 0 }}
+      <StandardPageLayout
+        title={t('trips.title')}
+        description={t('trips.description')}
+        icon={PageIcons.Trips}
+        breadcrumbs={[
+          { label: t('nav.dashboard'), href: '/dashboard' },
+          { label: t('nav.trips') }
+        ]}
+        headerActions={
+          <div className='flex items-center gap-3'>
+            {trips.length > 0 && (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowHelp(!showHelp)}
               >
-                <Plus className="h-4 w-4 mr-2" />
-                {t('trips.add')}
-              </button>
-            }
-          />
-
-          {/* Filter Tabs */}
-          <div className="mb-8">
-            <div className="flex" style={{ gap: '0', border: '1px solid var(--color-border-strong)', width: 'fit-content' }}>
-              <button
-                onClick={() => setFilter('all')}
-                className="btn btn-ghost"
-                style={{
-                  borderRadius: '0',
-                  borderRight: '1px solid var(--color-border-strong)',
-                  backgroundColor: filter === 'all' ? 'var(--color-surface)' : 'transparent'
-                }}
-              >
-                전체 ({trips.length})
-              </button>
-              <button
-                onClick={() => setFilter('schengen')}
-                className="btn btn-ghost"
-                style={{
-                  borderRadius: '0',
-                  borderRight: '1px solid var(--color-border-strong)',
-                  backgroundColor: filter === 'schengen' ? 'var(--color-surface)' : 'transparent'
-                }}
-              >
-                셰겐 ({trips.filter(t => {
-                  const schengenCountries = [
-                    'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
-                    'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
-                    'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
-                    'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
-                  ]
-                  return schengenCountries.includes(t.country)
-                }).length})
-              </button>
-              <button
-                onClick={() => setFilter('current')}
-                className="btn btn-ghost"
-                style={{
-                  borderRadius: '0',
-                  backgroundColor: filter === 'current' ? 'var(--color-surface)' : 'transparent'
-                }}
-              >
-                현재 체류 중 ({trips.filter(t => !t.exitDate).length})
-              </button>
-            </div>
+                <HelpCircle className="h-4 w-4" />
+              </Button>
+            )}
+            <Button onClick={handleAddTrip}>
+              <Plus className="h-4 w-4 mr-2" />
+              {t('trips.add')}
+            </Button>
           </div>
+        }
+      >
 
-          {/* Content */}
-          {loading ? (
-            <div className="text-center" style={{ padding: 'var(--space-16) var(--space-5)' }}>
-              <HydrationSafeLoading fallback="Loading trips..." className="loading" translationKey="trips.loading" />
-            </div>
-          ) : filteredTrips.length === 0 ? (
-            <div>
-              {/* 빈 상태 카드 */}
-              <div className="card text-center" style={{ padding: 'var(--space-16) var(--space-10)' }}>
-                <div style={{ fontSize: '48px', marginBottom: 'var(--space-4)' }}>
-                  {filter === 'all' ? '✈️' :
-                   filter === 'schengen' ? '🇪🇺' :
-                   '🌍'}
-                </div>
-                <h3 className="mb-2">
-                  {filter === 'all' ? '여행 기록이 없습니다' :
-                   filter === 'schengen' ? '셰겐 지역 여행 기록이 없습니다' :
-                   '현재 체류 중인 국가가 없습니다'}
-                </h3>
-                <p className="text-secondary mb-6">
-                  {filter === 'all' ? '첫 번째 여행을 추가하여 비자 추적을 시작하세요' :
-                   filter === 'schengen' ? '셰겐 지역 여행을 추가하면 90/180일 규칙을 자동으로 계산합니다' :
-                   '현재 체류 중인 여행 기록이 없습니다'}
-                </p>
-                <button 
-                  onClick={handleAddTrip}
-                  className="btn btn-primary"
-                  style={{ minWidth: '200px' }}
-                >
+        {/* Filter Tabs */}
+        <div className="flex gap-2 mb-8">
+          <Button
+            onClick={() => setFilter('all')}
+            variant={filter === 'all' ? 'default' : 'outline'}
+            size="sm"
+          >
+            전체 ({trips.length})
+          </Button>
+          <Button
+            onClick={() => setFilter('schengen')}
+            variant={filter === 'schengen' ? 'default' : 'outline'}
+            size="sm"
+          >
+                셰겐 ({trips.filter(t => {
+              const schengenCountries = [
+                'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 
+                'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia', 
+                'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland', 
+                'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
+              ]
+              return schengenCountries.includes(t.country)
+            }).length})
+          </Button>
+          <Button
+            onClick={() => setFilter('current')}
+            variant={filter === 'current' ? 'default' : 'outline'}
+            size="sm"
+          >
+            현재 체류 중 ({trips.filter(t => !t.exitDate).length})
+          </Button>
+        </div>
+
+        {/* Content */}
+        <div>
+        {loading ? (
+          <LoadingCard>
+            <HydrationSafeLoading fallback="Loading trips..." translationKey="trips.loading" />
+          </LoadingCard>
+        ) : filteredTrips.length === 0 ? (
+          <div>
+            <EmptyState
+              icon={filter === 'all' ? '✈️' : filter === 'schengen' ? '🇪🇺' : '🌍'}
+              title={
+                filter === 'all' ? '여행 기록이 없습니다' :
+                filter === 'schengen' ? '셰겐 지역 여행 기록이 없습니다' :
+                '현재 체류 중인 국가가 없습니다'
+              }
+              description={
+                filter === 'all' ? '첫 번째 여행을 추가하여 비자 추적을 시작하세요' :
+                filter === 'schengen' ? '셰겐 지역 여행을 추가하면 90/180일 규칙을 자동으로 계산합니다' :
+                '현재 체류 중인 여행 기록이 없습니다'
+              }
+              action={
+                <Button onClick={handleAddTrip} className="min-w-[200px]">
                   {filter === 'all' ? '첫 번째 여행 추가하기' : '여행 추가하기'}
-                </button>
-              </div>
+                </Button>
+              }
+            >
 
-              {/* 가이드 콘텐츠 */}
-              {filter === 'all' && (
-                <div className="mt-10">
-                  <h3 className="text-center mb-6" style={{ fontSize: '20px', fontWeight: '600' }}>
-                    📚 DINOapp으로 여행 기록 관리하기
-                  </h3>
+            {/* 가이드 콘텐츠 */}
+            {filter === 'all' && (
+              <StandardCard title="📚 DINOapp으로 여행 기록 관리하기" className="mt-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  <div className="text-center p-6 bg-blue-50 rounded-lg border border-blue-100">
+                    <div className="text-center mb-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100">
+                        <span className="text-xl">1️⃣</span>
+                      </div>
+                    </div>
+                    <h4 className="font-medium mb-2 text-center">간편한 기록</h4>
+                    <p className="text-sm text-gray-600 text-center">
+                      국가, 입출국 날짜, 비자 정보만 입력하면 
+                      자동으로 체류 일수가 계산됩니다
+                    </p>
+                  </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="card" style={{ padding: 'var(--space-8)' }}>
-                      <div className="text-center mb-4">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full" style={{ backgroundColor: 'var(--color-primary-light)' }}>
-                          <span style={{ fontSize: '20px' }}>1️⃣</span>
-                        </div>
+                  <div className="text-center p-6 bg-green-50 rounded-lg border border-green-100">
+                    <div className="text-center mb-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100">
+                        <span className="text-xl">2️⃣</span>
                       </div>
-                      <h4 className="font-medium mb-2 text-center">간편한 기록</h4>
-                      <p className="text-sm text-secondary text-center">
-                        국가, 입출국 날짜, 비자 정보만 입력하면 
-                        자동으로 체류 일수가 계산됩니다
-                      </p>
                     </div>
-                    
-                    <div className="card" style={{ padding: 'var(--space-8)' }}>
-                      <div className="text-center mb-4">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full" style={{ backgroundColor: 'var(--color-success-light)' }}>
-                          <span style={{ fontSize: '20px' }}>2️⃣</span>
-                        </div>
+                    <h4 className="font-medium mb-2 text-center">자동 분석</h4>
+                    <p className="text-sm text-gray-600 text-center">
+                      셰겐 90/180일 규칙을 자동으로 계산하고 
+                      오버스테이 위험을 미리 알려드립니다
+                    </p>
+                  </div>
+                  
+                  <div className="text-center p-6 bg-yellow-50 rounded-lg border border-yellow-100">
+                    <div className="text-center mb-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100">
+                        <span className="text-xl">3️⃣</span>
                       </div>
-                      <h4 className="font-medium mb-2 text-center">자동 분석</h4>
-                      <p className="text-sm text-secondary text-center">
-                        셰겐 90/180일 규칙을 자동으로 계산하고 
-                        오버스테이 위험을 미리 알려드립니다
-                      </p>
                     </div>
-                    
-                    <div className="card" style={{ padding: 'var(--space-8)' }}>
-                      <div className="text-center mb-4">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full" style={{ backgroundColor: 'var(--color-warning-light)' }}>
-                          <span style={{ fontSize: '20px' }}>3️⃣</span>
-                        </div>
-                      </div>
-                      <h4 className="font-medium mb-2 text-center">스마트 알림</h4>
-                      <p className="text-sm text-secondary text-center">
-                        비자 만료일이 다가오면 자동으로 알림을 보내 
-                        법적 문제를 예방합니다
-                      </p>
-                    </div>
+                    <h4 className="font-medium mb-2 text-center">스마트 알림</h4>
+                    <p className="text-sm text-gray-600 text-center">
+                      비자 만료일이 다가오면 자동으로 알림을 보내 
+                      법적 문제를 예방합니다
+                    </p>
+                  </div>
                   </div>
 
-                  {/* FAQ 섹션 */}
-                  <div className="card" style={{ padding: 'var(--space-10)' }}>
-                    <h4 className="mb-6" style={{ fontSize: '18px', fontWeight: '600' }}>
-                      💡 자주 묻는 질문
-                    </h4>
+                {/* FAQ 섹션 */}
+                <div className="bg-gray-50 rounded-lg p-8 border border-gray-100">
+                  <h4 className="text-lg font-semibold mb-6">
+                    💡 자주 묻는 질문
+                  </h4>
                     
                     <div className="space-y-6">
                       <div>
@@ -296,17 +278,17 @@ export default function TripsPage() {
                         </p>
                       </div>
                       
-                      <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-5)' }}>
+                      <div className="pt-5 border-t border-gray-200">
                         <h5 className="font-medium mb-2">Q: 여러 국가를 연속으로 방문한 경우 어떻게 기록하나요?</h5>
-                        <p className="text-sm text-secondary">
+                        <p className="text-sm text-gray-600">
                           A: 각 국가별로 별도의 여행 기록을 만들어주세요. 
                           DINOapp이 자동으로 연속된 여행을 분석해드립니다.
                         </p>
                       </div>
                       
-                      <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-5)' }}>
+                      <div className="pt-5 border-t border-gray-200">
                         <h5 className="font-medium mb-2">Q: 현재 체류 중인 국가는 어떻게 표시하나요?</h5>
-                        <p className="text-sm text-secondary">
+                        <p className="text-sm text-gray-600">
                           A: 출국 날짜를 비워두시면 현재 체류 중으로 표시됩니다. 
                           출국하실 때 날짜를 업데이트해주세요.
                         </p>
@@ -315,69 +297,73 @@ export default function TripsPage() {
                   </div>
 
                   {/* 프로 팁 */}
-                  <div className="mt-8 p-6 rounded-lg" style={{ backgroundColor: 'var(--color-primary-light)', border: '1px solid var(--color-primary)' }}>
+                  <div className="mt-8 p-6 rounded-lg bg-blue-50 border border-blue-200">
                     <div className="flex items-start gap-4">
-                      <div style={{ fontSize: '24px' }}>💎</div>
+                      <div className="text-2xl">💎</div>
                       <div>
                         <h4 className="font-semibold mb-2">프로 팁: Gmail 연동으로 자동화하기</h4>
                         <p className="text-sm mb-3">
                           Gmail을 연동하면 항공권 이메일을 자동으로 분석해서 여행 기록을 생성합니다. 
                           수동 입력 시간을 90% 이상 절약할 수 있어요!
                         </p>
-                        <a href="/settings" className="btn btn-sm btn-outline">
-                          Gmail 연동하기 →
-                        </a>
+                        <Button variant="outline" size="sm" asChild>
+                          <a href="/settings">
+                            Gmail 연동하기 →
+                          </a>
+                        </Button>
                       </div>
                     </div>
                   </div>
-                </div>
+                </StandardCard>
               )}
-            </div>
+            </EmptyState>
+          </div>
           ) : (
             <div>
               {/* 도움말 섹션 - 토글 가능 */}
               {showHelp && (
-                <div className="mb-8 p-6 rounded-lg" style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+                <div className="mb-8 p-6 rounded-lg bg-white border border-gray-200">
                   <div className="flex items-start justify-between mb-4">
-                    <h3 style={{ fontSize: '18px', fontWeight: '600' }}>
+                    <h3 className="text-lg font-semibold">
                       📚 여행 기록 관리 가이드
                     </h3>
-                    <button 
+                    <Button 
                       onClick={() => setShowHelp(false)}
-                      className="btn btn-ghost btn-sm"
-                      style={{ padding: '4px 8px' }}
+                      variant="ghost"
+                      size="sm"
+                      className="p-2"
                     >
                       ✕
-                    </button>
+                    </Button>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                       <h4 className="font-medium mb-2 text-sm">📝 여행 기록 수정</h4>
-                      <p className="text-xs text-secondary">
+                      <p className="text-xs text-gray-600">
                         카드의 수정 버튼을 클릭하여 날짜나 비자 정보를 업데이트할 수 있습니다.
                       </p>
                     </div>
                     <div>
                       <h4 className="font-medium mb-2 text-sm">🏷️ 필터 활용</h4>
-                      <p className="text-xs text-secondary">
+                      <p className="text-xs text-gray-600">
                         셰겐 지역만 보기, 현재 체류 중인 국가만 보기 등 필터를 활용하세요.
                       </p>
                     </div>
                     <div>
                       <h4 className="font-medium mb-2 text-sm">📊 통계 확인</h4>
-                      <p className="text-xs text-secondary">
+                      <p className="text-xs text-gray-600">
                         대시보드에서 전체 여행 통계와 셰겐 사용 현황을 확인할 수 있습니다.
                       </p>
                     </div>
                   </div>
                   
-                  <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-4)' }}>
+                  <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center gap-2">
-                      <span style={{ fontSize: '16px' }}>💡</span>
-                      <p className="text-sm text-secondary">
+                      <span className="text-base">💡</span>
+                      <p className="text-sm text-gray-600">
                         <strong>팁:</strong> Gmail을 연동하면 항공권 이메일에서 여행 정보를 자동으로 추출합니다.
-                        <a href="/settings" className="ml-2 text-primary hover:underline">연동하기 →</a>
+                        <a href="/settings" className="ml-2 text-blue-600 hover:underline">연동하기 →</a>
                       </p>
                     </div>
                   </div>
@@ -409,11 +395,10 @@ export default function TripsPage() {
             </div>
           )}
         </div>
-      </main>
 
-      {/* Trip Form Modal */}
-      {showForm && (
-        isMobile ? (
+        {/* Trip Form Modal */}
+        {showForm && (
+          isMobile ? (
           <MobileModal
             isOpen={showForm}
             onClose={handleFormCancel}
@@ -429,13 +414,8 @@ export default function TripsPage() {
           </MobileModal>
         ) : (
           <Suspense fallback={
-            <div style={{ 
-              position: 'fixed', 
-              top: '50%', 
-              left: '50%', 
-              transform: 'translate(-50%, -50%)' 
-            }}>
-              <div className="card">
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
                 <HydrationSafeLoading />
               </div>
             </div>
@@ -446,8 +426,9 @@ export default function TripsPage() {
               onCancel={handleFormCancel}
             />
           </Suspense>
-        )
-      )}
+          )
+        )}
+      </StandardPageLayout>
     </>
   )
 }

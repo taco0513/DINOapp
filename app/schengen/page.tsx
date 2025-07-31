@@ -12,7 +12,9 @@ import SchengenUsageChart from '@/components/schengen/SchengenUsageChart';
 import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 import { SwipeableCard } from '@/components/mobile/SwipeableCard';
 import { Calculator, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { CountryUtils } from '@/constants/countries';
+import { StandardPageLayout, StandardCard, StatsCard, EmptyState } from '@/components/layout/StandardPageLayout';
 
 export default function SchengenPage() {
   const { data: session, status } = useSession();
@@ -158,338 +160,251 @@ export default function SchengenPage() {
 
   if (status === 'loading' || !session) {
     return (
-      <main
-        className='flex items-center justify-center'
-        style={{ minHeight: '100vh' }}
-      >
-        <div className='loading'>{t('common.loading')}</div>
-      </main>
+      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+        <div className='text-gray-600'>{t('common.loading')}</div>
+      </div>
     );
   }
 
   return (
-    <main style={{ minHeight: '100vh' }}>
-      <div
-        className='container'
-        style={{
-          paddingTop: 'var(--space-10)',
-          paddingBottom: 'var(--space-10)',
-        }}
-      >
-        {/* Navigation */}
-        <nav className='nav mb-8'>
-          <Link href='/dashboard' className='nav-brand'>
-            DINO
-          </Link>
-          <ul className='nav-menu'>
-            <li>
-              <Link href='/dashboard' className='nav-link'>
-                {t('nav.dashboard')}
-              </Link>
-            </li>
-            <li>
-              <Link href='/trips' className='nav-link'>
-                {t('nav.trips')}
-              </Link>
-            </li>
-            <li>
-              <span className='nav-link active'>{t('nav.schengen')}</span>
-            </li>
-            <li>
-              <Link href='/calendar' className='nav-link'>
-                {t('nav.calendar')}
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        <PageHeader
-          title={t('schengen.title')}
-          description={t('schengen.description')}
-          icon={PageIcons.Schengen}
-          breadcrumbs={[
-            { label: t('nav.dashboard'), href: '/dashboard' },
-            { label: t('nav.schengen') },
-          ]}
-          action={
-            <div className='flex items-center space-x-2'>
-              {hasTrips && (
-                <Link href='/trips' className='btn btn-outline btn-sm'>
-                  <TrendingUp className='h-4 w-4 mr-2' />
-                  여행 기록 보기
-                </Link>
-              )}
-            </div>
-          }
-        />
-
-        {loading ? (
-          <div className='text-center' style={{ padding: 'var(--space-20) 0' }}>
-            <div className='loading'>데이터를 불러오는 중...</div>
-          </div>
-        ) : hasTrips ? (
-          <div className='grid gap-10'>
-            {/* Schengen Status Card */}
-            <div className='card'>
-              <h3 className='card-title mb-5'>현재 셰겐 상태</h3>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
-                <div className='stat'>
-                  <div className='stat-value'>
-                    {schengenData
-                      ? `${schengenData.status.usedDays} / 90`
-                      : '0 / 90'}
-                  </div>
-                  <div className='stat-label'>사용된 일수</div>
-                </div>
-                <div className='stat'>
-                  <div className='stat-value'>
-                    {schengenData ? schengenData.status.remainingDays : '90'}
-                  </div>
-                  <div className='stat-label'>남은 일수</div>
-                </div>
-                <div className='stat'>
-                  <div className='stat-value'>
-                    {schengenData ? schengenData.status.nextResetDate : '---'}
-                  </div>
-                  <div className='stat-label'>다음 재설정</div>
-                </div>
-              </div>
-
-              {/* Compliance Status and Warnings */}
-              {schengenData && (
-                <div className='mt-5'>
-                  <div
-                    className={`alert ${schengenData.status.isCompliant ? 'alert-success' : 'alert-error'} text-center font-semibold`}
-                  >
-                    {schengenData.status.isCompliant
-                      ? '✅ 셰겐 규정 준수'
-                      : '⚠️ 셰겐 규정 위반'}
-                  </div>
-
-                  {schengenData.warnings &&
-                    schengenData.warnings.length > 0 && (
-                      <div className='mt-4'>
-                        {schengenData.warnings.map(
-                          (warning: string, index: number) => (
-                            <div
-                              key={index}
-                              className='alert alert-warning mb-2'
-                            >
-                              {warning}
-                            </div>
-                          )
-                        )}
-                      </div>
-                    )}
-                </div>
-              )}
-            </div>
-
-            {/* Usage Chart */}
-            <div className='card'>
-              <h3 className='card-title mb-5'>180일 사용 현황</h3>
-              <SchengenUsageChart visits={trips} />
-            </div>
-
-            {/* Future Trip Planner */}
-            <div className='card'>
-              <h3 className='card-title mb-5'>🔮 미래 여행 시뮬레이터</h3>
-              <p className='text-secondary mb-5'>
-                계획 중인 셰겐 여행이 규정에 맞는지 미리 확인해보세요
-              </p>
-
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr',
-                  gap: '16px',
-                  marginBottom: '20px',
-                }}
-              >
-                <div className='form-group'>
-                  <label className='form-label'>여행 시작일</label>
-                  <input
-                    type='date'
-                    className='form-input'
-                    value={futureDate}
-                    onChange={e => setFutureDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-
-                <div className='form-group'>
-                  <label className='form-label'>체류 일수</label>
-                  <input
-                    type='number'
-                    className='form-input'
-                    value={futureDuration}
-                    onChange={e =>
-                      setFutureDuration(
-                        Math.max(1, parseInt(e.target.value) || 1)
-                      )
-                    }
-                    min='1'
-                    max='90'
-                  />
-                </div>
-
-                <div className='form-group'>
-                  <label className='form-label'>방문 국가</label>
-                  <select
-                    className='form-input'
-                    value={futureCountry}
-                    onChange={e => setFutureCountry(e.target.value)}
-                  >
-                    {CountryUtils.getSchengenCountryOptions().map(option => (
-                      <option key={option.code} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <button
-                onClick={analyzeFutureTrip}
-                className='btn btn-primary mb-5'
-                disabled={!futureDate}
-                style={{ width: '100%' }}
-              >
-                🔍 여행 가능 여부 확인
-              </button>
-
-              {futureAnalysis && (
-                <div
-                  style={{
-                    marginTop: '20px',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    backgroundColor: futureAnalysis.isAllowed
-                      ? 'var(--color-success-light)'
-                      : 'var(--color-error-light)',
-                    border: `2px solid ${futureAnalysis.isAllowed ? 'var(--color-success)' : 'var(--color-error)'}`,
-                  }}
-                >
-                  <h4 style={{ marginBottom: '16px', fontSize: '18px' }}>
-                    {futureAnalysis.isAllowed
-                      ? '✅ 여행 가능!'
-                      : '❌ 여행 불가!'}
-                  </h4>
-
-                  <div style={{ display: 'grid', gap: '12px' }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <span>여행 기간:</span>
-                      <strong>
-                        {futureAnalysis.startDate} ~ {futureAnalysis.endDate} (
-                        {futureAnalysis.duration}일)
-                      </strong>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <span>현재 사용일수:</span>
-                      <strong>{futureAnalysis.currentUsed}일</strong>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <span>여행 후 총 사용일수:</span>
-                      <strong
-                        style={{
-                          color:
-                            futureAnalysis.totalAfterTrip > 90
-                              ? 'var(--color-error)'
-                              : 'inherit',
-                        }}
-                      >
-                        {futureAnalysis.totalAfterTrip}일 / 90일
-                      </strong>
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop: '12px',
-                        padding: '12px',
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(255,255,255,0.5)',
-                        fontSize: '15px',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {futureAnalysis.recommendation}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {!futureAnalysis && (
-                <div
-                  className='alert'
-                  style={{ backgroundColor: 'var(--color-surface)' }}
-                >
-                  <p className='text-small text-secondary'>
-                    💡 팁: 여행 날짜와 기간을 입력하면 셰겐 규정 준수 여부를
-                    미리 확인할 수 있습니다
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div
-            className='card text-center'
-            style={{ padding: 'var(--space-16)' }}
-          >
-            <div style={{ fontSize: '48px', marginBottom: 'var(--space-5)' }}>
-              🇪🇺
-            </div>
-            <h3 className='mb-2'>셰겐 계산기</h3>
-            <p className='text-secondary mb-8'>
-              여행 기록을 추가하면 자동으로 셰겐 지역 체류 일수가 계산됩니다
-            </p>
-            <Link href='/trips' className='btn btn-primary mb-10'>
-              여행 기록 추가하기
+    <StandardPageLayout
+      title={t('schengen.title')}
+      description={t('schengen.description')}
+      icon={PageIcons.Schengen}
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.schengen') },
+      ]}
+      headerActions={
+        hasTrips ? (
+          <Button variant="outline" size="sm" asChild>
+            <Link href='/trips'>
+              <TrendingUp className='h-4 w-4 mr-2' />
+              여행 기록 보기
             </Link>
+          </Button>
+        ) : null
+      }
+    >
 
-            <div className='divider'></div>
+      {loading ? (
+        <StandardCard>
+          <div className='text-center py-12'>
+            <div className='text-gray-600'>데이터를 불러오는 중...</div>
+          </div>
+        </StandardCard>
+      ) : hasTrips ? (
+        <div className='space-y-8'>
+          {/* Schengen Status Card */}
+          <StandardCard title='현재 셰겐 상태'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <StatsCard
+                value={schengenData ? `${schengenData.status.usedDays} / 90` : '0 / 90'}
+                label='사용된 일수'
+                color='blue'
+              />
+              <StatsCard
+                value={schengenData ? schengenData.status.remainingDays : '90'}
+                label='남은 일수'
+                color='green'
+              />
+              <StatsCard
+                value={schengenData ? schengenData.status.nextResetDate : '---'}
+                label='다음 재설정'
+                color='purple'
+              />
+            </div>
 
-            <div style={{ paddingTop: 'var(--space-10)' }}>
-              <h4 className='mb-5'>📚 셰겐 90/180일 규칙</h4>
+            {/* Compliance Status and Warnings */}
+            {schengenData && (
+              <div className='mt-6'>
+                <div
+                  className={`text-center font-semibold p-4 rounded-lg border ${
+                    schengenData.status.isCompliant 
+                      ? 'bg-green-50 border-green-200 text-green-800' 
+                      : 'bg-red-50 border-red-200 text-red-800'
+                  }`}
+                >
+                  {schengenData.status.isCompliant
+                    ? '✅ 셰겐 규정 준수'
+                    : '⚠️ 셰겐 규정 위반'}
+                </div>
+
+                {schengenData.warnings &&
+                  schengenData.warnings.length > 0 && (
+                    <div className='mt-4 space-y-2'>
+                      {schengenData.warnings.map(
+                        (warning: string, index: number) => (
+                          <div
+                            key={index}
+                            className='bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg'
+                          >
+                            {warning}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+              </div>
+            )}
+          </StandardCard>
+
+          {/* Usage Chart */}
+          <StandardCard title='180일 사용 현황'>
+            <SchengenUsageChart visits={trips} />
+          </StandardCard>
+
+          {/* Future Trip Planner */}
+          <StandardCard title='🔮 미래 여행 시뮬레이터'>
+            <p className='text-gray-600 mb-6'>
+              계획 중인 셰겐 여행이 규정에 맞는지 미리 확인해보세요
+            </p>
+
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>여행 시작일</label>
+                <input
+                  type='date'
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                  value={futureDate}
+                  onChange={e => setFutureDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>체류 일수</label>
+                <input
+                  type='number'
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                  value={futureDuration}
+                  onChange={e =>
+                    setFutureDuration(
+                      Math.max(1, parseInt(e.target.value) || 1)
+                    )
+                  }
+                  min='1'
+                  max='90'
+                />
+              </div>
+
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>방문 국가</label>
+                <select
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                  value={futureCountry}
+                  onChange={e => setFutureCountry(e.target.value)}
+                >
+                  {CountryUtils.getSchengenCountryOptions().map(option => (
+                    <option key={option.code} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <Button
+              onClick={analyzeFutureTrip}
+              disabled={!futureDate}
+              className='w-full mb-6'
+            >
+              🔍 여행 가능 여부 확인
+            </Button>
+
+            {futureAnalysis && (
               <div
-                className='text-left'
-                style={{ maxWidth: '600px', margin: '0 auto' }}
+                className={`p-6 rounded-lg border-2 ${
+                  futureAnalysis.isAllowed
+                    ? 'bg-green-50 border-green-200'
+                    : 'bg-red-50 border-red-200'
+                }`}
               >
-                <p className='text-small text-secondary mb-2'>
-                  • 셰겐 지역 내에서 180일 중 최대 90일까지만 체류할 수 있습니다
+                <h4 className='text-lg font-semibold mb-4'>
+                  {futureAnalysis.isAllowed
+                    ? '✅ 여행 가능!'
+                    : '❌ 여행 불가!'}
+                </h4>
+
+                <div className='space-y-3'>
+                  <div className='flex justify-between'>
+                    <span>여행 기간:</span>
+                    <strong>
+                      {futureAnalysis.startDate} ~ {futureAnalysis.endDate} (
+                      {futureAnalysis.duration}일)
+                    </strong>
+                  </div>
+                  <div className='flex justify-between'>
+                    <span>현재 사용일수:</span>
+                    <strong>{futureAnalysis.currentUsed}일</strong>
+                  </div>
+                  <div className='flex justify-between'>
+                    <span>여행 후 총 사용일수:</span>
+                    <strong
+                      className={futureAnalysis.totalAfterTrip > 90 ? 'text-red-600' : ''}
+                    >
+                      {futureAnalysis.totalAfterTrip}일 / 90일
+                    </strong>
+                  </div>
+
+                  <div className='mt-4 p-3 bg-white bg-opacity-50 rounded-lg text-sm font-medium'>
+                    {futureAnalysis.recommendation}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!futureAnalysis && (
+              <div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
+                <p className='text-sm text-blue-800'>
+                  💡 팁: 여행 날짜와 기간을 입력하면 셰겐 규정 준수 여부를
+                  미리 확인할 수 있습니다
                 </p>
-                <p className='text-small text-secondary mb-2'>
-                  • 이 규칙은 롤링 방식으로 적용됩니다 (고정된 기간이 아님)
+              </div>
+            )}
+          </StandardCard>
+        </div>
+      ) : (
+        <EmptyState
+          icon='🇪🇺'
+          title='셰겐 계산기'
+          description='여행 기록을 추가하면 자동으로 셰겐 지역 체류 일수가 계산됩니다'
+          action={
+            <Button asChild>
+              <Link href='/trips'>
+                여행 기록 추가하기
+              </Link>
+            </Button>
+          }
+        >
+          <StandardCard title='📚 셰겐 90/180일 규칙' className='mt-8'>
+            <div className='text-left max-w-2xl mx-auto'>
+              <div className='space-y-2 text-sm text-gray-600'>
+                <p className='flex items-start'>
+                  <span className='w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0'></span>
+                  셰겐 지역 내에서 180일 중 최대 90일까지만 체류할 수 있습니다
                 </p>
-                <p className='text-small text-secondary mb-2'>
-                  • 매일 지난 180일간의 체류 일수를 계산합니다
+                <p className='flex items-start'>
+                  <span className='w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0'></span>
+                  이 규칙은 롤링 방식으로 적용됩니다 (고정된 기간이 아님)
                 </p>
-                <p className='text-small text-secondary mb-2'>
-                  • 비자 없이 입국하는 관광객에게 적용됩니다
+                <p className='flex items-start'>
+                  <span className='w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0'></span>
+                  매일 지난 180일간의 체류 일수를 계산합니다
                 </p>
-                <p className='text-small text-secondary'>
-                  • 장기 체류 비자나 거주권이 있으면 규칙이 다를 수 있습니다
+                <p className='flex items-start'>
+                  <span className='w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0'></span>
+                  비자 없이 입국하는 관광객에게 적용됩니다
+                </p>
+                <p className='flex items-start'>
+                  <span className='w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0'></span>
+                  장기 체류 비자나 거주권이 있으면 규칙이 다를 수 있습니다
                 </p>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </main>
+          </StandardCard>
+        </EmptyState>
+      )}
+    </StandardPageLayout>
   );
 }

@@ -20,84 +20,108 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* 서비스 링크 */}
+          {/* 핵심 서비스 링크 */}
           <div>
-            <h4 className='font-semibold text-gray-900 mb-4'>✈️ 서비스</h4>
+            <h4 className='font-semibold text-gray-900 mb-4'>✈️ 핵심 기능</h4>
             <ul className='space-y-3'>
               <li>
                 <Link
                   href='/dashboard'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
                 >
                   <span className='mr-2'>🏠</span> 대시보드
                 </Link>
               </li>
               <li>
                 <Link
+                  href='/trips'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
+                >
+                  <span className='mr-2'>✈️</span> 여행 기록
+                </Link>
+              </li>
+              <li>
+                <Link
                   href='/schengen'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
                 >
                   <span className='mr-2'>🇪🇺</span> 셰겐 계산기
                 </Link>
               </li>
               <li>
                 <Link
-                  href='/trips'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
+                  href='/gmail'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
                 >
-                  <span className='mr-2'>📝</span> 여행 기록
+                  <span className='mr-2'>📧</span> Gmail 분석
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* 추가 기능 */}
+          <div>
+            <h4 className='font-semibold text-gray-900 mb-4'>⚡ 추가 기능</h4>
+            <ul className='space-y-3'>
+              <li>
+                <Link
+                  href='/calendar'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
+                >
+                  <span className='mr-2'>📅</span> 캘린더
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='/analytics'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
+                >
+                  <span className='mr-2'>📊</span> 통계
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='/notifications'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
+                >
+                  <span className='mr-2'>🔔</span> 알림
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='/visa'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
+                >
+                  <span className='mr-2'>📋</span> 비자 정보
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* 고객 지원 & 법적 */}
+          <div>
+            <h4 className='font-semibold text-gray-900 mb-4'>🛟 지원 & 정보</h4>
+            <ul className='space-y-3'>
+              <li>
+                <Link
+                  href='/profile'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
+                >
+                  <span className='mr-2'>👤</span> 프로필
                 </Link>
               </li>
               <li>
                 <Link
                   href='/settings'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
                 >
                   <span className='mr-2'>⚙️</span> 설정
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          {/* 지원 링크 */}
-          <div>
-            <h4 className='font-semibold text-gray-900 mb-4'>🛟 지원</h4>
-            <ul className='space-y-3'>
-              <li>
-                <Link
-                  href='/legal/faq'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
-                >
-                  <span className='mr-2'>❓</span> 자주 묻는 질문
-                </Link>
-              </li>
-              <li>
-                <a
-                  href='mailto:support@dino-app.com'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
-                >
-                  <span className='mr-2'>📧</span> 고객 지원
-                </a>
-              </li>
-              <li>
-                <Link
-                  href='/api/health'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
-                >
-                  <span className='mr-2'>💚</span> 서비스 상태
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* 법적 링크 */}
-          <div>
-            <h4 className='font-semibold text-gray-900 mb-4'>⚖️ 법적 고지</h4>
-            <ul className='space-y-3'>
               <li>
                 <Link
                   href='/legal/terms'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
                 >
                   <span className='mr-2'>📄</span> 이용약관
                 </Link>
@@ -105,7 +129,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/legal/privacy'
-                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center'
+                  className='text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center min-h-[44px] py-2'
                 >
                   <span className='mr-2'>🔒</span> 개인정보처리방침
                 </Link>

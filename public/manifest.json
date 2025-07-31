@@ -1,7 +1,8 @@
 {
   "name": "DINO - Digital Nomad Visa Tracker",
   "short_name": "DINO",
-  "description": "복잡한 비자 규정을 자동으로 추적하고 여행 기록을 체계적으로 관리하는 플랫폼",
+  "description": "스마트 여행 관리 플랫폼 - 78개국 비자 규정 추적, 셰겐 계산기, Google 서비스 통합",
+  "version": "1.0.0",
   "start_url": "/dashboard?utm_source=pwa",
   "display": "standalone",
   "background_color": "#ffffff",

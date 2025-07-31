@@ -5,27 +5,30 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-// 우선순위 기반 네비게이션 구조
-const primaryNavigation = [
+// 네비게이션 단순화: 6개 핵심 메뉴 + More 드롭다운
+const coreNavigation = [
   { name: '대시보드', href: '/dashboard', icon: '🏠', priority: 1 },
   { name: '여행 기록', href: '/trips', icon: '✈️', priority: 1 },
   { name: '셰겐 계산기', href: '/schengen', icon: '🇪🇺', priority: 1 },
+  { name: 'Gmail 분석', href: '/gmail', icon: '📧', priority: 1 },
 ];
 
-const secondaryNavigation = [
-  { name: 'Gmail 분석', href: '/gmail', icon: '📧', priority: 2 },
+const moreNavigation = [
   { name: '캘린더', href: '/calendar', icon: '📅', priority: 2 },
   { name: '통계', href: '/analytics', icon: '📊', priority: 2 },
+  { name: '알림', href: '/notifications', icon: '🔔', priority: 2 },
+  { name: '비자 정보', href: '/visa', icon: '📋', priority: 2 },
 ];
 
-// 반응형 네비게이션: 모바일에서는 primary만, 데스크톱에서는 모두
-const navigation = [...primaryNavigation, ...secondaryNavigation];
+// 전체 네비게이션 (모바일 메뉴용)
+const allNavigation = [...coreNavigation, ...moreNavigation];
 
 export default function Header() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -44,6 +47,9 @@ export default function Header() {
       const target = event.target as Element;
       if (!target.closest('.user-menu-container')) {
         setUserMenuOpen(false);
+      }
+      if (!target.closest('.more-menu-container')) {
+        setMoreMenuOpen(false);
       }
     };
 
@@ -89,10 +95,10 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav
-            className={`${isMobile ? 'hidden' : 'flex'} items-center space-x-6`}
+            className={`${isMobile ? 'hidden' : 'flex'} items-center space-x-4`}
           >
-            {/* Primary Navigation */}
-            {primaryNavigation.map(item => (
+            {/* Core Navigation */}
+            {coreNavigation.map(item => (
               <Link
                 key={item.name}
                 href={item.href as any}
@@ -107,24 +113,60 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* Divider */}
-            <div className='w-px h-6 bg-gray-300' />
-
-            {/* Secondary Navigation */}
-            {secondaryNavigation.map(item => (
-              <Link
-                key={item.name}
-                href={item.href as any}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.href)
+            {/* More Menu */}
+            <div className='relative more-menu-container'>
+              <button
+                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center min-h-[44px] ${
+                  moreNavigation.some(item => isActive(item.href))
                     ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                 }`}
+                aria-label="추가 메뉴"
+                aria-expanded={moreMenuOpen}
+                aria-haspopup="true"
               >
-                <span className='mr-2'>{item.icon}</span>
-                {item.name}
-              </Link>
-            ))}
+                <span className='mr-2'>⚡</span>
+                More
+                <svg
+                  className={`ml-1 h-4 w-4 transition-transform ${moreMenuOpen ? 'rotate-180' : ''}`}
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M19 9l-7 7-7-7'
+                  />
+                </svg>
+              </button>
+
+              {/* More Dropdown */}
+              {moreMenuOpen && (
+                <div className='absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50' role="menu" aria-labelledby="more-menu-button">
+                  <div className='py-2'>
+                    {moreNavigation.map(item => (
+                      <Link
+                        key={item.name}
+                        href={item.href as any}
+                        className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors min-h-[44px] ${
+                          isActive(item.href)
+                            ? 'bg-blue-50 text-blue-700'
+                            : 'text-gray-700 hover:text-blue-600'
+                        }`}
+                        onClick={() => setMoreMenuOpen(false)}
+                        role="menuitem"
+                      >
+                        <span className='text-base'>{item.icon}</span>
+                        <span className='text-sm font-medium'>{item.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* User Menu */}
@@ -135,7 +177,10 @@ export default function Header() {
               >
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className='flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors'
+                  className='flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px]'
+                  aria-label="사용자 메뉴"
+                  aria-expanded={userMenuOpen}
+                  aria-haspopup="true"
                 >
                   {session.user.image ? (
                     <img
@@ -170,7 +215,7 @@ export default function Header() {
 
                 {/* 드롭다운 메뉴 */}
                 {userMenuOpen && (
-                  <div className='absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50'>
+                  <div className='absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50' role="menu" aria-labelledby="user-menu-button">
                     <div className='p-4 border-b border-gray-200'>
                       <div className='flex items-center gap-3'>
                         {session.user.image ? (
@@ -200,8 +245,9 @@ export default function Header() {
                     <div className='py-2'>
                       <Link
                         href='/profile'
-                        className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors'
+                        className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px]'
                         onClick={() => setUserMenuOpen(false)}
+                        role="menuitem"
                       >
                         <svg
                           className='h-4 w-4'
@@ -221,8 +267,9 @@ export default function Header() {
 
                       <Link
                         href='/settings'
-                        className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors'
+                        className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px]'
                         onClick={() => setUserMenuOpen(false)}
+                        role="menuitem"
                       >
                         <svg
                           className='h-4 w-4'
@@ -253,7 +300,8 @@ export default function Header() {
                           setUserMenuOpen(false);
                           handleSignOut();
                         }}
-                        className='w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600'
+                        className='w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600 min-h-[44px]'
+                        role="menuitem"
                       >
                         <svg
                           className='h-4 w-4'
@@ -276,19 +324,22 @@ export default function Header() {
               </div>
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - 44px 터치 타겟 보장 */}
             <button
               type='button'
-              className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors`}
+              className={`${isMobile ? 'flex' : 'hidden'} items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors touch-action-manipulation`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? '모바일 메뉴 닫기' : '모바일 메뉴 열기'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
-              <span style={{ display: 'none' }}>메뉴 열기</span>
               <svg
                 className='h-6 w-6'
                 fill='none'
                 viewBox='0 0 24 24'
                 strokeWidth='1.5'
                 stroke='currentColor'
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap='round'
@@ -306,18 +357,18 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && isMobile && (
-          <div className='md:hidden'>
+          <div className='md:hidden' id="mobile-navigation" role="navigation" aria-label="모바일 네비게이션">
             <div className='px-4 py-4 bg-white border-t border-gray-200'>
-              {/* 모바일 메뉴 - Primary 먼저, 구분선, Secondary */}
+              {/* 모바일 메뉴 - Core 먼저, 구분선, More */}
               <div className='space-y-1'>
                 <div className='text-xs font-medium text-gray-500 px-3 py-1'>
-                  주요 기능
+                  핵심 기능
                 </div>
-                {primaryNavigation.map(item => (
+                {coreNavigation.map(item => (
                   <Link
                     key={item.name}
                     href={item.href as any}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
                       isActive(item.href)
                         ? 'bg-blue-100 text-blue-700'
                         : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
@@ -336,11 +387,11 @@ export default function Header() {
                 <div className='text-xs font-medium text-gray-500 px-3 py-1'>
                   추가 기능
                 </div>
-                {secondaryNavigation.map(item => (
+                {moreNavigation.map(item => (
                   <Link
                     key={item.name}
                     href={item.href as any}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
                       isActive(item.href)
                         ? 'bg-blue-100 text-blue-700'
                         : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'

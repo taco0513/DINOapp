@@ -123,7 +123,7 @@ class MemoryCache {
     }
 
     const total = this.stats.hits + this.stats.misses;
-    const hitRate = total > 0 ? (this.stats.hits / total) * 100 : 0;
+    const hitRate = total > 0 ? this.stats.hits / total : 0;
 
     return {
       // Cache content stats

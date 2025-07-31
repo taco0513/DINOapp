@@ -50,6 +50,7 @@ import {
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { VisaComparison } from '@/components/visa/VisaComparison';
 import { VisaChecklist } from '@/components/visa/VisaChecklist';
+import { PageHeader, PageIcons } from '@/components/common/PageHeader';
 
 export default function VisaPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -208,25 +209,17 @@ export default function VisaPage() {
     : null;
 
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
-      <div className='bg-white dark:bg-gray-800 border-b'>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='flex items-center gap-3 mb-4'>
-            <Globe className='h-8 w-8 text-blue-600' />
-            <div>
-              <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                Visa Information
-              </h1>
-              <p className='text-gray-600 dark:text-gray-400'>
-                Comprehensive visa requirements and travel information for
-                digital nomads and travelers
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className='container mx-auto px-4 py-8'>
+    <main style={{ minHeight: '100vh' }}>
+      <div className="container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)' }}>
+        <PageHeader
+          title="Visa Information"
+          description="Comprehensive visa requirements and travel information for digital nomads and travelers"
+          icon={PageIcons.Globe}
+          breadcrumbs={[
+            { label: '대시보드', href: '/dashboard' },
+            { label: 'Visa Information' }
+          ]}
+        />
         {/* Search and Filters */}
         <Card className='mb-8'>
           <CardHeader>
@@ -728,6 +721,6 @@ export default function VisaPage() {
           />
         )}
       </div>
-    </div>
+    </main>
   );
 }

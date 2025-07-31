@@ -344,15 +344,8 @@ export function getCurrentLocale(): Locale {
     return stored;
   }
 
-  // Detect from browser language
-  const browserLang = navigator.language.toLowerCase();
-  if (browserLang.startsWith('en')) return 'en';
-  if (browserLang.startsWith('ja')) return 'ja';
-  if (browserLang.startsWith('zh')) return 'zh';
-  if (browserLang.startsWith('es')) return 'es';
-  if (browserLang.startsWith('fr')) return 'fr';
-
-  // Default to Korean
+  // For DINO app, default to Korean regardless of browser language
+  // Users can change language via settings if needed
   return 'ko';
 }
 

@@ -4,20 +4,20 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  TrendingUp, 
-  Users, 
+  // TrendingUp, 
+  // Users, 
   Clock, 
   MousePointer, 
-  Globe,
-  Smartphone,
-  Monitor,
+  // Globe,
+  // Smartphone,
+  // Monitor,
   BarChart as BarChartIcon
 } from 'lucide-react';
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
+  // LineChart,
+  // Line,
   PieChart,
   Pie,
   Cell,
@@ -27,7 +27,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-  Sankey,
+  // Sankey,
   Rectangle,
 } from 'recharts';
 
@@ -201,12 +201,12 @@ export default function AdvancedAnalyticsDashboard() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="count"
                       >
-                        {userBehavior?.deviceTypes.map((entry, index) => (
+                        {userBehavior?.deviceTypes.map((_entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
@@ -330,7 +330,7 @@ export default function AdvancedAnalyticsDashboard() {
                       <YAxis dataKey="step" type="category" />
                       <Tooltip formatter={(value) => `${value}명`} />
                       <Bar dataKey="users" fill="#000000" shape={(props: any) => {
-                        const { x, y, width, height } = props;
+                        const { x, y, height } = props;
                         const maxWidth = 400;
                         const percentage = props.users / conversionData.funnelSteps[0].users;
                         const actualWidth = maxWidth * percentage;

@@ -194,9 +194,7 @@ export async function GET(request: NextRequest) {
     results['executionTime'] = duration
 
     // Log summary
-    const _successCount = results.tasks.filter(task => task.status === 'success').length
     const errorCount = results.tasks.filter(task => task.status === 'error').length
-    const _warningCount = results.tasks.filter(task => task.status === 'warning').length
 
     // Database maintenance completed
 

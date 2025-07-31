@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find or create user
-    const _user = await prisma.user.upsert({
+    await prisma.user.upsert({
       where: { email: session.user.email },
       update: {},
       create: {
@@ -155,11 +155,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete subscription
-    const _whereClause = subscriptionId
-      ? { id: subscriptionId, userId: user.id }
-      : { endpoint: endpoint!, userId: user.id };
-
     // TODO: Delete subscription when pushSubscription model is ready
+    // const whereClause = subscriptionId
+    //   ? { id: subscriptionId, userId: user.id }
+    //   : { endpoint: endpoint!, userId: user.id };
     // await prisma.pushSubscription.delete({ where: whereClause });
 
     return NextResponse.json({

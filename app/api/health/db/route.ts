@@ -4,7 +4,7 @@ import { checkDatabaseHealth } from '@/lib/database/prisma-client'
 import { asyncHandler } from '@/lib/error/error-handler'
 
 // GET /api/health/db - Database health check endpoint
-export const GET = asyncHandler(async (_request: NextRequest) => {
+export const GET = asyncHandler(async () => {
   // Get connection manager health
   const connectionHealth = getDbHealth()
   

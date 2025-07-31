@@ -5,7 +5,7 @@ import { metrics } from '@/lib/monitoring/metrics-collector'
 import { asyncHandler } from '@/lib/error/error-handler'
 
 // GET /api/metrics - Get current metrics (admin only)
-export const GET = asyncHandler(async (_request: NextRequest) => {
+export const GET = asyncHandler(async () => {
   // Check authentication
   const session = await getServerSession(authOptions)
   

@@ -22,17 +22,17 @@ import {
   Terminal
 } from 'lucide-react';
 
-interface ProblemContext {
-  type: 'error' | 'bug' | 'performance' | 'logic' | 'setup';
-  description: string;
-  errorMessage?: string;
-  stackTrace?: string;
-  environment?: {
-    os: string;
-    node: string;
-    browser?: string;
-  };
-}
+// interface ProblemContext {
+//   type: 'error' | 'bug' | 'performance' | 'logic' | 'setup';
+//   description: string;
+//   errorMessage?: string;
+//   stackTrace?: string;
+//   environment?: {
+//     os: string;
+//     node: string;
+//     browser?: string;
+//   };
+// }
 
 interface Solution {
   id: string;

@@ -83,6 +83,55 @@
 - 민감한 데이터 암호화
 - 정기적인 보안 감사
 
+## 🔧 코드 일관성 가이드라인
+
+### Import 패턴 (2025-07-31 업데이트)
+
+**⚠️ 중요: 다음 패턴을 반드시 따라주세요**
+
+```tsx
+// ✅ 올바른 패턴: StandardPageLayout 사용
+import {
+  StandardPageLayout,
+  PageIcons,
+} from '@/components/layout/StandardPageLayout';
+
+// ❌ 사용 금지: 개별 PageHeader 임포트
+// import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+```
+
+### 페이지 컴포넌트 표준 구조
+
+```tsx
+// ✅ 권장 패턴
+export default function SomePage() {
+  return (
+    <StandardPageLayout
+      title={t('page.title')}
+      description={t('page.description')}
+      icon={PageIcons.SomeIcon}
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.current') },
+      ]}
+    >
+      {/* 페이지 컨텐츠 */}
+    </StandardPageLayout>
+  );
+}
+```
+
+### 코드 스타일 규칙
+
+```tsx
+// ✅ 세미콜론 필수
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+// ❌ 세미콜론 누락 금지
+// import { useState } from 'react'
+```
+
 ## 💻 개발 가이드라인
 
 ### 컴포넌트 작성

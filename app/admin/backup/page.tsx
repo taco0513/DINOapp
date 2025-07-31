@@ -3,33 +3,7 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import BackupManagementDashboard from '@/components/admin/BackupManagementDashboard';
-import {
-  Database,
-  FileArchive,
-  Calendar,
-  Download,
-  Upload,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  HardDrive,
-  Shield,
-  Play,
-  RefreshCw,
-} from 'lucide-react';
-
-interface BackupInfo {
-  databaseBackups: any[];
-  fileBackups: any[];
-  schedules: any[];
-  status: {
-    totalSchedules: number;
-    enabledSchedules: number;
-    runningSchedules: number;
-    lastBackup?: string;
-    nextBackup?: string;
-  };
-}
+// Removed unused lucide-react imports and interfaces
 
 export const metadata: Metadata = {
   title: '백업 및 복구 - DINO Admin',

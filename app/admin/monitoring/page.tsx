@@ -1,93 +1,11 @@
-import { Metadata } from 'next'
-import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import MonitoringDashboard from '@/components/admin/MonitoringDashboard'
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle, 
-  Clock, 
-  Database, 
-  Server,
-  TrendingUp,
-  Users,
-  Zap,
-  RefreshCw
-} from 'lucide-react'
+import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import MonitoringDashboard from '@/components/admin/MonitoringDashboard';
+// Removed unused lucide-react imports
 
-interface HealthCheck {
-  timestamp: string
-  status: 'healthy' | 'degraded' | 'unhealthy'
-  version: string
-  environment: string
-  checks: {
-    database?: {
-      status: string
-      latency?: number
-      lastCheck?: string
-      errorCount?: number
-      error?: string
-    }
-    memory?: {
-      status: string
-      heapUsed: string
-      heapTotal: string
-      rss: string
-      external: string
-      warning?: string
-    }
-    uptime?: {
-      status: string
-      seconds: number
-      formatted: string
-    }
-    metrics?: {
-      status: string
-      totalRequests: number
-      totalErrors: number
-      errorRate: string
-    }
-  }
-}
-
-interface MetricsData {
-  summary: {
-    totalRequests: number
-    errorRate: number
-    avgResponseTime: number
-    activeUsers: number
-    timestamp: string
-  }
-  metrics: {
-    http: any[]
-    db: any[]
-    business: any[]
-    system: any[]
-  }
-}
-
-interface LogEntry {
-  timestamp: string
-  level: string
-  message: string
-  context?: any
-  stack?: string
-}
-
-interface LogsData {
-  logs: LogEntry[]
-  stats: {
-    total: number
-    byLevel: {
-      debug: number
-      info: number
-      warn: number
-      error: number
-      fatal: number
-    }
-  }
-}
+// Removed unused interfaces
 
 export const metadata: Metadata = {
   title: '시스템 모니터링 - DINO Admin',
@@ -105,16 +23,16 @@ export default async function AdminMonitoringPage() {
   // 관리자 권한 확인 (이메일 기반)
   const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
   const isAdmin = adminEmails.includes(session.user.email || '');
-  
+
   if (!isAdmin) {
     redirect('/dashboard?error=unauthorized');
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">시스템 모니터링</h1>
-        <p className="text-gray-600">
+    <div className='container mx-auto px-4 py-8'>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold mb-2'>시스템 모니터링</h1>
+        <p className='text-gray-600'>
           실시간 시스템 성능 및 건강 상태 모니터링을 확인합니다.
         </p>
       </div>
@@ -123,4 +41,3 @@ export default async function AdminMonitoringPage() {
     </div>
   );
 }
-

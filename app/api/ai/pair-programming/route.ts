@@ -11,7 +11,12 @@ interface PairProgrammingContext {
 }
 
 interface NavigatorSuggestion {
-  type: 'architecture' | 'implementation' | 'optimization' | 'testing' | 'refactoring';
+  type:
+    | 'architecture'
+    | 'implementation'
+    | 'optimization'
+    | 'testing'
+    | 'refactoring';
   suggestion: string;
   codeExample?: string;
   confidence: number;
@@ -47,10 +52,14 @@ async function generateNavigatorSuggestions(
   // 코드 분석 및 컨텍스트 기반 제안 생성
   if (context.mode === 'navigator') {
     // 아키텍처 레벨 제안
-    if (context.code.includes('useState') && context.code.includes('useEffect')) {
+    if (
+      context.code.includes('useState') &&
+      context.code.includes('useEffect')
+    ) {
       suggestions.push({
         type: 'architecture',
-        suggestion: '복잡한 상태 로직을 Custom Hook으로 추출하면 재사용성과 테스트 용이성이 향상됩니다.',
+        suggestion:
+          '복잡한 상태 로직을 Custom Hook으로 추출하면 재사용성과 테스트 용이성이 향상됩니다.',
         codeExample: `// Custom Hook 예시
 function useUserData(userId: string) {
   const [data, setData] = useState(null);
@@ -68,7 +77,7 @@ function useUserData(userId: string) {
 }`,
         confidence: 0.92,
         reasoning: '상태 관리 로직이 복잡해질 가능성이 보입니다.',
-        priority: 'high'
+        priority: 'high',
       });
     }
 
@@ -76,14 +85,15 @@ function useUserData(userId: string) {
     if (context.code.includes('map') && !context.code.includes('key=')) {
       suggestions.push({
         type: 'implementation',
-        suggestion: 'React 리스트 렌더링 시 key prop을 추가하여 렌더링 성능을 최적화하세요.',
+        suggestion:
+          'React 리스트 렌더링 시 key prop을 추가하여 렌더링 성능을 최적화하세요.',
         codeExample: `// key prop 추가
 {items.map((item) => (
   <ItemComponent key={item.id} {...item} />
 ))}`,
         confidence: 0.98,
         reasoning: 'key prop이 없으면 React가 비효율적으로 리렌더링합니다.',
-        priority: 'high'
+        priority: 'high',
       });
     }
 
@@ -91,7 +101,8 @@ function useUserData(userId: string) {
     if (context.code.includes('filter') && context.code.includes('map')) {
       suggestions.push({
         type: 'optimization',
-        suggestion: 'filter와 map을 연속으로 사용하는 대신 reduce로 한 번에 처리하면 성능이 향상됩니다.',
+        suggestion:
+          'filter와 map을 연속으로 사용하는 대신 reduce로 한 번에 처리하면 성능이 향상됩니다.',
         codeExample: `// 최적화 전
 const result = data
   .filter(item => item.active)
@@ -104,7 +115,7 @@ const result = data.reduce((acc, item) => {
 }, []);`,
         confidence: 0.85,
         reasoning: '배열을 한 번만 순회하여 성능이 향상됩니다.',
-        priority: 'medium'
+        priority: 'medium',
       });
     }
 
@@ -112,7 +123,8 @@ const result = data.reduce((acc, item) => {
     if (context.task.includes('기능') && !context.code.includes('test')) {
       suggestions.push({
         type: 'testing',
-        suggestion: '새로운 기능에 대한 단위 테스트를 작성하여 안정성을 확보하세요.',
+        suggestion:
+          '새로운 기능에 대한 단위 테스트를 작성하여 안정성을 확보하세요.',
         codeExample: `// 테스트 예시
 describe('UserComponent', () => {
   it('should display user name when logged in', () => {
@@ -124,7 +136,7 @@ describe('UserComponent', () => {
 });`,
         confidence: 0.88,
         reasoning: '테스트는 코드 품질과 유지보수성을 크게 향상시킵니다.',
-        priority: 'medium'
+        priority: 'medium',
       });
     }
   } else {
@@ -135,7 +147,7 @@ describe('UserComponent', () => {
         suggestion: '비동기 함수에 에러 처리를 추가하세요.',
         confidence: 0.95,
         reasoning: '비동기 작업은 항상 실패할 가능성이 있습니다.',
-        priority: 'high'
+        priority: 'high',
       });
     }
   }
@@ -143,7 +155,7 @@ describe('UserComponent', () => {
   return suggestions;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -160,8 +172,8 @@ export async function GET(request: NextRequest) {
       topSuggestionTypes: [
         { type: 'implementation', count: 156 },
         { type: 'optimization', count: 89 },
-        { type: 'architecture', count: 67 }
-      ]
+        { type: 'architecture', count: 67 },
+      ],
     };
 
     return NextResponse.json({ stats });

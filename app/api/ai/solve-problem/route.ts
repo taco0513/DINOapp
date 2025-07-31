@@ -44,15 +44,20 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function findSolutions(request: ProblemSolvingRequest): Promise<Solution[]> {
-  const { problem, errorDetails } = request;
+async function findSolutions(
+  request: ProblemSolvingRequest
+): Promise<Solution[]> {
+  const { problem, errorDetails: _errorDetails } = request;
   const solutions: Solution[] = [];
 
   // 문제 타입 분석
   const problemLower = problem.toLowerCase();
-  
+
   // TypeError 관련 문제
-  if (problemLower.includes('cannot read property') || problemLower.includes('undefined')) {
+  if (
+    problemLower.includes('cannot read property') ||
+    problemLower.includes('undefined')
+  ) {
     solutions.push({
       id: 'sol_1',
       type: 'quick_fix',
@@ -62,7 +67,7 @@ async function findSolutions(request: ProblemSolvingRequest): Promise<Solution[]
         '에러가 발생하는 코드 위치 확인',
         '점(.) 연산자를 물음표(?.) 연산자로 변경',
         'null/undefined 체크 추가',
-        '테스트하여 에러 해결 확인'
+        '테스트하여 에러 해결 확인',
       ],
       confidence: 0.95,
       timeEstimate: '30초',
@@ -78,9 +83,9 @@ const value = user?.profile?.name ?? '기본 이름';`,
         {
           title: 'MDN: Optional Chaining',
           url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining',
-          relevance: 0.98
-        }
-      ]
+          relevance: 0.98,
+        },
+      ],
     });
 
     solutions.push({
@@ -92,7 +97,7 @@ const value = user?.profile?.name ?? '기본 이름';`,
         '데이터 로딩 상태 확인',
         '로딩 상태에 따른 조건부 렌더링 구현',
         '초기 상태값 설정',
-        'useEffect로 비동기 데이터 처리'
+        'useEffect로 비동기 데이터 처리',
       ],
       confidence: 0.88,
       timeEstimate: '2분',
@@ -108,12 +113,16 @@ useEffect(() => {
 if (loading) return <LoadingSpinner />;
 if (!data) return <EmptyState />;
 
-return <DataDisplay data={data} />;`
+return <DataDisplay data={data} />;`,
     });
   }
 
   // 성능 문제
-  if (problemLower.includes('느린') || problemLower.includes('성능') || problemLower.includes('performance')) {
+  if (
+    problemLower.includes('느린') ||
+    problemLower.includes('성능') ||
+    problemLower.includes('performance')
+  ) {
     solutions.push({
       id: 'sol_3',
       type: 'quick_fix',
@@ -123,7 +132,7 @@ return <DataDisplay data={data} />;`
         '리렌더링이 자주 발생하는 컴포넌트 식별',
         'React.memo로 컴포넌트 감싸기',
         'props 비교 함수 추가 (필요한 경우)',
-        'React DevTools로 개선 확인'
+        'React DevTools로 개선 확인',
       ],
       confidence: 0.85,
       timeEstimate: '1분',
@@ -138,12 +147,15 @@ export default React.memo(function ExpensiveComponent({ data }) {
 }, (prevProps, nextProps) => {
   // true를 반환하면 리렌더링 건너뛰기
   return prevProps.data.id === nextProps.data.id;
-});`
+});`,
     });
   }
 
   // 설정 문제
-  if (problemLower.includes('module not found') || problemLower.includes('설치')) {
+  if (
+    problemLower.includes('module not found') ||
+    problemLower.includes('설치')
+  ) {
     solutions.push({
       id: 'sol_4',
       type: 'quick_fix',
@@ -153,7 +165,7 @@ export default React.memo(function ExpensiveComponent({ data }) {
         'node_modules 폴더 삭제',
         'package-lock.json 삭제',
         'npm cache clean --force 실행',
-        'npm install 다시 실행'
+        'npm install 다시 실행',
       ],
       confidence: 0.92,
       timeEstimate: '1분 30초',
@@ -166,9 +178,9 @@ npm install`,
         {
           title: 'npm docs: npm-install',
           url: 'https://docs.npmjs.com/cli/v8/commands/npm-install',
-          relevance: 0.9
-        }
-      ]
+          relevance: 0.9,
+        },
+      ],
     });
   }
 
@@ -183,7 +195,7 @@ npm install`,
         'console.log로 변수 값 확인',
         '브라우저 개발자 도구에서 에러 확인',
         '관련 코드를 주석 처리하여 문제 범위 축소',
-        '스택 트레이스를 따라 에러 발생 지점 추적'
+        '스택 트레이스를 따라 에러 발생 지점 추적',
       ],
       confidence: 0.7,
       timeEstimate: '2분',
@@ -191,9 +203,9 @@ npm install`,
         {
           title: 'Chrome DevTools 디버깅 가이드',
           url: 'https://developer.chrome.com/docs/devtools/',
-          relevance: 0.8
-        }
-      ]
+          relevance: 0.8,
+        },
+      ],
     });
   }
 

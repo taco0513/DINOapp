@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function generateCode(request: CodeGenerationRequest): Promise<GeneratedCode> {
+async function generateCode(
+  request: CodeGenerationRequest
+): Promise<GeneratedCode> {
   // AI 코드 생성 시뮬레이션 - 향후 실제 AI 서비스로 교체 예정
   // TODO: OpenAI Codex, GitHub Copilot API, 또는 기타 코드 생성 AI 연동
   const { prompt, type, framework, includeTests, includeDocs } = request;
@@ -51,7 +53,12 @@ async function generateCode(request: CodeGenerationRequest): Promise<GeneratedCo
   // 타입별 코드 생성
   switch (type) {
     case 'component':
-      return generateComponentCode(prompt, framework, includeTests, includeDocs);
+      return generateComponentCode(
+        prompt,
+        framework,
+        includeTests,
+        includeDocs
+      );
     case 'api':
       return generateAPICode(prompt, framework, includeTests, includeDocs);
     case 'database':
@@ -64,13 +71,13 @@ async function generateCode(request: CodeGenerationRequest): Promise<GeneratedCo
 }
 
 function generateComponentCode(
-  prompt: string,
-  framework: string,
-  includeTests: boolean,
-  includeDocs: boolean
+  _prompt: string,
+  _framework: string,
+  _includeTests: boolean,
+  _includeDocs: boolean
 ): GeneratedCode {
   const componentName = 'UserProfileCard';
-  
+
   const code = `import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -142,7 +149,8 @@ export default function UserProfileCard({
   );
 }`;
 
-  const testCode = includeTests ? `import { render, screen, fireEvent } from '@testing-library/react';
+  const testCode = _includeTests
+    ? `import { render, screen, fireEvent } from '@testing-library/react';
 import UserProfileCard from './UserProfileCard';
 
 describe('UserProfileCard', () => {
@@ -178,9 +186,11 @@ describe('UserProfileCard', () => {
     fireEvent.click(screen.getByText('팔로우'));
     expect(mockOnFollow).toHaveBeenCalledWith('1');
   });
-});` : undefined;
+});`
+    : undefined;
 
-  const documentation = includeDocs ? `
+  const documentation = _includeDocs
+    ? `
 # UserProfileCard 컴포넌트
 
 ## 개요
@@ -203,27 +213,29 @@ describe('UserProfileCard', () => {
   onUnfollow={handleUnfollow}
 />
 \`\`\`
-` : undefined;
+`
+    : undefined;
 
   return {
     id: `comp_${Date.now()}`,
     type: 'component',
     name: componentName,
-    description: '사용자 프로필을 표시하는 카드 컴포넌트 - 아바타, 이름, 이메일, 팔로워/팔로잉 수 표시',
+    description:
+      '사용자 프로필을 표시하는 카드 컴포넌트 - 아바타, 이름, 이메일, 팔로워/팔로잉 수 표시',
     code,
     language: 'typescript',
-    framework,
+    framework: _framework,
     dependencies: ['@radix-ui/react-avatar', '@radix-ui/react-button'],
     testCode,
-    documentation
+    documentation,
   };
 }
 
 function generateAPICode(
-  prompt: string,
-  framework: string,
-  includeTests: boolean,
-  includeDocs: boolean
+  _prompt: string,
+  _framework: string,
+  _includeTests: boolean,
+  _includeDocs: boolean
 ): GeneratedCode {
   const code = `import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -352,21 +364,22 @@ export async function POST(request: NextRequest) {
     id: `api_${Date.now()}`,
     type: 'api',
     name: 'users-api',
-    description: 'RESTful API - 사용자 CRUD 엔드포인트, JWT 인증, 페이지네이션 포함',
+    description:
+      'RESTful API - 사용자 CRUD 엔드포인트, JWT 인증, 페이지네이션 포함',
     code,
     language: 'typescript',
-    framework,
+    framework: _framework,
     dependencies: ['bcryptjs', '@prisma/client', 'next-auth'],
-    testCode: includeTests ? '// API 테스트 코드' : undefined,
-    documentation: includeDocs ? '# Users API Documentation' : undefined
+    testCode: _includeTests ? '// API 테스트 코드' : undefined,
+    documentation: _includeDocs ? '# Users API Documentation' : undefined,
   };
 }
 
 function generateDatabaseCode(
-  prompt: string,
-  framework: string,
-  includeTests: boolean,
-  includeDocs: boolean
+  _prompt: string,
+  _framework: string,
+  _includeTests: boolean,
+  _includeDocs: boolean
 ): GeneratedCode {
   const code = `// prisma/schema.prisma
 
@@ -481,17 +494,18 @@ model Tag {
     id: `db_${Date.now()}`,
     type: 'database',
     name: 'social-media-schema',
-    description: 'Prisma 스키마 - User, Post, Comment, Follow, Like 모델 관계 설정',
+    description:
+      'Prisma 스키마 - User, Post, Comment, Follow, Like 모델 관계 설정',
     code,
     language: 'prisma',
     framework: 'prisma',
     dependencies: ['@prisma/client', 'prisma'],
     testCode: undefined,
-    documentation: includeDocs ? '# Database Schema Documentation' : undefined
+    documentation: _includeDocs ? '# Database Schema Documentation' : undefined,
   };
 }
 
-function generateTestCode(prompt: string, framework: string): GeneratedCode {
+function generateTestCode(_prompt: string, _framework: string): GeneratedCode {
   const code = `import { test, expect } from '@playwright/test';
 
 test.describe('로그인 기능 E2E 테스트', () => {
@@ -557,11 +571,14 @@ test.describe('로그인 기능 E2E 테스트', () => {
     framework: 'playwright',
     dependencies: ['@playwright/test'],
     testCode: undefined,
-    documentation: undefined
+    documentation: undefined,
   };
 }
 
-function generateConfigCode(prompt: string, framework: string): GeneratedCode {
+function generateConfigCode(
+  _prompt: string,
+  _framework: string
+): GeneratedCode {
   const code = `// .eslintrc.js
 module.exports = {
   root: true,
@@ -651,9 +668,9 @@ module.exports = {
       'eslint-plugin-react',
       'eslint-plugin-react-hooks',
       'eslint-plugin-prettier',
-      'eslint-config-prettier'
+      'eslint-config-prettier',
     ],
     testCode: undefined,
-    documentation: undefined
+    documentation: undefined,
   };
 }

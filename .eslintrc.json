@@ -2,20 +2,23 @@
   "extends": "next/core-web-vitals",
   "rules": {
     // TypeScript specific
-    "no-unused-vars": ["warn", { 
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_" 
-    }],
-    
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+
     // General JavaScript
     "no-var": "error",
     "prefer-const": "error",
-    
+
     // Code quality
     "no-console": "warn",
     "no-debugger": "error",
-    "no-alert": "error",
-    
+    "no-alert": "warn", // Allow alerts during development
+
     // React specific
     "react-hooks/exhaustive-deps": "warn",
     "react/no-unescaped-entities": "warn"

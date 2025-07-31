@@ -7,7 +7,10 @@ import { ApiClient } from '@/lib/api-client';
 import { getCountryByName } from '@/data/countries';
 import { TravelStatsWidget } from '@/components/dashboard/TravelStatsWidget';
 import { PullToRefresh } from '@/components/mobile/PullToRefresh';
-import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
+import {
+  StandardPageLayout,
+  PageIcons,
+} from '@/components/layout/StandardPageLayout';
 import { RefreshCw } from 'lucide-react';
 import { t } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
@@ -207,7 +210,7 @@ export default function AnalyticsPage() {
     <StandardPageLayout
       title='여행 분석'
       description='당신의 여행 패턴과 통계를 자세히 분석해보세요'
-      icon='Analytics'
+      icon={PageIcons.Analytics}
       breadcrumbs={[
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: '여행 분석' },

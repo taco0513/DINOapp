@@ -34,7 +34,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
+import {
+  StandardPageLayout,
+  PageIcons,
+} from '@/components/layout/StandardPageLayout';
 import {
   VISA_DATABASE,
   PASSPORT_COUNTRIES,
@@ -149,7 +152,7 @@ export default function VisaPage() {
     <StandardPageLayout
       title={t('visa.title')}
       description={t('visa.description')}
-      icon='Visa'
+      icon={PageIcons.Visa}
       breadcrumbs={[
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: t('nav.visa') },

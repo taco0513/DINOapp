@@ -4,24 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { AIServiceFactory } from '@/lib/ai/factory';
 import { prisma } from '@/lib/prisma';
 
-interface AIContext {
-  task:
-    | 'feature_development'
-    | 'bug_fixing'
-    | 'refactoring'
-    | 'testing'
-    | 'documentation';
-  complexity: 'simple' | 'moderate' | 'complex';
-  technology: string[];
-  currentCode?: string;
-}
-
-interface AISuggestion {
-  type: 'code' | 'explanation' | 'fix' | 'optimization' | 'documentation';
-  content: string;
-  confidence: number;
-  reasoning?: string;
-}
+// Future AI interfaces - removed unused types
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,6 +19,10 @@ export async function POST(request: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email! },
     });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
     // TODO: 실제 프리미엄 사용자 체크 로직 구현
     const isPremium = false; // 임시로 false

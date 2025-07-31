@@ -72,7 +72,7 @@ export function YearView({ year, trips, onMonthClick }: YearViewProps) {
         {months.map(month => {
           const monthTrips = getTripsForMonth(month)
           const schengenDays = getSchengenDaysForMonth(month)
-          const daysInMonth = getDaysInMonth(month)
+          // const daysInMonth = getDaysInMonth(month)
           
           return (
             <div

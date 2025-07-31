@@ -427,7 +427,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
                     fill="#8884d8"
                     dataKey="visits"
                   >
-                    {stats.continentDistribution.map((entry, index) => (
+                    {stats.continentDistribution.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

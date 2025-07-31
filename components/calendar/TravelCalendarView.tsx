@@ -8,11 +8,11 @@ import {
   MapPin,
   Plane,
   Clock,
-  Plus,
-  Filter,
+  // Plus,
+  // Filter,
   Search,
-  MoreHorizontal,
-  Globe
+  // MoreHorizontal,
+  // Globe
 } from 'lucide-react'
 import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
@@ -281,7 +281,7 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(({
           </div>
           
           <div className="space-y-1">
-            {dayEvents.slice(0, 3).map((event, index) => (
+            {dayEvents.slice(0, 3).map((event) => (
               <div
                 key={event.id}
                 className={`text-xs px-2 py-1 rounded border cursor-pointer hover:shadow-sm transition-shadow ${getEventTypeColor(event.type)}`}

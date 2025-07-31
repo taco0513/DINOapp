@@ -3,9 +3,9 @@
 import dynamic from 'next/dynamic'
 import { ComponentType, ReactNode } from 'react'
 
-interface LazyLoadProps {
-  children?: ReactNode
-}
+// interface LazyLoadProps {
+//   children?: ReactNode
+// }
 
 // Loading component with skeleton
 export const LoadingSpinner = () => (
@@ -31,7 +31,7 @@ export const LazySchengenCalculator = dynamic(
 )
 
 export const LazyTravelStatsWidget = dynamic(
-  () => import('@/components/dashboard/TravelStatsWidget'),
+  () => import('@/components/dashboard/TravelStatsWidget').then(mod => ({ default: mod.TravelStatsWidget })),
   { 
     loading: () => <LoadingSkeleton />,
     ssr: true 

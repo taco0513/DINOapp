@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Trip } from '@/types/database';
 import {
   ChevronLeft,
@@ -157,7 +157,7 @@ export default function StayVisualizationCalendar({
   };
 
   // 수동 날짜 입력 처리
-  const handleManualDateSubmit = () => {
+  const _handleManualDateSubmit = () => {
     // YYYY-MM-DD 또는 YYYY/MM/DD 형식 지원
     const dateRegex = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/;
     const match = manualDateInput.match(dateRegex);

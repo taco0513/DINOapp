@@ -178,4 +178,14 @@ export const PageIcons = {
       👤
     </div>
   ),
+  Visa: (
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
+      🌍
+    </div>
+  ),
+  Globe: (
+    <div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-lg'>
+      🌍
+    </div>
+  ),
 };

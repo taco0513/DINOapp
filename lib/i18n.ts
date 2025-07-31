@@ -3,7 +3,7 @@ type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'fr';
 
 interface Translations {
   [key: string]: {
-    [locale in Locale]: string;
+    [_locale in Locale]: string;
   };
 }
 
@@ -329,6 +329,256 @@ const translations: Translations = {
     es: 'Detectado automáticamente',
     fr: 'Détecté automatiquement',
   },
+
+  // Visa page
+  'nav.visa': {
+    ko: '비자 정보',
+    en: 'Visa Information',
+    ja: 'ビザ情報',
+    zh: '签证信息',
+    es: 'Información de Visa',
+    fr: 'Informations de Visa',
+  },
+  'visa.title': {
+    ko: '비자 정보',
+    en: 'Visa Information',
+    ja: 'ビザ情報',
+    zh: '签证信息',
+    es: 'Información de Visa',
+    fr: 'Informations de Visa',
+  },
+  'visa.description': {
+    ko: '디지털 노마드와 여행자를 위한 포괄적인 비자 요구사항 및 여행 정보',
+    en: 'Comprehensive visa requirements and travel information for digital nomads and travelers',
+    ja: 'デジタルノマドと旅行者のための包括的なビザ要件と旅行情報',
+    zh: '为数字游牧者和旅行者提供全面的签证要求和旅行信息',
+    es: 'Requisitos de visa completos e información de viaje para nómadas digitales y viajeros',
+    fr: 'Exigences de visa complètes et informations de voyage pour les nomades numériques et les voyageurs',
+  },
+  'visa.search.title': {
+    ko: '검색 및 필터',
+    en: 'Search & Filter',
+    ja: '検索とフィルター',
+    zh: '搜索和过滤',
+    es: 'Buscar y Filtrar',
+    fr: 'Rechercher et Filtrer',
+  },
+  'visa.search.countries': {
+    ko: '국가 검색',
+    en: 'Search Countries',
+    ja: '国を検索',
+    zh: '搜索国家',
+    es: 'Buscar Países',
+    fr: 'Rechercher des Pays',
+  },
+  'visa.search.placeholder': {
+    ko: '국가 또는 지역으로 검색...',
+    en: 'Search by country or region...',
+    ja: '国または地域で検索...',
+    zh: '按国家或地区搜索...',
+    es: 'Buscar por país o región...',
+    fr: 'Rechercher par pays ou région...',
+  },
+  'visa.passport': {
+    ko: '본인의 여권',
+    en: 'Your Passport',
+    ja: 'お客様のパスポート',
+    zh: '您的护照',
+    es: 'Su Pasaporte',
+    fr: 'Votre Passeport',
+  },
+  'visa.requirement': {
+    ko: '비자 요구사항',
+    en: 'Visa Requirement',
+    ja: 'ビザ要件',
+    zh: '签证要求',
+    es: 'Requisito de Visa',
+    fr: 'Exigence de Visa',
+  },
+  'visa.purpose': {
+    ko: '목적',
+    en: 'Purpose',
+    ja: '目的',
+    zh: '目的',
+    es: 'Propósito',
+    fr: 'Objectif',
+  },
+  'visa.all_requirements': {
+    ko: '모든 요구사항',
+    en: 'All Requirements',
+    ja: 'すべての要件',
+    zh: '所有要求',
+    es: 'Todos los Requisitos',
+    fr: 'Toutes les Exigences',
+  },
+  'visa.visa_free': {
+    ko: '비자 면제',
+    en: 'Visa Free',
+    ja: 'ビザ免除',
+    zh: '免签',
+    es: 'Sin Visa',
+    fr: 'Sans Visa',
+  },
+  'visa.visa_on_arrival': {
+    ko: '도착 비자',
+    en: 'Visa on Arrival',
+    ja: '到着ビザ',
+    zh: '落地签',
+    es: 'Visa a la Llegada',
+    fr: "Visa à l'Arrivée",
+  },
+  'visa.evisa': {
+    ko: '전자 비자',
+    en: 'eVisa',
+    ja: '電子ビザ',
+    zh: '电子签证',
+    es: 'eVisa',
+    fr: 'eVisa',
+  },
+  'visa.embassy_required': {
+    ko: '대사관 필수',
+    en: 'Embassy Required',
+    ja: '大使館必須',
+    zh: '需要大使馆',
+    es: 'Embajada Requerida',
+    fr: 'Ambassade Requise',
+  },
+  'visa.all_purposes': {
+    ko: '모든 목적',
+    en: 'All Purposes',
+    ja: 'すべての目的',
+    zh: '所有目的',
+    es: 'Todos los Propósitos',
+    fr: 'Tous les Objectifs',
+  },
+  'visa.tourist': {
+    ko: '관광',
+    en: 'Tourist',
+    ja: '観光',
+    zh: '旅游',
+    es: 'Turista',
+    fr: 'Touriste',
+  },
+  'visa.business': {
+    ko: '비즈니스',
+    en: 'Business',
+    ja: 'ビジネス',
+    zh: '商务',
+    es: 'Negocios',
+    fr: 'Affaires',
+  },
+  'visa.student': {
+    ko: '학생',
+    en: 'Student',
+    ja: '学生',
+    zh: '学生',
+    es: 'Estudiante',
+    fr: 'Étudiant',
+  },
+  'visa.work': {
+    ko: '근무',
+    en: 'Work',
+    ja: '仕事',
+    zh: '工作',
+    es: 'Trabajo',
+    fr: 'Travail',
+  },
+  'visa.transit': {
+    ko: '경유',
+    en: 'Transit',
+    ja: 'トランジット',
+    zh: '过境',
+    es: 'Tránsito',
+    fr: 'Transit',
+  },
+  'visa.digital_nomad': {
+    ko: '디지털 노마드',
+    en: 'Digital Nomad',
+    ja: 'デジタルノマド',
+    zh: '数字游牧',
+    es: 'Nómada Digital',
+    fr: 'Nomade Numérique',
+  },
+  'visa.bookmarked': {
+    ko: '북마크됨',
+    en: 'Bookmarked',
+    ja: 'ブックマーク済み',
+    zh: '已收藏',
+    es: 'Marcado',
+    fr: 'Marqué',
+  },
+  'visa.compare_countries': {
+    ko: '국가 비교',
+    en: 'Compare Countries',
+    ja: '国を比較',
+    zh: '比较国家',
+    es: 'Comparar Países',
+    fr: 'Comparer les Pays',
+  },
+  'visa.showing_countries': {
+    ko: '{count}개 국가 표시',
+    en: 'Showing {count} countries',
+    ja: '{count}カ国を表示',
+    zh: '显示 {count} 个国家',
+    es: 'Mostrando {count} países',
+    fr: 'Affichage de {count} pays',
+  },
+  'visa.max_stay': {
+    ko: '최대 체류',
+    en: 'Max Stay',
+    ja: '最大滞在',
+    zh: '最长停留',
+    es: 'Estancia Máxima',
+    fr: 'Séjour Maximum',
+  },
+  'visa.processing': {
+    ko: '처리 시간',
+    en: 'Processing',
+    ja: '処理時間',
+    zh: '处理时间',
+    es: 'Procesamiento',
+    fr: 'Traitement',
+  },
+  'visa.fee': {
+    ko: '수수료',
+    en: 'Fee',
+    ja: '手数料',
+    zh: '费用',
+    es: 'Tarifa',
+    fr: 'Frais',
+  },
+  'visa.checklist': {
+    ko: '체크리스트',
+    en: 'Checklist',
+    ja: 'チェックリスト',
+    zh: '检查清单',
+    es: 'Lista de Verificación',
+    fr: 'Liste de Contrôle',
+  },
+  'visa.details': {
+    ko: '상세 정보',
+    en: 'Details',
+    ja: '詳細',
+    zh: '详情',
+    es: 'Detalles',
+    fr: 'Détails',
+  },
+  'visa.no_countries_found': {
+    ko: '국가를 찾을 수 없습니다',
+    en: 'No countries found',
+    ja: '国が見つかりません',
+    zh: '未找到国家',
+    es: 'No se encontraron países',
+    fr: 'Aucun pays trouvé',
+  },
+  'visa.adjust_filters': {
+    ko: '검색 필터를 조정하여 더 많은 결과를 찾아보세요.',
+    en: 'Try adjusting your search filters to find more results.',
+    ja: '検索フィルターを調整して、より多くの結果を見つけてください。',
+    zh: '尝试调整搜索过滤器以找到更多结果。',
+    es: 'Intente ajustar sus filtros de búsqueda para encontrar más resultados.',
+    fr: "Essayez d'ajuster vos filtres de recherche pour trouver plus de résultats.",
+  },
 };
 
 // Get current locale from localStorage or browser
@@ -380,7 +630,7 @@ export function t(key: string, params?: Record<string, string>): string {
   const translation = translations[key];
 
   if (!translation) {
-    console.warn(`Translation not found for key: ${key}`);
+    // Translation not found for key
     return key;
   }
 

@@ -54,12 +54,12 @@ export default function OfflinePage() {
     if (navigator.onLine) {
       window.location.href = '/dashboard'
     } else {
-      alert('아직 인터넷에 연결되지 않았습니다.')
+      window.alert('아직 인터넷에 연결되지 않았습니다.')
     }
   }
 
   const handleClearCache = async () => {
-    if (confirm('모든 오프라인 데이터를 삭제하시겠습니까?')) {
+    if (window.confirm('모든 오프라인 데이터를 삭제하시겠습니까?')) {
       // 캐시 삭제
       if ('caches' in window) {
         const cacheNames = await caches.keys()
@@ -72,7 +72,7 @@ export default function OfflinePage() {
       
       setCachedTrips([])
       setCacheSize('0')
-      alert('오프라인 데이터가 삭제되었습니다.')
+      window.alert('오프라인 데이터가 삭제되었습니다.')
     }
   }
 

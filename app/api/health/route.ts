@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { metrics } from '@/lib/monitoring/metrics-collector'
 import { dbManager, getDbHealth, isDbHealthy } from '@/lib/database/connection-manager'
 import { loggers } from '@/lib/monitoring/logger'
 
 // GET /api/health - Comprehensive health check
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const checks = {
     timestamp: new Date().toISOString(),
     status: 'healthy',

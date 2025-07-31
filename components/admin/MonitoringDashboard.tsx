@@ -8,7 +8,6 @@ import {
   Clock, 
   Database, 
   Server,
-  TrendingUp,
   Users,
   Zap,
   RefreshCw

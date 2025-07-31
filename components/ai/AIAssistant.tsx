@@ -1,17 +1,15 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  MessageSquare, 
   Code, 
   Bug, 
   FileText, 
   CheckCircle,
-  AlertCircle,
   Loader2,
   Sparkles,
   Brain,
@@ -68,15 +66,7 @@ export default function AIAssistant() {
     }
   };
 
-  const getModeIcon = (mode: string) => {
-    switch (mode) {
-      case 'pair': return <Brain className="h-4 w-4" />;
-      case 'generate': return <Code className="h-4 w-4" />;
-      case 'solve': return <Bug className="h-4 w-4" />;
-      case 'review': return <CheckCircle className="h-4 w-4" />;
-      default: return <MessageSquare className="h-4 w-4" />;
-    }
-  };
+  // getModeIcon function removed - not used
 
   const getModeDescription = (mode: string) => {
     switch (mode) {

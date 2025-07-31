@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function findSolutions(request: ProblemSolvingRequest): Promise<Solution[]> {
-  const { problem, errorDetails } = request;
+  const { problem, errorDetails: _errorDetails } = request;
   const solutions: Solution[] = [];
 
   // 문제 타입 분석

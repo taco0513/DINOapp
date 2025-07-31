@@ -8,10 +8,17 @@ export interface CountryVisit {
   userId: string
   country: string
   entryDate: Date
-  exitDate: Date
-  purpose: string
+  exitDate?: Date | null
+  visaType: string
+  maxDays: number
+  passportCountry: string
   notes?: string | null
-  isCompleted: boolean
+  status: string // completed, ongoing, planned
+  purpose?: string | null // business, tourism, transit, study, work
+  accommodation?: string | null // hotel, airbnb, friend, hostel
+  cost?: number | null // trip cost in USD
+  rating?: number | null // 1-5 satisfaction rating
+  isEmergency: boolean
   createdAt: Date
   updatedAt: Date
 }

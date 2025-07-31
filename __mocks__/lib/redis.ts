@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 export const redis = {
   get: jest.fn(),
   set: jest.fn(),

@@ -64,7 +64,7 @@ async function generateCode(request: CodeGenerationRequest): Promise<GeneratedCo
 }
 
 function generateComponentCode(
-  prompt: string,
+  _prompt: string,
   framework: string,
   includeTests: boolean,
   includeDocs: boolean
@@ -220,7 +220,7 @@ describe('UserProfileCard', () => {
 }
 
 function generateAPICode(
-  prompt: string,
+  _prompt: string,
   framework: string,
   includeTests: boolean,
   includeDocs: boolean
@@ -363,10 +363,10 @@ export async function POST(request: NextRequest) {
 }
 
 function generateDatabaseCode(
-  prompt: string,
-  framework: string,
-  includeTests: boolean,
-  includeDocs: boolean
+  _prompt: string,
+  _framework: string,
+  _includeTests: boolean,
+  _includeDocs: boolean
 ): GeneratedCode {
   const code = `// prisma/schema.prisma
 
@@ -491,7 +491,7 @@ model Tag {
   };
 }
 
-function generateTestCode(prompt: string, framework: string): GeneratedCode {
+function generateTestCode(_prompt: string, _framework: string): GeneratedCode {
   const code = `import { test, expect } from '@playwright/test';
 
 test.describe('로그인 기능 E2E 테스트', () => {
@@ -561,7 +561,7 @@ test.describe('로그인 기능 E2E 테스트', () => {
   };
 }
 
-function generateConfigCode(prompt: string, framework: string): GeneratedCode {
+function generateConfigCode(_prompt: string, _framework: string): GeneratedCode {
   const code = `// .eslintrc.js
 module.exports = {
   root: true,

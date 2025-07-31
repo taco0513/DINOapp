@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 interface Props {
   children: ReactNode
   fallback?: ReactNode
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  onError?: (_error: Error, _errorInfo: ErrorInfo) => void
 }
 
 interface State {
@@ -40,7 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
     }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(_error: Error, _errorInfo: ErrorInfo) {
     // Log error to monitoring service
     console.error('ErrorBoundary caught an error:', error, errorInfo)
     
@@ -119,7 +119,7 @@ export class ErrorBoundary extends Component<Props, State> {
           localStorage.setItem(key, value)
         })
         
-        console.log('Attempted recovery: cleared corrupted localStorage data')
+        // Attempted recovery: cleared corrupted localStorage data
       } catch (e) {
         console.warn('Recovery attempt failed:', e)
       }

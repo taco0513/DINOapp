@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 export const db = {
   apiKey: {
     findUnique: jest.fn(),

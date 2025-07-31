@@ -294,7 +294,7 @@ export function VisaComparison({
               <Button
                 onClick={() => {
                   // In a real app, you might export this data or save it
-                  console.log('Saving comparison:', selectedCountries);
+                  // TODO: Implement comparison export functionality
                 }}
               >
                 Save Comparison

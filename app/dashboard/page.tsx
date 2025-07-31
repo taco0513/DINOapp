@@ -13,8 +13,8 @@ export default function DashboardPage() {
   const [statsData, setStatsData] = useState<any>(null);
   const [schengenData, setSchengenData] = useState<any>(null);
   const [dataLoading, setDataLoading] = useState(true);
-  const [dataError, setDataError] = useState<string | null>(null);
-  const [showNotificationSettings, setShowNotificationSettings] =
+  const [_dataError, setDataError] = useState<string | null>(null);
+  const [_showNotificationSettings, setShowNotificationSettings] =
     useState(false);
 
   useEffect(() => {

@@ -216,4 +216,14 @@ export const PageIcons = {
       👤
     </div>
   ),
+  Bell: (
+    <div className='w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center text-lg'>
+      🔔
+    </div>
+  ),
+  Globe: (
+    <div className='w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center text-lg'>
+      🌍
+    </div>
+  ),
 };

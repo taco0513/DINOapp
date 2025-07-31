@@ -3,22 +3,8 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import BackupManagementDashboard from '@/components/admin/BackupManagementDashboard';
-import {
-  Database,
-  FileArchive,
-  Calendar,
-  Download,
-  Upload,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  HardDrive,
-  Shield,
-  Play,
-  RefreshCw,
-} from 'lucide-react';
 
-interface BackupInfo {
+interface _BackupInfo {
   databaseBackups: any[];
   fileBackups: any[];
   schedules: any[];

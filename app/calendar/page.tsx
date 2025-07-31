@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isWithinInterval, differenceInDays } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isWithinInterval, differenceInDays } from 'date-fns'
 import { ko } from 'date-fns/locale'
 
 interface Trip {
@@ -25,7 +25,7 @@ interface CalendarDay {
 }
 
 export default function CalendarPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [trips, setTrips] = useState<Trip[]>([])
@@ -277,7 +277,7 @@ export default function CalendarPage() {
                   
                   {/* 여행 표시 */}
                   <div className="space-y-1">
-                    {dayTrips.slice(0, 2).map((trip, tripIndex) => (
+                    {dayTrips.slice(0, 2).map((trip) => (
                       <div
                         key={trip.id}
                         className={`text-xs p-1 rounded truncate ${

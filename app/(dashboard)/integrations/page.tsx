@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -22,8 +22,8 @@ function WireframeGmailAnalyzer({
   onAnalysisComplete,
   onStatsUpdate,
 }: {
-  onAnalysisComplete?: (infos: any[]) => void;
-  onStatsUpdate?: (stats: any) => void;
+  onAnalysisComplete?: (_infos: any[]) => void;
+  onStatsUpdate?: (_stats: any) => void;
 }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState<any[]>([]);
@@ -110,7 +110,7 @@ function WireframeCalendarSync({
   onSyncComplete,
 }: {
   travelInfos: any[];
-  onSyncComplete?: (result: any) => void;
+  onSyncComplete?: (_result: any) => void;
 }) {
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -185,7 +185,7 @@ export default function IntegrationsPage() {
     if (status === 'authenticated' && session) {
       checkConnections();
     }
-  }, [session, status]);
+  }, [session, status, checkConnections]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -196,7 +196,7 @@ export default function IntegrationsPage() {
     }
   }, [session, status, router]);
 
-  const checkConnections = async () => {
+  const checkConnections = useCallback(async () => {
     if (!session) return;
 
     setConnectionStatus(prev => ({ ...prev, loading: true }));
@@ -228,7 +228,7 @@ export default function IntegrationsPage() {
         loading: false,
       });
     }
-  };
+  }, [session]);
 
   const handleGmailAnalysisComplete = (travelInfos: any[]) => {
     setExtractedTravelInfos(travelInfos);

@@ -388,8 +388,8 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
               <EnhancedTripForm
                 initialData={{
                   country: editingTrip.country,
-                  entryDate: editingTrip.entryDate.split('T')[0],
-                  exitDate: editingTrip.exitDate ? editingTrip.exitDate.split('T')[0] : '',
+                  entryDate: new Date(editingTrip.entryDate).toISOString().split('T')[0],
+                  exitDate: editingTrip.exitDate ? new Date(editingTrip.exitDate).toISOString().split('T')[0] : '',
                   visaType: editingTrip.visaType,
                   maxDays: editingTrip.maxDays,
                   passportCountry: editingTrip.passportCountry,

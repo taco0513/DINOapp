@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { startOfWeek, startOfMonth, startOfQuarter, startOfYear, subWeeks, subMonths, subQuarters, subYears } from 'date-fns';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // 인증 확인
     const session = await getServerSession(authOptions);
@@ -67,11 +67,11 @@ export async function GET(request: NextRequest) {
         },
       }),
       // 현재 기간 여행 수
-      prisma.trip.count({
+      prisma.countryVisit.count({
         where: { createdAt: { gte: startDate } },
       }),
       // 이전 기간 여행 수
-      prisma.trip.count({
+      prisma.countryVisit.count({
         where: {
           createdAt: { gte: previousStartDate, lt: startDate },
         },
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // 평균 여행 기간 계산
-    const tripDurations = await prisma.trip.findMany({
+    const tripDurations = await prisma.countryVisit.findMany({
       where: { createdAt: { gte: startDate } },
       select: { entryDate: true, exitDate: true },
     });

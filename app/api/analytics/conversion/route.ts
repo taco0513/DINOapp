@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const searchParams = request.nextUrl.searchParams;
-    const range = searchParams.get('range') || '30d';
+    // Range parameter available if needed
+    // const range = request.nextUrl.searchParams.get('range') || '30d';
 
     // 모의 전환 데이터
     const mockData = {

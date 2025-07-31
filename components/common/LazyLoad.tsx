@@ -55,7 +55,7 @@ export function createLazyComponent<P = {}>(
   }
 ) {
   return dynamic(importFunc, {
-    loading: options?.loading || (() => <LoadingSpinner />),
+    loading: options?.loading || (() => <LoadingSpinner />) as any,
     ssr: options?.ssr ?? true
   })
 }

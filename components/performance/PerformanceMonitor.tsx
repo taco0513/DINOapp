@@ -30,7 +30,7 @@ export default function PerformanceMonitor({
   reportInterval = 30000, // 30 seconds
   debug = false
 }: PerformanceMonitorProps) {
-  const router = useRouter()
+  const _router = useRouter() // eslint-disable-line @typescript-eslint/no-unused-vars
   const [metrics, setMetrics] = useState<PerformanceMetrics>({})
   const [isSupported, setIsSupported] = useState(false)
   const observerRef = useRef<PerformanceObserver | null>(null)

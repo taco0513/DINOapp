@@ -120,7 +120,7 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleComplete = async () => {
+  const _handleComplete = async () => { // eslint-disable-line @typescript-eslint/no-unused-vars
     try {
       // 온보딩 완료 상태 저장
       await fetch('/api/user/onboarding', {

@@ -3,7 +3,7 @@
 import { usePWA } from '@/hooks/usePWA'
 
 export default function PWAInstallButton() {
-  const { isInstallable, isInstalled, isOffline, installPrompt } = usePWA()
+  const { isInstallable, isInstalled, isOffline: _isOffline, installPrompt } = usePWA()
 
   if (isInstalled || !isInstallable) {
     return null

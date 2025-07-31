@@ -16,6 +16,9 @@ export function OfflineIndicator() {
       }, 3000)
       return () => clearTimeout(timer)
     }
+    
+    // Return empty cleanup for offline case
+    return () => {}
   }, [isOnline])
 
   if (!showIndicator) return null

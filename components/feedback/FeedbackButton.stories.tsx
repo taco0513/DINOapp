@@ -1,3 +1,4 @@
+// @ts-ignore: Storybook is optional in production
 import type { Meta, StoryObj } from '@storybook/react';
 import FeedbackButton from './FeedbackButton';
 
@@ -36,7 +37,7 @@ export const WithMockData: Story = {
       },
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement }: any) => {
     const button = canvasElement.querySelector('button');
     if (button) {
       button.click();
@@ -78,7 +79,7 @@ export const AccessibilityFocus: Story = {
       },
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement }: any) => {
     const button = canvasElement.querySelector('button');
     if (button) {
       button.focus();

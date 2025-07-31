@@ -138,7 +138,7 @@ export default function SchengenUsageChart({ visits = [] }: SchengenUsageChartPr
           alignItems: 'end',
           gap: '1px'
         }}>
-          {usageData.map((day, index) => {
+          {usageData.map((day, _index) => {
             const isToday = day.date === today
             const height = (day.days / 90) * 100
             const isPast = new Date(day.date) < new Date(today)

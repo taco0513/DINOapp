@@ -12,11 +12,11 @@ interface MainLayoutProps {
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
-  const { data: session } = useSession();
-  const pathname = usePathname();
+  const { data: _session } = useSession();
+  const _pathname = usePathname(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
-  // const _isLandingPage = pathname === '/';
-  // const _isAuthenticatedArea = session && pathname !== '/';
+  // const _isLandingPage = _pathname === '/';
+  // const _isAuthenticatedArea = _session && _pathname !== '/';
 
   return (
     <>

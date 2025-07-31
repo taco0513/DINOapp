@@ -17,6 +17,9 @@ export function InstallPrompt() {
       
       return () => clearTimeout(timer)
     }
+    
+    // Return empty cleanup for non-installable case
+    return () => {}
   }, [isInstallable])
 
   const handleInstall = async () => {

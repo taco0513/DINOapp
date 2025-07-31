@@ -57,6 +57,9 @@ export default function MonitoringProvider({ children }: { children: React.React
         clearInterval(performanceInterval)
       }
     }
+    
+    // Return empty cleanup function for server-side
+    return () => {}
   }, [])
 
   return <>{children}</>

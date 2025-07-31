@@ -39,11 +39,14 @@
 
 ### 파일 명명 규칙
 
-- **컴포넌트**: PascalCase (`TripCard.tsx`, `UserProfile.tsx`)
+- **페이지 컴포넌트** (`app/` 디렉토리): kebab-case (`user-profile/page.tsx`)
+- **기능 컴포넌트**: PascalCase (`TripCard.tsx`, `UserProfile.tsx`)
+- **UI 라이브러리 컴포넌트** (shadcn/ui): kebab-case (`button.tsx`, `dropdown-menu.tsx`)
 - **유틸리티**: camelCase (`formatDate.ts`, `apiClient.ts`)
 - **훅**: camelCase with 'use' prefix (`useAuth.ts`, `useTrips.ts`)
 - **타입**: PascalCase (`UserType.ts`, `TripInterface.ts`)
-- **페이지**: kebab-case (`user-profile/page.tsx`)
+
+**참고**: 기존 파일명은 유지합니다. 새 파일만 이 규칙을 따릅니다.
 
 ## 🧩 컴포넌트 표준
 
@@ -154,6 +157,51 @@ export function TripCard({
   // 컴포넌트 로직
 }
 ```
+
+### 컴포넌트 Export 패턴
+
+프로젝트는 다음 두 가지 패턴을 모두 허용합니다:
+
+#### 1. Function Declaration (권장 - 페이지 컴포넌트)
+
+```tsx
+// 페이지 컴포넌트와 주요 기능 컴포넌트
+export default function HomePage() {
+  return <div>...</div>;
+}
+
+// Named export
+export function FeatureComponent() {
+  return <div>...</div>;
+}
+```
+
+#### 2. Const with forwardRef (권장 - UI 라이브러리 컴포넌트)
+
+```tsx
+// shadcn/ui 스타일의 재사용 가능한 UI 컴포넌트
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = 'Button';
+
+export { Button };
+```
+
+**선택 가이드라인**:
+
+- **페이지 컴포넌트**: `export default function` 사용
+- **UI 컴포넌트 (shadcn/ui)**: `const` + `forwardRef` 패턴 유지
+- **기능 컴포넌트**: 두 패턴 모두 허용, 일관성 우선
+- **기존 코드**: 현재 패턴 유지 (불필요한 리팩토링 방지)
 
 ## 🎨 스타일링 표준
 

@@ -25,13 +25,6 @@ interface Trip {
   isSchengen?: boolean
 }
 
-// interface CountryStats {
-  country: string
-  visits: number
-  totalDays: number
-  cities: string[]
-  lastVisit: string
-}
 
 interface MonthlyStats {
   month: Date

@@ -4,56 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import MonitoringDashboard from '@/components/admin/MonitoringDashboard'
 
-// interface HealthCheck {
-  timestamp: string
-  status: 'healthy' | 'degraded' | 'unhealthy'
-  version: string
-  environment: string
-  checks: {
-    database?: {
-      status: string
-      latency?: number
-      lastCheck?: string
-      errorCount?: number
-      error?: string
-    }
-    memory?: {
-      status: string
-      heapUsed: string
-      heapTotal: string
-      rss: string
-      external: string
-      warning?: string
-    }
-    uptime?: {
-      status: string
-      seconds: number
-      formatted: string
-    }
-    metrics?: {
-      status: string
-      totalRequests: number
-      totalErrors: number
-      errorRate: string
-    }
-  }
-}
 
-// interface MetricsData {
-  summary: {
-    totalRequests: number
-    errorRate: number
-    avgResponseTime: number
-    activeUsers: number
-    timestamp: string
-  }
-  metrics: {
-    http: any[]
-    db: any[]
-    business: any[]
-    system: any[]
-  }
-}
 
 interface LogEntry {
   timestamp: string
@@ -63,19 +14,6 @@ interface LogEntry {
   stack?: string
 }
 
-// interface LogsData {
-  logs: LogEntry[]
-  stats: {
-    total: number
-    byLevel: {
-      debug: number
-      info: number
-      warn: number
-      error: number
-      fatal: number
-    }
-  }
-}
 
 export const metadata: Metadata = {
   title: '시스템 모니터링 - DINO Admin',

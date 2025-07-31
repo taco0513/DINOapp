@@ -4,24 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { AIServiceFactory } from '@/lib/ai/factory';
 import { prisma } from '@/lib/prisma';
 
-// interface AIContext {
-  task:
-    | 'feature_development'
-    | 'bug_fixing'
-    | 'refactoring'
-    | 'testing'
-    | 'documentation';
-  complexity: 'simple' | 'moderate' | 'complex';
-  technology: string[];
-  currentCode?: string;
-}
 
-// interface AISuggestion {
-  type: 'code' | 'explanation' | 'fix' | 'optimization' | 'documentation';
-  content: string;
-  confidence: number;
-  reasoning?: string;
-}
 
 export async function POST(request: NextRequest) {
   try {

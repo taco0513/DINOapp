@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ApiClient } from '@/lib/api-client';
 import type { CountryVisit } from '@/types/global';
-// import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+// import { PageIcons } from '@/components/common/PageHeader';
 import { t } from '@/lib/i18n';
 import SchengenUsageChart from '@/components/schengen/SchengenUsageChart';
 // import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 // import { SwipeableCard } from '@/components/mobile/SwipeableCard';
-// import { Calculator, TrendingUp } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CountryUtils } from '@/constants/countries';
 import { StandardPageLayout, StandardCard, StatsCard, EmptyState } from '@/components/layout/StandardPageLayout';
@@ -44,7 +44,7 @@ export default function SchengenPage() {
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      _setIsMobile(window.innerWidth < 768);
     };
 
     checkMobile();
@@ -170,7 +170,7 @@ export default function SchengenPage() {
     <StandardPageLayout
       title={t('schengen.title')}
       description={t('schengen.description')}
-      icon={PageIcons.Schengen}
+      icon="Schengen"
       breadcrumbs={[
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: t('nav.schengen') },

@@ -6,13 +6,6 @@ import MonitoringDashboard from '@/components/admin/MonitoringDashboard'
 
 
 
-interface LogEntry {
-  timestamp: string
-  level: string
-  message: string
-  context?: any
-  stack?: string
-}
 
 
 export const metadata: Metadata = {

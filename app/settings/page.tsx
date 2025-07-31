@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+// import { PageHeader, PageIcons } from '@/components/common/PageHeader';
 import {
   StandardPageLayout,
-  StandardCard,
+  // StandardCard,
 } from '@/components/layout/StandardPageLayout';
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading';
 import {
@@ -15,17 +15,17 @@ import {
   getSupportedLocales,
   type Locale,
 } from '@/lib/i18n';
-import { COUNTRIES, type CountryInfo } from '@/data/countries';
+import { COUNTRIES } from '@/data/countries';
 import {
   TIMEZONES,
   TIMEZONE_REGIONS,
   getUserTimezone,
-  type TimezoneInfo,
+  // type TimezoneInfo,
 } from '@/data/timezones';
 import {
   CURRENCIES,
   getPopularCurrencies,
-  type CurrencyInfo,
+  // type CurrencyInfo,
 } from '@/data/currencies';
 import {
   User,
@@ -43,14 +43,14 @@ import {
   Info,
   Clock,
   DollarSign,
-  Passport,
+  // Passport,
   Settings,
   Lock,
   Eye,
   AlertTriangle,
   Search,
   ChevronDown,
-  X,
+  // X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

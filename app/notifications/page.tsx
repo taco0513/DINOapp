@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { PageIcons } from '@/components/common/PageHeader'
+// import { PageIcons } from '@/components/common/PageHeader'
 import { StandardPageLayout, StandardCard } from '@/components/layout/StandardPageLayout'
 
 // 인라인 알림 목록 컴포넌트

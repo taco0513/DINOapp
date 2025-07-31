@@ -28,6 +28,12 @@ export interface CountryVisit {
   maxDays: number
   passportCountry?: PassportCountry
   notes?: string
+  purpose?: string // business, tourism, transit, study, work
+  accommodation?: string // hotel, airbnb, friend, hostel
+  cost?: number // trip cost in USD
+  rating?: number // 1-5 satisfaction rating
+  status?: string // completed, ongoing, planned
+  isEmergency?: boolean
   createdAt: Date
   updatedAt: Date
 }

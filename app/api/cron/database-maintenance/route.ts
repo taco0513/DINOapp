@@ -10,6 +10,12 @@ interface MaintenanceTask {
   error?: string
 }
 
+interface MaintenanceResults {
+  timestamp: string
+  tasks: MaintenanceTask[]
+  executionTime?: number
+}
+
 // Automated database maintenance cron job
 // Called by Vercel cron at 2 AM daily
 export async function GET(request: NextRequest) {
@@ -25,9 +31,9 @@ export async function GET(request: NextRequest) {
 
     // Database maintenance started
 
-    const results = {
+    const results: MaintenanceResults = {
       timestamp: new Date().toISOString(),
-      tasks: [] as MaintenanceTask[]
+      tasks: []
     }
 
     // 1. Cleanup expired sessions
@@ -188,9 +194,9 @@ export async function GET(request: NextRequest) {
     results['executionTime'] = duration
 
     // Log summary
-    const successCount = results.tasks.filter(task => task.status === 'success').length
+    const _successCount = results.tasks.filter(task => task.status === 'success').length
     const errorCount = results.tasks.filter(task => task.status === 'error').length
-    const warningCount = results.tasks.filter(task => task.status === 'warning').length
+    const _warningCount = results.tasks.filter(task => task.status === 'warning').length
 
     // Database maintenance completed
 

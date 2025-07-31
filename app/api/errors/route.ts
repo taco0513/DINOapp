@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper functions
-function categorizeErrorSeverity(message: string, stack?: string): ErrorReport['severity'] {
+function categorizeErrorSeverity(message: string, _stack?: string): ErrorReport['severity'] {
   const criticalKeywords = [
     'database', 'authentication', 'security', 'payment', 'data loss',
     'corruption', 'unauthorized', 'sql injection', 'xss'
@@ -200,7 +200,7 @@ function categorizeErrorSeverity(message: string, stack?: string): ErrorReport['
   return 'low'
 }
 
-function categorizeError(message: string, stack?: string): ErrorReport['category'] {
+function categorizeError(message: string, _stack?: string): ErrorReport['category'] {
   const messageLower = message.toLowerCase()
   
   if (messageLower.includes('database') || messageLower.includes('prisma')) {

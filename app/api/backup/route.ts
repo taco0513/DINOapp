@@ -4,7 +4,6 @@ import { authOptions } from '@/lib/auth'
 import { _dbBackupManager as dbBackupManager } from '@/lib/backup/database-backup'
 import { _fileBackupManager as fileBackupManager } from '@/lib/backup/file-backup'
 import { backupScheduler } from '@/lib/backup/backup-scheduler'
-import { asyncHandler } from '@/lib/error/error-handler'
 import { httpMetrics } from '@/lib/monitoring/metrics-collector'
 
 // GET /api/backup - List backups and schedules (admin only)

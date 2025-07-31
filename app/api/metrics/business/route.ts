@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { startOfWeek, startOfMonth, startOfQuarter, startOfYear, subWeeks, subMonths, subQuarters, subYears } from 'date-fns';
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     // 인증 확인
     const session = await getServerSession(authOptions);
@@ -50,7 +50,7 @@ export async function GET(_request: NextRequest) {
     // 현재 기간 메트릭
     const [
       currentUsers,
-      previousUsers,
+      _previousUsers,
       currentTrips,
       previousTrips,
       currentActiveUsers,

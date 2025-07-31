@@ -1,6 +1,6 @@
 'use client'
 
-import { format, startOfYear, endOfYear, eachMonthOfInterval, getDaysInMonth, startOfMonth } from 'date-fns'
+import { format, startOfYear, endOfYear, eachMonthOfInterval, startOfMonth } from 'date-fns'
 import { ko } from 'date-fns/locale'
 
 interface Trip {

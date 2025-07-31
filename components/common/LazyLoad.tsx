@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { ComponentType, ReactNode } from 'react'
+import { ComponentType } from 'react'
 
 // interface LazyLoadProps {
 //   children?: ReactNode

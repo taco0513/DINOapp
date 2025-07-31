@@ -58,11 +58,11 @@ function WireframeGmailAnalyzer({
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-8">
-      <h3 className="text-lg font-bold mb-4 text-foreground">
+    <div className='bg-card border border-border rounded-lg p-8'>
+      <h3 className='text-lg font-bold mb-4 text-foreground'>
         📧 Gmail 이메일 분석
       </h3>
-      <p className="text-muted-foreground mb-5">
+      <p className='text-muted-foreground mb-5'>
         Gmail에서 여행 관련 이메일을 분석합니다.
       </p>
 
@@ -79,20 +79,18 @@ function WireframeGmailAnalyzer({
       </button>
 
       {results.length > 0 && (
-        <div className="mt-5">
-          <h4 className="text-base font-medium mb-4 text-foreground">
+        <div className='mt-5'>
+          <h4 className='text-base font-medium mb-4 text-foreground'>
             분석 결과
           </h4>
-          <div className="flex flex-col gap-2">
+          <div className='flex flex-col gap-2'>
             {results.map(result => (
               <div
                 key={result.id}
-                className="p-4 border border-border bg-card rounded-lg"
+                className='p-4 border border-border bg-card rounded-lg'
               >
-                <div className="font-medium mb-1">
-                  {result.subject}
-                </div>
-                <div className="text-sm text-muted-foreground">
+                <div className='font-medium mb-1'>{result.subject}</div>
+                <div className='text-sm text-muted-foreground'>
                   목적지: {result.destination} | 날짜: {result.date}
                 </div>
               </div>
@@ -123,17 +121,17 @@ function WireframeCalendarSync({
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-8">
-      <h3 className="text-lg font-bold mb-4 text-foreground">
+    <div className='bg-card border border-border rounded-lg p-8'>
+      <h3 className='text-lg font-bold mb-4 text-foreground'>
         📅 Google Calendar 동기화
       </h3>
-      <p className="text-muted-foreground mb-5">
+      <p className='text-muted-foreground mb-5'>
         추출된 여행 정보를 Google Calendar에 동기화합니다.
       </p>
 
       {travelInfos.length > 0 ? (
         <div>
-          <p className="mb-4 text-foreground">
+          <p className='mb-4 text-foreground'>
             {travelInfos.length}개의 여행 정보가 준비되었습니다.
           </p>
           <button
@@ -149,7 +147,7 @@ function WireframeCalendarSync({
           </button>
         </div>
       ) : (
-        <p className="text-muted-foreground">
+        <p className='text-muted-foreground'>
           동기화할 여행 정보가 없습니다. 먼저 Gmail 분석을 완료해주세요.
         </p>
       )}
@@ -185,7 +183,7 @@ export default function IntegrationsPage() {
     if (status === 'authenticated' && session) {
       checkConnections();
     }
-  }, [session, status, checkConnections]);
+  }, [session, status]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -265,11 +263,9 @@ export default function IntegrationsPage() {
 
   if (status === 'loading') {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="mb-5 text-sm text-muted-foreground">
-            로딩 중...
-          </div>
+      <main className='min-h-screen flex items-center justify-center bg-background'>
+        <div className='text-center'>
+          <div className='mb-5 text-sm text-muted-foreground'>로딩 중...</div>
         </div>
       </main>
     );
@@ -277,10 +273,10 @@ export default function IntegrationsPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <main className="min-h-screen p-5 bg-background font-sans">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-yellow-50 border border-border p-5 rounded-lg">
-            <p className="text-yellow-700">
+      <main className='min-h-screen p-5 bg-background font-sans'>
+        <div className='max-w-6xl mx-auto'>
+          <div className='bg-yellow-50 border border-border p-5 rounded-lg'>
+            <p className='text-yellow-700'>
               ⚠️ 이 기능을 사용하려면 Google 계정으로 로그인해야 합니다.
             </p>
           </div>
@@ -290,83 +286,73 @@ export default function IntegrationsPage() {
   }
 
   return (
-    <main className="min-h-screen p-5 bg-background font-sans">
-      <div className="max-w-6xl mx-auto">
+    <main className='min-h-screen p-5 bg-background font-sans'>
+      <div className='max-w-6xl mx-auto'>
         {/* 헤더 */}
-        <div className="mb-10 pb-5 border-b border-border">
-          <h1 className="text-3xl font-bold mb-2 text-foreground">
+        <div className='mb-10 pb-5 border-b border-border'>
+          <h1 className='text-3xl font-bold mb-2 text-foreground'>
             Gmail & Calendar 통합
           </h1>
-          <p className="text-sm text-muted-foreground leading-6">
+          <p className='text-sm text-muted-foreground leading-6'>
             Gmail에서 여행 정보를 추출하고 Google Calendar에 자동으로
             동기화하세요
           </p>
         </div>
 
         {/* 연결 상태 카드 */}
-        <div className="bg-card border border-border rounded-lg p-8 mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">⚙️</span>
-            <h2 className="text-xl font-bold text-foreground">
+        <div className='bg-card border border-border rounded-lg p-8 mb-10'>
+          <div className='flex items-center gap-2 mb-4'>
+            <span className='text-xl'>⚙️</span>
+            <h2 className='text-xl font-bold text-foreground'>
               서비스 연결 상태
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground mb-5">
+          <p className='text-sm text-muted-foreground mb-5'>
             Gmail과 Google Calendar 연결 상태를 확인하세요
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
             {/* Gmail 상태 */}
-            <div className="flex justify-between items-center p-5 border border-border rounded-lg">
-              <div className="flex items-center gap-4">
-                <span className="text-3xl text-blue-600">
-                  📧
-                </span>
+            <div className='flex justify-between items-center p-5 border border-border rounded-lg'>
+              <div className='flex items-center gap-4'>
+                <span className='text-3xl text-blue-600'>📧</span>
                 <div>
-                  <h3 className="font-bold mb-1 text-foreground">
-                    Gmail
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    이메일 분석
-                  </p>
+                  <h3 className='font-bold mb-1 text-foreground'>Gmail</h3>
+                  <p className='text-sm text-muted-foreground'>이메일 분석</p>
                 </div>
               </div>
               {connectionStatus.loading ? (
-                <span className="text-xl">🔄</span>
+                <span className='text-xl'>🔄</span>
               ) : connectionStatus.gmail ? (
-                <div className="px-3 py-1 bg-green-50 text-green-800 text-xs border border-green-200 rounded">
+                <div className='px-3 py-1 bg-green-50 text-green-800 text-xs border border-green-200 rounded'>
                   ✅ 연결됨
                 </div>
               ) : (
-                <div className="px-3 py-1 bg-red-50 text-red-800 text-xs border border-red-200 rounded">
+                <div className='px-3 py-1 bg-red-50 text-red-800 text-xs border border-red-200 rounded'>
                   ❌ 연결 안됨
                 </div>
               )}
             </div>
 
             {/* Calendar 상태 */}
-            <div className="flex justify-between items-center p-5 border border-border rounded-lg">
-              <div className="flex items-center gap-4">
-                <span className="text-3xl text-green-600">
-                  📅
-                </span>
+            <div className='flex justify-between items-center p-5 border border-border rounded-lg'>
+              <div className='flex items-center gap-4'>
+                <span className='text-3xl text-green-600'>📅</span>
                 <div>
-                  <h3 className="font-bold mb-1 text-foreground">
+                  <h3 className='font-bold mb-1 text-foreground'>
                     Google Calendar
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    일정 동기화
-                  </p>
+                  <p className='text-sm text-muted-foreground'>일정 동기화</p>
                 </div>
               </div>
               {connectionStatus.loading ? (
-                <span className="text-xl">🔄</span>
+                <span className='text-xl'>🔄</span>
               ) : connectionStatus.calendar ? (
-                <div className="px-3 py-1 bg-green-50 text-green-800 text-xs border border-green-200 rounded">
+                <div className='px-3 py-1 bg-green-50 text-green-800 text-xs border border-green-200 rounded'>
                   ✅ 연결됨
                 </div>
               ) : (
-                <div className="px-3 py-1 bg-red-50 text-red-800 text-xs border border-red-200 rounded">
+                <div className='px-3 py-1 bg-red-50 text-red-800 text-xs border border-red-200 rounded'>
                   ❌ 연결 안됨
                 </div>
               )}
@@ -374,8 +360,8 @@ export default function IntegrationsPage() {
           </div>
 
           {(!connectionStatus.gmail || !connectionStatus.calendar) && (
-            <div className="mt-5 bg-yellow-50 border border-border rounded-lg p-4">
-              <p className="text-yellow-700 text-sm">
+            <div className='mt-5 bg-yellow-50 border border-border rounded-lg p-4'>
+              <p className='text-yellow-700 text-sm'>
                 ⚠️ Gmail과 Google Calendar 모두 연결되어야 이 기능을 사용할 수
                 있습니다. Google OAuth 인증을 통해 필요한 권한을 부여해주세요.
               </p>
@@ -387,57 +373,53 @@ export default function IntegrationsPage() {
         {(stats.emailsScanned > 0 ||
           stats.travelInfosExtracted > 0 ||
           stats.eventsCreated > 0) && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-            <div className="bg-card border border-border rounded-lg p-5">
-              <div className="flex items-center gap-3">
-                <span className="text-blue-600">📧</span>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10'>
+            <div className='bg-card border border-border rounded-lg p-5'>
+              <div className='flex items-center gap-3'>
+                <span className='text-blue-600'>📧</span>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className='text-2xl font-bold text-foreground'>
                     {stats.emailsScanned}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    스캔된 이메일
-                  </p>
+                  <p className='text-sm text-muted-foreground'>스캔된 이메일</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-5">
-              <div className="flex items-center gap-3">
-                <span className="text-green-600">📥</span>
+            <div className='bg-card border border-border rounded-lg p-5'>
+              <div className='flex items-center gap-3'>
+                <span className='text-green-600'>📥</span>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className='text-2xl font-bold text-foreground'>
                     {stats.travelInfosExtracted}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className='text-sm text-muted-foreground'>
                     추출된 여행정보
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-5">
-              <div className="flex items-center gap-3">
-                <span className="text-purple-600">📤</span>
+            <div className='bg-card border border-border rounded-lg p-5'>
+              <div className='flex items-center gap-3'>
+                <span className='text-purple-600'>📤</span>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className='text-2xl font-bold text-foreground'>
                     {stats.eventsCreated}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    생성된 이벤트
-                  </p>
+                  <p className='text-sm text-muted-foreground'>생성된 이벤트</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-5">
-              <div className="flex items-center gap-3">
-                <span className="text-yellow-600">🔄</span>
+            <div className='bg-card border border-border rounded-lg p-5'>
+              <div className='flex items-center gap-3'>
+                <span className='text-yellow-600'>🔄</span>
                 <div>
-                  <p className="text-xs font-bold text-foreground">
+                  <p className='text-xs font-bold text-foreground'>
                     마지막 동기화
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className='text-xs text-muted-foreground'>
                     {stats.lastSync
                       ? new Date(stats.lastSync).toLocaleString('ko-KR')
                       : '없음'}
@@ -450,76 +432,92 @@ export default function IntegrationsPage() {
 
         {/* 에러 표시 */}
         {error && (
-          <div className="mb-8 bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-700">⚠️ {error}</p>
+          <div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
+            <p className='text-red-700'>⚠️ {error}</p>
           </div>
         )}
 
         {/* 진행 단계 표시 */}
-        <div className="mb-10">
-          <div className="flex justify-between items-center">
-            <div className={`flex items-center gap-3 ${
-              currentStep === 'connect'
-                ? 'text-blue-600'
-                : currentStep === 'analyze' || currentStep === 'sync' || currentStep === 'complete'
-                  ? 'text-green-600'
-                  : 'text-gray-400'
-            }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+        <div className='mb-10'>
+          <div className='flex justify-between items-center'>
+            <div
+              className={`flex items-center gap-3 ${
                 currentStep === 'connect'
-                  ? 'bg-blue-100'
-                  : currentStep === 'analyze' || currentStep === 'sync' || currentStep === 'complete'
-                    ? 'bg-green-100'
-                    : 'bg-gray-100'
-              }`}>
+                  ? 'text-blue-600'
+                  : currentStep === 'analyze' ||
+                      currentStep === 'sync' ||
+                      currentStep === 'complete'
+                    ? 'text-green-600'
+                    : 'text-gray-400'
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  currentStep === 'connect'
+                    ? 'bg-blue-100'
+                    : currentStep === 'analyze' ||
+                        currentStep === 'sync' ||
+                        currentStep === 'complete'
+                      ? 'bg-green-100'
+                      : 'bg-gray-100'
+                }`}
+              >
                 <span>⚙️</span>
               </div>
-              <span className="font-medium">서비스 연결</span>
+              <span className='font-medium'>서비스 연결</span>
             </div>
 
-            <span className="text-gray-400">→</span>
+            <span className='text-gray-400'>→</span>
 
-            <div className={`flex items-center gap-3 ${
-              currentStep === 'analyze'
-                ? 'text-blue-600'
-                : currentStep === 'sync' || currentStep === 'complete'
-                  ? 'text-green-600'
-                  : 'text-gray-400'
-            }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+            <div
+              className={`flex items-center gap-3 ${
                 currentStep === 'analyze'
-                  ? 'bg-blue-100'
+                  ? 'text-blue-600'
                   : currentStep === 'sync' || currentStep === 'complete'
-                    ? 'bg-green-100'
-                    : 'bg-gray-100'
-              }`}>
+                    ? 'text-green-600'
+                    : 'text-gray-400'
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  currentStep === 'analyze'
+                    ? 'bg-blue-100'
+                    : currentStep === 'sync' || currentStep === 'complete'
+                      ? 'bg-green-100'
+                      : 'bg-gray-100'
+                }`}
+              >
                 <span>📧</span>
               </div>
-              <span className="font-medium">Gmail 분석</span>
+              <span className='font-medium'>Gmail 분석</span>
             </div>
 
-            <span className="text-gray-400">→</span>
+            <span className='text-gray-400'>→</span>
 
-            <div className={`flex items-center gap-3 ${
-              currentStep === 'sync'
-                ? 'text-blue-600'
-                : currentStep === 'complete'
-                  ? 'text-green-600'
-                  : 'text-gray-400'
-            }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+            <div
+              className={`flex items-center gap-3 ${
                 currentStep === 'sync'
-                  ? 'bg-blue-100'
+                  ? 'text-blue-600'
                   : currentStep === 'complete'
-                    ? 'bg-green-100'
-                    : 'bg-gray-100'
-              }`}>
+                    ? 'text-green-600'
+                    : 'text-gray-400'
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  currentStep === 'sync'
+                    ? 'bg-blue-100'
+                    : currentStep === 'complete'
+                      ? 'bg-green-100'
+                      : 'bg-gray-100'
+                }`}
+              >
                 <span>📅</span>
               </div>
-              <span className="font-medium">Calendar 동기화</span>
+              <span className='font-medium'>Calendar 동기화</span>
             </div>
 
-            <span className="text-gray-400">→</span>
+            <span className='text-gray-400'>→</span>
 
             <div
               style={{

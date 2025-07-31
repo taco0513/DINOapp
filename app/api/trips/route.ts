@@ -160,10 +160,18 @@ export async function GET(request: NextRequest) {
       (url.searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
 
     // Parse additional query parameters for optimization
-    const startDate = url.searchParams.get('startDate') ? new Date(url.searchParams.get('startDate')!) : undefined;
-    const endDate = url.searchParams.get('endDate') ? new Date(url.searchParams.get('endDate')!) : undefined;
+    const startDate = url.searchParams.get('startDate')
+      ? new Date(url.searchParams.get('startDate')!)
+      : undefined;
+    const endDate = url.searchParams.get('endDate')
+      ? new Date(url.searchParams.get('endDate')!)
+      : undefined;
     const countryCode = url.searchParams.get('countryCode') || undefined;
-    const status = url.searchParams.get('status') as 'PLANNED' | 'COMPLETED' | 'CANCELLED' | undefined;
+    const status = url.searchParams.get('status') as
+      | 'PLANNED'
+      | 'COMPLETED'
+      | 'CANCELLED'
+      | undefined;
     const offset = parseInt(url.searchParams.get('offset') || '0');
 
     // Use optimized query
@@ -176,34 +184,33 @@ export async function GET(request: NextRequest) {
         status,
         countryCode,
         limit,
-        offset
+        offset,
       });
       endDbTimer();
-      
+
       // Log performance metrics
       const stats = queryOptimizer.getPerformanceStats();
       logger.info('Optimized trips query completed', {
         tripCount: trips.length,
-        performanceStats: stats
+        performanceStats: stats,
       });
-      
+
       return NextResponse.json({
         success: true,
         data: trips,
         count: trips.length,
         performance: {
           cached: stats.cacheHitRate > 0,
-          queryTime: `${stats.averageDuration}ms`
-        }
+          queryTime: `${stats.averageDuration}ms`,
+        },
       });
-      
     } catch (queryError) {
       endDbTimer();
       // Fallback to original method if optimized query fails
       logger.warn('Optimized query failed, using fallback', {
-        error: queryError instanceof Error ? queryError.message : queryError
+        error: queryError instanceof Error ? queryError.message : queryError,
       });
-      
+
       const trips = await travelManager.getTrips({
         includeCompleted,
         includePlanned,
@@ -212,23 +219,14 @@ export async function GET(request: NextRequest) {
         sortBy,
         sortOrder,
       });
-      
+
       return NextResponse.json({
         success: true,
         data: trips,
         count: trips.length,
-        fallback: true
+        fallback: true,
       });
     }
-
-    // Log successful response
-    logger.info('Trips retrieved successfully', { count: trips.length });
-
-    const response = NextResponse.json({
-      success: true,
-      data: trips,
-      count: trips.length,
-    });
 
     // Record metrics
     httpMetrics.requestEnd('GET', '/api/trips', 200);

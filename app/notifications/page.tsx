@@ -510,7 +510,7 @@ export default function NotificationsPage() {
     <StandardPageLayout
       title="알림 센터"
       description="알림을 확인하고 설정을 관리하세요"
-      icon={PageIcons.Bell}
+      icon="Bell"
       breadcrumbs={[
         { label: '대시보드', href: '/dashboard' },
         { label: '알림 센터' }

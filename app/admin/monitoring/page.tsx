@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import MonitoringDashboard from '@/components/admin/MonitoringDashboard'
 
-interface HealthCheck {
+// interface HealthCheck {
   timestamp: string
   status: 'healthy' | 'degraded' | 'unhealthy'
   version: string
@@ -39,7 +39,7 @@ interface HealthCheck {
   }
 }
 
-interface MetricsData {
+// interface MetricsData {
   summary: {
     totalRequests: number
     errorRate: number
@@ -63,7 +63,7 @@ interface LogEntry {
   stack?: string
 }
 
-interface LogsData {
+// interface LogsData {
   logs: LogEntry[]
   stats: {
     total: number

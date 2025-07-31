@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { AIServiceFactory } from '@/lib/ai/factory';
 import { prisma } from '@/lib/prisma';
 
-interface AIContext {
+// interface AIContext {
   task:
     | 'feature_development'
     | 'bug_fixing'
@@ -16,7 +16,7 @@ interface AIContext {
   currentCode?: string;
 }
 
-interface AISuggestion {
+// interface AISuggestion {
   type: 'code' | 'explanation' | 'fix' | 'optimization' | 'documentation';
   content: string;
   confidence: number;

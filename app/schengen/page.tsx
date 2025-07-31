@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ApiClient } from '@/lib/api-client';
 import type { CountryVisit } from '@/types/global';
-import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+// import { PageHeader, PageIcons } from '@/components/common/PageHeader';
 import { t } from '@/lib/i18n';
 import SchengenUsageChart from '@/components/schengen/SchengenUsageChart';
-import { PullToRefresh } from '@/components/mobile/PullToRefresh';
-import { SwipeableCard } from '@/components/mobile/SwipeableCard';
-import { Calculator, TrendingUp } from 'lucide-react';
+// import { PullToRefresh } from '@/components/mobile/PullToRefresh';
+// import { SwipeableCard } from '@/components/mobile/SwipeableCard';
+// import { Calculator, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CountryUtils } from '@/constants/countries';
 import { StandardPageLayout, StandardCard, StatsCard, EmptyState } from '@/components/layout/StandardPageLayout';
@@ -28,7 +28,7 @@ export default function SchengenPage() {
   const [futureDuration, setFutureDuration] = useState<number>(7);
   const [futureCountry, setFutureCountry] = useState<string>('France');
   const [futureAnalysis, setFutureAnalysis] = useState<any>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [_isMobile, _setIsMobile] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;

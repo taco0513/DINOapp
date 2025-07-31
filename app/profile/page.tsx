@@ -346,7 +346,7 @@ export default function ProfilePage() {
     <StandardPageLayout
       title='프로필 관리'
       description='개인 정보와 여행 선호도를 관리하세요'
-      icon={PageIcons.Profile}
+      icon="Profile"
       breadcrumbs={[
         { label: '대시보드', href: '/dashboard' },
         { label: '프로필' },

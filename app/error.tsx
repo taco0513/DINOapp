@@ -14,102 +14,38 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'var(--color-background)',
-        padding: 'var(--space-5)',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 'var(--max-width-sm)',
-          textAlign: 'center',
-          padding: 'var(--space-10)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-base)',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 'var(--text-2xl)',
-            fontWeight: 'var(--font-bold)',
-            marginBottom: 'var(--space-4)',
-            color: 'var(--color-text-primary)',
-          }}
-        >
+    <div className='min-h-screen flex items-center justify-center bg-background p-5'>
+      <div className='max-w-sm text-center p-10 border border-border rounded-lg bg-card'>
+        <h1 className='text-2xl font-bold mb-4 text-foreground'>
           문제가 발생했습니다
         </h1>
 
-        <p
-          style={{
-            fontSize: 'var(--text-base)',
-            color: 'var(--color-text-secondary)',
-            marginBottom: 'var(--space-6)',
-            lineHeight: '1.5',
-          }}
-        >
+        <p className='text-base text-muted-foreground mb-6 leading-normal'>
           일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
         </p>
 
-        <div style={{ marginBottom: 'var(--space-4)' }}>
+        <div className='mb-4 flex gap-3 justify-center'>
           <button
             onClick={reset}
-            style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-text-inverse)',
-              border: 'none',
-              padding: 'var(--space-3) var(--space-6)',
-              fontSize: 'var(--text-sm)',
-              cursor: 'pointer',
-              marginRight: 'var(--space-3)',
-              borderRadius: 'var(--radius-sm)',
-            }}
+            className='bg-primary text-primary-foreground border-none px-6 py-3 text-sm cursor-pointer rounded-sm hover:bg-primary/90 transition-colors'
           >
             다시 시도
           </button>
 
           <button
             onClick={() => (window.location.href = '/')}
-            style={{
-              backgroundColor: 'var(--color-background)',
-              color: 'var(--color-text-primary)',
-              border: '1px solid var(--color-primary)',
-              padding: 'var(--space-3) var(--space-6)',
-              fontSize: 'var(--text-sm)',
-              cursor: 'pointer',
-              borderRadius: 'var(--radius-sm)',
-            }}
+            className='bg-background text-foreground border border-primary px-6 py-3 text-sm cursor-pointer rounded-sm hover:bg-muted transition-colors'
           >
             홈으로 이동
           </button>
         </div>
 
         {process.env.NODE_ENV === 'development' && (
-          <details
-            style={{
-              marginTop: 'var(--space-5)',
-              textAlign: 'left',
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-text-tertiary)',
-            }}
-          >
-            <summary
-              style={{ cursor: 'pointer', marginBottom: 'var(--space-2)' }}
-            >
+          <details className='mt-5 text-left text-xs text-muted-foreground'>
+            <summary className='cursor-pointer mb-2'>
               개발 모드 - 오류 세부 정보
             </summary>
-            <pre
-              style={{
-                background: 'var(--color-surface-hover)',
-                padding: 'var(--space-2)',
-                overflow: 'auto',
-                borderRadius: 'var(--radius-sm)',
-              }}
-            >
+            <pre className='bg-muted p-2 overflow-auto rounded-sm'>
               {error.message}
             </pre>
           </details>

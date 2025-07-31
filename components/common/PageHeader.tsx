@@ -42,28 +42,19 @@ export default function PageHeader({
     <div className={`pb-6 mb-6 ${className}`}>
       {/* Breadcrumbs */}
       {breadcrumbs.length > 0 && (
-        <nav
-          className='flex items-center space-x-2 text-sm mb-4'
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
+        <nav className='flex items-center space-x-2 text-sm mb-4 text-muted-foreground'>
           {breadcrumbs.map((crumb, index) => (
             <div key={index} className='flex items-center'>
               {index > 0 && <span className='mx-2'>/</span>}
               {crumb.href ? (
                 <button
                   onClick={() => router.push(crumb.href!)}
-                  className='hover:underline'
-                  style={{ color: 'var(--color-primary)' }}
+                  className='hover:underline text-primary'
                 >
                   {crumb.label}
                 </button>
               ) : (
-                <span
-                  style={{
-                    color: 'var(--color-text-primary)',
-                    fontWeight: 'var(--font-medium)',
-                  }}
-                >
+                <span className='text-foreground font-medium'>
                   {crumb.label}
                 </span>
               )}
@@ -72,13 +63,7 @@ export default function PageHeader({
         </nav>
       )}
 
-      <div
-        className='border-b pb-6'
-        style={{
-          borderColor: 'var(--color-border)',
-          paddingBottom: 'var(--space-6)',
-        }}
-      >
+      <div className='border-b border-border pb-6'>
         <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between'>
           <div className='mb-4 sm:mb-0 flex-1'>
             <div className='flex items-start space-x-4'>
@@ -98,14 +83,7 @@ export default function PageHeader({
               {/* Title Section */}
               <div className='flex-1 min-w-0'>
                 <div className='flex items-center space-x-3'>
-                  <h1
-                    className='text-3xl font-bold'
-                    style={{
-                      fontSize: 'var(--text-3xl)',
-                      fontWeight: 'var(--font-bold)',
-                      color: 'var(--color-text-primary)',
-                    }}
-                  >
+                  <h1 className='text-3xl font-bold text-foreground'>
                     {title}
                   </h1>
 
@@ -122,30 +100,14 @@ export default function PageHeader({
 
                 {/* Subtitle */}
                 {subtitle && (
-                  <p
-                    className='mt-1'
-                    style={{
-                      marginTop: 'var(--space-1)',
-                      fontSize: 'var(--text-lg)',
-                      color: 'var(--color-text-secondary)',
-                      fontWeight: 'var(--font-medium)',
-                    }}
-                  >
+                  <p className='mt-1 text-lg text-muted-foreground font-medium'>
                     {subtitle}
                   </p>
                 )}
 
                 {/* Description */}
                 {description && (
-                  <p
-                    className='mt-2 max-w-2xl'
-                    style={{
-                      marginTop: 'var(--space-2)',
-                      fontSize: 'var(--text-base)',
-                      color: 'var(--color-text-secondary)',
-                      lineHeight: '1.6',
-                    }}
-                  >
+                  <p className='mt-2 max-w-2xl text-base text-muted-foreground leading-relaxed'>
                     {description}
                   </p>
                 )}

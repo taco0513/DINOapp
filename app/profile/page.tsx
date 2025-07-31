@@ -3,22 +3,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+import { PageIcons } from '@/components/common/PageHeader';
 import {
   StandardPageLayout,
-  StandardCard,
-  StatsCard,
+  // StandardCard,
+  // StatsCard,
 } from '@/components/layout/StandardPageLayout';
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading';
 import {
   User,
-  Mail,
+  // Mail,
   Calendar,
-  MapPin,
+  // MapPin,
   Globe,
   Camera,
   Save,
-  ArrowLeft,
+  // ArrowLeft,
   Phone,
   Shield,
   Lock,
@@ -26,10 +26,10 @@ import {
   Trash2,
   Bell,
   Eye,
-  EyeOff,
+  // EyeOff,
   AlertCircle,
   CheckCircle,
-  Upload,
+  // Upload,
   X,
 } from 'lucide-react';
 
@@ -114,7 +114,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
     'profile' | 'travel' | 'account' | 'privacy'
   >('profile');
-  const [showPassword, setShowPassword] = useState(false);
+  const [_showPassword, _setShowPassword] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');

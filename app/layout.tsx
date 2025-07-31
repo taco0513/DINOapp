@@ -127,7 +127,7 @@ export const metadata: Metadata = {
     'theme-color': '#0066cc',
     'color-scheme': 'light',
     'format-detection': 'telephone=no',
-    'apple-touch-fullscreen': 'yes',
+    // 'apple-touch-fullscreen': 'yes', // Removed - not a valid meta property
     'apple-mobile-web-app-orientation': 'portrait'
   }
 }

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+import { PageIcons } from '@/components/common/PageHeader'
 import { StandardPageLayout, StandardCard } from '@/components/layout/StandardPageLayout'
 
 // 인라인 알림 목록 컴포넌트
@@ -247,7 +247,7 @@ function WireframeNotificationList({ userId }: { userId: string }) {
 }
 
 // 인라인 알림 설정 컴포넌트
-function WireframeNotificationSettings({ userId, onSave }: { userId: string, onSave?: (prefs: any) => void }) {
+function WireframeNotificationSettings({ userId, onSave }: { userId: string, onSave?: (_prefs: any) => void }) {
   const [preferences, setPreferences] = useState({
     userId,
     email: true,
@@ -289,7 +289,7 @@ function WireframeNotificationSettings({ userId, onSave }: { userId: string, onS
     }
     
     setSaving(false)
-    alert('알림 설정이 저장되었습니다.')
+    window.alert('알림 설정이 저장되었습니다.')
   }
 
   const handleRequestPermission = async () => {

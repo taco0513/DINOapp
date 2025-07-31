@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { StandardPageLayout, StandardCard } from '@/components/layout/StandardPageLayout';
+import { StandardCard } from '@/components/layout/StandardPageLayout';
 import { Button } from '@/components/ui/button';
 
 // 하이드레이션 안전한 세션 체크 컴포넌트

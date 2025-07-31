@@ -268,7 +268,7 @@ export default function CalendarPage() {
                     }`}>
                       {format(day.date, 'd')}
                     </span>
-                    {day.schengenDays > 0 && showSchengenInfo && (
+                    {(day.schengenDays ?? 0) > 0 && showSchengenInfo && (
                       <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
                         셰겐
                       </span>

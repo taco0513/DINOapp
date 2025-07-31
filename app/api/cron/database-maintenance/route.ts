@@ -145,14 +145,14 @@ export async function GET(request: NextRequest) {
       const queryAnalysis = await DatabaseMaintenance.analyzeQueryPerformance(prisma)
       
       // Only report if there are slow queries
-      if (queryAnalysis.slowQueries.length > 0) {
+      if ((queryAnalysis as any).slowQueries && (queryAnalysis as any).slowQueries.length > 0) {
         // Slow queries detected
         
         results.tasks.push({
           task: 'query_performance_analysis',
           status: 'warning',
           details: {
-            slowQueriesCount: queryAnalysis.slowQueries.length,
+            slowQueriesCount: (queryAnalysis as any).slowQueries.length,
             recommendations: queryAnalysis.recommendations
           }
         })

@@ -3,9 +3,9 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ApiClient } from '@/lib/api-client'
+// import { ApiClient } from '@/lib/api-client'
 import { PageHeader, PageIcons } from '@/components/common/PageHeader'
-import { Activity, RefreshCw, Download, Settings } from 'lucide-react'
+// import { Activity, RefreshCw, Download, Settings } from 'lucide-react'
 
 interface SystemMetrics {
   timestamp: number
@@ -34,7 +34,7 @@ interface MonitoringData {
 }
 
 // 간단한 차트 컴포넌트
-function SimpleChart({ data, label, color = '#0066cc' }: {
+function SimpleChart({ data, label, color: _color = '#0066cc' }: {
   data: number[]
   label: string
   color?: string

@@ -1,13 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext",
-      "es2022"
-    ],
-    "types": ["node"],
+    "lib": ["dom", "dom.iterable", "esnext", "es2022"],
+    "types": ["node", "jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -27,9 +22,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     // TypeScript 엄격성 설정 - 점진적 강화
     "noUnusedLocals": true,
@@ -50,12 +43,7 @@
     "declarationMap": false,
     "sourceMap": false
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
     "node_modules",
     ".next",
@@ -69,7 +57,9 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "playwright.config.ts",
-    "playwright.global-setup.ts"
+    "playwright.global-setup.ts",
+    "__mocks__/**/*",
+    "scripts/test-*.ts"
   ],
   "ts-node": {
     "compilerOptions": {

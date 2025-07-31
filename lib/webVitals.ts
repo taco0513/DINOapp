@@ -1,4 +1,4 @@
-import { getCLS, getFID, getFCP, getLCP, getTTFB, Metric } from 'web-vitals';
+import { onCLS, onFID, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals';
 
 const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
 
@@ -13,7 +13,15 @@ function getConnectionSpeed() {
 /**
  * Send analytics data to Vercel Analytics
  */
-function sendToAnalytics(metric: Metric, options: any) {
+function sendToAnalytics(
+  metric: Metric,
+  options: {
+    analyticsId?: string;
+    page?: string;
+    href?: string;
+    debug?: boolean;
+  }
+) {
   const body = {
     dsn: options.analyticsId,
     id: metric.id,
@@ -25,6 +33,7 @@ function sendToAnalytics(metric: Metric, options: any) {
   };
 
   if (options.debug) {
+    // eslint-disable-next-line no-console
     console.log('[Analytics]', metric.name, JSON.stringify(body, null, 2));
   }
 
@@ -45,19 +54,22 @@ function sendToAnalytics(metric: Metric, options: any) {
 /**
  * Web Vitals reporting
  */
-export function reportWebVitals(options: {
-  analyticsId?: string;
-  page?: string;
-  href?: string;
-  debug?: boolean;
-} = {}) {
+export function reportWebVitals(
+  options: {
+    analyticsId?: string;
+    page?: string;
+    href?: string;
+    debug?: boolean;
+  } = {}
+) {
   try {
-    getFID((metric) => sendToAnalytics(metric, options));
-    getTTFB((metric) => sendToAnalytics(metric, options));
-    getLCP((metric) => sendToAnalytics(metric, options));
-    getCLS((metric) => sendToAnalytics(metric, options));
-    getFCP((metric) => sendToAnalytics(metric, options));
+    onFID(metric => sendToAnalytics(metric, options));
+    onTTFB(metric => sendToAnalytics(metric, options));
+    onLCP(metric => sendToAnalytics(metric, options));
+    onCLS(metric => sendToAnalytics(metric, options));
+    onFCP(metric => sendToAnalytics(metric, options));
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error('[Analytics]', err);
   }
 }

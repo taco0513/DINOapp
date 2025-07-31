@@ -128,6 +128,7 @@ interface EmptyStateProps {
   description?: string
   action?: ReactNode
   className?: string
+  children?: ReactNode
 }
 
 export function EmptyState({
@@ -135,7 +136,8 @@ export function EmptyState({
   title,
   description,
   action,
-  className = ''
+  className = '',
+  children
 }: EmptyStateProps) {
   return (
     <div className={`text-center py-12 ${className}`}>
@@ -151,6 +153,7 @@ export function EmptyState({
         </p>
       )}
       {action}
+      {children}
     </div>
   )
 }
@@ -161,9 +164,10 @@ export function EmptyState({
 interface LoadingCardProps {
   rows?: number
   className?: string
+  children?: ReactNode
 }
 
-export function LoadingCard({ rows = 4, className = '' }: LoadingCardProps) {
+export function LoadingCard({ rows = 4, className = '', children }: LoadingCardProps) {
   return (
     <div className={`bg-white p-6 rounded-xl shadow-sm border border-gray-100 animate-pulse ${className}`}>
       <div className="h-6 bg-gray-200 rounded-lg w-32 mx-auto mb-4"></div>
@@ -175,6 +179,7 @@ export function LoadingCard({ rows = 4, className = '' }: LoadingCardProps) {
           </div>
         ))}
       </div>
+      {children}
     </div>
   )
 }

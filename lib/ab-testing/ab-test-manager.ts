@@ -45,16 +45,21 @@ export class ABTestManager {
   }
 
   // 사용자에게 변형 할당
-  public async assignVariant(testId: string, userId?: string): Promise<ABVariant | null> {
+  public async assignVariant(
+    testId: string,
+    userId?: string
+  ): Promise<ABVariant | null> {
     const test = await this.getActiveTest(testId);
     if (!test) return null;
 
     // 쿠키에서 기존 할당 확인
     const cookieStore = cookies();
     const existingAssignment = cookieStore.get(`ab_${testId}`);
-    
+
     if (existingAssignment) {
-      const variant = test.variants.find(v => v.id === existingAssignment.value);
+      const variant = test.variants.find(
+        v => v.id === existingAssignment.value
+      );
       if (variant) return variant;
     }
 
@@ -79,7 +84,10 @@ export class ABTestManager {
   }
 
   // 변형 선택 알고리즘
-  private selectVariant(variants: ABVariant[], userId?: string): ABVariant | null {
+  private selectVariant(
+    variants: ABVariant[],
+    userId?: string
+  ): ABVariant | null {
     if (variants.length === 0) return null;
 
     // 가중치 기반 랜덤 선택
@@ -109,128 +117,148 @@ export class ABTestManager {
   }
 
   // 활성 테스트 가져오기
-  private async getActiveTest(testId: string): Promise<ABTest | null> {
-    const test = await prisma.aBTest.findFirst({
-      where: {
-        id: testId,
-        status: 'active',
-        startDate: { lte: new Date() },
-        OR: [
-          { endDate: null },
-          { endDate: { gte: new Date() } },
-        ],
-      },
-      include: {
-        variants: true,
-      },
-    });
+  private async getActiveTest(_testId: string): Promise<ABTest | null> {
+    // TODO: Implement AB testing when Prisma models are ready
+    return null;
 
-    return test as unknown as ABTest;
+    // const test = await prisma.aBTest.findFirst({
+    //   where: {
+    //     id: testId,
+    //     status: 'active',
+    //     startDate: { lte: new Date() },
+    //     OR: [
+    //       { endDate: null },
+    //       { endDate: { gte: new Date() } },
+    //     ],
+    //   },
+    //   include: {
+    //     variants: true,
+    //   },
+    // });
+    // return test as unknown as ABTest;
   }
 
   // 할당 기록
-  private async recordAssignment(testId: string, variantId: string, userId: string) {
-    await prisma.aBTestAssignment.create({
-      data: {
-        testId,
-        variantId,
-        userId,
-        assignedAt: new Date(),
-      },
-    });
+  private async recordAssignment(
+    _testId: string,
+    _variantId: string,
+    _userId: string
+  ) {
+    // TODO: Implement AB testing assignment when Prisma models are ready
+    return;
+
+    // await prisma.aBTestAssignment.create({
+    //   data: {
+    //     testId,
+    //     variantId,
+    //     userId,
+    //     assignedAt: new Date(),
+    //   },
+    // });
   }
 
   // 이벤트 추적
   public async trackEvent(
-    testId: string,
-    event: string,
-    userId?: string,
-    metadata?: Record<string, any>
+    _testId: string,
+    _event: string,
+    _userId?: string,
+    _metadata?: Record<string, any>
   ) {
-    const cookieStore = cookies();
-    const variantCookie = cookieStore.get(`ab_${testId}`);
-    
-    if (!variantCookie) return;
+    // TODO: Implement AB testing event tracking when Prisma models are ready
+    return;
 
-    await prisma.aBTestEvent.create({
-      data: {
-        testId,
-        variantId: variantCookie.value,
-        userId: userId || 'anonymous',
-        event,
-        metadata: metadata || {},
-        timestamp: new Date(),
-      },
-    });
+    // const cookieStore = cookies();
+    // const variantCookie = cookieStore.get(`ab_${testId}`);
+    //
+    // if (!variantCookie) return;
+    //
+    // await prisma.aBTestEvent.create({
+    //   data: {
+    //     testId,
+    //     variantId: variantCookie.value,
+    //     userId: userId || 'anonymous',
+    //     event,
+    //     metadata: metadata || {},
+    //     timestamp: new Date(),
+    //   },
+    // });
   }
 
   // 테스트 결과 분석
-  public async analyzeTest(testId: string) {
-    const test = await prisma.aBTest.findUnique({
-      where: { id: testId },
-      include: {
-        variants: true,
-        assignments: true,
-        events: true,
-      },
-    });
+  public async analyzeTest(_testId: string) {
+    // TODO: Implement AB testing analysis when Prisma models are ready
+    return null;
 
-    if (!test) return null;
+    // const test = await prisma.aBTest.findUnique({
+    //   where: { id: testId },
+    //   include: {
+    //     variants: true,
+    //     assignments: true,
+    //     events: true,
+    //   },
+    // });
+    //
+    // if (!test) return null;
 
-    const results = test.variants.map(variant => {
-      const assignments = test.assignments.filter(a => a.variantId === variant.id);
-      const events = test.events.filter(e => e.variantId === variant.id);
-
-      const conversionEvents = events.filter(e => e.event === 'conversion');
-      const conversionRate = assignments.length > 0
-        ? (conversionEvents.length / assignments.length) * 100
-        : 0;
-
-      return {
-        variant: variant.name,
-        assignments: assignments.length,
-        conversions: conversionEvents.length,
-        conversionRate,
-        events: events.reduce((acc, e) => {
-          acc[e.event] = (acc[e.event] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>),
-      };
-    });
-
-    // 통계적 유의성 계산 (간단한 z-test)
-    const control = results[0];
-    const variations = results.slice(1);
-
-    const significance = variations.map(variation => {
-      const z = this.calculateZScore(
-        control.conversionRate / 100,
-        variation.conversionRate / 100,
-        control.assignments,
-        variation.assignments
-      );
-      const pValue = this.calculatePValue(z);
-      
-      return {
-        ...variation,
-        zScore: z,
-        pValue,
-        significant: pValue < 0.05,
-      };
-    });
-
-    return {
-      test: {
-        id: test.id,
-        name: test.name,
-        status: test.status,
-      },
-      results: [control, ...significance],
-    };
+    // const results = test.variants.map(variant => {
+    //   const assignments = test.assignments.filter(a => a.variantId === variant.id);
+    //   const events = test.events.filter(e => e.variantId === variant.id);
+    //
+    //   const conversionEvents = events.filter(e => e.event === 'conversion');
+    //   const conversionRate = assignments.length > 0
+    //     ? (conversionEvents.length / assignments.length) * 100
+    //     : 0;
+    //
+    //   return {
+    //     variant: variant.name,
+    //     assignments: assignments.length,
+    //     conversions: conversionEvents.length,
+    //     conversionRate,
+    //     events: events.reduce((acc, e) => {
+    //       acc[e.event] = (acc[e.event] || 0) + 1;
+    //       return acc;
+    //     }, {} as Record<string, number>),
+    //   };
+    // });
+    //
+    // // 통계적 유의성 계산 (간단한 z-test)
+    // const control = results[0];
+    // const variations = results.slice(1);
+    //
+    // const significance = variations.map(variation => {
+    //   const z = this.calculateZScore(
+    //     control.conversionRate / 100,
+    //     variation.conversionRate / 100,
+    //     control.assignments,
+    //     variation.assignments
+    //   );
+    //   const pValue = this.calculatePValue(z);
+    //
+    //   return {
+    //     ...variation,
+    //     zScore: z,
+    //     pValue,
+    //     significant: pValue < 0.05,
+    //   };
+    // });
+    //
+    // return {
+    //   test: {
+    //     id: test.id,
+    //     name: test.name,
+    //     status: test.status,
+    //   },
+    //   results: [control, ...significance],
+    // };
   }
 
   // Z-score 계산
-  private calculateZScore(p1: number, p2: number, n1: number, n2: number): number {
+  private calculateZScore(
+    p1: number,
+    p2: number,
+    n1: number,
+    n2: number
+  ): number {
     const p = (p1 * n1 + p2 * n2) / (n1 + n2);
     const se = Math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2));
     return (p2 - p1) / se;
@@ -249,67 +277,81 @@ export class ABTestManager {
     z = Math.abs(z) / Math.sqrt(2.0);
 
     const t = 1.0 / (1.0 + p * z);
-    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
+    const y =
+      1.0 -
+      ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
 
     return 1 - sign * y;
   }
 
   // 테스트 생성
   public async createTest(
-    name: string,
-    description: string,
-    variants: Omit<ABVariant, 'id'>[],
-    startDate?: Date,
-    endDate?: Date
+    _name: string,
+    _description: string,
+    _variants: Omit<ABVariant, 'id'>[],
+    _startDate?: Date,
+    _endDate?: Date
   ): Promise<ABTest> {
-    const test = await prisma.aBTest.create({
-      data: {
-        name,
-        description,
-        status: 'draft',
-        startDate: startDate || new Date(),
-        endDate,
-        variants: {
-          create: variants.map(v => ({
-            name: v.name,
-            weight: v.weight,
-            config: v.config,
-          })),
-        },
-      },
-      include: {
-        variants: true,
-      },
-    });
+    // TODO: Implement AB testing creation when Prisma models are ready
+    throw new Error('AB testing not yet implemented');
 
-    return test as unknown as ABTest;
+    // const test = await prisma.aBTest.create({
+    //   data: {
+    //     name,
+    //     description,
+    //     status: 'draft',
+    //     startDate: startDate || new Date(),
+    //     endDate,
+    //     variants: {
+    //       create: variants.map(v => ({
+    //         name: v.name,
+    //         weight: v.weight,
+    //         config: v.config,
+    //       })),
+    //     },
+    //   },
+    //   include: {
+    //     variants: true,
+    //   },
+    // });
+    //
+    // return test as unknown as ABTest;
   }
 
   // 테스트 시작
-  public async startTest(testId: string) {
-    await prisma.aBTest.update({
-      where: { id: testId },
-      data: { status: 'active' },
-    });
+  public async startTest(_testId: string) {
+    // TODO: Implement AB testing start when Prisma models are ready
+    return;
+
+    // await prisma.aBTest.update({
+    //   where: { id: testId },
+    //   data: { status: 'active' },
+    // });
   }
 
   // 테스트 중지
-  public async pauseTest(testId: string) {
-    await prisma.aBTest.update({
-      where: { id: testId },
-      data: { status: 'paused' },
-    });
+  public async pauseTest(_testId: string) {
+    // TODO: Implement AB testing pause when Prisma models are ready
+    return;
+
+    // await prisma.aBTest.update({
+    //   where: { id: testId },
+    //   data: { status: 'paused' },
+    // });
   }
 
   // 테스트 종료
-  public async completeTest(testId: string) {
-    await prisma.aBTest.update({
-      where: { id: testId },
-      data: { 
-        status: 'completed',
-        endDate: new Date(),
-      },
-    });
+  public async completeTest(_testId: string) {
+    // TODO: Implement AB testing completion when Prisma models are ready
+    return;
+
+    // await prisma.aBTest.update({
+    //   where: { id: testId },
+    //   data: {
+    //     status: 'completed',
+    //     endDate: new Date(),
+    //   },
+    // });
   }
 }
 

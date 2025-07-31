@@ -2,7 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { startOfWeek, startOfMonth, startOfQuarter, startOfYear, subWeeks, subMonths, subQuarters, subYears } from 'date-fns';
+import {
+  startOfWeek,
+  startOfMonth,
+  startOfQuarter,
+  startOfYear,
+  subWeeks,
+  subMonths,
+  subQuarters,
+  subYears,
+} from 'date-fns';
 
 export async function GET(request: NextRequest) {
   try {
@@ -79,7 +88,7 @@ export async function GET(request: NextRequest) {
       // 현재 기간 활성 사용자 (여행을 생성한 사용자)
       prisma.user.count({
         where: {
-          trips: {
+          countryVisits: {
             some: {
               createdAt: { gte: startDate },
             },
@@ -89,7 +98,7 @@ export async function GET(request: NextRequest) {
       // 이전 기간 활성 사용자
       prisma.user.count({
         where: {
-          trips: {
+          countryVisits: {
             some: {
               createdAt: { gte: previousStartDate, lt: startDate },
             },
@@ -104,10 +113,14 @@ export async function GET(request: NextRequest) {
       select: { entryDate: true, exitDate: true },
     });
 
-    const avgDuration = tripDurations.reduce((acc, trip) => {
-      const duration = (trip.exitDate.getTime() - trip.entryDate.getTime()) / (1000 * 60 * 60 * 24);
-      return acc + duration;
-    }, 0) / (tripDurations.length || 1);
+    const avgDuration =
+      tripDurations.reduce((acc, trip) => {
+        if (!trip.exitDate) return acc; // Skip ongoing trips
+        const duration =
+          (trip.exitDate.getTime() - trip.entryDate.getTime()) /
+          (1000 * 60 * 60 * 24);
+        return acc + duration;
+      }, 0) / (tripDurations.filter(t => t.exitDate).length || 1);
 
     // 메트릭 계산
     const calculateChange = (current: number, previous: number) => {
@@ -118,7 +131,9 @@ export async function GET(request: NextRequest) {
     const metrics = {
       activeUsers: {
         value: currentActiveUsers,
-        change: Math.round(calculateChange(currentActiveUsers, previousActiveUsers)),
+        change: Math.round(
+          calculateChange(currentActiveUsers, previousActiveUsers)
+        ),
         trend: currentActiveUsers >= previousActiveUsers ? 'up' : 'down',
       },
       revenue: {
@@ -132,7 +147,10 @@ export async function GET(request: NextRequest) {
         trend: currentTrips >= previousTrips ? 'up' : 'down',
       },
       retentionRate: {
-        value: previousActiveUsers > 0 ? (currentActiveUsers / previousActiveUsers) * 100 : 0,
+        value:
+          previousActiveUsers > 0
+            ? (currentActiveUsers / previousActiveUsers) * 100
+            : 0,
         change: 0,
         trend: 'stable',
       },
@@ -151,12 +169,16 @@ export async function GET(request: NextRequest) {
     // 차트 데이터 생성 (간단한 예시)
     const charts = {
       userGrowth: Array.from({ length: 7 }, (_, i) => ({
-        date: new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        date: new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0],
         users: Math.floor(Math.random() * 100) + 50,
         active: Math.floor(Math.random() * 50) + 25,
       })),
       revenueGrowth: Array.from({ length: 7 }, (_, i) => ({
-        date: new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        date: new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0],
         revenue: Math.floor(Math.random() * 1000000) + 500000,
         mrr: Math.floor(Math.random() * 500000) + 250000,
       })),

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
 import { queryOptimizer } from '@/lib/performance/query-optimizer';
-import { systemAlert } from '@/lib/notifications/alert-manager';
+// import { systemAlert } from '@/lib/notifications/alert-manager';
 import { createTravelManager } from '@/lib/travel-manager';
 import { z } from 'zod';
 import { applyRateLimit } from '@/lib/security/rate-limiter';
@@ -11,7 +11,7 @@ import { securityMiddleware } from '@/lib/security/auth-middleware';
 import { csrfProtection } from '@/lib/security/csrf-protection';
 import {
   sanitizeRequestBody,
-  InputSanitizer,
+  // InputSanitizer,
 } from '@/lib/security/input-sanitizer';
 import {
   createErrorResponse,
@@ -63,40 +63,40 @@ const createTripSchema = z.object({
   isEmergency: z.boolean().optional().default(false),
 });
 
-const updateTripSchema = z.object({
-  country: z.string().min(1).optional(),
-  entryDate: z
-    .string()
-    .refine(date => !isNaN(Date.parse(date)))
-    .optional(),
-  exitDate: z.string().nullable().optional(),
-  visaType: z
-    .enum([
-      'Tourist',
-      'Business',
-      'Student',
-      'Working Holiday',
-      'Digital Nomad',
-      'Transit',
-      'Work',
-      'Investor',
-      'Retirement',
-      'Volunteer',
-      'Visa Run',
-      'Extension',
-      'Spouse',
-      'Medical',
-    ])
-    .optional(),
-  maxDays: z.number().min(1).max(365).optional(),
-  notes: z.string().optional(),
-  status: z.enum(['completed', 'ongoing', 'planned']).optional(),
-  purpose: z.string().optional(),
-  accommodation: z.string().optional(),
-  cost: z.number().optional(),
-  rating: z.number().min(1).max(5).optional(),
-  isEmergency: z.boolean().optional(),
-});
+// const updateTripSchema = z.object({
+//   country: z.string().min(1).optional(),
+//   entryDate: z
+//     .string()
+//     .refine(date => !isNaN(Date.parse(date)))
+//     .optional(),
+//   exitDate: z.string().nullable().optional(),
+//   visaType: z
+//     .enum([
+//       'Tourist',
+//       'Business',
+//       'Student',
+//       'Working Holiday',
+//       'Digital Nomad',
+//       'Transit',
+//       'Work',
+//       'Investor',
+//       'Retirement',
+//       'Volunteer',
+//       'Visa Run',
+//       'Extension',
+//       'Spouse',
+//       'Medical',
+//     ])
+//     .optional(),
+//   maxDays: z.number().min(1).max(365).optional(),
+//   notes: z.string().optional(),
+//   status: z.enum(['completed', 'ongoing', 'planned']).optional(),
+//   purpose: z.string().optional(),
+//   accommodation: z.string().optional(),
+//   cost: z.number().optional(),
+//   rating: z.number().min(1).max(5).optional(),
+//   isEmergency: z.boolean().optional(),
+// });
 
 // GET /api/trips - Get all trips for authenticated user
 export async function GET(request: NextRequest) {
@@ -233,7 +233,7 @@ export async function GET(request: NextRequest) {
     endTimer();
     endRequest(200);
 
-    return response;
+    // Response already returned above
   } catch (error) {
     // Record error metrics
     httpMetrics.requestError(

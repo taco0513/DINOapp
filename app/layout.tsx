@@ -11,6 +11,7 @@ import Script from 'next/script'
 import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
 import { SkipLink } from '@/components/ui/SkipLink'
+import { ErrorBoundary } from '@/components/error/ErrorBoundary'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -288,24 +289,32 @@ export default function RootLayout({
         />
 
         <SkipLink />
-        <MonitoringProvider>
-          <SessionProvider>
-            <AnalyticsWrapper>
-              <MainLayout>
-                <main id="main-content" tabIndex={-1}>
-                  {children}
-                </main>
-                <InstallPrompt />
-                <UpdatePrompt />
-                <OfflineIndicator />
-                <PerformanceMonitor 
-                  enabled={process.env.NODE_ENV === 'development'} 
-                  debug={false}
-                />
-              </MainLayout>
-            </AnalyticsWrapper>
-          </SessionProvider>
-        </MonitoringProvider>
+        <ErrorBoundary onError={(error, errorInfo) => {
+          // Send error to monitoring service
+          if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+            console.error('Global error boundary caught:', error, errorInfo)
+            // Here you would send to Sentry or other monitoring service
+          }
+        }}>
+          <MonitoringProvider>
+            <SessionProvider>
+              <AnalyticsWrapper>
+                <MainLayout>
+                  <main id="main-content" tabIndex={-1}>
+                    {children}
+                  </main>
+                  <InstallPrompt />
+                  <UpdatePrompt />
+                  <OfflineIndicator />
+                  <PerformanceMonitor 
+                    enabled={process.env.NODE_ENV === 'development'} 
+                    debug={false}
+                  />
+                </MainLayout>
+              </AnalyticsWrapper>
+            </SessionProvider>
+          </MonitoringProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

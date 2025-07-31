@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import {
   Search,
-  Filter,
+  // Filter,
   Globe,
   Bookmark,
   BookmarkCheck,
@@ -44,7 +44,7 @@ import {
 } from '@/lib/visa-database';
 import {
   getCountryFlag,
-  getVisaTypeColor,
+  // getVisaTypeColor,
   getVisaTypeIcon,
 } from '@/lib/visa-utils';
 import { useLocalStorage } from '@/hooks/useLocalStorage';

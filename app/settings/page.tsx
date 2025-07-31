@@ -43,7 +43,7 @@ import {
   Info,
   Clock,
   DollarSign,
-  // Passport,
+  Passport,
   Settings,
   Lock,
   Eye,
@@ -249,7 +249,7 @@ export default function SettingsPage() {
     <StandardPageLayout
       title='설정'
       description='앱 설정과 개인정보를 관리하세요'
-      icon={PageIcons.Settings}
+      icon="Settings"
       breadcrumbs={[
         { label: '대시보드', href: '/dashboard' },
         { label: '설정' },

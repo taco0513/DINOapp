@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { StandardPageLayout, StandardCard, StatsCard, EmptyState } from '@/components/layout/StandardPageLayout'
+import { StandardPageLayout, StandardCard, StatsCard } from '@/components/layout/StandardPageLayout'
 import { Button } from '@/components/ui/button'
 
 export default function SimplePage() {
-  const [trips, setTrips] = useState([
+  const [trips, _setTrips] = useState([
     {
       id: 1,
       country: '프랑스',

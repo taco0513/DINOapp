@@ -10,15 +10,15 @@ import {
   Users,
   Brain,
   Code,
-  MessageSquare,
+  // MessageSquare,
   Zap,
   GitBranch,
   Eye,
   Keyboard,
-  AlertCircle,
+  // AlertCircle,
   CheckCircle,
   Timer,
-  TrendingUp
+  // TrendingUp
 } from 'lucide-react';
 
 interface PairSession {

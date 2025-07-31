@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
-import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+// import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { t } from '@/lib/i18n'
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading'
-import { HelpCircle, Plus, Filter } from 'lucide-react'
+import { HelpCircle, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { MobileModal } from '@/components/mobile/MobileModal'
-import { StandardPageLayout, StandardCard, StatsCard, EmptyState, LoadingCard } from '@/components/layout/StandardPageLayout'
+import { StandardPageLayout, StandardCard, EmptyState, LoadingCard } from '@/components/layout/StandardPageLayout'
 
 // Dynamic imports for better code splitting
 const TripForm = lazy(() => import('@/components/trips/TripForm'))
@@ -135,7 +135,7 @@ export default function TripsPage() {
       <StandardPageLayout
         title={t('trips.title')}
         description={t('trips.description')}
-        icon={PageIcons.Trips}
+        icon="Trips"
         breadcrumbs={[
           { label: t('nav.dashboard'), href: '/dashboard' },
           { label: t('nav.trips') }

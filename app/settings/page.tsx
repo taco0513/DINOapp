@@ -43,7 +43,7 @@ import {
   Info,
   Clock,
   DollarSign,
-  Passport,
+  CreditCard,
   Settings,
   Lock,
   Eye,
@@ -468,7 +468,7 @@ export default function SettingsPage() {
             {/* 여권 국가 설정 */}
             <div className='bg-card border border-border rounded-lg p-6'>
               <div className='flex items-center gap-3 mb-6'>
-                <Passport className='h-5 w-5 text-primary' />
+                <CreditCard className='h-5 w-5 text-primary' />
                 <div>
                   <h3 className='text-lg font-semibold'>여권 발급 국가</h3>
                   <p className='text-sm text-muted-foreground'>

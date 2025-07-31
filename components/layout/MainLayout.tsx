@@ -13,7 +13,7 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const { data: _session } = useSession();
-  const _pathname = usePathname(); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const _pathname = usePathname();
 
   // const _isLandingPage = _pathname === '/';
   // const _isAuthenticatedArea = _session && _pathname !== '/';

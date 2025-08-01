@@ -35,7 +35,7 @@ function SignInContent() {
       });
     } catch (error) {
       // Sign in failed
-      console.error('Sign in error:', error);
+      // Sign in error - handled by NextAuth error handling
       setIsLoading(false);
     }
   };

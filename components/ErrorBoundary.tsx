@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false }
   }
 
-  static override getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI
     return { hasError: true, error }
   }
@@ -51,7 +51,7 @@ export class ErrorBoundary extends Component<Props, State> {
     window.location.reload()
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback

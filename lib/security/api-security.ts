@@ -1,17 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
 
 /**
- * API Security utilities for DiNoCal
- * Provides authentication, authorization, and input validation
+ * API Security utilities for DINO
+ * Provides authentication, authorization, input validation, and rate limiting
  */
+
+// Rate limiting configuration
+interface RateLimitConfig {
+  windowMs: number;
+  maxRequests: number;
+  message?: string;
+}
+
+const DEFAULT_RATE_LIMITS: Record<string, RateLimitConfig> = {
+  default: { windowMs: 15 * 60 * 1000, maxRequests: 100 }, // 100 requests per 15 minutes
+  auth: { windowMs: 15 * 60 * 1000, maxRequests: 5 }, // 5 login attempts per 15 minutes
+  admin: { windowMs: 60 * 1000, maxRequests: 10 }, // 10 admin requests per minute
+  analytics: { windowMs: 60 * 1000, maxRequests: 30 }, // 30 analytics requests per minute
+};
+
+// Simple in-memory rate limiter (production should use Redis)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(key: string, config: RateLimitConfig): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(key);
+
+  if (!record || now > record.resetTime) {
+    rateLimitStore.set(key, { count: 1, resetTime: now + config.windowMs });
+    return true;
+  }
+
+  if (record.count >= config.maxRequests) {
+    return false;
+  }
+
+  record.count++;
+  return true;
+}
 
 export interface ApiSecurityOptions {
   requireAuth?: boolean
+  requireAdmin?: boolean
   allowedMethods?: string[]
-  rateLimitKey?: string
+  rateLimit?: keyof typeof DEFAULT_RATE_LIMITS | RateLimitConfig
   validateInput?: boolean
+  logRequests?: boolean
 }
 
 /**
@@ -24,23 +61,64 @@ export function withApiSecurity(
   return async (req: NextRequest, context?: any) => {
     const {
       requireAuth = true,
+      requireAdmin = false,
       allowedMethods = ['GET', 'POST', 'PUT', 'DELETE'],
-      validateInput = true
+      rateLimit = 'default',
+      validateInput = true,
+      logRequests = true
     } = options
 
+    const startTime = Date.now();
+    let session = null;
+
     try {
-      // Method validation
+      // 1. Method validation
       if (!allowedMethods.includes(req.method || '')) {
+        if (logRequests) {
+          logger.warn('Method not allowed', {
+            method: req.method,
+            url: req.url,
+            ip: req.ip || req.headers.get('x-forwarded-for')
+          });
+        }
         return NextResponse.json(
           { success: false, error: 'Method not allowed' },
           { status: 405, headers: { Allow: allowedMethods.join(', ') } }
         )
       }
 
-      // Authentication check
-      if (requireAuth) {
-        const session = await getServerSession(authOptions)
+      // 2. Rate limiting
+      if (rateLimit) {
+        const rateLimitConfig = typeof rateLimit === 'string' 
+          ? DEFAULT_RATE_LIMITS[rateLimit]
+          : rateLimit;
+        
+        const clientKey = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+        const rateLimitKey = `${clientKey}:${req.nextUrl.pathname}`;
+        
+        if (!checkRateLimit(rateLimitKey, rateLimitConfig)) {
+          logger.warn('Rate limit exceeded', {
+            ip: clientKey,
+            url: req.url,
+            config: rateLimitConfig
+          });
+          return NextResponse.json(
+            { success: false, error: rateLimitConfig.message || 'Too many requests' },
+            { status: 429 }
+          );
+        }
+      }
+
+      // 3. Authentication check
+      if (requireAuth || requireAdmin) {
+        session = await getServerSession(authOptions)
         if (!session?.user) {
+          if (logRequests) {
+            logger.warn('Unauthorized access attempt', {
+              url: req.url,
+              ip: req.ip || req.headers.get('x-forwarded-for')
+            });
+          }
           return NextResponse.json(
             { success: false, error: 'Authentication required' },
             { status: 401 }
@@ -48,10 +126,25 @@ export function withApiSecurity(
         }
         
         // Add user to context
-        context = { ...context, user: session.user }
+        context = { ...context, user: session.user, session }
       }
 
-      // Input validation
+      // 4. Admin authorization check
+      if (requireAdmin) {
+        if (!session?.user || (session.user as any).role !== 'ADMIN') {
+          logger.warn('Admin access denied', {
+            userId: session?.user?.id,
+            url: req.url,
+            ip: req.ip || req.headers.get('x-forwarded-for')
+          });
+          return NextResponse.json(
+            { success: false, error: 'Forbidden - Admin access required' },
+            { status: 403 }
+          );
+        }
+      }
+
+      // 5. Input validation
       if (validateInput && (req.method === 'POST' || req.method === 'PUT')) {
         const contentType = req.headers.get('content-type')
         if (contentType && !contentType.includes('application/json')) {
@@ -62,7 +155,7 @@ export function withApiSecurity(
         }
       }
 
-      // CSRF protection for state-changing operations
+      // 6. CSRF protection for state-changing operations
       if (['POST', 'PUT', 'DELETE'].includes(req.method || '')) {
         const origin = req.headers.get('origin')
         const host = req.headers.get('host')
@@ -75,11 +168,31 @@ export function withApiSecurity(
         }
       }
 
-      // Call the actual handler
-      return await handler(req, context)
+      // 7. Call the actual handler
+      const response = await handler(req, context)
+
+      // 8. Request logging
+      if (logRequests) {
+        const duration = Date.now() - startTime;
+        logger.info('API request completed', {
+          method: req.method,
+          url: req.url,
+          status: response.status,
+          duration,
+          userId: session?.user?.id,
+          ip: req.ip || req.headers.get('x-forwarded-for')
+        });
+      }
+
+      return response;
 
     } catch (error) {
-      // API Security Error occurred
+      logger.error('API security middleware error', {
+        error,
+        url: req.url,
+        method: req.method,
+        ip: req.ip || req.headers.get('x-forwarded-for')
+      });
       
       return NextResponse.json(
         { success: false, error: 'Internal server error' },
@@ -265,3 +378,39 @@ export function createErrorResponse(
     status
   )
 }
+
+/**
+ * Predefined security configurations for common use cases
+ */
+export const SecurityPresets = {
+  PUBLIC: {
+    requireAuth: false,
+    requireAdmin: false,
+    rateLimit: 'default',
+  } as ApiSecurityOptions,
+
+  AUTHENTICATED: {
+    requireAuth: true,
+    requireAdmin: false,
+    rateLimit: 'default',
+  } as ApiSecurityOptions,
+
+  ADMIN_ONLY: {
+    requireAuth: true,
+    requireAdmin: true,
+    rateLimit: 'admin',
+  } as ApiSecurityOptions,
+
+  ANALYTICS: {
+    requireAuth: true,
+    requireAdmin: false,
+    rateLimit: 'analytics',
+  } as ApiSecurityOptions,
+
+  AUTH_ENDPOINT: {
+    requireAuth: false,
+    requireAdmin: false,
+    rateLimit: 'auth',
+    allowedMethods: ['POST'],
+  } as ApiSecurityOptions,
+} as const;

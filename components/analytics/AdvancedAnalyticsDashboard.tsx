@@ -13,23 +13,14 @@ import {
   // Monitor,
   BarChart as BarChartIcon
 } from 'lucide-react';
+// Replaced recharts with Chart.js components
 import {
   BarChart,
-  Bar,
-  // LineChart,
-  // Line,
   PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
-  Legend,
-  // Sankey,
-  Rectangle,
-} from 'recharts';
+  convertRechartsData,
+  chartColors
+} from '@/components/charts/ChartComponents';
 
 interface UserBehaviorData {
   pageViews: Array<{ page: string; views: number; avgTime: number }>;
@@ -76,13 +67,16 @@ export default function AdvancedAnalyticsDashboard() {
       setConversionData(conversion);
       setRetentionData(retention);
     } catch (error) {
-      console.error('Failed to fetch analytics data:', error);
+      // Use dynamic import to avoid server-side issues
+      import('@/lib/logger').then(({ logger }) => {
+        logger.error('Failed to fetch analytics data', { error });
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const COLORS = ['#000000', '#4f46e5', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6'];
+  // Using chartColors from ChartComponents
 
   if (loading) {
     return (
@@ -174,14 +168,15 @@ export default function AdvancedAnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={userBehavior?.pageViews.slice(0, 10)}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="page" angle={-45} textAnchor="end" height={100} />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="views" fill="#000000" />
-                    </BarChart>
+                  <ResponsiveContainer height={320}>
+                    <BarChart 
+                      data={convertRechartsData(
+                        userBehavior?.pageViews.slice(0, 10) || [], 
+                        ['views'], 
+                        [chartColors.primary[0]]
+                      )}
+                      height={320}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -194,24 +189,20 @@ export default function AdvancedAnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={userBehavior?.deviceTypes}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="count"
-                      >
-                        {userBehavior?.deviceTypes.map((_entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
+                  <ResponsiveContainer height={320}>
+                    <PieChart 
+                      data={{
+                        labels: userBehavior?.deviceTypes.map(item => item.device) || [],
+                        datasets: [{
+                          label: '디바이스 수',
+                          data: userBehavior?.deviceTypes.map(item => item.count) || [],
+                          backgroundColor: chartColors.primary.slice(0, userBehavior?.deviceTypes.length || 0),
+                          borderWidth: 2,
+                          borderColor: '#ffffff',
+                        }]
+                      }}
+                      height={320}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -240,17 +231,15 @@ export default function AdvancedAnalyticsDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={conversionData.goalCompletions}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="goal" />
-                        <YAxis yAxisId="left" orientation="left" stroke="#000000" />
-                        <YAxis yAxisId="right" orientation="right" stroke="#4f46e5" />
-                        <Tooltip />
-                        <Legend />
-                        <Bar yAxisId="left" dataKey="completions" fill="#000000" name="완료 수" />
-                        <Bar yAxisId="right" dataKey="value" fill="#4f46e5" name="가치" />
-                      </BarChart>
+                    <ResponsiveContainer height={320}>
+                      <BarChart 
+                        data={convertRechartsData(
+                          conversionData.goalCompletions, 
+                          ['completions', 'value'], 
+                          [chartColors.primary[0], chartColors.primary[1]]
+                        )}
+                        height={320}
+                      />
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
@@ -292,17 +281,15 @@ export default function AdvancedAnalyticsDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={retentionData.cohortRetention}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="cohort" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => `${value}%`} />
-                        <Legend />
-                        <Bar dataKey="day0" fill="#000000" name="가입일" />
-                        <Bar dataKey="day7" fill="#4f46e5" name="7일 후" />
-                        <Bar dataKey="day30" fill="#22c55e" name="30일 후" />
-                      </BarChart>
+                    <ResponsiveContainer height={320}>
+                      <BarChart 
+                        data={convertRechartsData(
+                          retentionData.cohortRetention, 
+                          ['day0', 'day7', 'day30'], 
+                          [chartColors.primary[0], chartColors.primary[1], chartColors.primary[2]]
+                        )}
+                        height={320}
+                      />
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
@@ -319,32 +306,37 @@ export default function AdvancedAnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-96">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={conversionData.funnelSteps}
-                      layout="horizontal"
-                      margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis dataKey="step" type="category" />
-                      <Tooltip formatter={(value) => `${value}명`} />
-                      <Bar dataKey="users" fill="#000000" shape={(props: any) => {
-                        const { x, y, height } = props;
-                        const maxWidth = 400;
-                        const percentage = props.users / conversionData.funnelSteps[0].users;
-                        const actualWidth = maxWidth * percentage;
-                        
-                        return (
-                          <g>
-                            <Rectangle {...props} width={actualWidth} fill="#000000" />
-                            <text x={x + actualWidth + 10} y={y + height / 2} fill="#666" textAnchor="start" dominantBaseline="middle">
-                              {props.users}명 ({(percentage * 100).toFixed(1)}%)
-                            </text>
-                          </g>
-                        );
-                      }} />
-                    </BarChart>
+                  <ResponsiveContainer height={384}>
+                    <BarChart 
+                      data={convertRechartsData(
+                        conversionData.funnelSteps, 
+                        ['users'], 
+                        [chartColors.primary[0]]
+                      )}
+                      options={{
+                        indexAxis: 'y' as const,
+                        plugins: {
+                          legend: {
+                            display: false,
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: (context: any) => {
+                                const total = conversionData.funnelSteps[0]?.users || 1;
+                                const percentage = ((context.raw / total) * 100).toFixed(1);
+                                return `${context.raw}명 (${percentage}%)`;
+                              }
+                            }
+                          }
+                        },
+                        scales: {
+                          x: {
+                            beginAtZero: true,
+                          },
+                        },
+                      }}
+                      height={384}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>

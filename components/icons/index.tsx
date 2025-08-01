@@ -163,7 +163,9 @@ export function Icon({
   if (!icon) {
     // Icon not found - fail silently in production
     if (process.env.NODE_ENV === 'development') {
-      console.warn(`Icon "${name}" not found`)
+      import('@/lib/logger').then(({ logger }) => {
+        logger.warn('Icon not found', { iconName: name });
+      });
     }
     return null
   }

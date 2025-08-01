@@ -9,6 +9,7 @@ import {
   // StandardCard,
 } from '@/components/layout/StandardPageLayout';
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading';
+import { PushNotificationSettings } from '@/components/settings/PushNotificationSettings';
 import {
   getCurrentLocale,
   setLocale,
@@ -149,7 +150,8 @@ export default function SettingsPage() {
           const parsed = JSON.parse(savedSettings);
           setSettings(prev => ({ ...prev, ...parsed }));
         } catch (error) {
-          console.error('Failed to load settings:', error);
+          // Failed to parse settings - fail silently and use defaults
+          localStorage.removeItem('dino-user-settings');
         }
       }
     }
@@ -644,146 +646,7 @@ export default function SettingsPage() {
 
         {/* 알림 설정 탭 */}
         {activeTab === 'notifications' && (
-          <div className='space-y-8'>
-            {/* 이메일 알림 */}
-            <div className='bg-card border border-border rounded-lg p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <Mail className='h-5 w-5 text-primary' />
-                <div>
-                  <h3 className='text-lg font-semibold'>이메일 알림</h3>
-                  <p className='text-sm text-muted-foreground'>
-                    이메일로 받을 알림을 설정하세요
-                  </p>
-                </div>
-              </div>
-
-              <div className='space-y-4'>
-                {[
-                  {
-                    key: 'email',
-                    name: '기본 이메일 알림',
-                    description: '중요한 시스템 알림을 이메일로 받습니다',
-                  },
-                  {
-                    key: 'visaReminders',
-                    name: '비자 알림',
-                    description: '비자 만료, 체류 제한 등 중요한 알림',
-                  },
-                  {
-                    key: 'tripReminders',
-                    name: '여행 일정 알림',
-                    description: '출발 전 체크리스트, 일정 변경 등',
-                  },
-                  {
-                    key: 'weeklyDigest',
-                    name: '주간 요약',
-                    description: '매주 여행 통계와 추천 정보',
-                  },
-                  {
-                    key: 'marketingEmails',
-                    name: '마케팅 이메일',
-                    description: '새로운 기능, 프로모션 등의 소식',
-                  },
-                ].map(({ key, name, description }) => (
-                  <div
-                    key={key}
-                    className='flex items-center justify-between p-4 border rounded-lg'
-                  >
-                    <div>
-                      <div className='font-medium'>{name}</div>
-                      <div className='text-sm text-muted-foreground'>
-                        {description}
-                      </div>
-                    </div>
-                    <label className='switch'>
-                      <input
-                        type='checkbox'
-                        checked={
-                          settings.notifications[
-                            key as keyof typeof settings.notifications
-                          ]
-                        }
-                        onChange={e =>
-                          saveSettings({
-                            notifications: {
-                              ...settings.notifications,
-                              [key]: e.target.checked,
-                            },
-                          })
-                        }
-                        disabled={isLoading}
-                      />
-                      <span className='slider'></span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 브라우저 알림 */}
-            <div className='bg-card border border-border rounded-lg p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <Bell className='h-5 w-5 text-primary' />
-                <div>
-                  <h3 className='text-lg font-semibold'>브라우저 알림</h3>
-                  <p className='text-sm text-muted-foreground'>
-                    실시간 브라우저 푸시 알림 설정
-                  </p>
-                </div>
-              </div>
-
-              <div className='space-y-4'>
-                <div className='flex items-center justify-between p-4 border rounded-lg'>
-                  <div>
-                    <div className='font-medium'>푸시 알림</div>
-                    <div className='text-sm text-muted-foreground'>
-                      브라우저 푸시 알림을 활성화합니다
-                    </div>
-                  </div>
-                  <label className='switch'>
-                    <input
-                      type='checkbox'
-                      checked={settings.notifications.push}
-                      onChange={async e => {
-                        if (e.target.checked && 'Notification' in window) {
-                          const permission =
-                            await Notification.requestPermission();
-                          if (permission === 'granted') {
-                            saveSettings({
-                              notifications: {
-                                ...settings.notifications,
-                                push: true,
-                              },
-                            });
-                          }
-                        } else {
-                          saveSettings({
-                            notifications: {
-                              ...settings.notifications,
-                              push: false,
-                            },
-                          });
-                        }
-                      }}
-                      disabled={isLoading}
-                    />
-                    <span className='slider'></span>
-                  </label>
-                </div>
-
-                {!('Notification' in window) && (
-                  <div className='bg-orange-50 border border-orange-200 rounded-lg p-4'>
-                    <div className='flex items-center gap-2'>
-                      <AlertTriangle className='h-5 w-5 text-orange-600' />
-                      <p className='text-sm text-orange-800'>
-                        이 브라우저는 푸시 알림을 지원하지 않습니다.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <PushNotificationSettings />
         )}
 
         {/* 개인정보 설정 탭 */}
@@ -1051,8 +914,7 @@ export default function SettingsPage() {
                             encodeURIComponent(window.location.href);
                         }
                       } catch (error) {
-                        console.error('Gmail 연동 확인 실패:', error);
-                        // 오류 시 재인증 시도
+                        // Gmail 연동 확인 실패 - 재인증 시도
                         window.location.href =
                           '/api/auth/signin?callbackUrl=' +
                           encodeURIComponent(window.location.href);

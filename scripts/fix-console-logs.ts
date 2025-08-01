@@ -172,6 +172,5 @@ function main() {
   console.log(`   Files skipped: ${files.length - processedCount}`)
 }
 
-if (import.meta.main) {
-  main()
-}
+// Run the main function when script is executed directly
+main()

@@ -102,7 +102,7 @@ export class QueryOptimizer {
       const duration = Date.now() - startTime
       
       // Cache successful results
-      this.setCache(cacheKey, trips, this.defaultCacheTtl)
+      this.setCache(cacheKey, trips, this._defaultCacheTtl)
 
       // Record metrics
       this.recordMetric({
@@ -401,8 +401,8 @@ export class QueryOptimizer {
     this.queryMetrics.push(metric)
 
     // Keep only recent metrics
-    if (this.queryMetrics.length > this.maxMetrics) {
-      this.queryMetrics.splice(0, this.queryMetrics.length - this.maxMetrics)
+    if (this.queryMetrics.length > this._maxMetrics) {
+      this.queryMetrics.splice(0, this.queryMetrics.length - this._maxMetrics)
     }
   }
 

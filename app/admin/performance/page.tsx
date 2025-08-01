@@ -2,7 +2,18 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import PerformanceMetricsDashboard from '@/components/metrics/PerformanceMetricsDashboard';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+// Dynamic import for performance metrics
+const LazyPerformanceMetrics = dynamic(() => import('@/components/lazy/LazyPerformanceMetrics'), {
+  loading: () => (
+    <div className="flex items-center justify-center h-96">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false
+});
 
 export const metadata: Metadata = {
   title: '성능 모니터링 - DINO Admin',
@@ -34,7 +45,13 @@ export default async function AdminPerformancePage() {
         </p>
       </div>
 
-      <PerformanceMetricsDashboard />
+      <Suspense fallback={
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      }>
+        <LazyPerformanceMetrics />
+      </Suspense>
     </div>
   );
 }

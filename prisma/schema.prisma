@@ -55,6 +55,9 @@ model User {
   notificationSettings NotificationSettings?
   travelPreferences    TravelPreferences?
   aiUsage              AIUsage[]
+  userVisas            UserVisa[]
+  pushSubscriptions    PushSubscription[]
+  notifications        Notification[]
 }
 
 model VerificationToken {
@@ -85,6 +88,7 @@ model CountryVisit {
   updatedAt       DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visaEntries     VisaEntry[] // 이 여행과 연관된 비자 입국 기록
 
   // Optimized indexes for common queries
   @@index([userId])                    // User's trips
@@ -200,4 +204,131 @@ model AIUsage {
   
   @@index([userId, createdAt])
   @@index([service, feature])
+}
+
+// 개별 사용자 비자 추적 모델
+model UserVisa {
+  id              String    @id @default(cuid())
+  userId          String
+  countryCode     String    // 비자 발급 국가 코드
+  countryName     String    // 비자 발급 국가명
+  visaType        String    // tourist, business, student, work, transit, digital-nomad
+  visaNumber      String?   // 비자 번호 (있는 경우)
+  issueDate       DateTime  // 발급일
+  expiryDate      DateTime  // 만료일
+  entryType       String    @default("multiple") // single, multiple
+  maxStayDays     Int?      // 최대 체류 가능 일수 (각 입국당)
+  totalStayDays   Int?      // 총 체류 가능 일수 (비자 전체 기간)
+  issuingCountry  String?   // 발급 국가 (거주국가와 다를 수 있음)
+  
+  // 상태 관리
+  status          String    @default("active") // active, expired, cancelled, used
+  isAutoRenewal   Boolean   @default(false)   // 자동 갱신 가능 여부
+  renewalEligible Boolean   @default(false)   // 갱신 신청 가능 여부
+  renewalDeadline DateTime? // 갱신 신청 마감일
+  
+  // 메타데이터
+  fee             String?   // 비자 수수료
+  processingTime  String?   // 처리 기간
+  applicationDate DateTime? // 신청일
+  notes           String?   // 추가 메모
+  
+  // 알림 관리
+  lastAlertSent   DateTime? // 마지막 알림 발송일
+  alertDays       String    @default("1,3,7,14,30,60") // 만료 전 알림 일수 (JSON 배열)
+  
+  // 사용 추적
+  totalUsedDays   Int       @default(0) // 이 비자로 실제 체류한 총 일수
+  lastEntryDate   DateTime? // 마지막 입국일
+  currentStayDays Int       @default(0) // 현재 연속 체류 일수
+  
+  // 타임스탬프
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // 관계
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visaEntries     VisaEntry[] // 이 비자로 입국한 기록들
+  
+  // 인덱스
+  @@index([userId])
+  @@index([countryCode])
+  @@index([expiryDate])
+  @@index([status])
+  @@index([userId, countryCode])
+  @@index([userId, expiryDate])
+  @@index([renewalDeadline])
+  @@index([lastAlertSent])
+}
+
+// 비자별 입출국 기록 (CountryVisit과 연동)
+model VisaEntry {
+  id              String     @id @default(cuid())
+  userVisaId      String     // UserVisa와 연결
+  countryVisitId  String?    // CountryVisit과 연결 (선택적)
+  
+  entryDate       DateTime   // 입국일
+  exitDate        DateTime?  // 출국일 (null이면 현재 체류중)
+  entryPoint      String?    // 입국 지점 (공항, 국경 등)
+  exitPoint       String?    // 출국 지점
+  
+  stayDays        Int?       // 실제 체류 일수 (계산됨)
+  purpose         String?    // 입국 목적
+  notes           String?    // 메모
+  
+  // 타임스탬프
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  
+  // 관계
+  userVisa        UserVisa   @relation(fields: [userVisaId], references: [id], onDelete: Cascade)
+  countryVisit    CountryVisit? @relation(fields: [countryVisitId], references: [id], onDelete: SetNull)
+  
+  // 인덱스
+  @@index([userVisaId])
+  @@index([entryDate])
+  @@index([exitDate])
+  @@index([countryVisitId])
+}
+
+// 푸시 알림 구독 정보
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isActive])
+}
+
+// 알림 기록
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // visa_expiry, overstay_warning, stay_reminder, travel_alert
+  title       String
+  message     String
+  priority    String   @default("medium") // low, medium, high
+  metadata    Json?    // Additional data specific to notification type
+  read        Boolean  @default(false)
+  readAt      DateTime?
+  pushedAt    DateTime?
+  emailSentAt DateTime?
+  createdAt   DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([type])
+  @@index([read])
+  @@index([createdAt])
+  @@index([userId, read])
 }

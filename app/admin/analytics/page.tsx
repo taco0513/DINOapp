@@ -2,7 +2,18 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import AdvancedAnalyticsDashboard from '@/components/analytics/AdvancedAnalyticsDashboard';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+// Dynamic import for heavy analytics dashboard
+const LazyAnalyticsDashboard = dynamic(() => import('@/components/lazy/LazyAnalyticsDashboard'), {
+  loading: () => (
+    <div className="flex items-center justify-center h-96">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false
+});
 
 export const metadata: Metadata = {
   title: '고급 분석 - DINO Admin',
@@ -34,7 +45,13 @@ export default async function AdminAnalyticsPage() {
         </p>
       </div>
 
-      <AdvancedAnalyticsDashboard />
+      <Suspense fallback={
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      }>
+        <LazyAnalyticsDashboard />
+      </Suspense>
     </div>
   );
 }

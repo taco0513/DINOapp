@@ -12,6 +12,9 @@ import {
   getSchengenWarnings,
 } from '@/lib/schengen-calculator';
 import {
+  calculateEnhancedSchengenStatus,
+} from '@/lib/schengen/enhanced-calculator';
+import {
   createErrorResponse,
   ErrorCode,
   generateRequestId,
@@ -59,6 +62,16 @@ export async function GET(_request: NextRequest) {
         countryVisits: {
           orderBy: { entryDate: 'desc' },
         },
+        userVisas: {
+          where: {
+            status: 'active',
+          },
+          include: {
+            visaEntries: {
+              orderBy: { entryDate: 'desc' },
+            },
+          },
+        },
       },
     });
 
@@ -86,15 +99,37 @@ export async function GET(_request: NextRequest) {
       updatedAt: new Date(visit.updatedAt),
     }));
 
-    // Calculate Schengen status
-    const schengenStatus = calculateSchengenStatus(visits);
-    const warnings = getSchengenWarnings(schengenStatus);
+    // Prepare visa entries for enhanced calculation
+    const visaEntries = user.userVisas.flatMap(visa => 
+      visa.visaEntries.map(entry => ({
+        id: entry.id,
+        userVisaId: entry.userVisaId,
+        entryDate: entry.entryDate,
+        exitDate: entry.exitDate || undefined,
+        stayDays: entry.stayDays || undefined,
+        purpose: entry.purpose || undefined,
+        userVisa: {
+          countryCode: visa.countryCode,
+          countryName: visa.countryName,
+          visaType: visa.visaType,
+          maxStayDays: visa.maxStayDays || undefined,
+          expiryDate: visa.expiryDate,
+        },
+      }))
+    );
+
+    // Calculate enhanced Schengen status with visa data
+    const enhancedStatus = calculateEnhancedSchengenStatus(visits, visaEntries);
+    const warnings = getSchengenWarnings(enhancedStatus);
+    
+    // Add visa-specific warnings
+    const allWarnings = [...warnings, ...enhancedStatus.visaExpiryWarnings];
 
     return NextResponse.json({
       success: true,
       data: {
-        status: schengenStatus,
-        warnings,
+        status: enhancedStatus,
+        warnings: allWarnings,
         totalVisits: visits.length,
         schengenVisits: visits.filter(visit => {
           const schengenCountries = [
@@ -126,6 +161,8 @@ export async function GET(_request: NextRequest) {
           ];
           return schengenCountries.includes(visit.country);
         }).length,
+        activeVisas: user.userVisas.length,
+        currentStays: enhancedStatus.currentStays.length,
       },
     });
   } catch (error) {

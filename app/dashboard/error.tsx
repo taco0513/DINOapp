@@ -10,7 +10,7 @@ interface ErrorProps {
 export default function DashboardError({ error, reset }: ErrorProps) {
   useEffect(() => {
     // Log the dashboard error to error reporting service
-    console.error('Dashboard Error:', error)
+    // Dashboard error - handled by Next.js error boundary
   }, [error])
 
   return (

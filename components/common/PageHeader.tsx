@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+// import { ReactNode } from 'react'; // Unused import
 import { useRouter } from 'next/navigation';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Icon, PageIconPresets } from '@/components/icons';

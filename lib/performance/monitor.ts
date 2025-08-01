@@ -44,7 +44,7 @@ class PerformanceMonitor {
       // Observe different entry types
       observer.observe({ entryTypes: ['paint', 'largest-contentful-paint', 'first-input', 'layout-shift'] })
     } catch (e) {
-      console.warn('Performance monitoring not supported:', e)
+      // Performance monitoring not supported - fail silently
     }
 
     // Time to First Byte
@@ -153,8 +153,13 @@ export function reportWebVitals(metric: any) {
       break
   }
   
-  // Log to console in development
+  // Log to structured logger in development
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[Web Vital] ${metric.name}:`, metric.value)
+    import('@/lib/logger').then(({ logger }) => {
+      logger.debug('Web Vital metric', { 
+        name: metric.name, 
+        value: metric.value 
+      });
+    });
   }
 }

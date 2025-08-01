@@ -66,7 +66,7 @@ class Logger {
         import('@sentry/nextjs').then(({ captureException, addBreadcrumb }) => {
           addBreadcrumb({
             message: entry.message,
-            level: entry.level,
+            level: entry.level as any, // Cast to avoid Sentry type conflicts
             data: entry.data,
             category: entry.source || 'general'
           })

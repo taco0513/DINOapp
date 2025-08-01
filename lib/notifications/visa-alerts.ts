@@ -3,6 +3,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { alertManager, systemAlert } from '@/lib/notifications/alert-manager'
+import { visaEmailService } from '@/lib/email/visa-email-service'
 import { addDays, differenceInDays } from 'date-fns'
 
 // Legacy interfaces for backward compatibility
@@ -61,25 +62,60 @@ class VisaAlertsService {
    */
   async checkExpiringVisas(): Promise<void> {
     try {
+      const today = new Date()
       const cutoffDate = new Date()
       cutoffDate.setDate(cutoffDate.getDate() + this.ALERT_INTERVALS.REMINDER)
 
-      // TODO: This should query actual user visa records, not visa requirements
-      // VisaRequirement model stores country-to-country visa rules, not individual user visas
-      // const expiringVisas = await prisma.visaRequirement.findMany({
-      //   where: {
-      //     visaRequired: true
-      //     // TODO: Add proper query for user visa expiry dates when visa tracking is implemented
-      //   }
-      // })
+      // 실제 사용자 비자 조회 (활성 상태이고 60일 내 만료 예정)
+      const expiringVisas = await prisma.userVisa.findMany({
+        where: {
+          status: {
+            in: ['active', 'expiring_soon']
+          },
+          expiryDate: {
+            lte: cutoffDate,
+            gte: today // 이미 만료된 것은 제외
+          }
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true
+            }
+          }
+        }
+      })
 
-      // TODO: Implement visa expiry alerts when proper visa tracking model is added
-      // for (const visa of expiringVisas) {
-      //   if (await this.shouldSendAlert(visa)) {
-      //     await this.sendExpiryAlert(visa)
-      //     await this.updateLastAlertSent(visa.id)
-      //   }
-      // }
+      console.log(`Found ${expiringVisas.length} visas expiring within ${this.ALERT_INTERVALS.REMINDER} days`)
+
+      for (const userVisa of expiringVisas) {
+        const visa: Visa = {
+          id: userVisa.id,
+          userId: userVisa.userId,
+          countryName: userVisa.countryName,
+          type: userVisa.visaType,
+          duration: userVisa.maxStayDays || undefined,
+          expiryDate: userVisa.expiryDate,
+          status: userVisa.status,
+          lastAlertSent: userVisa.lastAlertSent || undefined,
+          user: userVisa.user
+        }
+
+        if (await this.shouldSendAlert(visa)) {
+          await this.sendExpiryAlert(visa)
+          
+          // 이메일 알림도 발송
+          await this.sendEmailAlert(userVisa)
+          
+          await this.updateLastAlertSent(visa.id)
+        }
+      }
+
+      // 만료된 비자 상태 업데이트
+      await this.updateExpiredVisas()
+
     } catch (error) {
       await systemAlert.error(
         `Failed to check expiring visas: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -103,38 +139,49 @@ class VisaAlertsService {
   /**
    * 비자 만료 알림 발송
    */
-  // private async _sendExpiryAlert(visa: Visa): Promise<void> {
-  //   const daysUntilExpiry = Math.ceil(
-  //     (visa.expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-  //   )
+  private async sendExpiryAlert(visa: Visa): Promise<void> {
+    const daysUntilExpiry = Math.ceil(
+      (visa.expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+    )
 
-  //   let severity: 'info' | 'warning' | 'error' | 'critical' = 'info'
-  //   let urgencyLevel = 'reminder'
+    let severity: 'info' | 'warning' | 'error' | 'critical' = 'info'
+    let urgencyLevel = 'reminder'
+    let title = ''
+    let message = ''
 
-  //   if (daysUntilExpiry <= this.ALERT_INTERVALS.URGENT) {
-  //     severity = 'critical'
-  //     urgencyLevel = 'urgent'
-  //   } else if (daysUntilExpiry <= this.ALERT_INTERVALS.WARNING) {
-  //     severity = 'error'
-  //     urgencyLevel = 'warning'
-  //   }
+    if (daysUntilExpiry <= this.ALERT_INTERVALS.URGENT) {
+      severity = 'critical'
+      urgencyLevel = 'urgent'
+      title = `🚨 긴급: ${visa.countryName} 비자 만료 임박!`
+      message = `${visa.countryName} ${visa.type || '비자'}가 ${daysUntilExpiry}일 후인 ${visa.expiryDate.toLocaleDateString('ko-KR')}에 만료됩니다. 즉시 갱신하거나 출국 계획을 세우세요!`
+    } else if (daysUntilExpiry <= this.ALERT_INTERVALS.WARNING) {
+      severity = 'error'
+      urgencyLevel = 'warning'
+      title = `⚠️ 주의: ${visa.countryName} 비자 만료 예정`
+      message = `${visa.countryName} ${visa.type || '비자'}가 ${daysUntilExpiry}일 후인 ${visa.expiryDate.toLocaleDateString('ko-KR')}에 만료됩니다. 갱신 또는 출국 준비를 시작하세요.`
+    } else {
+      title = `📅 알림: ${visa.countryName} 비자 만료 안내`
+      message = `${visa.countryName} ${visa.type || '비자'}가 ${daysUntilExpiry}일 후인 ${visa.expiryDate.toLocaleDateString('ko-KR')}에 만료됩니다. 미리 갱신 계획을 세우세요.`
+    }
 
-  //   await alertManager.sendDirectAlert({
-  //     title: `${urgencyLevel === 'urgent' ? '🚨 URGENT: ' : '⚠️ '}${visa.countryName} Visa Expiring Soon`,
-  //     message: `Your ${visa.type || 'visa'} for ${visa.countryName} expires in ${daysUntilExpiry} days on ${visa.expiryDate.toLocaleDateString()}. Please take action to renew or plan accordingly.`,
-  //     severity,
-  //     source: 'visa-alerts',
-  //     metadata: {
-  //       visaId: visa.id,
-  //       userId: visa.userId,
-  //       countryName: visa.countryName,
-  //       visaType: visa.type,
-  //       expiryDate: visa.expiryDate,
-  //       daysUntilExpiry,
-  //       urgencyLevel
-  //     }
-  //   })
-  // }
+    await alertManager.sendDirectAlert({
+      title,
+      message,
+      severity,
+      source: 'visa-alerts',
+      metadata: {
+        visaId: visa.id,
+        userId: visa.userId,
+        countryName: visa.countryName,
+        visaType: visa.type,
+        expiryDate: visa.expiryDate,
+        daysUntilExpiry,
+        urgencyLevel,
+        userEmail: visa.user?.email,
+        userName: visa.user?.name
+      }
+    })
+  }
 
   /**
    * 비자별 맞춤 알림 생성
@@ -270,24 +317,106 @@ class VisaAlertsService {
   }
 
   /**
+   * 만료된 비자 상태 업데이트
+   */
+  private async updateExpiredVisas(): Promise<void> {
+    try {
+      const today = new Date()
+      
+      const result = await prisma.userVisa.updateMany({
+        where: {
+          expiryDate: {
+            lt: today
+          },
+          status: {
+            in: ['active', 'expiring_soon']
+          }
+        },
+        data: {
+          status: 'expired'
+        }
+      })
+
+      if (result.count > 0) {
+        console.log(`Updated ${result.count} expired visas to 'expired' status`)
+      }
+    } catch (error) {
+      await systemAlert.warning(
+        `Failed to update expired visa status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'visa-alerts'
+      )
+    }
+  }
+
+  /**
    * 마지막 알림 발송 시간 업데이트
    */
-  // private async _updateLastAlertSent(visaId: string): Promise<void> {
-  //   try {
-  //     // TODO: Update lastAlertSent when proper visa tracking model is implemented
-  //     // VisaRequirement model doesn't have lastAlertSent field
-  //     // await prisma.visaRequirement.update({
-  //     //   where: { id: visaId },
-  //     //   data: { lastAlertSent: new Date() }
-  //     // })
-  //   } catch (error) {
-  //     // Log error but don't throw to avoid breaking the main flow
-  //     await systemAlert.warning(
-  //       `Failed to update last alert sent for visa ${visaId}`,
-  //       'visa-alerts'
-  //     )
-  //   }
-  // }
+  private async updateLastAlertSent(visaId: string): Promise<void> {
+    try {
+      await prisma.userVisa.update({
+        where: { id: visaId },
+        data: { lastAlertSent: new Date() }
+      })
+    } catch (error) {
+      // Log error but don't throw to avoid breaking the main flow
+      await systemAlert.warning(
+        `Failed to update last alert sent for visa ${visaId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'visa-alerts'
+      )
+    }
+  }
+
+  /**
+   * 이메일 알림 발송
+   */
+  private async sendEmailAlert(userVisa: any): Promise<void> {
+    try {
+      const visaEmailData = {
+        id: userVisa.id,
+        userId: userVisa.userId,
+        countryName: userVisa.countryName,
+        visaType: userVisa.visaType,
+        expiryDate: userVisa.expiryDate,
+        status: userVisa.status,
+        user: userVisa.user
+      }
+
+      await visaEmailService.sendVisaExpiryAlert(visaEmailData)
+    } catch (error) {
+      // 이메일 발송 실패는 전체 프로세스를 중단하지 않음
+      await systemAlert.warning(
+        `Failed to send visa expiry email for visa ${userVisa.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'visa-email-alerts'
+      )
+    }
+  }
+
+  /**
+   * 주간 요약 이메일 발송
+   */
+  async sendWeeklySummaryEmails(): Promise<{ success: number; failed: number }> {
+    try {
+      console.log('Starting weekly visa summary email sending...')
+      const result = await visaEmailService.sendWeeklySummaryToAll()
+      
+      console.log(`Weekly summary emails completed: ${result.success} success, ${result.failed} failed`)
+      
+      if (result.failed > 0) {
+        await systemAlert.warning(
+          `Weekly visa summary emails partially failed: ${result.failed} failures out of ${result.success + result.failed} total`,
+          'visa-weekly-summary'
+        )
+      }
+
+      return result
+    } catch (error) {
+      await systemAlert.error(
+        `Failed to send weekly visa summary emails: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'visa-weekly-summary'
+      )
+      return { success: 0, failed: 1 }
+    }
+  }
 }
 
 // Export new service instance

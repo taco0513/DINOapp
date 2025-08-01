@@ -298,15 +298,7 @@ export function ErrorSummary({
     <ErrorAlert
       severity="error"
       title={title}
-      message={
-        <ul className="list-disc list-inside space-y-1">
-          {errorList.map((error, index) => (
-            <li key={`${error.field}-${index}`}>
-              {error.message}
-            </li>
-          ))}
-        </ul>
-      }
+      message={errorList.map(error => `${error.field}: ${error.message}`).join(', ')}
       className={className}
     />
   )

@@ -9,11 +9,15 @@ import { useState, useEffect } from 'react';
 const coreNavigation = [
   { name: '대시보드', href: '/dashboard', icon: '🏠', priority: 1 },
   { name: '여행 기록', href: '/trips', icon: '✈️', priority: 1 },
+  { name: '내 비자', href: '/my-visas', icon: '🛂', priority: 1 },
+  { name: '여행 계획', href: '/trip-planning', icon: '🗺️', priority: 1 },
   { name: '셰겐 계산기', href: '/schengen', icon: '🇪🇺', priority: 1 },
-  { name: 'Gmail 분석', href: '/gmail', icon: '📧', priority: 1 },
 ];
 
 const moreNavigation = [
+  { name: '체류 추적', href: '/stay-tracking', icon: '📍', priority: 2 },
+  { name: '자동 입출국', href: '/auto-entries', icon: '✈️', priority: 2 },
+  { name: 'Gmail 분석', href: '/gmail', icon: '📧', priority: 2 },
   { name: '캘린더', href: '/calendar', icon: '📅', priority: 2 },
   { name: '통계', href: '/analytics', icon: '📊', priority: 2 },
   { name: '알림', href: '/notifications', icon: '🔔', priority: 2 },

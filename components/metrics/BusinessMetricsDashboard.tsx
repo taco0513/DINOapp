@@ -4,23 +4,16 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar, TrendingUp, Users, DollarSign, Activity, Target, AlertCircle } from 'lucide-react';
+// Replaced recharts with Chart.js components
 import {
   AreaChart,
-  Area,
   LineChart,
-  Line,
   BarChart,
-  Bar,
   PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
-  Legend,
-} from 'recharts';
+  convertRechartsData,
+  chartColors
+} from '@/components/charts/ChartComponents';
 
 interface Metric {
   value: number | string;
@@ -69,7 +62,7 @@ export default function BusinessMetricsDashboard() {
     }
   };
 
-  const COLORS = ['#000000', '#4f46e5', '#22c55e', '#f59e0b', '#ef4444'];
+  // Using chartColors from ChartComponents
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('ko-KR', {
@@ -224,39 +217,15 @@ export default function BusinessMetricsDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData.userGrowth}>
-                    <defs>
-                      <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#000000" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#000000" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="colorActive" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip />
-                    <Area
-                      type="monotone"
-                      dataKey="users"
-                      stroke="#000000"
-                      fillOpacity={1}
-                      fill="url(#colorUsers)"
-                      name="전체 사용자"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="active"
-                      stroke="#4f46e5"
-                      fillOpacity={1}
-                      fill="url(#colorActive)"
-                      name="활성 사용자"
-                    />
-                  </AreaChart>
+                <ResponsiveContainer height={320}>
+                  <AreaChart 
+                    data={convertRechartsData(
+                      chartData.userGrowth, 
+                      ['users', 'active'], 
+                      [chartColors.primary[0], chartColors.primary[1]]
+                    )}
+                    height={320}
+                  />
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -270,28 +239,15 @@ export default function BusinessMetricsDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData.revenueGrowth}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="#000000"
-                      strokeWidth={2}
-                      name="총 수익"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="mrr"
-                      stroke="#4f46e5"
-                      strokeWidth={2}
-                      name="월간 반복 수익"
-                    />
-                  </LineChart>
+                <ResponsiveContainer height={320}>
+                  <LineChart 
+                    data={convertRechartsData(
+                      chartData.revenueGrowth, 
+                      ['revenue', 'mrr'], 
+                      [chartColors.primary[0], chartColors.primary[1]]
+                    )}
+                    height={320}
+                  />
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -306,14 +262,15 @@ export default function BusinessMetricsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData.tripFrequency}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="trips" fill="#000000" name="여행 횟수" />
-                    </BarChart>
+                  <ResponsiveContainer height={320}>
+                    <BarChart 
+                      data={convertRechartsData(
+                        chartData.tripFrequency, 
+                        ['trips'], 
+                        [chartColors.primary[0]]
+                      )}
+                      height={320}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -325,14 +282,28 @@ export default function BusinessMetricsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData.featureUsage} layout="horizontal">
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis dataKey="feature" type="category" />
-                      <Tooltip formatter={(value) => `${value}%`} />
-                      <Bar dataKey="usage" fill="#4f46e5" name="사용률" />
-                    </BarChart>
+                  <ResponsiveContainer height={320}>
+                    <BarChart 
+                      data={convertRechartsData(
+                        chartData.featureUsage, 
+                        ['usage'], 
+                        [chartColors.primary[1]]
+                      )}
+                      options={{
+                        indexAxis: 'y' as const,
+                        plugins: {
+                          legend: {
+                            display: false,
+                          },
+                        },
+                        scales: {
+                          x: {
+                            beginAtZero: true,
+                          },
+                        },
+                      }}
+                      height={320}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -347,24 +318,20 @@ export default function BusinessMetricsDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={chartData.userSegments}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {chartData.userSegments.map((_entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
+                <ResponsiveContainer height={320}>
+                  <PieChart 
+                    data={{
+                      labels: chartData.userSegments.map(item => item.name),
+                      datasets: [{
+                        label: '사용자 수',
+                        data: chartData.userSegments.map(item => item.value),
+                        backgroundColor: chartColors.primary.slice(0, chartData.userSegments.length),
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                      }]
+                    }}
+                    height={320}
+                  />
                 </ResponsiveContainer>
               </div>
             </CardContent>

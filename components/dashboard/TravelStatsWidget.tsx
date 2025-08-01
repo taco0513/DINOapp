@@ -1,8 +1,16 @@
 'use client'
 
 import React, { memo, useState, useEffect } from 'react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
-import { Calendar, Globe, Clock, MapPin, TrendingUp, Award } from 'lucide-react'
+// Replaced recharts with lightweight Chart.js components
+import { 
+  LineChart,
+  BarChart, 
+  PieChart,
+  ResponsiveContainer,
+  convertRechartsData,
+  chartColors
+} from '@/components/charts/ChartComponents'
+import { Calendar, Globe, Clock, MapPin, TrendingUp, Award, BarChart as BarChartIcon } from 'lucide-react'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
 
@@ -41,7 +49,7 @@ interface TravelStats {
   }
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
+// Removed COLORS - now using chartColors from ChartComponents
 
 const CONTINENT_MAPPING: Record<string, string> = {
   'France': '유럽',
@@ -226,7 +234,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
       <div className={`card ${className}`}>
         <div className="card-header">
           <h3 className="card-title flex items-center gap-2">
-            <BarChart className="h-5 w-5" />
+            <BarChartIcon className="h-5 w-5" />
             여행 통계
           </h3>
         </div>
@@ -245,7 +253,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
       <div className={`card ${className}`}>
         <div className="card-header">
           <h3 className="card-title flex items-center gap-2">
-            <BarChart className="h-5 w-5" />
+            <BarChartIcon className="h-5 w-5" />
             여행 통계
           </h3>
         </div>
@@ -261,7 +269,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
     <div className={`card ${className}`}>
       <div className="card-header">
         <h3 className="card-title flex items-center gap-2">
-          <BarChart className="h-5 w-5" />
+          <BarChartIcon className="h-5 w-5" />
           여행 통계
         </h3>
         <div className="flex gap-2">
@@ -384,28 +392,21 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
           <div className="space-y-6">
             <div className="h-64">
               <h4 className="text-sm font-medium mb-4">연도별 여행 추세</h4>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={stats.yearlyStats}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="year" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="trips" stroke="#8884d8" strokeWidth={2} name="여행 수" />
-                  <Line type="monotone" dataKey="countries" stroke="#82ca9d" strokeWidth={2} name="국가 수" />
-                </LineChart>
+              <ResponsiveContainer height={240}>
+                <LineChart 
+                  data={convertRechartsData(stats.yearlyStats, ['trips', 'countries'], [chartColors.primary[0], chartColors.primary[1]])}
+                  height={240}
+                />
               </ResponsiveContainer>
             </div>
 
             <div className="h-64">
               <h4 className="text-sm font-medium mb-4">월별 여행 분포</h4>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.monthlyDistribution}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="trips" fill="#8884d8" name="여행 수" />
-                </BarChart>
+              <ResponsiveContainer height={240}>
+                <BarChart 
+                  data={convertRechartsData(stats.monthlyDistribution, ['trips'], [chartColors.primary[0]])}
+                  height={240}
+                />
               </ResponsiveContainer>
             </div>
           </div>
@@ -415,24 +416,20 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
           <div className="space-y-6">
             <div className="h-64">
               <h4 className="text-sm font-medium mb-4">대륙별 분포</h4>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={stats.continentDistribution}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ continent, visits }) => `${continent} (${visits})`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="visits"
-                  >
-                    {stats.continentDistribution.map((_entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
+              <ResponsiveContainer height={240}>
+                <PieChart 
+                  data={{
+                    labels: stats.continentDistribution.map(item => item.continent),
+                    datasets: [{
+                      label: '방문 횟수',
+                      data: stats.continentDistribution.map(item => item.visits),
+                      backgroundColor: chartColors.primary.slice(0, stats.continentDistribution.length),
+                      borderWidth: 2,
+                      borderColor: '#ffffff',
+                    }]
+                  }}
+                  height={240}
+                />
               </ResponsiveContainer>
             </div>
 
@@ -441,7 +438,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
                 <div key={continent.continent} className="flex items-center gap-3">
                   <div 
                     className="w-4 h-4 rounded-full" 
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    style={{ backgroundColor: chartColors.primary[index % chartColors.primary.length] }}
                   />
                   <div className="flex-1">
                     <p className="font-medium">{continent.continent}</p>

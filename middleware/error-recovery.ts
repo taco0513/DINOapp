@@ -147,7 +147,14 @@ export function recordServiceFailure(service: string) {
       Date.now() + CIRCUIT_BREAKER_CONFIG.resetTimeout
     )
     
-    console.error(`Circuit breaker opened for service: ${service}`)
+    // Log circuit breaker activation via structured logger
+    import('@/lib/logger').then(({ logger }) => {
+      logger.error('Circuit breaker opened', { 
+        service, 
+        failures: breaker.failures,
+        threshold: CIRCUIT_BREAKER_CONFIG.failureThreshold 
+      });
+    });
   }
 }
 

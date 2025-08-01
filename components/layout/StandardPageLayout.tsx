@@ -3,7 +3,7 @@
 import { PageHeader } from '@/components/common/PageHeader'
 import { Loading } from '@/components/ui/loading'
 import { Error } from '@/components/ui/error'
-import { Icon } from '@/components/icons'
+// import { Icon } from '@/components/icons' // Unused import
 import type { StandardPageLayoutProps, StandardCardProps, StatsCardProps, EmptyStateProps, LoadingCardProps } from '@/types/layout'
 
 export function StandardPageLayout({

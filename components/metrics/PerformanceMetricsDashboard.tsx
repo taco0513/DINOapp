@@ -4,20 +4,14 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
+// Replaced recharts with Chart.js components
 import {
   LineChart,
-  Line,
   AreaChart,
-  Area,
-  // BarChart,
-  // Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
-  Legend,
-} from 'recharts';
+  convertRechartsData,
+  chartColors
+} from '@/components/charts/ChartComponents';
 
 interface PerformanceData {
   timestamp: string;
@@ -196,21 +190,15 @@ export default function PerformanceMetricsDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="timestamp" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="responseTime"
-                      stroke="#000000"
-                      strokeWidth={2}
-                      name="응답 시간 (ms)"
-                    />
-                  </LineChart>
+                <ResponsiveContainer height={320}>
+                  <LineChart 
+                    data={convertRechartsData(
+                      performanceData, 
+                      ['responseTime'], 
+                      [chartColors.primary[0]]
+                    )}
+                    height={320}
+                  />
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -224,27 +212,15 @@ export default function PerformanceMetricsDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={performanceData}>
-                    <defs>
-                      <linearGradient id="colorThroughput" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="timestamp" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area
-                      type="monotone"
-                      dataKey="throughput"
-                      stroke="#4f46e5"
-                      fillOpacity={1}
-                      fill="url(#colorThroughput)"
-                      name="요청/초"
-                    />
-                  </AreaChart>
+                <ResponsiveContainer height={320}>
+                  <AreaChart 
+                    data={convertRechartsData(
+                      performanceData, 
+                      ['throughput'], 
+                      [chartColors.primary[1]]
+                    )}
+                    height={320}
+                  />
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -258,21 +234,15 @@ export default function PerformanceMetricsDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="timestamp" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => `${value}%`} />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="errorRate"
-                      stroke="#ef4444"
-                      strokeWidth={2}
-                      name="에러율 (%)"
-                    />
-                  </LineChart>
+                <ResponsiveContainer height={320}>
+                  <LineChart 
+                    data={convertRechartsData(
+                      performanceData, 
+                      ['errorRate'], 
+                      ['#ef4444']
+                    )}
+                    height={320}
+                  />
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -287,27 +257,15 @@ export default function PerformanceMetricsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={performanceData}>
-                      <defs>
-                        <linearGradient id="colorCPU" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="timestamp" />
-                      <YAxis />
-                      <Tooltip formatter={(value) => `${value}%`} />
-                      <Area
-                        type="monotone"
-                        dataKey="cpuUsage"
-                        stroke="#22c55e"
-                        fillOpacity={1}
-                        fill="url(#colorCPU)"
-                        name="CPU (%)"
-                      />
-                    </AreaChart>
+                  <ResponsiveContainer height={320}>
+                    <AreaChart 
+                      data={convertRechartsData(
+                        performanceData, 
+                        ['cpuUsage'], 
+                        ['#22c55e']
+                      )}
+                      height={320}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -319,27 +277,15 @@ export default function PerformanceMetricsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={performanceData}>
-                      <defs>
-                        <linearGradient id="colorMemory" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="timestamp" />
-                      <YAxis />
-                      <Tooltip formatter={(value) => `${value}%`} />
-                      <Area
-                        type="monotone"
-                        dataKey="memoryUsage"
-                        stroke="#f59e0b"
-                        fillOpacity={1}
-                        fill="url(#colorMemory)"
-                        name="메모리 (%)"
-                      />
-                    </AreaChart>
+                  <ResponsiveContainer height={320}>
+                    <AreaChart 
+                      data={convertRechartsData(
+                        performanceData, 
+                        ['memoryUsage'], 
+                        ['#f59e0b']
+                      )}
+                      height={320}
+                    />
                   </ResponsiveContainer>
                 </div>
               </CardContent>

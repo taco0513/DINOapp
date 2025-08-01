@@ -11,10 +11,11 @@ import { t } from '@/lib/i18n';
 import SchengenUsageChart from '@/components/schengen/SchengenUsageChart';
 // import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 // import { SwipeableCard } from '@/components/mobile/SwipeableCard';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CountryUtils } from '@/constants/countries';
 import { StandardPageLayout, StandardCard, StatsCard, EmptyState } from '@/components/layout/StandardPageLayout';
+import { EnhancedSchengenPlanner } from '@/components/schengen/EnhancedSchengenPlanner';
 
 export default function SchengenPage() {
   const { data: session, status } = useSession();
@@ -29,6 +30,7 @@ export default function SchengenPage() {
   const [futureCountry, setFutureCountry] = useState<string>('France');
   const [futureAnalysis, setFutureAnalysis] = useState<any>(null);
   const [_isMobile, _setIsMobile] = useState(false);
+  const [userVisas, setUserVisas] = useState<any[]>([]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -39,6 +41,7 @@ export default function SchengenPage() {
     }
 
     loadSchengenData();
+    loadUserVisas();
   }, [session, status, router]);
 
   // Check if mobile on mount and resize
@@ -76,6 +79,34 @@ export default function SchengenPage() {
       setHasTrips(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadUserVisas = async () => {
+    try {
+      const response = await fetch('/api/visas?status=active');
+      const result = await response.json();
+
+      if (result.success) {
+        // 셰겐 국가 비자만 필터링
+        const schengenCountries = [
+          'Austria', 'Belgium', 'Czech Republic', 'Denmark', 'Estonia', 'Finland',
+          'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 'Latvia',
+          'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Norway', 'Poland',
+          'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland'
+        ];
+        
+        const schengenVisas = result.data
+          .filter((visa: any) => schengenCountries.includes(visa.countryName))
+          .map((visa: any) => ({
+            ...visa,
+            expiryDate: visa.expiryDate, // API에서 이미 문자열로 반환
+          }));
+        
+        setUserVisas(schengenVisas);
+      }
+    } catch (error) {
+      console.error('Error loading user visas:', error);
     }
   };
 
@@ -176,14 +207,22 @@ export default function SchengenPage() {
         { label: t('nav.schengen') },
       ]}
       headerActions={
-        hasTrips ? (
+        <div className="flex gap-2">
+          {hasTrips && (
+            <Button variant="outline" size="sm" asChild>
+              <Link href='/trips'>
+                <TrendingUp className='h-4 w-4 mr-2' />
+                여행 기록
+              </Link>
+            </Button>
+          )}
           <Button variant="outline" size="sm" asChild>
-            <Link href='/trips'>
-              <TrendingUp className='h-4 w-4 mr-2' />
-              여행 기록 보기
+            <Link href='/my-visas'>
+              <CreditCard className='h-4 w-4 mr-2' />
+              내 비자
             </Link>
           </Button>
-        ) : null
+        </div>
       }
     >
 
@@ -254,10 +293,19 @@ export default function SchengenPage() {
             <SchengenUsageChart visits={trips} />
           </StandardCard>
 
-          {/* Future Trip Planner */}
-          <StandardCard title='🔮 미래 여행 시뮬레이터'>
+          {/* Enhanced Future Trip Planner */}
+          <EnhancedSchengenPlanner 
+            userVisas={userVisas}
+            onRefresh={() => {
+              // 내 비자 페이지로 이동
+              window.open('/my-visas', '_blank');
+            }}
+          />
+
+          {/* Legacy Future Trip Planner - 비교용으로 유지 */}
+          <StandardCard title='📊 기본 여행 시뮬레이터 (참고용)'>
             <p className='text-gray-600 mb-6'>
-              계획 중인 셰겐 여행이 규정에 맞는지 미리 확인해보세요
+              기본 셰겐 규칙만 적용한 단순 계산기 (비자 정보 미포함)
             </p>
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
@@ -308,8 +356,9 @@ export default function SchengenPage() {
               onClick={analyzeFutureTrip}
               disabled={!futureDate}
               className='w-full mb-6'
+              variant='outline'
             >
-              🔍 여행 가능 여부 확인
+              🔍 기본 검증 (비자 정보 제외)
             </Button>
 
             {futureAnalysis && (
@@ -322,8 +371,8 @@ export default function SchengenPage() {
               >
                 <h4 className='text-lg font-semibold mb-4'>
                   {futureAnalysis.isAllowed
-                    ? '✅ 여행 가능!'
-                    : '❌ 여행 불가!'}
+                    ? '✅ 기본 규칙 준수'
+                    : '❌ 기본 규칙 위반'}
                 </h4>
 
                 <div className='space-y-3'>
@@ -357,8 +406,7 @@ export default function SchengenPage() {
             {!futureAnalysis && (
               <div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
                 <p className='text-sm text-blue-800'>
-                  💡 팁: 여행 날짜와 기간을 입력하면 셰겐 규정 준수 여부를
-                  미리 확인할 수 있습니다
+                  💡 더 정확한 검증을 원하면 위의 "향상된 여행 계획 검증기"를 사용하세요
                 </p>
               </div>
             )}

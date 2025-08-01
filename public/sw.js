@@ -209,35 +209,124 @@ async function doBackgroundSync() {
   }
 }
 
-// 푸시 알림 처리 (향후 구현)
+// 푸시 알림 처리
 self.addEventListener('push', (event) => {
-  console.log('Push notification received')
-  
-  const options = {
-    body: event.data ? event.data.text() : '새로운 알림이 있습니다.',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    },
-    actions: [
-      {
-        action: 'explore',
-        title: '확인하기',
-        icon: '/icons/checkmark.png'
-      },
-      {
-        action: 'close',
-        title: '닫기',
-        icon: '/icons/xmark.png'
-      }
-    ]
+  console.log('[SW] Push notification received')
+
+  if (!event.data) {
+    console.log('[SW] No data in push notification')
+    return
   }
-  
+
+  try {
+    const data = event.data.json()
+    const { title, body, icon, badge, tag, data: notificationData } = data
+
+    const options = {
+      body,
+      icon: icon || '/icons/icon-192x192.png',
+      badge: badge || '/icons/icon-72x72.png',
+      tag: tag || 'dino-notification',
+      data: notificationData || {},
+      vibrate: [200, 100, 200],
+      requireInteraction: notificationData?.priority === 'high',
+      actions: []
+    }
+
+    // Add actions based on notification type
+    if (notificationData?.type === 'visa_expiry') {
+      options.actions = [
+        { action: 'view', title: '비자 보기' },
+        { action: 'dismiss', title: '나중에' }
+      ]
+    } else if (notificationData?.type === 'overstay_warning') {
+      options.actions = [
+        { action: 'view', title: '경고 확인' },
+        { action: 'plan', title: '출국 계획' }
+      ]
+    } else if (notificationData?.type === 'stay_reminder') {
+      options.actions = [
+        { action: 'record', title: '기록하기' },
+        { action: 'dismiss', title: '건너뛰기' }
+      ]
+    }
+
+    event.waitUntil(
+      self.registration.showNotification(title, options)
+    )
+  } catch (error) {
+    console.error('[SW] Error processing push notification:', error)
+    // Fallback notification
+    event.waitUntil(
+      self.registration.showNotification('DINO 알림', {
+        body: event.data.text(),
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-72x72.png'
+      })
+    )
+  }
+})
+
+// Notification click handler
+self.addEventListener('notificationclick', (event) => {
+  console.log('[SW] Notification clicked:', event.action)
+  event.notification.close()
+
+  const data = event.notification.data || {}
+  let targetUrl = '/dashboard'
+
+  // Determine target URL based on action and notification type
+  if (event.action === 'view') {
+    switch (data.type) {
+      case 'visa_expiry':
+        targetUrl = `/my-visas/${data.visaId}`
+        break
+      case 'overstay_warning':
+        targetUrl = '/overstay-warnings'
+        break
+      case 'stay_reminder':
+        targetUrl = '/stay-tracking'
+        break
+      default:
+        targetUrl = '/notifications'
+    }
+  } else if (event.action === 'plan') {
+    targetUrl = '/trip-planning'
+  } else if (event.action === 'record') {
+    targetUrl = '/trips/new'
+  } else if (!event.action) {
+    // Default action when notification body is clicked
+    if (data.url) {
+      targetUrl = data.url
+    } else if (data.type === 'visa_expiry') {
+      targetUrl = '/my-visas'
+    } else if (data.type === 'overstay_warning') {
+      targetUrl = '/overstay-warnings'
+    }
+  }
+
   event.waitUntil(
-    self.registration.showNotification('DINO 알림', options)
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // Check if there's already a window open
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.focus()
+          client.postMessage({
+            type: 'NOTIFICATION_CLICKED',
+            data: {
+              ...data,
+              action: event.action,
+              targetUrl
+            }
+          })
+          return
+        }
+      }
+      // If no window is open, open a new one
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl)
+      }
+    })
   )
 })
 

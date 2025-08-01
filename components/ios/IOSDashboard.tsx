@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { Icon } from '@/components/icons';
-import { p, px, py, gap, mb } from '@/lib/spacing';
+import { px, py } from '@/lib/spacing';
 import { Loading } from '@/components/ui/loading';
 import { Error } from '@/components/ui/error';
 import { Button } from '@/components/ui/button';
@@ -11,12 +11,14 @@ import { Button } from '@/components/ui/button';
 interface IOSDashboardProps {
   statsData?: any;
   schengenData?: any;
+  overstayWarnings?: any;
   loading?: boolean;
 }
 
 export default function IOSDashboard({
   statsData,
   schengenData,
+  overstayWarnings,
   loading,
 }: IOSDashboardProps) {
   const { data: session } = useSession();
@@ -107,6 +109,56 @@ export default function IOSDashboard({
               오늘도 멋진 여행을 계획해보세요
             </p>
           </div>
+
+          {/* Overstay Warnings */}
+          {overstayWarnings && overstayWarnings.summary.total > 0 && (
+            <div className='bg-red-50 rounded-xl shadow-sm border border-red-200' style={{ padding: 'var(--space-6)' }}>
+              <h2 className='text-xl font-bold text-red-800 text-center mb-4'>
+                <Icon name="alert-triangle" size="md" className="inline mr-2" />
+                체류 기간 경고
+              </h2>
+              <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mb-4'>
+                {overstayWarnings.summary.critical > 0 && (
+                  <div className='text-center bg-red-100 rounded-lg border border-red-300 p-3'>
+                    <div className='text-2xl font-bold text-red-600'>
+                      {overstayWarnings.summary.critical}
+                    </div>
+                    <div className='text-xs font-medium text-red-700'>긴급</div>
+                  </div>
+                )}
+                {overstayWarnings.summary.high > 0 && (
+                  <div className='text-center bg-orange-100 rounded-lg border border-orange-300 p-3'>
+                    <div className='text-2xl font-bold text-orange-600'>
+                      {overstayWarnings.summary.high}
+                    </div>
+                    <div className='text-xs font-medium text-orange-700'>높음</div>
+                  </div>
+                )}
+                {overstayWarnings.summary.medium > 0 && (
+                  <div className='text-center bg-yellow-100 rounded-lg border border-yellow-300 p-3'>
+                    <div className='text-2xl font-bold text-yellow-600'>
+                      {overstayWarnings.summary.medium}
+                    </div>
+                    <div className='text-xs font-medium text-yellow-700'>보통</div>
+                  </div>
+                )}
+                {overstayWarnings.summary.low > 0 && (
+                  <div className='text-center bg-blue-100 rounded-lg border border-blue-300 p-3'>
+                    <div className='text-2xl font-bold text-blue-600'>
+                      {overstayWarnings.summary.low}
+                    </div>
+                    <div className='text-xs font-medium text-blue-700'>낮음</div>
+                  </div>
+                )}
+              </div>
+              <Link href='/overstay-warnings'>
+                <Button variant='destructive' className='w-full'>
+                  경고 상세 보기
+                  <Icon name="chevron-right" size="sm" className="ml-2" />
+                </Button>
+              </Link>
+            </div>
+          )}
 
           {/* Stats Overview */}
           {(statsData || schengenData) && (

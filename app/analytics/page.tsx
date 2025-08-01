@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
-import { TravelStatsWidget } from '@/components/dashboard/TravelStatsWidget'
+import { LazyTravelStatsWidget } from '@/components/lazy/LazyTravelStatsWidget'
 import { PullToRefresh } from '@/components/mobile/PullToRefresh'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -258,7 +258,7 @@ export default function AnalyticsPage() {
         ) : statsData ? (
           <div className="flex flex-col gap-10">
             {/* Travel Statistics Widget - Always show */}
-            {viewMode === 'overview' && <TravelStatsWidget />}
+            {viewMode === 'overview' && <LazyTravelStatsWidget />}
             
             {/* View-based content */}
             {viewMode === 'overview' && (

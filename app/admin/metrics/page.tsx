@@ -2,7 +2,18 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import BusinessMetricsDashboard from '@/components/metrics/BusinessMetricsDashboard';
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+// Dynamic import for heavy metrics dashboard
+const LazyBusinessMetrics = dynamic(() => import('@/components/lazy/LazyBusinessMetrics'), {
+  loading: () => (
+    <div className="flex items-center justify-center h-96">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false
+});
 
 export const metadata: Metadata = {
   title: '비즈니스 메트릭 - DINO Admin',
@@ -34,7 +45,7 @@ export default async function AdminMetricsPage() {
         </p>
       </div>
 
-      <BusinessMetricsDashboard />
+      <LazyBusinessMetrics />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { withApiSecurity, SecurityPresets } from '@/lib/security/api-security';
 import prisma from '@/lib/prisma';
 import {
   startOfWeek,
@@ -13,18 +12,9 @@ import {
   subYears,
 } from 'date-fns';
 
-export async function GET(request: NextRequest) {
+async function businessMetricsHandler(request: NextRequest, _context?: any) {
   try {
-    // 인증 확인
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // 관리자 권한 확인 (옵션)
-    // if (session.user.role !== 'ADMIN') {
-    //   return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    // }
+    // Authentication and authorization handled by middleware
 
     const searchParams = request.nextUrl.searchParams;
     const range = searchParams.get('range') || 'month';
@@ -206,10 +196,14 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ metrics, charts });
   } catch (error) {
-    console.error('Failed to fetch business metrics:', error);
+    const logger = await import('@/lib/logger').then(m => m.logger);
+    logger.error('Failed to fetch business metrics', { error });
     return NextResponse.json(
       { error: 'Failed to fetch metrics' },
       { status: 500 }
     );
   }
 }
+
+// Apply security middleware with admin-only access
+export const GET = withApiSecurity(businessMetricsHandler, SecurityPresets.ADMIN_ONLY);

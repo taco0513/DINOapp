@@ -1,3 +1,4 @@
+// TODO: Remove unused logger import
 /**
  * Database performance optimization utilities
  * Provides query optimization, connection pooling, and performance monitoring
@@ -81,7 +82,7 @@ class DatabaseOptimizer {
 
     prisma.$on('error', (e) => {
       import('@/lib/logger').then(({ logger }) => {
-        logger.error('Database error', { error: e });
+        console.error('Database error', { error: e });
       });
     })
 
@@ -98,7 +99,7 @@ class DatabaseOptimizer {
     // Log slow queries
     if (metric.duration > this.slowQueryThreshold) {
       import('@/lib/logger').then(({ logger }) => {
-        logger.warn('Slow query detected', {
+        console.warn('Slow query detected', {
           duration: metric.duration,
           query: metric.query,
           threshold: this.slowQueryThreshold
@@ -294,7 +295,7 @@ export class QueryOptimizer {
           results.push(result.value)
         } else {
           import('@/lib/logger').then(({ logger }) => {
-            logger.error('Batch query failed', { reason: result.reason });
+            console.error('Batch query failed', { reason: result.reason });
           });
           throw result.reason
         }

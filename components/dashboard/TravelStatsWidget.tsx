@@ -1,6 +1,8 @@
 'use client'
 
 import React, { memo, useState, useEffect } from 'react'
+import { logger } from '@/lib/logger'
+
 // Replaced recharts with lightweight Chart.js components
 import { 
   LineChart,
@@ -97,7 +99,7 @@ export const TravelStatsWidget = memo<TravelStatsWidgetProps>(({ className = '' 
         setStats(processedStats)
       }
     } catch (error) {
-      console.error('Error loading travel stats:', error)
+      logger.error('Error loading travel stats:', error)
     } finally {
       setLoading(false)
     }

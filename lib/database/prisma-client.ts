@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Enhanced Prisma Client with Connection Recovery
  * Provides resilient database access with automatic recovery
@@ -106,7 +108,7 @@ export async function getPrismaClient(): Promise<PrismaClient> {
           maxRetries: 2,
           retryDelay: 500,
           onRetry: (attempt, error) => {
-            console.warn(`Retrying database operation (${attempt}/2):`, error.message)
+            console.warn('Retrying database operation (${attempt}/2):', error.message)
           }
         })
       }

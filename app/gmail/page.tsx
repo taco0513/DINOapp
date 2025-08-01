@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { StandardPageLayout } from '@/components/layout/StandardPageLayout'
 import { t } from '@/lib/i18n'
 
+import { logger } from '@/lib/logger'
+
 interface EmailPattern {
   id: string
   name: string
@@ -104,7 +106,7 @@ export default function GmailIntegrationPage() {
         localStorage.setItem('dino-gmail-connected', 'true')
       }
     } catch (error) {
-      console.error('Gmail 연결 실패:', error)
+      logger.error('Gmail 연결 실패:', error)
     }
   }
 
@@ -238,7 +240,7 @@ export default function GmailIntegrationPage() {
     const tripsToImport = extractedTrips.filter(t => selectedTrips.has(t.id))
     
     // 여행 기록에 추가 (시뮬레이션)
-    console.log('Importing trips:', tripsToImport)
+    logger.debug('Importing trips:', tripsToImport)
     
     // 상태 업데이트
     setExtractedTrips(trips =>

@@ -2,13 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import { Trip } from '@/types/database';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar,
+import { ChevronLeft, ChevronRight, Calendar,
   AlertTriangle,
-  Info,
-} from 'lucide-react';
+  Info } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Button } from '@/components/ui/button';
 import {
   format,
@@ -183,10 +180,10 @@ export default function StayVisualizationCalendar({
         setManualDateInput('');
         setShowManualInput(false);
       } else {
-        console.error('올바른 날짜 형식이 아닙니다.');
+        logger.error('올바른 날짜 형식이 아닙니다.');
       }
     } else {
-      console.error('날짜를 YYYY-MM-DD 형식으로 입력해주세요.');
+      logger.error('날짜를 YYYY-MM-DD 형식으로 입력해주세요.');
     }
   }; */
 

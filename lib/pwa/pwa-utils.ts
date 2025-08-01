@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // PWA Utility Functions
 import { useEffect, useState } from 'react'
 
@@ -21,7 +23,7 @@ export const isStandalone = () => {
 // Register service worker
 export const registerServiceWorker = async () => {
   if (!isPWASupported()) {
-    console.log('PWA not supported on this browser')
+    console.info('PWA not supported on this browser')
     return null
   }
 
@@ -30,7 +32,7 @@ export const registerServiceWorker = async () => {
       scope: '/'
     })
     
-    console.log('Service Worker registered successfully:', registration)
+    console.debug('Service Worker registered successfully:', registration)
     
     // Check for updates
     registration.addEventListener('updatefound', () => {
@@ -55,7 +57,7 @@ export const registerServiceWorker = async () => {
 // Request notification permission
 export const requestNotificationPermission = async () => {
   if (!('Notification' in window)) {
-    console.log('Notifications not supported')
+    console.info('Notifications not supported')
     return 'unsupported'
   }
 
@@ -76,7 +78,7 @@ export const subscribeToPushNotifications = async (registration: ServiceWorkerRe
   try {
     const permission = await requestNotificationPermission()
     if (permission !== 'granted') {
-      console.log('Notification permission denied')
+      console.info('Notification permission denied')
       return null
     }
 
@@ -96,7 +98,7 @@ export const subscribeToPushNotifications = async (registration: ServiceWorkerRe
       body: JSON.stringify(subscription)
     })
 
-    console.log('Push subscription successful')
+    console.info('Push subscription successful')
     return subscription
   } catch (error) {
     console.error('Push subscription failed:', error)
@@ -253,7 +255,7 @@ export const clearAppCache = async () => {
     const cacheNames = await caches.keys()
     const deletePromises = cacheNames.map(name => caches.delete(name))
     await Promise.all(deletePromises)
-    console.log('All caches cleared')
+    console.info('All caches cleared')
   }
 }
 
@@ -273,7 +275,7 @@ export const getCacheSize = async () => {
 // Offline data sync utilities
 export const syncOfflineData = async () => {
   if (!navigator.onLine) {
-    console.log('Cannot sync: offline')
+    console.info('Cannot sync: offline')
     return false
   }
 

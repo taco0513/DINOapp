@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { validateFutureTrip } from '@/lib/schengen-calculator';
 import { validateFutureTripWithVisas } from '@/lib/schengen/enhanced-calculator';
 
+// TODO: Remove unused logger import
+
 // Validation schema
 const ValidateTripSchema = z.object({
   plannedEntry: z.string().transform(date => new Date(date)),
@@ -189,7 +191,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid data', details: error.errors },
+        { error: 'Invalid data', details: error.issues },
         { status: 400 }
       );
     }

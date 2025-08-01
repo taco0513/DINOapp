@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { logger } from '@/lib/logger'
+
 // import { PageIcons } from '@/components/common/PageHeader';
 import {
   StandardPageLayout,
@@ -141,7 +143,7 @@ export default function ProfilePage() {
           const parsed = JSON.parse(savedProfile);
           setProfile(prev => ({ ...prev, ...parsed }));
         } catch (error) {
-          console.error('Failed to load profile:', error);
+          logger.error('Failed to load profile:', error);
         }
       }
 
@@ -165,7 +167,7 @@ export default function ProfilePage() {
         setTravelStats(data);
       }
     } catch (error) {
-      console.error('Failed to load travel stats:', error);
+      logger.error('Failed to load travel stats:', error);
     }
   };
 

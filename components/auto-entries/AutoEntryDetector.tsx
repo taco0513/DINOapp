@@ -3,10 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  Mail,
-  Plane,
-  Calendar,
+import { Mail, Plane, Calendar,
   CheckCircle2,
   AlertTriangle,
   Clock,
@@ -17,8 +14,8 @@ import {
   X,
   Eye,
   EyeOff,
-  Shield
-} from 'lucide-react';
+  Shield } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -103,7 +100,7 @@ export function AutoEntryDetector() {
         setUserVisas(result.data);
       }
     } catch (error) {
-      console.error('Error loading visas:', error);
+      logger.error('Error loading visas:', error);
     }
   };
 
@@ -152,7 +149,7 @@ export function AutoEntryDetector() {
         throw new Error(result.error || 'Detection failed');
       }
     } catch (error) {
-      console.error('Error detecting entries:', error);
+      logger.error('Error detecting entries:', error);
       toast.error('입출국 기록 감지에 실패했습니다.');
     } finally {
       setDetecting(false);
@@ -194,7 +191,7 @@ export function AutoEntryDetector() {
         throw new Error(result.error || 'Save failed');
       }
     } catch (error) {
-      console.error('Error saving entries:', error);
+      logger.error('Error saving entries:', error);
       toast.error('입출국 기록 저장에 실패했습니다.');
     } finally {
       setSaving(false);

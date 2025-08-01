@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
 import { queryOptimizer } from '@/lib/performance/query-optimizer';
+// TODO: Remove unused logger import
 // import { systemAlert } from '@/lib/notifications/alert-manager';
 import { createTravelManager } from '@/lib/travel-manager';
 import { z } from 'zod';
@@ -190,7 +191,7 @@ export async function GET(request: NextRequest) {
 
       // Log performance metrics
       const stats = queryOptimizer.getPerformanceStats();
-      logger.info('Optimized trips query completed', {
+      console.info('Optimized trips query completed', {
         tripCount: trips.length,
         performanceStats: stats,
       });
@@ -207,7 +208,7 @@ export async function GET(request: NextRequest) {
     } catch (queryError) {
       endDbTimer();
       // Fallback to original method if optimized query fails
-      logger.warn('Optimized query failed, using fallback', {
+      console.warn('Optimized query failed, using fallback', {
         error: queryError instanceof Error ? queryError.message : queryError,
       });
 
@@ -352,7 +353,7 @@ export async function POST(request: NextRequest) {
     businessMetrics.tripCreated(validatedData.country, validatedData.visaType);
 
     // Log successful creation
-    logger.info('Trip created successfully', {
+    console.info('Trip created successfully', {
       tripId: trip.id,
       country: validatedData.country,
       visaType: validatedData.visaType,

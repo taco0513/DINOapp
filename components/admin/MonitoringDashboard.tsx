@@ -1,17 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle, 
+import { Activity, AlertCircle, CheckCircle, 
   Clock, 
   Database, 
   Server,
   Users,
   Zap,
-  RefreshCw
-} from 'lucide-react'
+  RefreshCw } from 'lucide-react'
+import { logger } from '@/lib/logger'
 
 interface HealthCheck {
   timestamp: string
@@ -104,7 +101,7 @@ export default function MonitoringDashboard() {
       const data = await response.json()
       setHealth(data)
     } catch (error) {
-      console.error('Failed to fetch health data:', error)
+      logger.error('Failed to fetch health data:', error)
     }
   }
 
@@ -117,7 +114,7 @@ export default function MonitoringDashboard() {
         setMetrics(data)
       }
     } catch (error) {
-      console.error('Failed to fetch metrics:', error)
+      logger.error('Failed to fetch metrics:', error)
       setError('Failed to load metrics')
     }
   }
@@ -131,7 +128,7 @@ export default function MonitoringDashboard() {
         setLogs(data)
       }
     } catch (error) {
-      console.error('Failed to fetch logs:', error)
+      logger.error('Failed to fetch logs:', error)
     }
   }
 

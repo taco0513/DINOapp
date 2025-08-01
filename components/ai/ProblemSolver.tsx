@@ -7,10 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Bug,
-  Search,
-  Zap,
+import { Bug, Search, Zap,
   CheckCircle,
   AlertCircle,
   Loader2,
@@ -19,8 +16,8 @@ import {
   Code,
   FileSearch,
   GitBranch,
-  Terminal
-} from 'lucide-react';
+  Terminal } from 'lucide-react'
+import { logger } from '@/lib/logger'
 
 // interface ProblemContext {
 //   type: 'error' | 'bug' | 'performance' | 'logic' | 'setup';
@@ -94,7 +91,7 @@ export default function ProblemSolver() {
       const data = await response.json();
       setSolutions(data.solutions);
     } catch (error) {
-      console.error('Problem solving error:', error);
+      logger.error('Problem solving error:', error);
     } finally {
       setIsSearching(false);
       setSearchProgress(100);

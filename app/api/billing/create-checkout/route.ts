@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+// TODO: Remove unused logger import
+
 // Stripe 가격 ID 매핑 (실제 환경에서는 환경 변수로 관리)
 const PRICE_IDS = {
   'pro-monthly': process.env.STRIPE_PRICE_ID_PRO_MONTHLY || 'price_pro_monthly_test',

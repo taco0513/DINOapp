@@ -1,3 +1,4 @@
+// TODO: Remove unused logger import
 /**
  * Error Recovery Middleware
  * Provides automatic recovery mechanisms for common errors
@@ -149,7 +150,7 @@ export function recordServiceFailure(service: string) {
     
     // Log circuit breaker activation via structured logger
     import('@/lib/logger').then(({ logger }) => {
-      logger.error('Circuit breaker opened', { 
+      console.error('Circuit breaker opened', { 
         service, 
         failures: breaker.failures,
         threshold: CIRCUIT_BREAKER_CONFIG.failureThreshold 

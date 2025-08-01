@@ -3,18 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { format, differenceInDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  AlertTriangle,
-  Clock,
-  CheckCircle2,
+import { AlertTriangle, Clock, CheckCircle2,
   XCircle,
   Bell,
   BellRing,
   Loader2,
   RefreshCw,
   Calendar,
-  MapPin
-} from 'lucide-react';
+  MapPin } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -67,7 +64,7 @@ export function VisaExpiryAlerts({ className, onVisaClick }: VisaExpiryAlertsPro
         throw new Error(result.error || 'Failed to load visa expiry data');
       }
     } catch (error) {
-      console.error('Error loading visa expiry:', error);
+      logger.error('Error loading visa expiry:', error);
       toast.error('비자 만료 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
@@ -98,7 +95,7 @@ export function VisaExpiryAlerts({ className, onVisaClick }: VisaExpiryAlertsPro
         toast.info(result.message || '알림 발송에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error sending visa alert:', error);
+      logger.error('Error sending visa alert:', error);
       toast.error('알림 발송 중 오류가 발생했습니다.');
     } finally {
       setSendingAlert(null);

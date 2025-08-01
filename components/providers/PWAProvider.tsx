@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { registerServiceWorker, subscribeToPushNotifications } from '@/lib/pwa/pwa-utils'
 
+import { logger } from '@/lib/logger'
+
 interface PWAContextType {
   isInstalled: boolean
   isOnline: boolean
@@ -83,7 +85,7 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       }
       return false
     } catch (error) {
-      console.error('Failed to enable push notifications:', error)
+      logger.error('Failed to enable push notifications:', error)
       return false
     }
   }

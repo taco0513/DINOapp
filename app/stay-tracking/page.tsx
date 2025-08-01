@@ -3,13 +3,14 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { 
-  MapPin, 
-  TrendingUp, 
+import { logger } from '@/lib/logger';
+import {
+  MapPin,
+  TrendingUp,
   Clock,
   Calendar,
   BarChart3,
-  AlertTriangle
+  AlertTriangle,
 } from 'lucide-react';
 import { StandardPageLayout, StandardCard, StatsCard } from '@/components/layout/StandardPageLayout';
 import { CurrentStayTracker } from '@/components/stay/CurrentStayTracker';
@@ -78,10 +79,10 @@ export default function StayTrackingPage() {
         setStats(result.data.stats);
         setSummary(result.data.summary);
       } else {
-        console.error('Failed to load stay data:', result.error);
+        logger.error('Failed to load stay data:', result.error);
       }
     } catch (error) {
-      console.error('Error loading stay data:', error);
+      logger.error('Error loading stay data:', error);
     } finally {
       setLoading(false);
     }

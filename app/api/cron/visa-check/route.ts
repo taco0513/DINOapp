@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runDailyVisaCheck } from '@/lib/schedulers/visa-scheduler';
 
+// TODO: Remove unused logger import
+
 // Vercel Cron Jobs에서 호출하는 비자 만료 확인 엔드포인트
 // vercel.json에서 다음과 같이 설정:
 // {
@@ -40,7 +42,7 @@ export async function GET(request: NextRequest) {
     }
 
     const startTime = Date.now();
-    console.log(`[CRON] Starting visa expiry check at ${new Date().toISOString()}`);
+    console.info('[CRON] Starting visa expiry check at ${new Date().toISOString()}');
 
     // 일일 비자 만료 확인 실행
     await runDailyVisaCheck();
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
       isVercelCron
     };
 
-    console.log('[CRON] Visa expiry check completed:', result);
+    console.debug('[CRON] Visa expiry check completed:', result);
 
     return NextResponse.json(result);
 
@@ -89,7 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
     const startTime = Date.now();
-    console.log(`[MANUAL] Manual visa expiry check started at ${new Date().toISOString()}`);
+    console.info('[MANUAL] Manual visa expiry check started at ${new Date().toISOString()}');
 
     await runDailyVisaCheck();
 
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
       forceRun
     };
 
-    console.log('[MANUAL] Manual visa expiry check completed:', result);
+    console.debug('[MANUAL] Manual visa expiry check completed:', result);
 
     return NextResponse.json(result);
 

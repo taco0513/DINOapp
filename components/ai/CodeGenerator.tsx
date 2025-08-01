@@ -7,10 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Code,
-  Sparkles,
-  Copy,
+import { Code, Sparkles, Copy,
   Download,
   Check,
   Loader2,
@@ -19,8 +16,8 @@ import {
   Layout,
   Server,
   TestTube,
-  GitBranch
-} from 'lucide-react';
+  GitBranch } from 'lucide-react'
+import { logger } from '@/lib/logger'
 
 interface GeneratedCode {
   id: string;
@@ -63,7 +60,7 @@ export default function CodeGenerator() {
       const data = await response.json();
       setGeneratedCode(data.code);
     } catch (error) {
-      console.error('Code generation error:', error);
+      logger.error('Code generation error:', error);
     } finally {
       setIsGenerating(false);
     }

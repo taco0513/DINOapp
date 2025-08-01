@@ -8,6 +8,7 @@ declare module 'next-auth' {
       name?: string | null
       image?: string | null
       googleId?: string
+      timezone?: string
     }
     accessToken?: string
     error?: string
@@ -15,6 +16,7 @@ declare module 'next-auth' {
 
   interface User {
     googleId?: string
+    timezone?: string
   }
 }
 

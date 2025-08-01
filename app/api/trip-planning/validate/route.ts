@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { differenceInDays, format, parseISO, isAfter, isBefore, addDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
+// TODO: Remove unused logger import
+
 // Validation schemas
 const TripValidationSchema = z.object({
   destinations: z.array(z.object({
@@ -263,7 +265,7 @@ export async function POST(request: NextRequest) {
       overallStatus,
       totalDuration,
       destinations: validationResults,
-      schengenAnalysis,
+      schengenAnalysis: schengenAnalysis || undefined,
       recommendations: overallRecommendations,
       actionItems
     };
@@ -276,7 +278,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid trip data', details: error.errors },
+        { error: 'Invalid trip data', details: error.issues },
         { status: 400 }
       );
     }

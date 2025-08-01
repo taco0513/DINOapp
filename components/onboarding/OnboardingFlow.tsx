@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { logger } from '@/lib/logger'
+
 // import { useRouter } from 'next/navigation';
 import {
   CheckCircle,
@@ -136,7 +138,7 @@ export default function OnboardingFlow() {
   //     // 대시보드로 리다이렉트
   //     router.push('/dashboard?welcome=true');
   //   } catch (error) {
-  //     console.error('온보딩 완료 처리 실패:', error);
+  //     logger.error('온보딩 완료 처리 실패:', error);
   //   }
   // };
 
@@ -439,7 +441,7 @@ function IntegrationsStep() {
       window.open('/api/auth/gmail', '_blank', 'width=500,height=600');
       setIntegrationStatus(prev => ({ ...prev, gmail: true }));
     } catch (error) {
-      console.error('Gmail 연동 실패:', error);
+      logger.error('Gmail 연동 실패:', error);
     }
   };
 
@@ -449,7 +451,7 @@ function IntegrationsStep() {
       window.open('/api/auth/calendar', '_blank', 'width=500,height=600');
       setIntegrationStatus(prev => ({ ...prev, calendar: true }));
     } catch (error) {
-      console.error('Calendar 연동 실패:', error);
+      logger.error('Calendar 연동 실패:', error);
     }
   };
 

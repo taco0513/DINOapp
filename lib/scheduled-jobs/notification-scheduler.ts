@@ -3,6 +3,8 @@ import { pushNotificationService } from '@/lib/push-notification-service';
 import { checkOverstayWarnings } from '@/lib/visa/overstay-checker';
 import { differenceInDays, parseISO } from 'date-fns';
 
+// TODO: Remove unused logger import
+
 export class NotificationScheduler {
   private static instance: NotificationScheduler;
   
@@ -17,7 +19,7 @@ export class NotificationScheduler {
   
   // Run all scheduled notification checks
   async runScheduledChecks(): Promise<void> {
-    console.log('Running scheduled notification checks...');
+    console.info('Running scheduled notification checks...');
     
     try {
       await Promise.all([
@@ -26,7 +28,7 @@ export class NotificationScheduler {
         this.sendStayReminders()
       ]);
       
-      console.log('Scheduled notification checks completed');
+      console.info('Scheduled notification checks completed');
     } catch (error) {
       console.error('Error running scheduled checks:', error);
     }
@@ -93,7 +95,7 @@ export class NotificationScheduler {
             // Send email notification if enabled
             if (settings.emailEnabled) {
               // TODO: Implement email notification
-              console.log(`Email notification for visa expiry: ${visa.countryName} - ${daysUntilExpiry} days`);
+              console.info('Email notification for visa expiry: ${visa.countryName} - ${daysUntilExpiry} days');
             }
           }
         }
@@ -146,7 +148,7 @@ export class NotificationScheduler {
             if (user.notificationSettings.emailEnabled && 
                 (warning.severity === 'high' || warning.severity === 'critical')) {
               // TODO: Implement email notification
-              console.log(`Email notification for overstay warning: ${warning.countryName} - ${warning.severity}`);
+              console.info('Email notification for overstay warning: ${warning.countryName} - ${warning.severity}');
             }
           }
         }

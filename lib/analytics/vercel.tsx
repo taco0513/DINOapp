@@ -2,6 +2,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import React from 'react';
 
+import { logger } from '@/lib/logger'
+
 // Vercel Analytics 이벤트 추적
 export function trackEvent(
   eventName: string,
@@ -93,7 +95,7 @@ export function reportWebVitals(metric: any) {
   // 개발 환경에서 콘솔 출력
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console
-    console.log('Web Vital:', metric);
+    logger.debug('Web Vital:', metric);
   }
 }
 

@@ -3,13 +3,10 @@
 import React, { useState } from 'react';
 import { format, differenceInDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
+import { Dialog, DialogContent, DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+  DialogFooter } from '@/components/ui/dialog'
+import { logger } from '@/lib/logger'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/ui/label';
@@ -123,7 +120,7 @@ export function ExitCountryModal({
         throw new Error(result.error || 'Failed to record exit');
       }
     } catch (error) {
-      console.error('Error recording exit:', error);
+      logger.error('Error recording exit:', error);
       toast.error(error instanceof Error ? error.message : '출국 기록에 실패했습니다.');
     } finally {
       setLoading(false);

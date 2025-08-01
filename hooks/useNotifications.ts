@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
 
+// TODO: Remove unused logger import
+
 export interface NotificationOptions {
   title: string
   body: string

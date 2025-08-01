@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // Mock AI 서비스 (개발/테스트용)
 
 import { BaseAIService } from './base';
@@ -52,7 +54,7 @@ export class MockAIService extends BaseAIService {
       typescript: `// ${spec.description}
 export function processData(input: any): any {
   // TODO: Implement ${spec.description}
-  console.log('Processing:', input);
+  console.debug('Processing:', input);
   return {
     success: true,
     data: input
@@ -71,7 +73,7 @@ def process_data(input_data):
       javascript: `// ${spec.description}
 function processData(input) {
   // TODO: Implement ${spec.description}
-  console.log('Processing:', input);
+  console.debug('Processing:', input);
   return {
     success: true,
     data: input

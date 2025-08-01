@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+// TODO: Remove unused logger import
+
 interface FeedbackData {
   type: 'bug' | 'feature' | 'general';
   message: string;

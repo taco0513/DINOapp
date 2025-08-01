@@ -1,5 +1,7 @@
 import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
 
+// TODO: Remove unused logger import
+
 const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
 
 function getConnectionSpeed() {
@@ -25,7 +27,7 @@ function sendToAnalytics(metric: Metric, options: any) {
   };
 
   if (options.debug) {
-    console.log('[Analytics]', metric.name, JSON.stringify(body, null, 2));
+    console.debug('[Analytics]', metric.name, JSON.stringify(body, null, 2));
   }
 
   const blob = new Blob([new URLSearchParams(body).toString()], {

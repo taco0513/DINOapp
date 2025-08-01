@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { parseFlightEmail, airportToCountry, type FlightDetails, type ParsedFlightEmail } from './flight-parser';
 import { analyzeTravelEmails } from '@/lib/gmail';
 
+// TODO: Remove unused logger import
+
 export interface AutoEntryRecord {
   visaId?: string;
   countryCode: string;

@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // 외부 비자 정보 API 통합 서비스
 // 실제 API 연동을 위한 서비스 레이어
 

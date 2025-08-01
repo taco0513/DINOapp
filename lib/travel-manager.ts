@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Travel Management Core Business Logic Module
  *
@@ -332,7 +334,7 @@ export class TravelManager {
    * ```typescript
    * const deleted = await manager.deleteTrip('trip123');
    * if (deleted) {
-   *   console.log('Trip deleted successfully');
+   *   console.info('Trip deleted successfully');
    * }
    * ```
    */
@@ -356,8 +358,8 @@ export class TravelManager {
    * @example
    * ```typescript
    * const insights = await manager.getTravelInsights();
-   * console.log(`Countries visited: ${insights.summary.countriesVisited}`);
-   * console.log(`Schengen days used: ${insights.summary.schengenDaysUsed}/90`);
+   * console.info('Countries visited: ${insights.summary.countriesVisited}');
+   * console.info('Schengen days used: ${insights.summary.schengenDaysUsed}/90');
    * insights.recommendations.forEach(rec => console.log(rec));
    * ```
    */
@@ -568,7 +570,7 @@ export class TravelManager {
    *   '2024-07-15'
    * );
    * if (!validation.canTravel) {
-   *   console.log('Cannot travel:', validation.warnings);
+   *   console.debug('Cannot travel:', validation.warnings);
    * }
    * ```
    */
@@ -604,8 +606,8 @@ export class TravelManager {
    * @example
    * ```typescript
    * const requirements = await manager.getVisaRequirements('KR', 'US');
-   * console.log(`Visa required: ${requirements.visaRequired}`);
-   * console.log(`Visa-free stay: ${requirements.visaFreeStay} days`);
+   * console.info('Visa required: ${requirements.visaRequired}');
+   * console.info('Visa-free stay: ${requirements.visaFreeStay} days');
    * ```
    */
   async getVisaRequirements(fromCountry: string, toCountry: string) {
@@ -651,7 +653,7 @@ export class TravelManager {
    * ```typescript
    * const alerts = await manager.getTravelAlerts('France');
    * alerts.forEach(alert => {
-   *   console.log(`${alert.severity}: ${alert.title}`);
+   *   console.info('${alert.severity}: ${alert.title}');
    * });
    * ```
    */
@@ -779,7 +781,7 @@ export function createTravelManager(userId: string): TravelManager {
  * @example
  * ```typescript
  * const summary = await getUserTravelSummary('user123');
- * console.log(`Total trips: ${summary.totalTrips}`);
+ * console.info('Total trips: ${summary.totalTrips}');
  * ```
  */
 export async function getUserTravelSummary(

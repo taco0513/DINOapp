@@ -6,6 +6,8 @@ import { COUNTRIES } from '@/constants/countries'
 import { getVisaRequirements } from '@/lib/visa-requirements'
 import type { PassportCountry } from '@/types/global'
 
+import { logger } from '@/lib/logger'
+
 interface VisaInfo {
   country: string
   countryCode: string
@@ -53,7 +55,7 @@ export function QuickVisaCheck() {
       
       setShowResults(true)
     } catch (error) {
-      console.error('비자 정보 조회 실패:', error)
+      logger.error('비자 정보 조회 실패:', error)
     } finally {
       setLoading(false)
     }

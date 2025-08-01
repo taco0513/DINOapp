@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Secure API Route Handler
  * Wraps API routes with validation, authentication, and error handling

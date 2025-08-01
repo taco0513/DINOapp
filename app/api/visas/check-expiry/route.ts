@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { addDays, differenceInDays, format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
+// TODO: Remove unused logger import
+
 interface VisaExpiryCheck {
   id: string;
   countryName: string;

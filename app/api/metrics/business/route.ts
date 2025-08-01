@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withApiSecurity, SecurityPresets } from '@/lib/security/api-security';
 import prisma from '@/lib/prisma';
+// TODO: Remove unused logger import
 import {
   startOfWeek,
   startOfMonth,
@@ -196,8 +197,8 @@ async function businessMetricsHandler(request: NextRequest, _context?: any) {
 
     return NextResponse.json({ metrics, charts });
   } catch (error) {
-    const logger = await import('@/lib/logger').then(m => m.logger);
-    logger.error('Failed to fetch business metrics', { error });
+    
+    console.error('Failed to fetch business metrics', { error });
     return NextResponse.json(
       { error: 'Failed to fetch metrics' },
       { status: 500 }

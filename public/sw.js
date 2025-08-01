@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger'
+
 // DINO Service Worker - PWA 오프라인 기능
 const CACHE_NAME = 'dino-v1.0.0'
 const API_CACHE_NAME = 'dino-api-v1.0.0'
@@ -24,13 +26,13 @@ const API_ENDPOINTS = [
 
 // Service Worker 설치
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...')
+  logger.info('Service Worker installing...')
   
   event.waitUntil(
     Promise.all([
       // 정적 파일 캐시
       caches.open(STATIC_CACHE_NAME).then((cache) => {
-        console.log('Caching static files')
+        logger.info('Caching static files')
         return cache.addAll(STATIC_FILES)
       }),
       // 즉시 활성화
@@ -41,7 +43,7 @@ self.addEventListener('install', (event) => {
 
 // Service Worker 활성화
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...')
+  logger.info('Service Worker activating...')
   
   event.waitUntil(
     Promise.all([
@@ -52,7 +54,7 @@ self.addEventListener('activate', (event) => {
             if (cacheName !== CACHE_NAME && 
                 cacheName !== API_CACHE_NAME && 
                 cacheName !== STATIC_CACHE_NAME) {
-              console.log('Deleting old cache:', cacheName)
+              logger.debug('Deleting old cache:', cacheName)
               return caches.delete(cacheName)
             }
           })
@@ -99,7 +101,7 @@ async function handleApiRequest(request) {
     
     return response
   } catch (error) {
-    console.log('Network failed, trying cache for:', url.pathname)
+    logger.debug('Network failed, trying cache for:', url.pathname)
     
     // 네트워크 실패 시 캐시에서 조회
     const cachedResponse = await caches.match(request)
@@ -132,7 +134,7 @@ async function handleStaticRequest(request) {
     
     return response
   } catch (error) {
-    console.log('Network failed for static file:', request.url)
+    logger.debug('Network failed for static file:', request.url)
     
     // 오프라인 페이지 반환
     const offlineResponse = await caches.match('/offline')
@@ -194,7 +196,7 @@ function handleOfflineApiResponse(pathname) {
 // 백그라운드 동기화 (향후 구현)
 self.addEventListener('sync', (event) => {
   if (event.tag === 'background-sync') {
-    console.log('Background sync triggered')
+    logger.info('Background sync triggered')
     event.waitUntil(doBackgroundSync())
   }
 })
@@ -202,19 +204,19 @@ self.addEventListener('sync', (event) => {
 async function doBackgroundSync() {
   // 오프라인 중 저장된 데이터 동기화
   try {
-    console.log('Performing background sync...')
+    logger.info('Performing background sync...')
     // TODO: IndexedDB에서 대기 중인 데이터 가져와서 서버로 전송
   } catch (error) {
-    console.error('Background sync failed:', error)
+    logger.error('Background sync failed:', error)
   }
 }
 
 // 푸시 알림 처리
 self.addEventListener('push', (event) => {
-  console.log('[SW] Push notification received')
+  logger.info('[SW] Push notification received')
 
   if (!event.data) {
-    console.log('[SW] No data in push notification')
+    logger.info('[SW] No data in push notification')
     return
   }
 
@@ -255,7 +257,7 @@ self.addEventListener('push', (event) => {
       self.registration.showNotification(title, options)
     )
   } catch (error) {
-    console.error('[SW] Error processing push notification:', error)
+    logger.error('[SW] Error processing push notification:', error)
     // Fallback notification
     event.waitUntil(
       self.registration.showNotification('DINO 알림', {
@@ -269,7 +271,7 @@ self.addEventListener('push', (event) => {
 
 // Notification click handler
 self.addEventListener('notificationclick', (event) => {
-  console.log('[SW] Notification clicked:', event.action)
+  logger.debug('[SW] Notification clicked:', event.action)
   event.notification.close()
 
   const data = event.notification.data || {}
@@ -330,4 +332,4 @@ self.addEventListener('notificationclick', (event) => {
   )
 })
 
-console.log('DINO Service Worker loaded successfully')
+logger.info('DINO Service Worker loaded successfully')

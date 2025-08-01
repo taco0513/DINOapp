@@ -1,3 +1,4 @@
+// TODO: Remove unused logger import
 /**
  * Backup Scheduler
  * Manages automated backup schedules
@@ -87,7 +88,7 @@ export class BackupScheduler {
    * Add or update a backup schedule
    */
   addSchedule(schedule: BackupSchedule): void {
-    logger.info('Adding backup schedule', { scheduleId: schedule.id })
+    console.info('Adding backup schedule', { scheduleId: schedule.id })
 
     // Stop existing schedule if it exists
     this.stopSchedule(schedule.id)
@@ -106,7 +107,7 @@ export class BackupScheduler {
    */
   private startSchedule(schedule: BackupSchedule): void {
     if (!cron.validate(schedule.schedule)) {
-      logger.error('Invalid cron expression', { 
+      console.error('Invalid cron expression', { 
         scheduleId: schedule.id, 
         expression: schedule.schedule 
       })
@@ -118,7 +119,7 @@ export class BackupScheduler {
     })
 
     this.schedules.set(schedule.id, task)
-    logger.info('Backup schedule started', { scheduleId: schedule.id })
+    console.info('Backup schedule started', { scheduleId: schedule.id })
   }
 
   /**
@@ -129,7 +130,7 @@ export class BackupScheduler {
     if (task) {
       task.stop()
       this.schedules.delete(scheduleId)
-      logger.info('Backup schedule stopped', { scheduleId })
+      console.info('Backup schedule stopped', { scheduleId })
     }
   }
 
@@ -139,7 +140,7 @@ export class BackupScheduler {
   private async executeBackup(schedule: BackupSchedule): Promise<void> {
     const startTime = Date.now()
     
-    logger.info('Executing scheduled backup', { 
+    console.info('Executing scheduled backup', { 
       scheduleId: schedule.id,
       type: schedule.type 
     })
@@ -188,7 +189,7 @@ export class BackupScheduler {
         scheduleId: schedule.id
       })
 
-      logger.info('Scheduled backup completed', { 
+      console.info('Scheduled backup completed', { 
         scheduleId: schedule.id,
         success,
         duration 
@@ -197,7 +198,7 @@ export class BackupScheduler {
     } catch (error) {
       schedule.lastStatus = 'failed'
       
-      logger.error('Scheduled backup failed', { 
+      console.error('Scheduled backup failed', { 
         scheduleId: schedule.id,
         error 
       })
@@ -234,7 +235,7 @@ export class BackupScheduler {
     // Check if we should disable the schedule after repeated failures
     const recentFailures = await this.getRecentFailures(schedule.id)
     if (recentFailures >= 3) {
-      logger.warn('Disabling schedule due to repeated failures', { 
+      console.warn('Disabling schedule due to repeated failures', { 
         scheduleId: schedule.id 
       })
       
@@ -280,7 +281,7 @@ export class BackupScheduler {
   toggleSchedule(scheduleId: string, enabled: boolean): void {
     const schedule = this.configurations.get(scheduleId)
     if (!schedule) {
-      logger.error('Schedule not found', { scheduleId })
+      console.error('Schedule not found', { scheduleId })
       return
     }
 
@@ -292,7 +293,7 @@ export class BackupScheduler {
       this.stopSchedule(scheduleId)
     }
 
-    logger.info('Schedule toggled', { scheduleId, enabled })
+    console.info('Schedule toggled', { scheduleId, enabled })
   }
 
   /**
@@ -304,7 +305,7 @@ export class BackupScheduler {
       throw new Error(`Schedule not found: ${scheduleId}`)
     }
 
-    logger.info('Manually triggering backup', { scheduleId })
+    console.info('Manually triggering backup', { scheduleId })
     await this.executeBackup(schedule)
   }
 
@@ -323,7 +324,7 @@ export class BackupScheduler {
       // return interval.next().toDate()
       return new Date(Date.now() + 24 * 60 * 60 * 1000) // fallback: next day
     } catch (error) {
-      logger.error('Failed to calculate next run time', { scheduleId, error })
+      console.error('Failed to calculate next run time', { scheduleId, error })
       return null
     }
   }
@@ -332,7 +333,7 @@ export class BackupScheduler {
    * Start all enabled schedules
    */
   startAll(): void {
-    logger.info('Starting all backup schedules')
+    console.info('Starting all backup schedules')
     
     for (const schedule of this.configurations.values()) {
       if (schedule.enabled) {
@@ -345,7 +346,7 @@ export class BackupScheduler {
    * Stop all schedules
    */
   stopAll(): void {
-    logger.info('Stopping all backup schedules')
+    console.info('Stopping all backup schedules')
     
     for (const task of this.schedules.values()) {
       task.stop()

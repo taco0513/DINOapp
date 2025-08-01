@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import type { CountryVisit } from '@/types/global'
+import { logger } from '@/lib/logger'
+
 // import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { t } from '@/lib/i18n'
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading'
@@ -60,10 +62,10 @@ export default function TripsPage() {
       if (response.success && response.data) {
         setTrips(response.data)
       } else {
-        console.error('Failed to load trips:', response.error)
+        logger.error('Failed to load trips:', response.error)
       }
     } catch (error) {
-      console.error('Error loading trips:', error)
+      logger.error('Error loading trips:', error)
     } finally {
       setLoading(false)
     }

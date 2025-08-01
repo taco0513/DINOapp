@@ -5,6 +5,8 @@ import Link from 'next/link'
 import type { Notification } from '@/types/notification'
 import { t } from '@/lib/i18n'
 
+import { logger } from '@/lib/logger'
+
 interface NotificationIconProps {
   userId: string
   className?: string
@@ -39,7 +41,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
         }
       }
     } catch (error) {
-      console.error('Failed to load notifications:', error)
+      logger.error('Failed to load notifications:', error)
     }
   }
 
@@ -59,7 +61,7 @@ export default function NotificationIcon({ userId, className = '' }: Notificatio
         loadNotifications()
       }
     } catch (error) {
-      console.error('Failed to mark notification as read:', error)
+      logger.error('Failed to mark notification as read:', error)
     }
   }
 

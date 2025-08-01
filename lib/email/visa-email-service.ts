@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // Visa Email Service
 // 비자 관련 이메일 발송 서비스
 
@@ -100,7 +102,7 @@ export class VisaEmailService {
         text: emailContent.text
       });
 
-      console.log(`Visa expiry email sent to ${visaData.user.email} for ${visaData.countryName} visa`);
+      console.info('Visa expiry email sent to ${visaData.user.email} for ${visaData.countryName} visa');
       return true;
 
     } catch (error) {
@@ -131,7 +133,7 @@ export class VisaEmailService {
       });
 
       if (!user || user.userVisas.length === 0) {
-        console.log(`No active visas found for user ${userId}, skipping weekly summary`);
+        console.info('No active visas found for user ${userId}, skipping weekly summary');
         return true;
       }
 
@@ -153,7 +155,7 @@ export class VisaEmailService {
         text: emailContent.text
       });
 
-      console.log(`Weekly visa summary sent to ${user.email}`);
+      console.info('Weekly visa summary sent to ${user.email}');
       return true;
 
     } catch (error) {
@@ -185,14 +187,14 @@ export class VisaEmailService {
         }
       });
 
-      console.log(`Sending weekly summaries to ${usersWithVisas.length} users`);
+      console.info('Sending weekly summaries to ${usersWithVisas.length} users');
 
       for (const user of usersWithVisas) {
         try {
           await this.sendWeeklySummary(user.id);
           success++;
         } catch (error) {
-          console.error(`Failed to send weekly summary to user ${user.id}:`, error);
+          console.error('Failed to send weekly summary to user ${user.id}:', error);
           failed++;
         }
       }
@@ -228,7 +230,7 @@ export class VisaEmailService {
         text: emailContent.text
       });
 
-      console.log(`Visa renewal success email sent to ${visaData.user.email} for ${visaData.countryName} visa`);
+      console.info('Visa renewal success email sent to ${visaData.user.email} for ${visaData.countryName} visa');
       return true;
 
     } catch (error) {
@@ -270,7 +272,7 @@ export class VisaEmailService {
       //   text: options.text
       // });
 
-      console.log(`Email sent to ${options.to}: ${options.subject}`);
+      console.info('Email sent to ${options.to}: ${options.subject}');
     } catch (error) {
       console.error('SMTP send failed:', error);
       throw error;

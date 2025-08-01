@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { logger } from '@/lib/logger'
+
 // UI Components removed - using minimal design system
 import { performanceThresholds } from '@/lib/analytics/vercel'
 
@@ -76,7 +78,7 @@ export function PerformanceDashboard() {
         }, 5000)
 
       } catch (error) {
-        console.error('Performance monitoring error:', error)
+        logger.error('Performance monitoring error:', error)
         setIsLoading(false)
       }
     } else {

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+// TODO: Remove unused logger import
+
 // PUT /api/notifications/read-all - Mark all notifications as read
 export async function PUT(request: NextRequest) {
   try {

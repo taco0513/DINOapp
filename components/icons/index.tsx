@@ -1,7 +1,6 @@
 'use client'
 
-import {
-  ArrowLeft,
+import { ArrowLeft,
   ArrowRight,
   Calendar,
   ChevronRight,
@@ -47,8 +46,8 @@ import {
   Save,
   Copy,
   ExternalLink,
-  type LucideIcon
-} from 'lucide-react'
+  type LucideIcon } from 'lucide-react'
+// TODO: Remove unused logger import
 import { ReactNode } from 'react'
 
 // Type for icon names
@@ -163,9 +162,7 @@ export function Icon({
   if (!icon) {
     // Icon not found - fail silently in production
     if (process.env.NODE_ENV === 'development') {
-      import('@/lib/logger').then(({ logger }) => {
-        logger.warn('Icon not found', { iconName: name });
-      });
+      console.warn('Icon not found:', name);
     }
     return null
   }
@@ -254,6 +251,9 @@ export const PageIconPresets = {
   Profile: <IconWrapper icon="user" backgroundColor="hsl(330 84% 95%)" />,
   Bell: <IconWrapper icon="bell" backgroundColor="hsl(48 92% 95%)" />,
   Globe: <IconWrapper icon="globe" backgroundColor="hsl(180 84% 95%)" />,
+  Shield: <IconWrapper icon="shield" backgroundColor="hsl(120 84% 95%)" />,
+  AlertTriangle: <IconWrapper icon="alert-triangle" backgroundColor="hsl(24 84% 95%)" />,
+  MapPin: <IconWrapper icon="map-pin" backgroundColor="hsl(0 84% 95%)" />,
 }
 
 // Export icon names for type safety

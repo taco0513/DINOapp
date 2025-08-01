@@ -1,18 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import {
-  Database,
-  FileArchive,
-  Calendar,
+import { Database, FileArchive, Calendar,
   Download,
   AlertTriangle,
   Clock,
   HardDrive,
   Shield,
   Play,
-  RefreshCw
-} from 'lucide-react'
+  RefreshCw } from 'lucide-react'
+import { logger } from '@/lib/logger'
 
 interface BackupInfo {
   databaseBackups: any[]
@@ -42,7 +39,7 @@ export default function BackupManagementDashboard() {
         setBackupInfo(data)
       }
     } catch (error) {
-      console.error('Failed to fetch backup info:', error)
+      logger.error('Failed to fetch backup info:', error)
     } finally {
       setIsLoading(false)
     }
@@ -72,7 +69,7 @@ export default function BackupManagementDashboard() {
 
       if (response.ok) {
         const result = await response.json()
-        console.log('Backup created:', result)
+        logger.debug('Backup created:', result)
         
         // Refresh backup list
         await fetchBackupInfo()
@@ -80,10 +77,10 @@ export default function BackupManagementDashboard() {
         // Show success message
         alert(`✅ ${type} 백업이 성공적으로 생성되었습니다!`)
       } else {
-        console.error('❌ 백업 생성에 실패했습니다')
+        logger.error('❌ 백업 생성에 실패했습니다')
       }
     } catch (error) {
-      console.error('Backup error:', error)
+      logger.error('Backup error:', error)
       alert('❌ 백업 생성에 실패했습니다')
     } finally {
       setIsCreatingBackup(false)
@@ -110,8 +107,8 @@ export default function BackupManagementDashboard() {
         )
       }
     } catch (error) {
-      console.error('Recovery test error:', error)
-      console.error('❌ 복구 테스트에 실패했습니다')
+      logger.error('Recovery test error:', error)
+      logger.error('❌ 복구 테스트에 실패했습니다')
     }
   }
 

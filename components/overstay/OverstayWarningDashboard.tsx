@@ -3,10 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  AlertTriangle,
-  Clock,
-  Calendar,
+import { AlertTriangle, Clock, Calendar,
   MapPin,
   Shield,
   TrendingUp,
@@ -14,8 +11,8 @@ import {
   ChevronRight,
   AlertCircle,
   Info,
-  CheckCircle
-} from 'lucide-react';
+  CheckCircle } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -80,7 +77,7 @@ export function OverstayWarningDashboard() {
         throw new Error(result.error);
       }
     } catch (error) {
-      console.error('Error loading warnings:', error);
+      logger.error('Error loading warnings:', error);
       toast.error('체류 경고 정보를 불러오는 데 실패했습니다.');
     } finally {
       setLoading(false);
@@ -98,7 +95,7 @@ export function OverstayWarningDashboard() {
         toast.success('경고를 확인했습니다.');
       }
     } catch (error) {
-      console.error('Error dismissing warning:', error);
+      logger.error('Error dismissing warning:', error);
       toast.error('경고 해제에 실패했습니다.');
     }
   };

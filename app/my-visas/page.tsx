@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 import {
   Search,
   Filter,
@@ -105,7 +106,7 @@ export default function MyVisasPage() {
         toast.error('비자 정보를 불러오는데 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error loading visas:', error);
+      logger.error('Error loading visas:', error);
       toast.error('비자 정보를 불러오는데 실패했습니다.');
     }
   };
@@ -135,7 +136,7 @@ export default function MyVisasPage() {
         setStats(statsWithDates);
       }
     } catch (error) {
-      console.error('Error loading visa stats:', error);
+      logger.error('Error loading visa stats:', error);
     } finally {
       setLoading(false);
     }
@@ -164,7 +165,7 @@ export default function MyVisasPage() {
         toast.error('비자 삭제에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error deleting visa:', error);
+      logger.error('Error deleting visa:', error);
       toast.error('비자 삭제에 실패했습니다.');
     }
   };
@@ -205,18 +206,13 @@ export default function MyVisasPage() {
     <StandardPageLayout
       title="내 비자 관리"
       description="보유하고 있는 비자들을 관리하고 만료일을 추적하세요"
-      icon="CreditCard"
+      icon="Shield"
       breadcrumbs={[
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: '내 비자 관리' },
       ]}
       headerActions={
-        <AddVisaModal onVisaAdded={handleVisaAdded}>
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            비자 추가
-          </Button>
-        </AddVisaModal>
+        <AddVisaModal onVisaAdded={handleVisaAdded} />
       }
     >
       {/* 통계 카드 */}
@@ -426,11 +422,11 @@ export default function MyVisasPage() {
                   onDelete={handleDeleteVisa}
                   onViewDetails={(visa) => {
                     // TODO: 상세보기 모달 구현
-                    console.log('View details:', visa);
+                    logger.debug('View details:', visa);
                   }}
                   onEdit={(visa) => {
                     // TODO: 수정 모달 구현
-                    console.log('Edit visa:', visa);
+                    logger.debug('Edit visa:', visa);
                   }}
                 />
               </div>

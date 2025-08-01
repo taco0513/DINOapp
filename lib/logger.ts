@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Unified logging system for DINO app
  * Provides structured logging with different levels and proper error handling
@@ -144,13 +146,13 @@ class Logger {
 export const logger = new Logger()
 
 // Export scoped loggers for common modules
-export const apiLogger = logger.scope('api')
-export const dbLogger = logger.scope('database')
-export const authLogger = logger.scope('auth')
-export const perfLogger = logger.scope('performance')
-export const uiLogger = logger.scope('ui')
+export const apiLogger = console.scope('api')
+export const dbLogger = console.scope('database')
+export const authLogger = console.scope('auth')
+export const perfLogger = console.scope('performance')
+export const uiLogger = console.scope('ui')
 
 // Export helper function for component-level logging
 export function createComponentLogger(componentName: string) {
-  return logger.scope(`component:${componentName}`)
+  return console.scope(`component:${componentName}`)
 }

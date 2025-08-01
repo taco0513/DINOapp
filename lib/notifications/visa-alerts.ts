@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // Visa Alerts System
 // 비자 만료 알림 시스템
 
@@ -88,7 +90,7 @@ class VisaAlertsService {
         }
       })
 
-      console.log(`Found ${expiringVisas.length} visas expiring within ${this.ALERT_INTERVALS.REMINDER} days`)
+      console.info('Found ${expiringVisas.length} visas expiring within ${this.ALERT_INTERVALS.REMINDER} days')
 
       for (const userVisa of expiringVisas) {
         const visa: Visa = {
@@ -338,7 +340,7 @@ class VisaAlertsService {
       })
 
       if (result.count > 0) {
-        console.log(`Updated ${result.count} expired visas to 'expired' status`)
+        console.debug(`Updated ${result.count} expired visas to 'expired' status`)
       }
     } catch (error) {
       await systemAlert.warning(
@@ -396,10 +398,10 @@ class VisaAlertsService {
    */
   async sendWeeklySummaryEmails(): Promise<{ success: number; failed: number }> {
     try {
-      console.log('Starting weekly visa summary email sending...')
+      console.info('Starting weekly visa summary email sending...')
       const result = await visaEmailService.sendWeeklySummaryToAll()
       
-      console.log(`Weekly summary emails completed: ${result.success} success, ${result.failed} failed`)
+      console.info('Weekly summary emails completed: ${result.success} success, ${result.failed} failed')
       
       if (result.failed > 0) {
         await systemAlert.warning(

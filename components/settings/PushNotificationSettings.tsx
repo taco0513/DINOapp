@@ -1,17 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Bell, 
-  BellOff, 
-  Smartphone, 
+import { Bell, BellOff, Smartphone, 
   Shield, 
   CheckCircle2,
   AlertTriangle,
   Info,
   Loader2,
-  Settings
-} from 'lucide-react';
+  Settings } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -67,7 +64,7 @@ export function PushNotificationSettings() {
         setIsSubscribed(subscribed);
       }
     } catch (error) {
-      console.error('Error checking notification status:', error);
+      logger.error('Error checking notification status:', error);
     } finally {
       setLoading(false);
     }
@@ -89,7 +86,7 @@ export function PushNotificationSettings() {
         });
       }
     } catch (error) {
-      console.error('Error loading preferences:', error);
+      logger.error('Error loading preferences:', error);
     }
   };
 
@@ -105,7 +102,7 @@ export function PushNotificationSettings() {
         await savePreferences({ ...preferences, pushEnabled: true });
       }
     } catch (error) {
-      console.error('Error subscribing:', error);
+      logger.error('Error subscribing:', error);
       toast.error('푸시 알림 구독에 실패했습니다.');
     } finally {
       setSubscribing(false);
@@ -123,7 +120,7 @@ export function PushNotificationSettings() {
         await savePreferences({ ...preferences, pushEnabled: false });
       }
     } catch (error) {
-      console.error('Error unsubscribing:', error);
+      logger.error('Error unsubscribing:', error);
       toast.error('푸시 알림 해제에 실패했습니다.');
     } finally {
       setSubscribing(false);
@@ -153,7 +150,7 @@ export function PushNotificationSettings() {
 
       toast.success('알림 설정이 저장되었습니다.');
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      logger.error('Error saving preferences:', error);
       toast.error('설정 저장에 실패했습니다.');
     }
   };
@@ -175,7 +172,7 @@ export function PushNotificationSettings() {
         }
       );
     } catch (error) {
-      console.error('Error showing test notification:', error);
+      logger.error('Error showing test notification:', error);
       toast.error('테스트 알림 표시에 실패했습니다.');
     }
   };

@@ -13,7 +13,10 @@ export type PageIconName =
   | 'Settings'
   | 'Profile'
   | 'Bell'
-  | 'Globe';
+  | 'Globe'
+  | 'Shield'
+  | 'AlertTriangle'
+  | 'MapPin';
 
 // Breadcrumb item
 export interface BreadcrumbItem {
@@ -52,14 +55,16 @@ export interface StandardCardProps {
   title?: string;
   className?: string;
   titleIcon?: string;
+  action?: ReactNode;
 }
 
 // Stats card props
 export interface StatsCardProps {
   value: string | number;
   label: string;
-  color?: 'blue' | 'green' | 'purple' | 'emerald' | 'red' | 'yellow';
+  color?: 'blue' | 'green' | 'purple' | 'emerald' | 'red' | 'yellow' | 'orange';
   className?: string;
+  icon?: ReactNode;
 }
 
 // Empty state props

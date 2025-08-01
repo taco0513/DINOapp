@@ -11,6 +11,8 @@ import { EnhancedTripForm } from './EnhancedTripForm'
 import { CountryVisit } from '@/types/database'
 import { getCountryByName } from '@/data/countries'
 
+import { logger } from '@/lib/logger'
+
 interface TravelManagementPageProps {
   className?: string
 }
@@ -77,10 +79,10 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
           window.location.reload()
         }
       } else {
-        console.error('Failed to add trip:', data.message || 'Unknown error')
+        logger.error('Failed to add trip:', data.message || 'Unknown error')
       }
     } catch (error) {
-      console.error('Network error occurred')
+      logger.error('Network error occurred')
     }
   }
 
@@ -103,10 +105,10 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
         ))
         setEditingTrip(null)
       } else {
-        console.error('Failed to update trip:', data.message || 'Unknown error')
+        logger.error('Failed to update trip:', data.message || 'Unknown error')
       }
     } catch (error) {
-      console.error('Network error occurred')
+      logger.error('Network error occurred')
     }
   }
 
@@ -124,10 +126,10 @@ export function TravelManagementPage({ className }: TravelManagementPageProps) {
       if (data.success) {
         setTrips(prev => prev.filter(trip => trip.id !== tripId))
       } else {
-        console.error('Failed to delete trip')
+        logger.error('Failed to delete trip')
       }
     } catch (error) {
-      console.error('Network error occurred')
+      logger.error('Network error occurred')
     }
   }
 

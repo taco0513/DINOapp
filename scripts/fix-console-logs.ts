@@ -12,7 +12,7 @@ const PATTERNS = [
   {
     pattern: /console\.error\(['"`](.+?)['"`],?\s*(.+?)\)/g,
     replacement: (match: string, message: string, error: string) => {
-      return `logger.error('${message}', ${error})`
+      return `console.error('${message}', ${error})`
     },
     imports: "import { logger } from '@/lib/logger'"
   },
@@ -21,7 +21,7 @@ const PATTERNS = [
   {
     pattern: /console\.warn\(['"`](.+?)['"`],?\s*(.+?)\)/g,
     replacement: (match: string, message: string, data: string) => {
-      return `logger.warn('${message}', ${data})`
+      return `console.warn('${message}', ${data})`
     },
     imports: "import { logger } from '@/lib/logger'"
   },
@@ -30,7 +30,7 @@ const PATTERNS = [
   {
     pattern: /console\.log\(['"`](.+?)['"`],?\s*(.+?)\)/g,
     replacement: (match: string, message: string, data: string) => {
-      return `logger.debug('${message}', ${data})`
+      return `console.debug('${message}', ${data})`
     },
     imports: "import { logger } from '@/lib/logger'"
   },
@@ -39,7 +39,7 @@ const PATTERNS = [
   {
     pattern: /console\.error\(['"`](.+?)['"`]\)/g,
     replacement: (match: string, message: string) => {
-      return `logger.error('${message}')`
+      return `console.error('${message}')`
     },
     imports: "import { logger } from '@/lib/logger'"
   },
@@ -50,9 +50,9 @@ const PATTERNS = [
     replacement: (match: string, message: string) => {
       // Skip if it's in development/debug context
       if (message.includes('Dev') || message.includes('Debug')) {
-        return `logger.debug('${message}')`
+        return `console.debug('${message}')`
       }
-      return `logger.info('${message}')`
+      return `console.info('${message}')`
     },
     imports: "import { logger } from '@/lib/logger'"
   }

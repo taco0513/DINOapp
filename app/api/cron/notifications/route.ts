@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { notificationScheduler } from '@/lib/scheduled-jobs/notification-scheduler';
 
+// TODO: Remove unused logger import
+
 // This endpoint should be called by a cron job service (e.g., Vercel Cron, GitHub Actions, etc.)
 // Or can be called manually for testing
 export async function GET(request: NextRequest) {

@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger'
+
 // DINO Service Worker v2.0.0 - Enhanced PWA functionality
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js');
 
@@ -12,10 +14,10 @@ const CACHE_NAMES = {
 
 // Initialize Workbox
 if (workbox) {
-  console.log(`Workbox is loaded with v${SW_VERSION}`);
+  logger.info('Workbox is loaded with v${SW_VERSION}');
   workbox.setConfig({ debug: false });
 } else {
-  console.log('Workbox failed to load');
+  logger.info('Workbox failed to load');
 }
 
 // Precaching static assets
@@ -161,7 +163,7 @@ self.addEventListener('activate', event => {
 
 // Push Notifications
 self.addEventListener('push', event => {
-  console.log('Push notification received:', event);
+  logger.debug('Push notification received:', event);
   
   let notificationData = {
     title: 'DINO 알림',
@@ -184,7 +186,7 @@ self.addEventListener('push', event => {
       notificationData = { ...notificationData, ...data };
     }
   } catch (error) {
-    console.error('Error parsing push data:', error);
+    logger.error('Error parsing push data:', error);
   }
 
   const promiseChain = self.registration.showNotification(
@@ -209,7 +211,7 @@ self.addEventListener('push', event => {
 
 // Notification click handler
 self.addEventListener('notificationclick', event => {
-  console.log('Notification clicked:', event);
+  logger.debug('Notification clicked:', event);
   
   event.notification.close();
   
@@ -238,7 +240,7 @@ self.addEventListener('notificationclick', event => {
 // Periodic Background Sync (if supported)
 self.addEventListener('periodicsync', event => {
   if (event.tag === 'update-trips') {
-    console.log('Periodic sync: update-trips');
+    logger.info('Periodic sync: update-trips');
     event.waitUntil(updateTripsInBackground());
   }
 });
@@ -251,13 +253,13 @@ async function updateTripsInBackground() {
     });
     
     if (response.ok) {
-      console.log('Trips synced successfully');
+      logger.info('Trips synced successfully');
       // Update local cache
       const cache = await caches.open(CACHE_NAMES.API);
       await cache.put('/api/trips', response.clone());
     }
   } catch (error) {
-    console.error('Background sync failed:', error);
+    logger.error('Background sync failed:', error);
   }
 }
 
@@ -278,9 +280,9 @@ async function checkForUpdates() {
     const data = await response.json();
     return data.version !== SW_VERSION;
   } catch (error) {
-    console.error('Update check failed:', error);
+    logger.error('Update check failed:', error);
     return false;
   }
 }
 
-console.log(`DINO Service Worker v${SW_VERSION} loaded successfully`);
+logger.info('DINO Service Worker v${SW_VERSION} loaded successfully');

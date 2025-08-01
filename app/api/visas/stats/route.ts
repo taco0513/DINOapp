@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+// TODO: Remove unused logger import
+
 // GET /api/visas/stats - 사용자의 비자 통계 조회
 export async function GET(request: NextRequest) {
   try {

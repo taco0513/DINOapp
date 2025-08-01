@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Error Logging and Monitoring System
  * Centralizes error logging with different severity levels and monitoring integration
@@ -107,18 +109,18 @@ class ConsoleErrorLogger implements ErrorLogger {
     if (process.env.NODE_ENV === 'development') {
       entriesToFlush.forEach(entry => {
         const emoji = this.getEmoji(entry.level, entry.severity)
-        console.log(`${emoji} [${entry.timestamp}] ${entry.level.toUpperCase()}: ${entry.message}`)
+        console.info('${emoji} [${entry.timestamp}] ${entry.level.toUpperCase()}: ${entry.message}')
         
         if (entry.context) {
-          console.log('  Context:', entry.context)
+          console.debug('  Context:', entry.context)
         }
         
         if (entry.metadata) {
-          console.log('  Metadata:', entry.metadata)
+          console.debug('  Metadata:', entry.metadata)
         }
         
         if (entry.stack && entry.level === 'error') {
-          console.log('  Stack:', entry.stack)
+          console.debug('  Stack:', entry.stack)
         }
       })
     }

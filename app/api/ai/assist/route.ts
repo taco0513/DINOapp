@@ -6,6 +6,8 @@ import { prisma } from '@/lib/prisma';
 
 
 
+// TODO: Remove unused logger import
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+// TODO: Remove unused logger import
 import {
   checkPerformanceAlerts,
   checkSecurityAlerts,

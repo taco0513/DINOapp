@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
+// TODO: Remove unused logger import
+
 // Validation schemas
 const SubscriptionSchema = z.object({
   endpoint: z.string().url(),
@@ -74,7 +76,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid subscription data', details: error.errors },
+        { error: 'Invalid subscription data', details: error.issues },
         { status: 400 }
       );
     }
@@ -118,7 +120,7 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }

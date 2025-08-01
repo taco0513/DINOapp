@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Performance middleware for API routes
  * Provides caching, compression, rate limiting, and monitoring

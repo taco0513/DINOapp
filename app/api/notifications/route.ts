@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
+// TODO: Remove unused logger import
 import {
   checkVisaExpiry,
   checkSchengenWarnings,

@@ -3,10 +3,7 @@
 import React, { useState } from 'react';
 import { format, addDays, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  MapPin,
-  Calendar,
-  Clock,
+import { MapPin, Calendar, Clock,
   CheckCircle2,
   AlertTriangle,
   XCircle,
@@ -16,8 +13,8 @@ import {
   Plane,
   Shield,
   FileText,
-  AlertCircle
-} from 'lucide-react';
+  AlertCircle } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/Input';
@@ -211,7 +208,7 @@ export function TripPlanningValidator() {
         throw new Error(result.error || 'Failed to validate trip');
       }
     } catch (error) {
-      console.error('Error validating trip:', error);
+      logger.error('Error validating trip:', error);
       toast.error('여행 계획 검증에 실패했습니다.');
     } finally {
       setLoading(false);

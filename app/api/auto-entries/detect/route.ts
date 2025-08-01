@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { parseISO, subMonths } from 'date-fns';
 import { detectEntriesFromGmail, saveAutoDetectedEntries } from '@/lib/gmail/auto-entry-detector';
 
+// TODO: Remove unused logger import
+
 // Validation schema
 const DetectEntriesSchema = z.object({
   accessToken: z.string(),
@@ -87,7 +89,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }

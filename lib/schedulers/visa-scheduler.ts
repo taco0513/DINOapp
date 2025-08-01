@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // Visa Expiry Scheduler
 // 비자 만료 알림 스케줄러 - Vercel Cron Jobs 또는 Node-cron과 통합
 
@@ -25,7 +27,7 @@ export class VisaExpiryScheduler {
    */
   async runDailyCheck(): Promise<void> {
     if (this.isRunning) {
-      console.log('Visa expiry check is already running, skipping...');
+      console.info('Visa expiry check is already running, skipping...');
       return;
     }
 
@@ -33,16 +35,16 @@ export class VisaExpiryScheduler {
     const startTime = Date.now();
 
     try {
-      console.log(`[${new Date().toISOString()}] Starting daily visa expiry check...`);
+      console.info('[${new Date().toISOString()}] Starting daily visa expiry check...');
 
       // 만료 예정 비자 확인 및 알림 발송
       await visaAlerts.checkExpiringVisas();
 
       const duration = Date.now() - startTime;
-      console.log(`[${new Date().toISOString()}] Daily visa expiry check completed in ${duration}ms`);
+      console.info('[${new Date().toISOString()}] Daily visa expiry check completed in ${duration}ms');
 
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Error in daily visa expiry check:`, error);
+      console.error('[${new Date().toISOString()}] Error in daily visa expiry check:', error);
       throw error;
     } finally {
       this.isRunning = false;
@@ -56,7 +58,7 @@ export class VisaExpiryScheduler {
    */
   async runTimeBasedCheck(timeSlot: 'morning' | 'evening'): Promise<void> {
     if (this.isRunning) {
-      console.log('Visa expiry check is already running, skipping...');
+      console.info('Visa expiry check is already running, skipping...');
       return;
     }
 
@@ -64,7 +66,7 @@ export class VisaExpiryScheduler {
     const startTime = Date.now();
 
     try {
-      console.log(`[${new Date().toISOString()}] Starting ${timeSlot} visa expiry check...`);
+      console.info('[${new Date().toISOString()}] Starting ${timeSlot} visa expiry check...');
 
       if (timeSlot === 'morning') {
         // 오전: 모든 만료 예정 비자 확인
@@ -75,10 +77,10 @@ export class VisaExpiryScheduler {
       }
 
       const duration = Date.now() - startTime;
-      console.log(`[${new Date().toISOString()}] ${timeSlot} visa expiry check completed in ${duration}ms`);
+      console.info('[${new Date().toISOString()}] ${timeSlot} visa expiry check completed in ${duration}ms');
 
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Error in ${timeSlot} visa expiry check:`, error);
+      console.error('[${new Date().toISOString()}] Error in ${timeSlot} visa expiry check:', error);
       throw error;
     } finally {
       this.isRunning = false;
@@ -99,7 +101,7 @@ export class VisaExpiryScheduler {
    */
   async runWeeklySummary(): Promise<void> {
     if (this.isRunning) {
-      console.log('Visa expiry check is already running, skipping...');
+      console.info('Visa expiry check is already running, skipping...');
       return;
     }
 
@@ -107,7 +109,7 @@ export class VisaExpiryScheduler {
     const startTime = Date.now();
 
     try {
-      console.log(`[${new Date().toISOString()}] Starting weekly visa summary...`);
+      console.info('[${new Date().toISOString()}] Starting weekly visa summary...');
 
       // 주간 요약 로직 (향후 구현)
       // - 이번 주 만료되는 비자 목록
@@ -116,10 +118,10 @@ export class VisaExpiryScheduler {
       await visaAlerts.checkExpiringVisas();
 
       const duration = Date.now() - startTime;
-      console.log(`[${new Date().toISOString()}] Weekly visa summary completed in ${duration}ms`);
+      console.info('[${new Date().toISOString()}] Weekly visa summary completed in ${duration}ms');
 
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Error in weekly visa summary:`, error);
+      console.error('[${new Date().toISOString()}] Error in weekly visa summary:', error);
       throw error;
     } finally {
       this.isRunning = false;

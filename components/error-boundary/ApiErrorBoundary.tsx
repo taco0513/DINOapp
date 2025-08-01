@@ -2,6 +2,8 @@
 
 import { Component, ReactNode } from 'react'
 
+import { logger } from '@/lib/logger'
+
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -23,7 +25,7 @@ export class ApiErrorBoundary extends Component<Props, State> {
   }
 
   override componentDidCatch(error: Error, errorInfo: any) {
-    console.error('API Error Boundary caught an error:', error, errorInfo)
+    logger.error('API Error Boundary caught an error:', error, errorInfo)
   }
 
   override render() {

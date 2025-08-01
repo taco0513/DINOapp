@@ -3,6 +3,8 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
 
+import { logger } from '@/lib/logger'
+
 interface PullToRefreshProps {
   children: React.ReactNode;
   onRefresh: () => Promise<void>;
@@ -56,7 +58,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
         
         await onRefresh();
       } catch (error) {
-        console.error('Refresh failed:', error);
+        logger.error('Refresh failed:', error);
       } finally {
         setIsRefreshing(false);
       }

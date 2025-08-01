@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * API Performance Monitoring Endpoint
  * Collects and reports client-side performance metrics

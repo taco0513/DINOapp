@@ -3,13 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { format, addDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
+import { Dialog, DialogContent, DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+  DialogFooter } from '@/components/ui/dialog'
+import { logger } from '@/lib/logger'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/ui/label';
@@ -91,7 +88,7 @@ export function AddStayModal({ open, onOpenChange, onStayAdded }: AddStayModalPr
         throw new Error(result.error || 'Failed to load visas');
       }
     } catch (error) {
-      console.error('Error loading visas:', error);
+      logger.error('Error loading visas:', error);
       toast.error('비자 목록을 불러오는데 실패했습니다.');
     } finally {
       setLoadingVisas(false);
@@ -158,7 +155,7 @@ export function AddStayModal({ open, onOpenChange, onStayAdded }: AddStayModalPr
         throw new Error(result.error || 'Failed to add stay entry');
       }
     } catch (error) {
-      console.error('Error adding stay entry:', error);
+      logger.error('Error adding stay entry:', error);
       toast.error(error instanceof Error ? error.message : '입국 기록 추가에 실패했습니다.');
     } finally {
       setLoading(false);

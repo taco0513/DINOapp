@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
+import { logger } from '@/lib/logger'
+
 // Replaced recharts with Chart.js components
 import {
   LineChart,
@@ -48,7 +50,7 @@ export default function PerformanceMetricsDashboard() {
       setPerformanceData(data.metrics);
       setWebVitals(data.webVitals);
     } catch (error) {
-      console.error('Failed to fetch performance metrics:', error);
+      logger.error('Failed to fetch performance metrics:', error);
     } finally {
       setLoading(false);
     }

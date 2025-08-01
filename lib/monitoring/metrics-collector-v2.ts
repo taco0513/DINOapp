@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // New metrics collector for testing
 
 export enum MetricType {

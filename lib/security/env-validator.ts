@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Environment Variable Security Validator
  * Ensures all required environment variables are present and valid

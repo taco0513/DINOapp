@@ -3,15 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { format, addDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  Calendar,
-  Clock,
-  AlertTriangle,
+import { Calendar, Clock, AlertTriangle,
   CheckCircle2,
   MapPin,
   CreditCard,
-  Loader2,
-} from 'lucide-react';
+  Loader2 } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/Input';
@@ -147,7 +144,7 @@ export function EnhancedSchengenPlanner({ userVisas, onRefresh }: EnhancedScheng
 
       setValidation(result.data);
     } catch (error) {
-      console.error('Error validating trip:', error);
+      logger.error('Error validating trip:', error);
       toast.error(error instanceof Error ? error.message : '여행 검증에 실패했습니다.');
     } finally {
       setLoading(false);

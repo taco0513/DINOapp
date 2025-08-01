@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+// TODO: Remove unused logger import
+
 interface PerformanceMetrics {
   pageLoadTime: number;
   firstContentfulPaint: number;
@@ -51,7 +53,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
       setMetrics({ ...metricsRef.current });
 
       if (enableLogging) {
-        console.log('Performance metrics updated:', newMetrics);
+        console.debug('Performance metrics updated:', newMetrics);
       }
     };
 
@@ -199,7 +201,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
   // 분석 도구로 메트릭 전송
   const reportMetricsToAnalytics = (metrics: Partial<PerformanceMetrics>) => {
     // 실제 구현에서는 Google Analytics, Sentry 등으로 전송
-    console.log('Reporting metrics to analytics:', metrics);
+    console.debug('Reporting metrics to analytics:', metrics);
 
     // 예시: Google Analytics 4 이벤트
     if (

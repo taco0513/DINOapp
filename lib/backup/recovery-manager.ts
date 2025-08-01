@@ -1,3 +1,4 @@
+// TODO: Remove unused logger import
 /**
  * Disaster Recovery Manager
  * Coordinates backup and recovery operations
@@ -207,7 +208,7 @@ export class DisasterRecoveryManager {
     const startTime = new Date()
     const timer = metrics.timer('recovery.execution.duration')
     
-    logger.info('Starting disaster recovery', { scenario })
+    console.info('Starting disaster recovery', { scenario })
     
     // Send alert
     await systemAlert.error(
@@ -240,7 +241,7 @@ export class DisasterRecoveryManager {
     try {
       // Execute each step
       for (const step of plan.steps) {
-        logger.info(`Executing recovery step ${step.order}/${plan.steps.length}`, {
+        console.info(`Executing recovery step ${step.order}/${plan.steps.length}`, {
           name: step.name,
           description: step.description
         })
@@ -256,13 +257,13 @@ export class DisasterRecoveryManager {
           }
 
           result.stepsCompleted++
-          logger.info(`Recovery step completed`, { step: step.name })
+          console.info(`Recovery step completed`, { step: step.name })
 
         } catch (stepError) {
           const error = stepError instanceof Error ? stepError.message : 'Unknown error'
           result.errors.push(`Step ${step.order} (${step.name}): ${error}`)
           
-          logger.error('Recovery step failed', { 
+          console.error('Recovery step failed', { 
             step: step.name, 
             error: stepError 
           })
@@ -271,9 +272,9 @@ export class DisasterRecoveryManager {
           if (step.rollback) {
             try {
               await step.rollback()
-              logger.info('Step rollback successful', { step: step.name })
+              console.info('Step rollback successful', { step: step.name })
             } catch (rollbackError) {
-              logger.error('Step rollback failed', { 
+              console.error('Step rollback failed', { 
                 step: step.name, 
                 error: rollbackError 
               })
@@ -325,7 +326,7 @@ export class DisasterRecoveryManager {
         )
       }
 
-      logger.info('Recovery process completed', result)
+      console.info('Recovery process completed', result)
       return result
 
     } catch (error) {
@@ -335,7 +336,7 @@ export class DisasterRecoveryManager {
       result.duration = result.endTime.getTime() - startTime.getTime()
       result.errors.push(error instanceof Error ? error.message : 'Unknown error')
       
-      logger.error('Recovery process failed', { error, result })
+      console.error('Recovery process failed', { error, result })
       
       metrics.increment('recovery.failed', 1, { scenario })
       
@@ -347,11 +348,11 @@ export class DisasterRecoveryManager {
    * Test recovery plan without executing
    */
   async testRecoveryPlan(scenario: RecoveryScenario): Promise<boolean> {
-    logger.info('Testing recovery plan', { scenario })
+    console.info('Testing recovery plan', { scenario })
 
     const plan = this.recoveryPlans.get(scenario)
     if (!plan) {
-      logger.error('No recovery plan found', { scenario })
+      console.error('No recovery plan found', { scenario })
       return false
     }
 
@@ -360,22 +361,22 @@ export class DisasterRecoveryManager {
       for (const backupType of plan.requiredBackups) {
         const available = await this.verifyBackupAvailable(backupType)
         if (!available) {
-          logger.error('Required backup not available', { backupType })
+          console.error('Required backup not available', { backupType })
           return false
         }
       }
 
       // Verify each step can be executed
       for (const step of plan.steps) {
-        logger.debug('Testing recovery step', { step: step.name })
+        console.debug('Testing recovery step', { step: step.name })
         // In a real test, we might do more validation here
       }
 
-      logger.info('Recovery plan test passed', { scenario })
+      console.info('Recovery plan test passed', { scenario })
       return true
 
     } catch (error) {
-      logger.error('Recovery plan test failed', { scenario, error })
+      console.error('Recovery plan test failed', { scenario, error })
       return false
     }
   }
@@ -383,13 +384,13 @@ export class DisasterRecoveryManager {
   // Recovery action implementations
 
   private async stopApplication(): Promise<void> {
-    logger.info('Stopping application')
+    console.info('Stopping application')
     // Implementation depends on deployment method
     // Could involve PM2, systemd, Docker, etc.
   }
 
   private async startApplication(): Promise<void> {
-    logger.info('Starting application')
+    console.info('Starting application')
     // Implementation depends on deployment method
   }
 
@@ -434,27 +435,27 @@ export class DisasterRecoveryManager {
   }
 
   private async rollbackDatabaseRestore(): Promise<void> {
-    logger.warn('Rolling back database restore')
+    console.warn('Rolling back database restore')
     // Restore from corrupted backup if needed
   }
 
   private async scanForMissingFiles(): Promise<void> {
-    logger.info('Scanning for missing files')
+    console.info('Scanning for missing files')
     // Compare current files with expected files
   }
 
   private async provisionInfrastructure(): Promise<void> {
-    logger.info('Provisioning infrastructure')
+    console.info('Provisioning infrastructure')
     // Use infrastructure as code tools
   }
 
   private async restoreConfiguration(): Promise<void> {
-    logger.info('Restoring configuration')
+    console.info('Restoring configuration')
     // Restore environment variables, secrets, etc.
   }
 
   private async verifyIntegrations(): Promise<void> {
-    logger.info('Verifying external integrations')
+    console.info('Verifying external integrations')
     // Test connections to external services
   }
 
@@ -496,7 +497,7 @@ export class DisasterRecoveryManager {
       
       return true
     } catch (error) {
-      logger.error('Database integrity check failed', { error })
+      console.error('Database integrity check failed', { error })
       return false
     }
   }

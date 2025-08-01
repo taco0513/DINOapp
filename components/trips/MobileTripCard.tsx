@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 
+import { logger } from '@/lib/logger'
+
 interface MobileTripCardProps {
   trip: CountryVisit
   onEdit: (trip: CountryVisit) => void
@@ -50,7 +52,7 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
       await ApiClient.deleteTrip(trip.id)
       onDelete()
     } catch (error) {
-      console.error('Error deleting trip:', error)
+      logger.error('Error deleting trip:', error)
     } finally {
       setLoading(false)
     }

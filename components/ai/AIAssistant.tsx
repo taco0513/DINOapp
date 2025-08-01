@@ -5,16 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Code, 
-  Bug, 
-  FileText, 
+import { Code, Bug, FileText, 
   CheckCircle,
   Loader2,
   Sparkles,
   Brain,
-  Zap
-} from 'lucide-react';
+  Zap } from 'lucide-react'
+import { logger } from '@/lib/logger'
 
 interface AIContext {
   task: 'feature_development' | 'bug_fixing' | 'refactoring' | 'testing' | 'documentation';
@@ -60,7 +57,7 @@ export default function AIAssistant() {
       const data = await response.json();
       setSuggestions(data.suggestions);
     } catch (error) {
-      console.error('AI Assistant error:', error);
+      logger.error('AI Assistant error:', error);
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { ApiClient } from '@/lib/api-client';
 import IOSDashboard from '@/components/ios/IOSDashboard';
 
+import { logger } from '@/lib/logger'
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();

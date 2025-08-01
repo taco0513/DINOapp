@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // PURPOSE: NextAuth.js 인증 설정 - Google OAuth 2.0 전용
 // ARCHITECTURE: 인증 레이어 - 모든 보호된 라우트의 게이트웨이
 // RELATED: app/api/auth/[...nextauth]/route.ts, lib/prisma.ts, middleware.ts
@@ -45,7 +47,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       // Allow Google sign in only
       if (account?.provider === 'google') {
-        console.log('Google sign in successful for:', user.email);
+        console.debug('Google sign in successful for:', user.email);
         return true;
       }
       return false;
@@ -152,7 +154,7 @@ export const authOptions: NextAuthOptions = {
   events: {
     async signOut(message) {
       // Log signout event
-      console.log('User signed out:', message);
+      console.debug('User signed out:', message);
     },
   },
 };

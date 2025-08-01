@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger'
+
 #!/usr/bin/env node
 
 const { Command } = require('commander');
@@ -143,15 +145,15 @@ program
         const summary = await autoDocsGenerator.generateReviewSummary();
         if (summary) {
           console.log(chalk.blue('📊 리뷰 요약:'));
-          console.log(`전체 점수: ${summary.overallScore}/100`);
-          console.log(`검사 파일: ${summary.totalFiles}개`);
-          console.log(`총 이슈: ${summary.totalIssues}개`);
-          console.log(`심각한 문제: ${summary.criticalIssues}개`);
+          logger.info('전체 점수: ${summary.overallScore}/100');
+          logger.info('검사 파일: ${summary.totalFiles}개');
+          logger.info('총 이슈: ${summary.totalIssues}개');
+          logger.info('심각한 문제: ${summary.criticalIssues}개');
 
           if (summary.topIssues.length > 0) {
             console.log(chalk.yellow('\n주요 이슈:'));
             summary.topIssues.forEach((issue, i) => {
-              console.log(`${i + 1}. ${issue.file}: ${issue.message}`);
+              logger.info('${i + 1}. ${issue.file}: ${issue.message}');
             });
           }
         }

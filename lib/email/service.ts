@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // Email service stub for testing
 
 export interface EmailOptions {
@@ -15,7 +17,7 @@ export interface EmailOptions {
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   // Mock implementation for testing
-  console.log(`Sending email to ${options.to} with subject: ${options.subject}`)
+  console.info('Sending email to ${options.to} with subject: ${options.subject}')
   return true
 }
 

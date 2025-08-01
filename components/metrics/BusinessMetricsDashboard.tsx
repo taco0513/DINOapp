@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar, TrendingUp, Users, DollarSign, Activity, Target, AlertCircle } from 'lucide-react';
+import { logger } from '@/lib/logger'
+
 // Replaced recharts with Chart.js components
 import {
   AreaChart,
@@ -56,7 +58,7 @@ export default function BusinessMetricsDashboard() {
       setMetrics(data.metrics);
       setChartData(data.charts);
     } catch (error) {
-      console.error('Failed to fetch metrics:', error);
+      logger.error('Failed to fetch metrics:', error);
     } finally {
       setLoading(false);
     }

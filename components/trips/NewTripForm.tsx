@@ -4,10 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { ApiClient, TripFormData } from '@/lib/api-client';
 import { COUNTRIES, VISA_TYPES, PASSPORT_COUNTRIES } from '@/data/countries';
-import {
-  Calendar,
-  MapPin,
-  Shield,
+import { Calendar, MapPin, Shield,
   FileText,
   AlertCircle,
   HelpCircle,
@@ -17,8 +14,8 @@ import {
   Clock,
   CheckCircle,
   Loader2,
-  Info,
-} from 'lucide-react';
+  Info } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { t } from '@/lib/i18n';
@@ -157,7 +154,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
         setErrors({ general: response.error || '오류가 발생했습니다' });
       }
     } catch (err) {
-      console.error('Form submission error:', err);
+      logger.error('Form submission error:', err);
       const errorMessage =
         err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다';
       toast.error(errorMessage);

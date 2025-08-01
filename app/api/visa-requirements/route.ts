@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { externalVisaApiService } from '@/lib/visa/external-visa-api';
 
+// TODO: Remove unused logger import
+
 // GET /api/visa-requirements - 비자 요구사항 조회
 export async function GET(request: NextRequest) {
   try {
@@ -267,7 +269,7 @@ async function updateLocalDataInBackground(
         lastUpdated: new Date(),
       },
     });
-    console.log(`로컬 DB 업데이트 완료: ${localId}`);
+    console.info('로컬 DB 업데이트 완료: ${localId}');
   } catch (error) {
     console.error('로컬 DB 업데이트 실패:', error);
   }

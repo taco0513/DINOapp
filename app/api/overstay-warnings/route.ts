@@ -6,6 +6,8 @@ import { checkOverstayWarnings, predictOverstayForTrip } from '@/lib/visa/overst
 import { z } from 'zod';
 import { parseISO } from 'date-fns';
 
+// TODO: Remove unused logger import
+
 // GET /api/overstay-warnings - 현재 체류 초과 경고 조회
 export async function GET(request: NextRequest) {
   try {
@@ -37,7 +39,7 @@ export async function GET(request: NextRequest) {
               userId: session.user.id,
               type: 'overstay_warning',
               metadata: {
-                path: ['warningId'],
+                path: 'warningId',  
                 equals: warning.id
               }
             }
@@ -103,10 +105,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const tripPlan = PredictSchema.parse(body);
 
+    // 계산된 체류 일수
+    const stayDays = Math.ceil((tripPlan.exitDate.getTime() - tripPlan.entryDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
     // 체류 초과 예측
     const prediction = await predictOverstayForTrip(
       session.user.id,
-      tripPlan
+      tripPlan.countryCode,
+      stayDays,
+      tripPlan.entryDate
     );
 
     return NextResponse.json({
@@ -117,7 +124,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }
@@ -158,7 +165,7 @@ export async function DELETE(request: NextRequest) {
         userId: session.user.id,
         type: 'overstay_warning',
         metadata: {
-          path: ['warningId'],
+          path: 'warningId',
           equals: warningId
         }
       },

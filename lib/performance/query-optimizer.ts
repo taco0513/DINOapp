@@ -1,3 +1,4 @@
+// TODO: Remove unused logger import
 /**
  * Database Query Optimizer
  * Provides optimized queries and performance monitoring for database operations  
@@ -115,7 +116,7 @@ export class QueryOptimizer {
 
       // Log slow queries
       if (duration > 1000) {
-        this.logger.warn('Slow trip query detected', {
+        this.console.warn('Slow trip query detected', {
           duration,
           params,
           rowCount: trips.length
@@ -125,7 +126,7 @@ export class QueryOptimizer {
       return trips
 
     } catch (error) {
-      this.logger.error('Trip query failed', {
+      this.console.error('Trip query failed', {
         error: error instanceof Error ? error.message : error,
         params,
         duration: Date.now() - startTime
@@ -204,7 +205,7 @@ export class QueryOptimizer {
       return schengenTrips
 
     } catch (error) {
-      this.logger.error('Schengen query failed', {
+      this.console.error('Schengen query failed', {
         error: error instanceof Error ? error.message : error,
         userId,
         duration: Date.now() - startTime
@@ -287,7 +288,7 @@ export class QueryOptimizer {
       return stats
 
     } catch (error) {
-      this.logger.error('User stats query failed', {
+      this.console.error('User stats query failed', {
         error: error instanceof Error ? error.message : error,
         userId,
         duration: Date.now() - startTime
@@ -330,7 +331,7 @@ export class QueryOptimizer {
         timestamp: new Date()
       })
 
-      this.logger.info('Batch trip creation completed', {
+      this.console.info('Batch trip creation completed', {
         userId,
         tripCount: trips.length,
         duration
@@ -339,7 +340,7 @@ export class QueryOptimizer {
       return result
 
     } catch (error) {
-      this.logger.error('Batch trip creation failed', {
+      this.console.error('Batch trip creation failed', {
         error: error instanceof Error ? error.message : error,
         userId,
         tripCount: trips.length,

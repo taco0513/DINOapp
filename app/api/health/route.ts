@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { metrics } from '@/lib/monitoring/metrics-collector'
 import { dbManager, getDbHealth, isDbHealthy } from '@/lib/database/connection-manager'
-import { loggers } from '@/lib/monitoring/logger'
+// TODO: Remove unused loggers import
 
+// TODO: Remove unused logger import
 // GET /api/health - Comprehensive health check
 export async function GET(_request: NextRequest) {
   const checks = {
@@ -14,7 +15,7 @@ export async function GET(_request: NextRequest) {
   }
 
   // Database health using connection manager
-  const logger = loggers.api
+  // TODO: Remove unused logger variable
   try {
     const startTime = Date.now()
     const dbHealth = getDbHealth()
@@ -66,7 +67,7 @@ export async function GET(_request: NextRequest) {
       }
     }
   } catch (error) {
-    logger.error('Health check database error', {
+    console.error('Health check database error', {
       error: error instanceof Error ? error.message : error
     })
     
@@ -144,7 +145,7 @@ export async function GET(_request: NextRequest) {
   }
 
   // Log health check results
-  logger.info('Health check completed', {
+  console.info('Health check completed', {
     status: checks.status,
     databaseHealthy: checks.checks.database?.status === 'healthy',
     memoryUsage: checks.checks.memory?.heapUsed,

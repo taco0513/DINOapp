@@ -8,6 +8,8 @@ import StayVisualizationCalendar from '@/components/calendar/StayVisualizationCa
 import CalendarSync from '@/components/calendar/CalendarSync';
 import { Trip } from '@/types/database';
 
+import { logger } from '@/lib/logger'
+
 interface CalendarStats {
   totalEvents: number;
   upcomingEvents: number;
@@ -89,7 +91,7 @@ export default function CalendarPage() {
         setTrips(data.data || []);
       }
     } catch (err) {
-      console.error('Failed to load trips:', err);
+      logger.error('Failed to load trips:', err);
     }
   };
 
@@ -696,7 +698,7 @@ export default function CalendarPage() {
               trips={trips}
               currentCountry='KR'
               onDateClick={(date, dayTrips) => {
-                console.log('Selected date:', date, 'Trips:', dayTrips);
+                logger.debug('Selected date:', date, 'Trips:', dayTrips);
               }}
             />
           </div>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { logger } from '@/lib/logger'
+// TODO: Remove unused logger import
 
 /**
  * API Security utilities for DINO
@@ -75,7 +75,7 @@ export function withApiSecurity(
       // 1. Method validation
       if (!allowedMethods.includes(req.method || '')) {
         if (logRequests) {
-          logger.warn('Method not allowed', {
+          console.warn('Method not allowed', {
             method: req.method,
             url: req.url,
             ip: req.ip || req.headers.get('x-forwarded-for')
@@ -97,7 +97,7 @@ export function withApiSecurity(
         const rateLimitKey = `${clientKey}:${req.nextUrl.pathname}`;
         
         if (!checkRateLimit(rateLimitKey, rateLimitConfig)) {
-          logger.warn('Rate limit exceeded', {
+          console.warn('Rate limit exceeded', {
             ip: clientKey,
             url: req.url,
             config: rateLimitConfig
@@ -114,7 +114,7 @@ export function withApiSecurity(
         session = await getServerSession(authOptions)
         if (!session?.user) {
           if (logRequests) {
-            logger.warn('Unauthorized access attempt', {
+            console.warn('Unauthorized access attempt', {
               url: req.url,
               ip: req.ip || req.headers.get('x-forwarded-for')
             });
@@ -132,7 +132,7 @@ export function withApiSecurity(
       // 4. Admin authorization check
       if (requireAdmin) {
         if (!session?.user || (session.user as any).role !== 'ADMIN') {
-          logger.warn('Admin access denied', {
+          console.warn('Admin access denied', {
             userId: session?.user?.id,
             url: req.url,
             ip: req.ip || req.headers.get('x-forwarded-for')
@@ -174,7 +174,7 @@ export function withApiSecurity(
       // 8. Request logging
       if (logRequests) {
         const duration = Date.now() - startTime;
-        logger.info('API request completed', {
+        console.info('API request completed', {
           method: req.method,
           url: req.url,
           status: response.status,
@@ -187,7 +187,7 @@ export function withApiSecurity(
       return response;
 
     } catch (error) {
-      logger.error('API security middleware error', {
+      console.error('API security middleware error', {
         error,
         url: req.url,
         method: req.method,

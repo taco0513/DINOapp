@@ -6,6 +6,8 @@ import { COUNTRIES, VISA_TYPES, PASSPORT_COUNTRIES } from '@/data/countries'
 import type { CountryVisit } from '@/types/global'
 import { Calendar, MapPin, Shield, FileText, AlertCircle, HelpCircle } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 interface TripFormProps {
   trip?: CountryVisit
   onSuccess: () => void
@@ -58,7 +60,7 @@ export default function TripForm({ trip, onSuccess, onCancel }: TripFormProps) {
         setError(response.error || 'An error occurred while saving')
       }
     } catch (err) {
-      console.error('Form submission error:', err)
+      logger.error('Form submission error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)

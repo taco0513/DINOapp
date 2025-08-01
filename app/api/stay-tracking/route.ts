@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { differenceInDays, format, parseISO, isAfter, isBefore } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
+// TODO: Remove unused logger import
+
 // Validation schemas
 const CreateStaySchema = z.object({
   visaId: z.string(),
@@ -115,7 +117,7 @@ export async function GET(request: NextRequest) {
           alerts.push(`⚠️ ${remainingDays}일 후 체류 기간 만료`);
           recommendations.push('출국 계획을 확정하거나 체류 연장을 신청하세요');
         } else if (remainingDays <= 7) {
-          status = remainingDays <= 7 && status !== 'exceeded' ? 'warning' : status;
+          status = 'warning';
           alerts.push(`📅 ${remainingDays}일 후 체류 기간 만료`);
           recommendations.push('출국 또는 연장 준비를 시작하세요');
         }
@@ -303,7 +305,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid data', details: error.errors },
+        { error: 'Invalid data', details: error.issues },
         { status: 400 }
       );
     }
@@ -407,7 +409,7 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid data', details: error.errors },
+        { error: 'Invalid data', details: error.issues },
         { status: 400 }
       );
     }

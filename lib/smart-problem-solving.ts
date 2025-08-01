@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Smart Problem Solving System
  * 2분 룰: 막히면 자동으로 웹 검색 트리거
@@ -40,14 +42,14 @@ export class SmartProblemSolver {
     // 1단계: 캐시 확인 (토큰 0)
     const cached = this.solutionCache.get(cacheKey);
     if (cached) {
-      console.log('💚 캐시에서 해결책 발견! (토큰: 0)');
+      console.info('💚 캐시에서 해결책 발견! (토큰: 0)');
       return cached;
     }
 
     // 2단계: 2분 룰 체크
     const timeElapsed = Date.now() - problem.startTime.getTime();
     if (timeElapsed > this.TWO_MINUTE_RULE || problem.attemptCount > 3) {
-      console.log('🔍 2분 룰 발동! 웹 검색 시작...');
+      console.info('🔍 2분 룰 발동! 웹 검색 시작...');
       return await this.webSearch(problem);
     }
 
@@ -76,7 +78,7 @@ export class SmartProblemSolver {
     const searchQuery = this.generateSearchQuery(problem);
 
     // 실제 구현에서는 웹 검색 API 호출
-    console.log(`🌐 검색 쿼리: ${searchQuery}`);
+    console.info('🌐 검색 쿼리: ${searchQuery}');
 
     return {
       source: 'web',

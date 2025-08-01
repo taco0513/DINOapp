@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Structured Logging System
  * Provides consistent logging with different levels and structured data
@@ -212,7 +214,7 @@ export function createRequestLogger(logger: Logger) {
     const requestId = crypto.randomUUID()
     const start = Date.now()
     
-    const childLogger = logger.child({
+    const childLogger = console.child({
       requestId,
       method: req.method,
       path: new URL(req.url).pathname,

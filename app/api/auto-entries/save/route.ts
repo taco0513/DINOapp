@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { parseISO, differenceInDays } from 'date-fns';
 
+// TODO: Remove unused logger import
+
 // Validation schema
 const SaveEntriesSchema = z.object({
   entries: z.array(z.object({
@@ -150,7 +152,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid data', details: error.errors },
+        { error: 'Invalid data', details: error.issues },
         { status: 400 }
       );
     }

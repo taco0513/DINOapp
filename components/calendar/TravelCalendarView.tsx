@@ -1,19 +1,17 @@
 'use client'
 
 import React, { useState, useEffect, memo } from 'react'
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Calendar,
+import { ChevronLeft, ChevronRight, Calendar,
   MapPin,
   Plane,
   Clock,
   // Plus,
   // Filter,
-  Search,
+  Search
   // MoreHorizontal,
   // Globe
 } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
 import type { CountryVisit } from '@/types/global'
@@ -89,7 +87,7 @@ export const TravelCalendarView = memo<TravelCalendarViewProps>(({
         setTrips(response.data)
       }
     } catch (error) {
-      console.error('Error loading trips:', error)
+      logger.error('Error loading trips:', error)
     } finally {
       setLoading(false)
     }

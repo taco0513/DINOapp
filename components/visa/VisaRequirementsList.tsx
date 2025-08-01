@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import VisaRequirementCard, { VisaRequirement } from './VisaRequirementCard';
 
+import { logger } from '@/lib/logger'
+
 interface VisaRequirementsListProps {
   fromCountry?: string;
 }
@@ -40,7 +42,7 @@ export default function VisaRequirementsList({ fromCountry }: VisaRequirementsLi
         setError(result.error || '비자 요구사항을 불러오는데 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error fetching visa requirements:', error);
+      logger.error('Error fetching visa requirements:', error);
       setError('네트워크 오류가 발생했습니다.');
     } finally {
       setLoading(false);

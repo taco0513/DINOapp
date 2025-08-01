@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { withApiSecurity, SecurityPresets } from '@/lib/security/api-security';
-import { logger } from '@/lib/logger';
+// TODO: Remove unused logger import
 
 // Mock dependencies
 jest.mock('next-auth');

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { withGmailAuth, getRateLimitStatus } from '@/lib/gmail-middleware'
 import { checkGmailConnection } from '@/lib/gmail'
 
+// TODO: Remove unused logger import
+
 export async function GET(request: NextRequest) {
   return withGmailAuth(request, async (session) => {
     // Debug: Check if accessToken exists

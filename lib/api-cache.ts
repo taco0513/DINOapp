@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * API 캐싱 시스템
  * analytics와 monitoring 페이지의 성능 최적화를 위한 인메모리 캐싱
@@ -189,7 +191,7 @@ class ApiCache {
     return setInterval(() => {
       const deletedCount = this.cleanup();
       if (deletedCount > 0) {
-        console.log(`[ApiCache] Cleaned up ${deletedCount} expired entries`);
+        console.info('[ApiCache] Cleaned up ${deletedCount} expired entries');
       }
     }, intervalMs);
   }

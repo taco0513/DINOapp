@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
+// TODO: Remove unused logger import
+
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -42,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log error to monitoring service
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    console.error('ErrorBoundary caught an error:', error, JSON.stringify(errorInfo))
     
     // Update state with error details
     this.setState(prevState => ({
@@ -239,7 +241,7 @@ export class ErrorBoundary extends Component<Props, State> {
 // Hook for functional components
 export function useErrorHandler() {
   return (error: Error, errorInfo?: ErrorInfo) => {
-    console.error('Error caught by useErrorHandler:', error, errorInfo)
+    console.error('Error caught by useErrorHandler:', error, errorInfo ? JSON.stringify(errorInfo) : undefined)
     
     // You can add custom error handling logic here
     // For example, showing a toast notification

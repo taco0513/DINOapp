@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ApiClient } from '@/lib/api-client';
 import type { CountryVisit } from '@/types/global';
+import { logger } from '@/lib/logger'
+
 // import { PageIcons } from '@/components/common/PageHeader';
 import { t } from '@/lib/i18n';
 import SchengenUsageChart from '@/components/schengen/SchengenUsageChart';
@@ -75,7 +77,7 @@ export default function SchengenPage() {
         setSchengenData(schengenResponse.data);
       }
     } catch (error) {
-      console.error('Error loading Schengen data:', error);
+      logger.error('Error loading Schengen data:', error);
       setHasTrips(false);
     } finally {
       setLoading(false);
@@ -106,7 +108,7 @@ export default function SchengenPage() {
         setUserVisas(schengenVisas);
       }
     } catch (error) {
-      console.error('Error loading user visas:', error);
+      logger.error('Error loading user visas:', error);
     }
   };
 

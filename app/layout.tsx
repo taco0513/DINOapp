@@ -15,6 +15,8 @@ import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
 import { SkipLink } from '@/components/ui/SkipLink'
 import { PageErrorBoundary } from '@/components/ErrorBoundary'
 
+import { logger } from '@/lib/logger'
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -193,7 +195,7 @@ export default function RootLayout({
                 window.addEventListener('load', () => {
                   navigator.serviceWorker.register('/sw-v2.js')
                     .then(() => {}) // SW registered successfully
-                    .catch(error => console.log('SW registration failed'))
+                    .catch(error => logger.debug('SW registration failed', ))
                 })
               }
             `

@@ -47,7 +47,7 @@ export default function AutoEntriesPage() {
     <StandardPageLayout
       title="입출국 기록 자동 추적"
       description="Gmail의 항공권 이메일을 분석하여 입출국 기록을 자동으로 감지하고 추적합니다"
-      icon="Mail"
+      icon="Gmail"
       breadcrumbs={[
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: '입출국 자동 추적' },

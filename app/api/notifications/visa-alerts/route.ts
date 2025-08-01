@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { checkVisaAlerts } from '@/lib/notifications/visa-alerts'
 
+// TODO: Remove unused logger import
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)

@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Metrics Collection System
  * Collects and aggregates application metrics for monitoring
@@ -201,7 +203,7 @@ export class MetricsCollector {
 
       // Log in development
       if (process.env.NODE_ENV === 'development') {
-        console.log('📊 Metrics Flush:', JSON.stringify(aggregations, null, 2))
+        console.debug('📊 Metrics Flush:', JSON.stringify(aggregations, null, 2))
       }
 
       // Clear old metrics
@@ -277,12 +279,12 @@ export class MetricsCollector {
   // Alert management methods (required by monitoring route)
   addAlert(alert: any): void {
     // TODO: Implement alert management
-    console.log('Alert added:', alert)
+    console.debug('Alert added:', alert)
   }
 
   removeAlert(name: string): void {
     // TODO: Implement alert removal
-    console.log('Alert removed:', name)
+    console.debug('Alert removed:', name)
   }
 
   getAlerts(): any[] {

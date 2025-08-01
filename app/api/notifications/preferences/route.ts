@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
+// TODO: Remove unused logger import
+
 // Validation schema
 const PreferencesSchema = z.object({
   visaExpiry: z.boolean().optional(),
@@ -135,7 +137,7 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid preferences data', details: error.errors },
+        { error: 'Invalid preferences data', details: error.issues },
         { status: 400 }
       );
     }

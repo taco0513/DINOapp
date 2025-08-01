@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { visaAlerts } from '@/lib/notifications/visa-alerts';
 
+// TODO: Remove unused logger import
+
 // GET /api/visas/scheduler - 비자 만료 알림 스케줄러 수동 실행 (개발/테스트용)
 export async function GET(request: NextRequest) {
   try {
@@ -15,14 +17,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log('Starting visa expiry check scheduler...');
+    console.info('Starting visa expiry check scheduler...');
     const startTime = Date.now();
 
     // 만료 예정 비자 확인 및 알림 발송
     await visaAlerts.checkExpiringVisas();
 
     const duration = Date.now() - startTime;
-    console.log(`Visa expiry check completed in ${duration}ms`);
+    console.info(`Visa expiry check completed in ${duration}ms`);
 
     return NextResponse.json({
       success: true,
@@ -56,7 +58,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`Checking visa expiry for user: ${userId}${forceCheck ? ' (forced)' : ''}`);
+    console.debug(`Checking visa expiry for user: ${userId}${forceCheck ? " (forced)" : ""}`);
     const startTime = Date.now();
 
     // 특정 사용자의 비자 만료 확인

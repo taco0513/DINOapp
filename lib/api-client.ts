@@ -2,6 +2,8 @@ import type { CountryVisit, VisaType, PassportCountry } from '@/types/global'
 import { CacheKeys, memoryCache } from '@/lib/cache/memory-cache'
 import { toast } from 'sonner'
 
+// TODO: Remove unused logger import
+
 /**
  * Standard API response wrapper for all API endpoints
  * @template T - The type of data being returned
@@ -61,7 +63,7 @@ const CACHE_TIMES = {
  * // Get all trips for the current user
  * const response = await ApiClient.getTrips('user123');
  * if (response.success) {
- *   console.log('Trips:', response.data);
+ *   console.debug('Trips:', response.data);
  * }
  * ```
  */
@@ -213,7 +215,7 @@ export class ApiClient {
    * ```typescript
    * const { success, data } = await ApiClient.getTrips('user123');
    * if (success) {
-   *   console.log(`User has ${data.length} trips`);
+   *   console.info('User has ${data.length} trips');
    * }
    * ```
    */
@@ -320,7 +322,7 @@ export class ApiClient {
    * @example
    * ```typescript
    * const { data } = await ApiClient.getSchengenStatus('user123');
-   * console.log(`Days used: ${data.usedDays}/90`);
+   * console.info('Days used: ${data.usedDays}/90');
    * ```
    */
   static async getSchengenStatus(userId?: string): Promise<ApiResponse<any>> {

@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 /**
  * Centralized Error Handling System
  * Provides consistent error handling across the application

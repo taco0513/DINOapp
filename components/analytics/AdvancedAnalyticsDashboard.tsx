@@ -3,16 +3,15 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  // TrendingUp, 
+import { // TrendingUp, 
   // Users, 
   Clock, 
   MousePointer, 
   // Globe,
   // Smartphone,
   // Monitor,
-  BarChart as BarChartIcon
-} from 'lucide-react';
+  BarChart as BarChartIcon } from 'lucide-react'
+import { logger } from '@/lib/logger'
 // Replaced recharts with Chart.js components
 import {
   BarChart,

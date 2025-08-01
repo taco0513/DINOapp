@@ -2,14 +2,11 @@
 
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
+import { Dialog, DialogContent, DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  DialogTrigger } from '@/components/ui/dialog'
+// TODO: Remove unused logger import
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/ui/label';
@@ -30,6 +27,7 @@ import { getCountryFlag } from '@/lib/visa-utils';
 interface AddVisaModalProps {
   onVisaAdded?: (visa: any) => void;
   trigger?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 interface VisaFormData {

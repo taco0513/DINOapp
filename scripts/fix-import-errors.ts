@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Script to fix import errors caused by the console.log replacement script
+ * Script to fix import errors caused by logger imports
  */
 
 import { readdirSync, readFileSync, writeFileSync, statSync } from 'fs'
@@ -35,52 +35,89 @@ function fixImportError(filePath: string): boolean {
   try {
     let content = readFileSync(filePath, 'utf-8')
     let modified = false
-
-    // Fix pattern: import {\nimport { logger } from '@/lib/logger'\n\n  otherImports...
-    const badImportPattern = /import \{\s*\nimport \{ logger \} from '@\/lib\/logger'\s*\n\s*([\s\S]*?)\} from/g
-    if (badImportPattern.test(content)) {
-      content = content.replace(badImportPattern, (_match, imports) => {
-        const cleanImports = imports.trim()
-        return `import {\n  ${cleanImports}\n} from`
+    
+    // Pattern 1: Fix broken imports where logger import is inserted in the middle
+    const brokenPattern1 = /import\s*{\s*([^}]*)\s*import\s*{\s*logger\s*}\s*from\s*['"`]@\/lib\/logger['"`]([^}]*)\s*}\s*from/g
+    if (brokenPattern1.test(content)) {
+      content = content.replace(brokenPattern1, (match, before, after) => {
+        // Clean up the import
+        const cleanBefore = before.replace(/,\s*$/, '').trim()
+        const cleanAfter = after.replace(/^\s*,/, '').trim()
+        let combinedImports = cleanBefore
+        if (cleanAfter) {
+          combinedImports += combinedImports ? `, ${cleanAfter}` : cleanAfter
+        }
+        return `import { ${combinedImports} } from`
       })
       
-      // Add logger import at the end of imports section if not already there
+      // Add logger import at the top
       if (!content.includes("import { logger } from '@/lib/logger'")) {
-        // Find the last import statement
-        const importLines = content.split('\n')
-        let lastImportIndex = -1
+        const lines = content.split('\n')
+        let insertIndex = 0
         
-        for (let i = 0; i < importLines.length; i++) {
-          if (importLines[i].startsWith('import ') || importLines[i].includes('} from ')) {
-            lastImportIndex = i
-          } else if (importLines[i].trim() === '' && lastImportIndex >= 0) {
-            // Empty line after imports
-            break
-          } else if (lastImportIndex >= 0 && importLines[i].trim() !== '' && !importLines[i].startsWith('import')) {
-            // Non-import, non-empty line
+        // Skip 'use client' or 'use server' directive
+        if (lines[0]?.includes("'use ")) {
+          insertIndex = 1
+          if (lines[1] === '') insertIndex = 2 // Skip empty line after directive
+        }
+        
+        // Find position after existing imports
+        for (let i = insertIndex; i < lines.length; i++) {
+          if (!lines[i].startsWith('import') && lines[i].trim() !== '') {
+            insertIndex = i
             break
           }
         }
         
-        if (lastImportIndex >= 0) {
-          importLines.splice(lastImportIndex + 1, 0, "import { logger } from '@/lib/logger'")
-          content = importLines.join('\n')
-        }
+        lines.splice(insertIndex, 0, "import { logger } from '@/lib/logger'")
+        content = lines.join('\n')
       }
       
       modified = true
     }
-
-    // Fix logger import that was inserted mid-import
-    const midImportPattern = /import \{ logger \} from '@\/lib\/logger'\s*\n\s*\n\s*([A-Za-z_][A-Za-z0-9_]*,?)/g
-    if (midImportPattern.test(content)) {
-      content = content.replace(midImportPattern, '$1')
+    
+    // Pattern 2: Fix imports that are completely broken
+    const brokenPattern2 = /import\s*{\s*import\s*{\s*logger\s*}\s*from\s*['"`]@\/lib\/logger['"`]/g
+    if (brokenPattern2.test(content)) {
+      content = content.replace(brokenPattern2, 'import {')
+      
+      // Add logger import if not present
+      if (!content.includes("import { logger } from '@/lib/logger'")) {
+        const lines = content.split('\n')
+        let insertIndex = 0
+        
+        // Skip directives
+        if (lines[0]?.includes("'use ")) {
+          insertIndex = 1
+          if (lines[1] === '') insertIndex = 2
+        }
+        
+        lines.splice(insertIndex, 0, "import { logger } from '@/lib/logger'")
+        content = lines.join('\n')
+      }
+      
       modified = true
     }
-
+    
+    // Pattern 3: Remove duplicate logger imports
+    const loggerImportPattern = /import\s*{\s*logger\s*}\s*from\s*['"`]@\/lib\/logger['"`]/g
+    const loggerImports = content.match(loggerImportPattern)
+    if (loggerImports && loggerImports.length > 1) {
+      // Keep only the first one
+      let first = true
+      content = content.replace(loggerImportPattern, (match) => {
+        if (first) {
+          first = false
+          return match
+        }
+        return '' // Remove subsequent matches
+      })
+      modified = true
+    }
+    
     if (modified) {
       writeFileSync(filePath, content, 'utf-8')
-      console.log(`✅ Fixed: ${filePath}`)
+      console.log(`✅ Fixed imports in: ${filePath}`)
       return true
     }
     
@@ -93,7 +130,7 @@ function fixImportError(filePath: string): boolean {
 
 function main() {
   const projectRoot = process.cwd()
-  console.log(`🔧 Fixing import errors in: ${projectRoot}`)
+  console.log(`🔍 Scanning for broken imports in: ${projectRoot}`)
   
   const files = getAllFiles(projectRoot)
   console.log(`📁 Found ${files.length} files to check`)
@@ -119,7 +156,7 @@ function main() {
   }
   
   console.log(`\n📊 Summary:`)
-  console.log(`   Files processed: ${processedCount}`)
+  console.log(`   Files scanned: ${processedCount}`)
   console.log(`   Files fixed: ${fixedCount}`)
   console.log(`   Files skipped: ${files.length - processedCount}`)
 }

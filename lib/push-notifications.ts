@@ -1,3 +1,5 @@
+// TODO: Remove unused logger import
+
 // Web Push Notifications Management
 import { toast } from 'sonner';
 
@@ -38,14 +40,14 @@ export class PushNotificationManager {
   // Initialize service worker and get registration
   async initialize(): Promise<ServiceWorkerRegistration | null> {
     if (!this.isSupported()) {
-      console.log('Push notifications not supported');
+      console.info('Push notifications not supported');
       return null;
     }
 
     try {
       // Register service worker if not already registered
       this.registration = await navigator.serviceWorker.ready;
-      console.log('Service worker ready');
+      console.info('Service worker ready');
       return this.registration;
     } catch (error) {
       console.error('Failed to initialize service worker:', error);

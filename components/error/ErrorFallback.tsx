@@ -5,6 +5,8 @@ import { AlertCircle, RefreshCw, Home, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
+import { logger } from '@/lib/logger'
+
 interface ErrorFallbackProps {
   error: Error
   resetErrorBoundary: () => void
@@ -14,7 +16,7 @@ export function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps)
   useEffect(() => {
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.error('ErrorFallback:', error)
+      logger.error('ErrorFallback:', error)
     }
   }, [error])
 

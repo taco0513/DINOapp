@@ -1,6 +1,8 @@
 import type { CountryVisit, SchengenStatus, SchengenViolation } from '@/types/global'
 import { getSchengenCountries } from '@/data/countries'
 
+// TODO: Remove unused logger import
+
 /**
  * Schengen Zone Calculator Module
  * 
@@ -39,7 +41,7 @@ export interface SchengenVisit {
  * @example
  * ```typescript
  * if (isSchengenCountry('France')) {
- *   console.log('France is in the Schengen Area');
+ *   console.info('France is in the Schengen Area');
  * }
  * ```
  */
@@ -74,9 +76,9 @@ function calculateDaysBetween(startDate: Date, endDate: Date): number {
  * ];
  * 
  * const status = calculateSchengenStatus(visits);
- * console.log(`Used: ${status.usedDays}/90 days`);
- * console.log(`Remaining: ${status.remainingDays} days`);
- * console.log(`Compliant: ${status.isCompliant}`);
+ * console.info('Used: ${status.usedDays}/90 days');
+ * console.info('Remaining: ${status.remainingDays} days');
+ * console.info('Compliant: ${status.isCompliant}');
  * ```
  */
 export function calculateSchengenStatus(visits: CountryVisit[]): SchengenStatus {
@@ -193,9 +195,9 @@ export function calculateMaxStayDays(status: SchengenStatus): number {
  * ```typescript
  * const nextEntry = getNextEntryDate(visits);
  * if (nextEntry) {
- *   console.log(`Can enter Schengen area from: ${nextEntry.toLocaleDateString()}`);
+ *   console.info('Can enter Schengen area from: ${nextEntry.toLocaleDateString()}');
  * } else {
- *   console.log('Can enter Schengen area immediately');
+ *   console.info('Can enter Schengen area immediately');
  * }
  * ```
  */
@@ -249,8 +251,8 @@ export interface FutureTripValidation {
  * );
  * 
  * if (!validation.canTravel) {
- *   console.log('Trip not allowed:', validation.warnings);
- *   console.log('Suggestions:', validation.suggestions);
+ *   console.debug('Trip not allowed:', validation.warnings);
+ *   console.debug('Suggestions:', validation.suggestions);
  * }
  * ```
  */
@@ -383,9 +385,9 @@ function calculateSchengenStatusOnDate(visits: CountryVisit[], checkDate: Date):
  * ```typescript
  * const safeDates = getSafeTravelDates(visits, 14); // 14-day trip
  * if (safeDates) {
- *   console.log(`Safe to travel from ${safeDates.startDate} to ${safeDates.endDate}`);
+ *   console.info('Safe to travel from ${safeDates.startDate} to ${safeDates.endDate}');
  * } else {
- *   console.log('No safe dates found within the next year');
+ *   console.info('No safe dates found within the next year');
  * }
  * ```
  */

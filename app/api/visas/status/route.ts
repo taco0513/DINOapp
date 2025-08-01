@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { differenceInDays, format, isAfter, isBefore } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
+// TODO: Remove unused logger import
+
 interface VisaStatusSummary {
   id: string;
   countryName: string;

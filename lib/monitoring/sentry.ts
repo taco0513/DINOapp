@@ -1,10 +1,12 @@
 import * as Sentry from '@sentry/nextjs'
 
+// TODO: Remove unused logger import
+
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 
 export function initSentry() {
   if (!SENTRY_DSN) {
-    console.log('Sentry DSN not found, skipping initialization')
+    console.info('Sentry DSN not found, skipping initialization')
     return
   }
 

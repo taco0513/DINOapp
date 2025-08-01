@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger'
+
 // import { useRouter } from 'next/navigation';
 
 interface PerformanceMetrics {
@@ -70,7 +72,7 @@ export default function PerformanceMonitor({
           ],
         });
       } catch (error) {
-        console.error('Failed to initialize performance observer:', error);
+        logger.error('Failed to initialize performance observer:', error);
       }
     };
 
@@ -118,7 +120,7 @@ export default function PerformanceMonitor({
       setMetrics(newMetrics);
 
       if (debug) {
-        console.log('Performance metric updated:', entry.entryType, newMetrics);
+        logger.debug('Performance metric updated:', entry.entryType, newMetrics);
       }
     };
 
@@ -213,10 +215,10 @@ export default function PerformanceMonitor({
       }
 
       if (debug) {
-        console.log('Performance metrics reported:', metrics);
+        logger.debug('Performance metrics reported:', metrics);
       }
     } catch (error) {
-      console.error('Failed to report performance metrics:', error);
+      logger.error('Failed to report performance metrics:', error);
     }
   };
 

@@ -1,6 +1,8 @@
 import webpush from 'web-push';
 import { prisma } from '@/lib/prisma';
 
+// TODO: Remove unused logger import
+
 // Configure web-push with VAPID details
 const vapidKeys = {
   publicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
@@ -50,7 +52,7 @@ export class PushNotificationService {
       });
 
       if (subscriptions.length === 0) {
-        console.log(`No active push subscriptions found for user ${userId}`);
+        console.info('No active push subscriptions found for user ${userId}');
         return false;
       }
 
@@ -60,13 +62,13 @@ export class PushNotificationService {
       });
 
       if (!notificationSettings?.pushEnabled) {
-        console.log(`Push notifications disabled for user ${userId}`);
+        console.info('Push notifications disabled for user ${userId}');
         return false;
       }
 
       // Check quiet hours
       if (this.isInQuietHours(notificationSettings)) {
-        console.log(`User ${userId} is in quiet hours`);
+        console.info('User ${userId} is in quiet hours');
         return false;
       }
 
@@ -79,7 +81,7 @@ export class PushNotificationService {
       await this.logNotification(userId, payload);
 
       const successCount = results.filter(r => r.status === 'fulfilled').length;
-      console.log(`Sent push notification to ${successCount}/${subscriptions.length} devices for user ${userId}`);
+      console.info('Sent push notification to ${successCount}/${subscriptions.length} devices for user ${userId}');
 
       return successCount > 0;
     } catch (error) {
@@ -107,9 +109,9 @@ export class PushNotificationService {
         JSON.stringify(payload)
       );
 
-      console.log(`Push notification sent to ${subscription.endpoint}`);
+      console.info('Push notification sent to ${subscription.endpoint}');
     } catch (error: any) {
-      console.error(`Failed to send push notification to ${subscription.endpoint}:`, error);
+      console.error('Failed to send push notification to ${subscription.endpoint}:', error);
 
       // Handle subscription errors
       if (error.statusCode === 410) {

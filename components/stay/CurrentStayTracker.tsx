@@ -3,10 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, differenceInDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import {
-  MapPin,
-  Calendar,
-  Clock,
+import { MapPin, Calendar, Clock,
   AlertTriangle,
   CheckCircle2,
   XCircle,
@@ -16,8 +13,8 @@ import {
   Plus,
   Edit,
   Loader2,
-  RefreshCw
-} from 'lucide-react';
+  RefreshCw } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -83,7 +80,7 @@ export function CurrentStayTracker({
         throw new Error(result.error || 'Failed to load stay data');
       }
     } catch (error) {
-      console.error('Error loading stay data:', error);
+      logger.error('Error loading stay data:', error);
       toast.error('체류 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);

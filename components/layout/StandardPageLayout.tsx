@@ -45,15 +45,19 @@ export function StandardCard({
   children, 
   title, 
   className = '',
-  titleIcon
+  titleIcon,
+  action
 }: StandardCardProps) {
   return (
     <div className={`${className}`} style={{ backgroundColor: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', padding: 'var(--space-6)' }}>
       {title && (
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginBottom: 'var(--space-6)', textAlign: 'center' }}>
-          {titleIcon && <span className="mr-2">{titleIcon}</span>}
-          {title}
-        </h2>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
+          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
+            {titleIcon && <span className="mr-2">{titleIcon}</span>}
+            {title}
+          </h2>
+          {action && <div>{action}</div>}
+        </div>
       )}
       {children}
     </div>
@@ -76,6 +80,7 @@ export function StatsCard({
     emerald: 'bg-emerald-50 border-emerald-100 text-emerald-600 text-emerald-700',
     red: 'bg-red-50 border-red-100 text-red-600 text-red-700',
     yellow: 'bg-yellow-50 border-yellow-100 text-yellow-600 text-yellow-700',
+    orange: 'bg-orange-50 border-orange-100 text-orange-600 text-orange-700',
   }
   
   const [bgColor, borderColor, valueColor, labelColor] = colorStyles[color].split(' ')

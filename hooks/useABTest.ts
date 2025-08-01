@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
+// TODO: Remove unused logger import
+
 interface ABTestHook {
   variant: string | null;
   loading: boolean;

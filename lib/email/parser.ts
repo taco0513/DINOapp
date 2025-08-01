@@ -1,10 +1,7 @@
-import { 
-  EmailParserResult, 
-  EmailParserOptions, 
-  ParsedEmailData, 
+import { EmailParserResult, EmailParserOptions, ParsedEmailData, 
   EmailProvider,
-  MAJOR_AIRPORTS 
-} from '@/types/email';
+  MAJOR_AIRPORTS } from '@/types/email'
+// TODO: Remove unused logger import
 import { 
   EMAIL_PROVIDERS,
   // COMMON_DATE_PATTERNS,
@@ -41,7 +38,7 @@ import {
  * );
  * 
  * if (result.success) {
- *   console.log('Flight:', result.data.flightNumber);
+ *   console.debug('Flight:', result.data.flightNumber);
  * }
  * ```
  */

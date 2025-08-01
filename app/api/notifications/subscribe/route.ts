@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { pushNotificationService } from '@/lib/notifications/push-service';
 
+// TODO: Remove unused logger import
+
 /**
  * Subscribe to push notifications
  * POST /api/notifications/subscribe

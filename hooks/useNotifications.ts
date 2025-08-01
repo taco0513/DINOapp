@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -44,7 +45,7 @@ export function useNotifications() {
         return false
       }
     } catch (error) {
-      console.error('알림 권한 요청 실패:', error)
+      logger.error('알림 권한 요청 실패:', error)
       return false
     }
   }, [isSupported])
@@ -102,7 +103,7 @@ export function useNotifications() {
         })
       })
     } catch (error) {
-      console.error('비자 알림 확인 실패:', error)
+      logger.error('비자 알림 확인 실패:', error)
     }
   }, [showNotification])
 

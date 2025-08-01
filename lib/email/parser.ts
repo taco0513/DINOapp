@@ -1,4 +1,5 @@
 import { EmailParserResult, EmailParserOptions, ParsedEmailData, 
+import { logger } from '@/lib/logger';
   EmailProvider,
   MAJOR_AIRPORTS } from '@/types/email'
 // TODO: Remove unused logger import
@@ -38,7 +39,7 @@ import {
  * );
  * 
  * if (result.success) {
- *   console.debug('Flight:', result.data.flightNumber);
+ *   logger.debug('Flight:', result.data.flightNumber);
  * }
  * ```
  */

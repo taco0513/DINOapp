@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -155,7 +156,7 @@ export function performanceMiddleware(options: PerformanceMiddlewareOptions = {}
 
       // Log slow requests
       if (config.monitoring?.enabled && duration > (config.monitoring.slowThreshold || 1000)) {
-        console.warn(`Slow API request: ${method} ${path} - ${Math.round(duration)}ms`)
+        logger.warn(`Slow API request: ${method} ${path} - ${Math.round(duration)}ms`)
       }
 
       return response
@@ -220,7 +221,7 @@ async function processJSONResponse(
     originalResponse.headers.set('X-Content-Size', String(dataSize))
     
   } catch (error) {
-    console.error('Error processing JSON response:', error)
+    logger.error('Error processing JSON response:', error)
   }
 }
 
@@ -361,7 +362,7 @@ export async function batchProcess<T, R>(
       if (result.status === 'fulfilled') {
         results.push(result.value)
       } else {
-        console.error('Batch processing error:', result.reason)
+        logger.error('Batch processing error:', result.reason)
       }
     }
     

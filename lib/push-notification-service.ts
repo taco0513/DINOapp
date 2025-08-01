@@ -1,5 +1,6 @@
 import webpush from 'web-push';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -52,7 +53,7 @@ export class PushNotificationService {
       });
 
       if (subscriptions.length === 0) {
-        console.info('No active push subscriptions found for user ${userId}');
+        logger.info('No active push subscriptions found for user ${userId}');
         return false;
       }
 
@@ -62,13 +63,13 @@ export class PushNotificationService {
       });
 
       if (!notificationSettings?.pushEnabled) {
-        console.info('Push notifications disabled for user ${userId}');
+        logger.info('Push notifications disabled for user ${userId}');
         return false;
       }
 
       // Check quiet hours
       if (this.isInQuietHours(notificationSettings)) {
-        console.info('User ${userId} is in quiet hours');
+        logger.info('User ${userId} is in quiet hours');
         return false;
       }
 
@@ -81,11 +82,11 @@ export class PushNotificationService {
       await this.logNotification(userId, payload);
 
       const successCount = results.filter(r => r.status === 'fulfilled').length;
-      console.info('Sent push notification to ${successCount}/${subscriptions.length} devices for user ${userId}');
+      logger.info('Sent push notification to ${successCount}/${subscriptions.length} devices for user ${userId}');
 
       return successCount > 0;
     } catch (error) {
-      console.error('Error sending push notification to user:', error);
+      logger.error('Error sending push notification to user:', error);
       return false;
     }
   }
@@ -109,9 +110,9 @@ export class PushNotificationService {
         JSON.stringify(payload)
       );
 
-      console.info('Push notification sent to ${subscription.endpoint}');
+      logger.info('Push notification sent to ${subscription.endpoint}');
     } catch (error: any) {
-      console.error('Failed to send push notification to ${subscription.endpoint}:', error);
+      logger.error('Failed to send push notification to ${subscription.endpoint}:', error);
 
       // Handle subscription errors
       if (error.statusCode === 410) {
@@ -239,7 +240,7 @@ export class PushNotificationService {
         }
       });
     } catch (error) {
-      console.error('Error logging notification:', error);
+      logger.error('Error logging notification:', error);
     }
   }
 }

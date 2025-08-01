@@ -7,6 +7,7 @@ import { generateVisaExpiryEmail, generateWeeklySummaryEmail, generateRenewalSuc
 import { prisma } from '@/lib/prisma';
 import { differenceInDays, format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { logger } from '@/lib/logger';
 
 interface EmailConfig {
   smtpHost?: string;
@@ -102,11 +103,11 @@ export class VisaEmailService {
         text: emailContent.text
       });
 
-      console.info('Visa expiry email sent to ${visaData.user.email} for ${visaData.countryName} visa');
+      logger.info('Visa expiry email sent to ${visaData.user.email} for ${visaData.countryName} visa');
       return true;
 
     } catch (error) {
-      console.error('Failed to send visa expiry email:', error);
+      logger.error('Failed to send visa expiry email:', error);
       return false;
     }
   }
@@ -133,7 +134,7 @@ export class VisaEmailService {
       });
 
       if (!user || user.userVisas.length === 0) {
-        console.info('No active visas found for user ${userId}, skipping weekly summary');
+        logger.info('No active visas found for user ${userId}, skipping weekly summary');
         return true;
       }
 
@@ -155,11 +156,11 @@ export class VisaEmailService {
         text: emailContent.text
       });
 
-      console.info('Weekly visa summary sent to ${user.email}');
+      logger.info('Weekly visa summary sent to ${user.email}');
       return true;
 
     } catch (error) {
-      console.error('Failed to send weekly visa summary:', error);
+      logger.error('Failed to send weekly visa summary:', error);
       return false;
     }
   }
@@ -187,20 +188,20 @@ export class VisaEmailService {
         }
       });
 
-      console.info('Sending weekly summaries to ${usersWithVisas.length} users');
+      logger.info('Sending weekly summaries to ${usersWithVisas.length} users');
 
       for (const user of usersWithVisas) {
         try {
           await this.sendWeeklySummary(user.id);
           success++;
         } catch (error) {
-          console.error('Failed to send weekly summary to user ${user.id}:', error);
+          logger.error('Failed to send weekly summary to user ${user.id}:', error);
           failed++;
         }
       }
 
     } catch (error) {
-      console.error('Failed to send weekly summaries:', error);
+      logger.error('Failed to send weekly summaries:', error);
       failed++;
     }
 
@@ -230,11 +231,11 @@ export class VisaEmailService {
         text: emailContent.text
       });
 
-      console.info('Visa renewal success email sent to ${visaData.user.email} for ${visaData.countryName} visa');
+      logger.info('Visa renewal success email sent to ${visaData.user.email} for ${visaData.countryName} visa');
       return true;
 
     } catch (error) {
-      console.error('Failed to send visa renewal success email:', error);
+      logger.error('Failed to send visa renewal success email:', error);
       return false;
     }
   }
@@ -252,7 +253,7 @@ export class VisaEmailService {
     // 현재는 개발 환경을 위해 콘솔 로그만 출력
     
     if (process.env.NODE_ENV === 'development') {
-      console.log('📧 Email would be sent:', {
+      logger.info('📧 Email would be sent:', {
         to: options.to,
         subject: options.subject,
         preview: options.text.substring(0, 200) + '...'
@@ -272,9 +273,9 @@ export class VisaEmailService {
       //   text: options.text
       // });
 
-      console.info('Email sent to ${options.to}: ${options.subject}');
+      logger.info('Email sent to ${options.to}: ${options.subject}');
     } catch (error) {
-      console.error('SMTP send failed:', error);
+      logger.error('SMTP send failed:', error);
       throw error;
     }
   }

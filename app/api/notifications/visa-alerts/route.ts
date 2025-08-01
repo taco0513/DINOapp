@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { checkVisaAlerts } from '@/lib/notifications/visa-alerts'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -39,7 +40,7 @@ export async function GET() {
     
     return NextResponse.json(formattedAlerts)
   } catch (error) {
-    console.error('비자 알림 확인 오류:', error)
+    logger.error('비자 알림 확인 오류:', error)
     return NextResponse.json(
       { error: 'Failed to check visa alerts' },
       { status: 500 }

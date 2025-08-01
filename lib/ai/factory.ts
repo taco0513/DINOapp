@@ -6,6 +6,7 @@ import { MockAIService } from './services/mock';
 // import { OpenAIService } from './services/openai';
 // import { ClaudeAIService } from './services/claude';
 import { AIServiceType, AIServiceConfig } from './types';
+import { logger } from '@/lib/logger';
 
 export class AIServiceFactory {
   private static instances: Map<string, BaseAIService> = new Map();
@@ -32,19 +33,19 @@ export class AIServiceFactory {
     switch (type) {
       case 'gemini':
         // TODO: Gemini 서비스 구현
-        console.warn('Gemini service not implemented yet, using mock');
+        logger.warn('Gemini service not implemented yet, using mock');
         service = new MockAIService(defaultConfig);
         break;
         
       case 'openai':
         // TODO: OpenAI 서비스 구현
-        console.warn('OpenAI service not implemented yet, using mock');
+        logger.warn('OpenAI service not implemented yet, using mock');
         service = new MockAIService(defaultConfig);
         break;
         
       case 'claude':
         // TODO: Claude 서비스 구현
-        console.warn('Claude service not implemented yet, using mock');
+        logger.warn('Claude service not implemented yet, using mock');
         service = new MockAIService(defaultConfig);
         break;
         

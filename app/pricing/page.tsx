@@ -1,9 +1,9 @@
-import { Metadata } from 'next';
-import PricingSection from '@/components/billing/PricingCard';
-import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
-import { Icon } from '@/components/icons';
-
 export const metadata: Metadata = {
+import { Metadata } from 'next';
+import { Icon } from '@/components/icons';
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
+import PricingSection from '@/components/billing/PricingCard';
+
   title: '가격 - DINO',
   description:
     '디지털 노마드를 위한 여행 관리 서비스의 간단하고 투명한 가격 정책을 확인하세요.',

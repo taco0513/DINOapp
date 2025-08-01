@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     // Stripe 미설정 시 모의 결제 페이지
     if (!process.env.STRIPE_SECRET_KEY) {
-      console.log('Stripe 미설정 - 모의 결제 처리:', {
+      logger.info('Stripe 미설정 - 모의 결제 처리:', {
         planId,
         user: session.user.email,
         priceId: PRICE_IDS[planId as keyof typeof PRICE_IDS],
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: checkoutSession.url });
 
   } catch (error) {
-    console.error('결제 페이지 생성 오류:', error);
+    logger.error('결제 페이지 생성 오류:', error);
     
     return NextResponse.json(
       {

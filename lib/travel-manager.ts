@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -334,7 +335,7 @@ export class TravelManager {
    * ```typescript
    * const deleted = await manager.deleteTrip('trip123');
    * if (deleted) {
-   *   console.info('Trip deleted successfully');
+   *   logger.info('Trip deleted successfully');
    * }
    * ```
    */
@@ -358,9 +359,9 @@ export class TravelManager {
    * @example
    * ```typescript
    * const insights = await manager.getTravelInsights();
-   * console.info('Countries visited: ${insights.summary.countriesVisited}');
-   * console.info('Schengen days used: ${insights.summary.schengenDaysUsed}/90');
-   * insights.recommendations.forEach(rec => console.log(rec));
+   * logger.info('Countries visited: ${insights.summary.countriesVisited}');
+   * logger.info('Schengen days used: ${insights.summary.schengenDaysUsed}/90');
+   * insights.recommendations.forEach(rec => logger.info(rec));
    * ```
    */
   async getTravelInsights(): Promise<TravelInsights> {
@@ -570,7 +571,7 @@ export class TravelManager {
    *   '2024-07-15'
    * );
    * if (!validation.canTravel) {
-   *   console.debug('Cannot travel:', validation.warnings);
+   *   logger.debug('Cannot travel:', validation.warnings);
    * }
    * ```
    */
@@ -606,8 +607,8 @@ export class TravelManager {
    * @example
    * ```typescript
    * const requirements = await manager.getVisaRequirements('KR', 'US');
-   * console.info('Visa required: ${requirements.visaRequired}');
-   * console.info('Visa-free stay: ${requirements.visaFreeStay} days');
+   * logger.info('Visa required: ${requirements.visaRequired}');
+   * logger.info('Visa-free stay: ${requirements.visaFreeStay} days');
    * ```
    */
   async getVisaRequirements(fromCountry: string, toCountry: string) {
@@ -653,7 +654,7 @@ export class TravelManager {
    * ```typescript
    * const alerts = await manager.getTravelAlerts('France');
    * alerts.forEach(alert => {
-   *   console.info('${alert.severity}: ${alert.title}');
+   *   logger.info('${alert.severity}: ${alert.title}');
    * });
    * ```
    */
@@ -781,7 +782,7 @@ export function createTravelManager(userId: string): TravelManager {
  * @example
  * ```typescript
  * const summary = await getUserTravelSummary('user123');
- * console.info('Total trips: ${summary.totalTrips}');
+ * logger.info('Total trips: ${summary.totalTrips}');
  * ```
  */
 export async function getUserTravelSummary(

@@ -2,6 +2,7 @@
 
 // PWA Utility Functions
 import { useEffect, useState } from 'react'
+import { logger } from '@/lib/logger';
 
 // Check if PWA is supported
 export const isPWASupported = () => {
@@ -23,7 +24,7 @@ export const isStandalone = () => {
 // Register service worker
 export const registerServiceWorker = async () => {
   if (!isPWASupported()) {
-    console.info('PWA not supported on this browser')
+    logger.info('PWA not supported on this browser')
     return null
   }
 
@@ -32,7 +33,7 @@ export const registerServiceWorker = async () => {
       scope: '/'
     })
     
-    console.debug('Service Worker registered successfully:', registration)
+    logger.debug('Service Worker registered successfully:', registration)
     
     // Check for updates
     registration.addEventListener('updatefound', () => {
@@ -49,7 +50,7 @@ export const registerServiceWorker = async () => {
     
     return registration
   } catch (error) {
-    console.error('Service Worker registration failed:', error)
+    logger.error('Service Worker registration failed:', error)
     return null
   }
 }
@@ -57,7 +58,7 @@ export const registerServiceWorker = async () => {
 // Request notification permission
 export const requestNotificationPermission = async () => {
   if (!('Notification' in window)) {
-    console.info('Notifications not supported')
+    logger.info('Notifications not supported')
     return 'unsupported'
   }
 
@@ -78,7 +79,7 @@ export const subscribeToPushNotifications = async (registration: ServiceWorkerRe
   try {
     const permission = await requestNotificationPermission()
     if (permission !== 'granted') {
-      console.info('Notification permission denied')
+      logger.info('Notification permission denied')
       return null
     }
 
@@ -98,10 +99,10 @@ export const subscribeToPushNotifications = async (registration: ServiceWorkerRe
       body: JSON.stringify(subscription)
     })
 
-    console.info('Push subscription successful')
+    logger.info('Push subscription successful')
     return subscription
   } catch (error) {
-    console.error('Push subscription failed:', error)
+    logger.error('Push subscription failed:', error)
     return null
   }
 }
@@ -143,7 +144,7 @@ export const checkForUpdates = async () => {
       }
     })
   } catch (error) {
-    console.error('Update check failed:', error)
+    logger.error('Update check failed:', error)
     return false
   }
 }
@@ -255,7 +256,7 @@ export const clearAppCache = async () => {
     const cacheNames = await caches.keys()
     const deletePromises = cacheNames.map(name => caches.delete(name))
     await Promise.all(deletePromises)
-    console.info('All caches cleared')
+    logger.info('All caches cleared')
   }
 }
 
@@ -275,7 +276,7 @@ export const getCacheSize = async () => {
 // Offline data sync utilities
 export const syncOfflineData = async () => {
   if (!navigator.onLine) {
-    console.info('Cannot sync: offline')
+    logger.info('Cannot sync: offline')
     return false
   }
 
@@ -287,7 +288,7 @@ export const syncOfflineData = async () => {
     }
     return true
   } catch (error) {
-    console.error('Sync failed:', error)
+    logger.error('Sync failed:', error)
     return false
   }
 }
@@ -302,7 +303,7 @@ export const saveForOffline = async (key: string, data: any) => {
     await cache.put(`/offline-data/${key}`, response)
     return true
   } catch (error) {
-    console.error('Failed to save offline data:', error)
+    logger.error('Failed to save offline data:', error)
     return false
   }
 }
@@ -317,7 +318,7 @@ export const getOfflineData = async (key: string) => {
     }
     return null
   } catch (error) {
-    console.error('Failed to get offline data:', error)
+    logger.error('Failed to get offline data:', error)
     return null
   }
 }

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { parseISO, differenceInDays } from 'date-fns';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { entries, autoConfirm } = SaveEntriesSchema.parse(body);
+    const { entries, autoConfirm: _autoConfirm } = SaveEntriesSchema.parse(body);
 
     let saved = 0;
     let skipped = 0;
@@ -129,11 +130,11 @@ export async function POST(request: NextRequest) {
         // 체류 기간 초과 확인
         if (stayDays && userVisa.maxStayDays && stayDays > userVisa.maxStayDays) {
           // 경고 알림 생성 (추후 구현)
-          console.warn(`Stay duration exceeded for visa ${userVisa.id}: ${stayDays} days > ${userVisa.maxStayDays} days`);
+          logger.warn(`Stay duration exceeded for visa ${userVisa.id}: ${stayDays} days > ${userVisa.maxStayDays} days`);
         }
 
       } catch (error) {
-        console.error('Error saving entry:', error);
+        logger.error('Error saving entry:', error);
         errors++;
       }
     }
@@ -157,7 +158,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error saving auto entries:', error);
+    logger.error('Error saving auto entries:', error);
     return NextResponse.json(
       { error: 'Failed to save entries' },
       { status: 500 }

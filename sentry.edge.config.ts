@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -19,7 +20,7 @@ if (SENTRY_DSN) {
     beforeSend(event) {
       // Edge Runtime에서는 제한적인 정보만 사용 가능
       if (process.env.NODE_ENV === 'development') {
-        console.error('Sentry Edge Event:', event)
+        logger.error('Sentry Edge Event:', event)
       }
       
       return event

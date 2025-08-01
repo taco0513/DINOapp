@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { externalVisaApiService } from '@/lib/visa/external-visa-api';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
           toCountry.toUpperCase()
         );
       } catch (error) {
-        console.warn('외부 API 조회 실패:', error);
+        logger.warn('외부 API 조회 실패:', error);
       }
 
       // 3. 데이터 통합 및 우선순위 결정
@@ -138,7 +139,7 @@ export async function GET(request: NextRequest) {
       passportCountry,
     });
   } catch (error) {
-    console.error('Error fetching visa requirements:', error);
+    logger.error('Error fetching visa requirements:', error);
     return NextResponse.json(
       { error: 'Failed to fetch visa requirements' },
       { status: 500 }
@@ -234,7 +235,7 @@ export async function POST(request: NextRequest) {
       data: parsedRequirement,
     });
   } catch (error) {
-    console.error('Error creating/updating visa requirement:', error);
+    logger.error('Error creating/updating visa requirement:', error);
     return NextResponse.json(
       { error: 'Failed to save visa requirement' },
       { status: 500 }
@@ -269,9 +270,9 @@ async function updateLocalDataInBackground(
         lastUpdated: new Date(),
       },
     });
-    console.info('로컬 DB 업데이트 완료: ${localId}');
+    logger.info('로컬 DB 업데이트 완료: ${localId}');
   } catch (error) {
-    console.error('로컬 DB 업데이트 실패:', error);
+    logger.error('로컬 DB 업데이트 실패:', error);
   }
 }
 
@@ -291,10 +292,10 @@ async function saveToLocalDataInBackground(externalData: any): Promise<void> {
         notes: `Added from ${externalData.source} API`,
       },
     });
-    console.log(
+    logger.info(
       `새 데이터 로컬 DB 저장 완료: ${externalData.fromCountry}-${externalData.toCountry}`
     );
   } catch (error) {
-    console.error('로컬 DB 저장 실패:', error);
+    logger.error('로컬 DB 저장 실패:', error);
   }
 }

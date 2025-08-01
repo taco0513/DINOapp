@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 // TODO: Remove unused logger import
 import {
+import { logger } from '@/lib/logger';
   checkPerformanceAlerts,
   checkSecurityAlerts,
   checkUsageAlerts,
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
       data: alerts,
     });
   } catch (error) {
-    console.error('Alert API error:', error);
+    logger.error('Alert API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -79,7 +80,7 @@ export async function GET(_request: NextRequest) {
       alerts: [],
     });
   } catch (error) {
-    console.error('Alert API error:', error);
+    logger.error('Alert API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

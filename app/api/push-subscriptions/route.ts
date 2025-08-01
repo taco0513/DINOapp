@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error saving push subscription:', error);
+    logger.error('Error saving push subscription:', error);
     return NextResponse.json(
       { error: 'Failed to save push subscription' },
       { status: 500 }
@@ -125,7 +126,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    console.error('Error removing push subscription:', error);
+    logger.error('Error removing push subscription:', error);
     return NextResponse.json(
       { error: 'Failed to remove push subscription' },
       { status: 500 }
@@ -134,7 +135,7 @@ export async function DELETE(request: NextRequest) {
 }
 
 // GET /api/push-subscriptions - Get user's push subscriptions
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -167,7 +168,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching push subscriptions:', error);
+    logger.error('Error fetching push subscriptions:', error);
     return NextResponse.json(
       { error: 'Failed to fetch push subscriptions' },
       { status: 500 }

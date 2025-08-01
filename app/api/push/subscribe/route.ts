@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
     
     // In production, save this subscription to database
     // For now, we'll just log it
-    console.log('Push subscription received:', {
+    logger.info('Push subscription received:', {
       userId: session.user.id,
       endpoint: subscription.endpoint,
       keys: subscription.keys
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
       message: '푸시 알림 구독이 완료되었습니다'
     })
   } catch (error) {
-    console.error('Push subscription error:', error)
+    logger.error('Push subscription error:', error)
     return NextResponse.json(
       { error: '구독 처리 중 오류가 발생했습니다' },
       { status: 500 }

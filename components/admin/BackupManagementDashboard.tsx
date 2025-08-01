@@ -101,7 +101,7 @@ export default function BackupManagementDashboard() {
 
       if (response.ok) {
         const result = await response.json()
-        console.log(result.valid 
+        logger.info(result.valid 
           ? `✅ 복구 계획 "${scenario}"이 유효하고 준비되었습니다`
           : `❌ 복구 계획 "${scenario}" 검증에 실패했습니다`
         )

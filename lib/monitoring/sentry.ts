@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -6,7 +7,7 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 
 export function initSentry() {
   if (!SENTRY_DSN) {
-    console.info('Sentry DSN not found, skipping initialization')
+    logger.info('Sentry DSN not found, skipping initialization')
     return
   }
 
@@ -36,8 +37,8 @@ export function initSentry() {
     beforeSend(event, hint) {
       // 개발 환경에서는 콘솔에도 에러 출력
       if (process.env.NODE_ENV === 'development') {
-        console.error('Sentry Event:', event)
-        console.error('Error:', hint.originalException)
+        logger.error('Sentry Event:', event)
+        logger.error('Error:', hint.originalException)
       }
       
       // 민감한 정보 제거
@@ -82,7 +83,7 @@ export function clearSentryUser() {
 
 // 커스텀 에러 캡처
 export function captureError(error: Error, context?: Record<string, any>) {
-  console.error('Capturing error:', error)
+  logger.error('Capturing error:', error)
   
   Sentry.captureException(error, {
     contexts: {
@@ -115,7 +116,7 @@ export function startTransaction(name: string, op: string): (() => void) | null 
     // Fallback to deprecated API (commented out due to type issues)
     // Modern Sentry versions no longer support startTransaction
   } catch (error) {
-    console.warn('Sentry transaction/span API not available:', error)
+    logger.warn('Sentry transaction/span API not available:', error)
   }
   return null
 }

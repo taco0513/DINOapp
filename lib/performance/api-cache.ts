@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Advanced API caching and optimization system
  * Implements in-memory LRU cache with TTL and Redis-like functionality
@@ -71,7 +72,7 @@ export class PerformanceCache<T = any> {
 
     // Check size limits
     if (size > this.maxSize) {
-      console.warn(`Cache entry too large: ${size} bytes`);
+      logger.warn(`Cache entry too large: ${size} bytes`);
       return;
     }
 

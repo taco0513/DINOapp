@@ -1,4 +1,5 @@
 import { captureMessage } from './sentry'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -40,7 +41,7 @@ export async function sendAlert(alert: Alert) {
   
   // 콘솔 로그 (개발 환경)
   if (process.env.NODE_ENV === 'development') {
-    console.debug('[${alert.type.toUpperCase()}] ${alert.category}: ${alert.message}', alert.metadata)
+    logger.debug('[${alert.type.toUpperCase()}] ${alert.category}: ${alert.message}', alert.metadata)
   }
   
   // TODO: 이메일 알림 전송 (프로덕션)

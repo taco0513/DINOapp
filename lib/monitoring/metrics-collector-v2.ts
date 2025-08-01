@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 // New metrics collector for testing
@@ -155,7 +156,7 @@ export class MetricsCollector {
       // Put metrics back in buffer on error
       this.buffer.unshift(...metricsToFlush)
       // Log error but don't throw - handle gracefully
-      console.error('Metrics storage error:', error)
+      logger.error('Metrics storage error:', error)
     }
   }
 

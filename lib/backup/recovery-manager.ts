@@ -208,7 +208,7 @@ export class DisasterRecoveryManager {
     const startTime = new Date()
     const timer = metrics.timer('recovery.execution.duration')
     
-    console.info('Starting disaster recovery', { scenario })
+    logger.info('Starting disaster recovery', { scenario })
     
     // Send alert
     await systemAlert.error(
@@ -241,7 +241,7 @@ export class DisasterRecoveryManager {
     try {
       // Execute each step
       for (const step of plan.steps) {
-        console.info(`Executing recovery step ${step.order}/${plan.steps.length}`, {
+        logger.info(`Executing recovery step ${step.order}/${plan.steps.length}`, {
           name: step.name,
           description: step.description
         })
@@ -257,13 +257,13 @@ export class DisasterRecoveryManager {
           }
 
           result.stepsCompleted++
-          console.info(`Recovery step completed`, { step: step.name })
+          logger.info(`Recovery step completed`, { step: step.name })
 
         } catch (stepError) {
           const error = stepError instanceof Error ? stepError.message : 'Unknown error'
           result.errors.push(`Step ${step.order} (${step.name}): ${error}`)
           
-          console.error('Recovery step failed', { 
+          logger.error('Recovery step failed', { 
             step: step.name, 
             error: stepError 
           })
@@ -272,9 +272,9 @@ export class DisasterRecoveryManager {
           if (step.rollback) {
             try {
               await step.rollback()
-              console.info('Step rollback successful', { step: step.name })
+              logger.info('Step rollback successful', { step: step.name })
             } catch (rollbackError) {
-              console.error('Step rollback failed', { 
+              logger.error('Step rollback failed', { 
                 step: step.name, 
                 error: rollbackError 
               })
@@ -326,7 +326,7 @@ export class DisasterRecoveryManager {
         )
       }
 
-      console.info('Recovery process completed', result)
+      logger.info('Recovery process completed', result)
       return result
 
     } catch (error) {
@@ -336,7 +336,7 @@ export class DisasterRecoveryManager {
       result.duration = result.endTime.getTime() - startTime.getTime()
       result.errors.push(error instanceof Error ? error.message : 'Unknown error')
       
-      console.error('Recovery process failed', { error, result })
+      logger.error('Recovery process failed', { error, result })
       
       metrics.increment('recovery.failed', 1, { scenario })
       
@@ -348,11 +348,11 @@ export class DisasterRecoveryManager {
    * Test recovery plan without executing
    */
   async testRecoveryPlan(scenario: RecoveryScenario): Promise<boolean> {
-    console.info('Testing recovery plan', { scenario })
+    logger.info('Testing recovery plan', { scenario })
 
     const plan = this.recoveryPlans.get(scenario)
     if (!plan) {
-      console.error('No recovery plan found', { scenario })
+      logger.error('No recovery plan found', { scenario })
       return false
     }
 
@@ -361,22 +361,22 @@ export class DisasterRecoveryManager {
       for (const backupType of plan.requiredBackups) {
         const available = await this.verifyBackupAvailable(backupType)
         if (!available) {
-          console.error('Required backup not available', { backupType })
+          logger.error('Required backup not available', { backupType })
           return false
         }
       }
 
       // Verify each step can be executed
       for (const step of plan.steps) {
-        console.debug('Testing recovery step', { step: step.name })
+        logger.debug('Testing recovery step', { step: step.name })
         // In a real test, we might do more validation here
       }
 
-      console.info('Recovery plan test passed', { scenario })
+      logger.info('Recovery plan test passed', { scenario })
       return true
 
     } catch (error) {
-      console.error('Recovery plan test failed', { scenario, error })
+      logger.error('Recovery plan test failed', { scenario, error })
       return false
     }
   }
@@ -384,13 +384,13 @@ export class DisasterRecoveryManager {
   // Recovery action implementations
 
   private async stopApplication(): Promise<void> {
-    console.info('Stopping application')
+    logger.info('Stopping application')
     // Implementation depends on deployment method
     // Could involve PM2, systemd, Docker, etc.
   }
 
   private async startApplication(): Promise<void> {
-    console.info('Starting application')
+    logger.info('Starting application')
     // Implementation depends on deployment method
   }
 
@@ -435,27 +435,27 @@ export class DisasterRecoveryManager {
   }
 
   private async rollbackDatabaseRestore(): Promise<void> {
-    console.warn('Rolling back database restore')
+    logger.warn('Rolling back database restore')
     // Restore from corrupted backup if needed
   }
 
   private async scanForMissingFiles(): Promise<void> {
-    console.info('Scanning for missing files')
+    logger.info('Scanning for missing files')
     // Compare current files with expected files
   }
 
   private async provisionInfrastructure(): Promise<void> {
-    console.info('Provisioning infrastructure')
+    logger.info('Provisioning infrastructure')
     // Use infrastructure as code tools
   }
 
   private async restoreConfiguration(): Promise<void> {
-    console.info('Restoring configuration')
+    logger.info('Restoring configuration')
     // Restore environment variables, secrets, etc.
   }
 
   private async verifyIntegrations(): Promise<void> {
-    console.info('Verifying external integrations')
+    logger.info('Verifying external integrations')
     // Test connections to external services
   }
 
@@ -497,7 +497,7 @@ export class DisasterRecoveryManager {
       
       return true
     } catch (error) {
-      console.error('Database integrity check failed', { error })
+      logger.error('Database integrity check failed', { error })
       return false
     }
   }

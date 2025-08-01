@@ -1,7 +1,7 @@
+export const metadata: Metadata = {
 import { Metadata } from 'next'
 import BackButton from '@/components/legal/BackButton'
 
-export const metadata: Metadata = {
   title: '개인정보처리방침 | DINO',
   description: 'DINO 개인정보처리방침',
 }

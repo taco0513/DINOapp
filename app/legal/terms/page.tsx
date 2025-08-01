@@ -1,7 +1,7 @@
+export const metadata: Metadata = {
 import { Metadata } from 'next'
 import BackButton from '@/components/legal/BackButton'
 
-export const metadata: Metadata = {
   title: '이용약관 | DINO',
   description: 'DINO 서비스 이용약관',
 }

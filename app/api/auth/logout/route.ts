@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -56,7 +57,7 @@ export async function POST(_request: NextRequest) {
     
     return response
   } catch (error) {
-    console.error('Logout error:', error)
+    logger.error('Logout error:', error)
     return NextResponse.json(
       { success: false, error: 'Logout failed' },
       { status: 500 }

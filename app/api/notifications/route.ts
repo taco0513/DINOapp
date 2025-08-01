@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getPrismaClient } from '@/lib/database/dev-prisma';
 // TODO: Remove unused logger import
 import {
+import { logger } from '@/lib/logger';
   checkVisaExpiry,
   checkSchengenWarnings,
   checkUpcomingTrips,
@@ -110,7 +111,7 @@ export async function GET(_request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('[API] Notifications error:', error);
+    logger.error('[API] Notifications error:', error);
     return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId);
   }
 }
@@ -151,7 +152,7 @@ export async function POST(request: NextRequest) {
       message: 'Notification marked as read',
     });
   } catch (error) {
-    console.error('[API] Mark notification read error:', error);
+    logger.error('[API] Mark notification read error:', error);
     return handleApiError(error, ErrorCode.INTERNAL_SERVER_ERROR, requestId);
   }
 }

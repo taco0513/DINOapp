@@ -116,7 +116,7 @@ export class QueryOptimizer {
 
       // Log slow queries
       if (duration > 1000) {
-        this.console.warn('Slow trip query detected', {
+        this.logger.warn('Slow trip query detected', {
           duration,
           params,
           rowCount: trips.length
@@ -126,7 +126,7 @@ export class QueryOptimizer {
       return trips
 
     } catch (error) {
-      this.console.error('Trip query failed', {
+      this.logger.error('Trip query failed', {
         error: error instanceof Error ? error.message : error,
         params,
         duration: Date.now() - startTime
@@ -205,7 +205,7 @@ export class QueryOptimizer {
       return schengenTrips
 
     } catch (error) {
-      this.console.error('Schengen query failed', {
+      this.logger.error('Schengen query failed', {
         error: error instanceof Error ? error.message : error,
         userId,
         duration: Date.now() - startTime
@@ -288,7 +288,7 @@ export class QueryOptimizer {
       return stats
 
     } catch (error) {
-      this.console.error('User stats query failed', {
+      this.logger.error('User stats query failed', {
         error: error instanceof Error ? error.message : error,
         userId,
         duration: Date.now() - startTime
@@ -331,7 +331,7 @@ export class QueryOptimizer {
         timestamp: new Date()
       })
 
-      this.console.info('Batch trip creation completed', {
+      this.logger.info('Batch trip creation completed', {
         userId,
         tripCount: trips.length,
         duration
@@ -340,7 +340,7 @@ export class QueryOptimizer {
       return result
 
     } catch (error) {
-      this.console.error('Batch trip creation failed', {
+      this.logger.error('Batch trip creation failed', {
         error: error instanceof Error ? error.message : error,
         userId,
         tripCount: trips.length,

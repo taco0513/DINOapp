@@ -1,9 +1,8 @@
-import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
+import { Metadata } from 'next';
 import { authOptions } from '@/lib/auth';
 import BackupManagementDashboard from '@/components/admin/BackupManagementDashboard';
-
 
 export const metadata: Metadata = {
   title: '백업 및 복구 - DINO Admin',

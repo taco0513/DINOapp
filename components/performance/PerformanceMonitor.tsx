@@ -47,7 +47,7 @@ export default function PerformanceMonitor({
     setIsSupported(supported);
 
     if (!supported) {
-      console.warn('Performance monitoring not supported in this browser');
+      logger.warn('Performance monitoring not supported in this browser');
       return;
     }
 

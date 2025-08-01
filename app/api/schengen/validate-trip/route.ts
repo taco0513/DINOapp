@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { validateFutureTrip } from '@/lib/schengen-calculator';
 import { validateFutureTripWithVisas } from '@/lib/schengen/enhanced-calculator';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -196,7 +197,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error validating trip:', error);
+    logger.error('Error validating trip:', error);
     return NextResponse.json(
       { error: 'Failed to validate trip' },
       { status: 500 }

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { AIServiceFactory } from '@/lib/ai/factory';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 
 
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ suggestions });
   } catch (error) {
-    console.error('AI assist error:', error);
+    logger.error('AI assist error:', error);
     return NextResponse.json(
       { error: 'Failed to process AI request' },
       { status: 500 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { visaAlerts } from '@/lib/notifications/visa-alerts';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -17,14 +18,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.info('Starting visa expiry check scheduler...');
+    logger.info('Starting visa expiry check scheduler...');
     const startTime = Date.now();
 
     // 만료 예정 비자 확인 및 알림 발송
     await visaAlerts.checkExpiringVisas();
 
     const duration = Date.now() - startTime;
-    console.info(`Visa expiry check completed in ${duration}ms`);
+    logger.info(`Visa expiry check completed in ${duration}ms`);
 
     return NextResponse.json({
       success: true,
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error in visa scheduler:', error);
+    logger.error('Error in visa scheduler:', error);
     return NextResponse.json(
       { 
         error: 'Scheduler execution failed',
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.debug(`Checking visa expiry for user: ${userId}${forceCheck ? " (forced)" : ""}`);
+    logger.debug(`Checking visa expiry for user: ${userId}${forceCheck ? " (forced)" : ""}`);
     const startTime = Date.now();
 
     // 특정 사용자의 비자 만료 확인
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error in user-specific visa check:', error);
+    logger.error('Error in user-specific visa check:', error);
     return NextResponse.json(
       { 
         error: 'User visa check failed',

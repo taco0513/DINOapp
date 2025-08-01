@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -46,7 +47,7 @@ export async function PUT(
       );
     }
 
-    console.error('Error marking notification as read:', error);
+    logger.error('Error marking notification as read:', error);
     return NextResponse.json(
       { error: 'Failed to update notification' },
       { status: 500 }

@@ -183,7 +183,7 @@ export default function IntegrationsPage() {
     if (status === 'authenticated' && session) {
       checkConnections();
     }
-  }, [session, status]);
+  }, [session, status, checkConnections]);
 
   useEffect(() => {
     if (status === 'loading') return;

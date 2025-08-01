@@ -1,23 +1,22 @@
+import Script from 'next/script'
+export const viewport: Viewport = {
 import type { Metadata, Viewport } from 'next'
-import './globals.css'
 import '../styles/design-tokens.css'
 import '../styles/ios-components.css'
 import '../styles/mobile-touch.css'
-import SessionProvider from '@/components/providers/SessionProvider'
+import './globals.css'
+import { AnalyticsWrapper } from '@/lib/analytics/vercel'
+import { InstallPrompt } from '@/components/pwa/InstallPrompt'
+import { logger } from '@/lib/logger'
+import { OfflineIndicator } from '@/components/pwa/OfflineIndicator'
+import { PageErrorBoundary } from '@/components/ErrorBoundary'
+import { SkipLink } from '@/components/ui/SkipLink'
+import { UpdatePrompt } from '@/components/pwa/UpdatePrompt'
 import MainLayout from '@/components/layout/MainLayout'
 import MonitoringProvider from '@/components/providers/MonitoringProvider'
-import { InstallPrompt } from '@/components/pwa/InstallPrompt'
-import { UpdatePrompt } from '@/components/pwa/UpdatePrompt'
-import { OfflineIndicator } from '@/components/pwa/OfflineIndicator'
-import Script from 'next/script'
-import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
-import { SkipLink } from '@/components/ui/SkipLink'
-import { PageErrorBoundary } from '@/components/ErrorBoundary'
+import SessionProvider from '@/components/providers/SessionProvider'
 
-import { logger } from '@/lib/logger'
-
-export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,

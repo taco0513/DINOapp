@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ solutions });
   } catch (error) {
-    console.error('Problem solving error:', error);
+    logger.error('Problem solving error:', error);
     return NextResponse.json(
       { error: 'Failed to find solutions' },
       { status: 500 }

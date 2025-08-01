@@ -1,9 +1,9 @@
+import Link from 'next/link';
+export const metadata: Metadata = {
 import { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import Link from 'next/link';
 
-export const metadata: Metadata = {
   title: '결제 완료 - DINO',
   description: '결제가 성공적으로 완료되었습니다.',
 };

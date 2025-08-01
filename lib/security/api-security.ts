@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -75,7 +76,7 @@ export function withApiSecurity(
       // 1. Method validation
       if (!allowedMethods.includes(req.method || '')) {
         if (logRequests) {
-          console.warn('Method not allowed', {
+          logger.warn('Method not allowed', {
             method: req.method,
             url: req.url,
             ip: req.ip || req.headers.get('x-forwarded-for')
@@ -97,7 +98,7 @@ export function withApiSecurity(
         const rateLimitKey = `${clientKey}:${req.nextUrl.pathname}`;
         
         if (!checkRateLimit(rateLimitKey, rateLimitConfig)) {
-          console.warn('Rate limit exceeded', {
+          logger.warn('Rate limit exceeded', {
             ip: clientKey,
             url: req.url,
             config: rateLimitConfig
@@ -114,7 +115,7 @@ export function withApiSecurity(
         session = await getServerSession(authOptions)
         if (!session?.user) {
           if (logRequests) {
-            console.warn('Unauthorized access attempt', {
+            logger.warn('Unauthorized access attempt', {
               url: req.url,
               ip: req.ip || req.headers.get('x-forwarded-for')
             });
@@ -132,7 +133,7 @@ export function withApiSecurity(
       // 4. Admin authorization check
       if (requireAdmin) {
         if (!session?.user || (session.user as any).role !== 'ADMIN') {
-          console.warn('Admin access denied', {
+          logger.warn('Admin access denied', {
             userId: session?.user?.id,
             url: req.url,
             ip: req.ip || req.headers.get('x-forwarded-for')
@@ -174,7 +175,7 @@ export function withApiSecurity(
       // 8. Request logging
       if (logRequests) {
         const duration = Date.now() - startTime;
-        console.info('API request completed', {
+        logger.info('API request completed', {
           method: req.method,
           url: req.url,
           status: response.status,
@@ -187,7 +188,7 @@ export function withApiSecurity(
       return response;
 
     } catch (error) {
-      console.error('API security middleware error', {
+      logger.error('API security middleware error', {
         error,
         url: req.url,
         method: req.method,

@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { pushNotificationService } from '@/lib/push-notification-service';
 import { checkOverstayWarnings } from '@/lib/visa/overstay-checker';
 import { differenceInDays, parseISO } from 'date-fns';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -19,7 +20,7 @@ export class NotificationScheduler {
   
   // Run all scheduled notification checks
   async runScheduledChecks(): Promise<void> {
-    console.info('Running scheduled notification checks...');
+    logger.info('Running scheduled notification checks...');
     
     try {
       await Promise.all([
@@ -28,9 +29,9 @@ export class NotificationScheduler {
         this.sendStayReminders()
       ]);
       
-      console.info('Scheduled notification checks completed');
+      logger.info('Scheduled notification checks completed');
     } catch (error) {
-      console.error('Error running scheduled checks:', error);
+      logger.error('Error running scheduled checks:', error);
     }
   }
   
@@ -95,13 +96,13 @@ export class NotificationScheduler {
             // Send email notification if enabled
             if (settings.emailEnabled) {
               // TODO: Implement email notification
-              console.info('Email notification for visa expiry: ${visa.countryName} - ${daysUntilExpiry} days');
+              logger.info('Email notification for visa expiry: ${visa.countryName} - ${daysUntilExpiry} days');
             }
           }
         }
       }
     } catch (error) {
-      console.error('Error checking visa expiry:', error);
+      logger.error('Error checking visa expiry:', error);
     }
   }
   
@@ -148,13 +149,13 @@ export class NotificationScheduler {
             if (user.notificationSettings.emailEnabled && 
                 (warning.severity === 'high' || warning.severity === 'critical')) {
               // TODO: Implement email notification
-              console.info('Email notification for overstay warning: ${warning.countryName} - ${warning.severity}');
+              logger.info('Email notification for overstay warning: ${warning.countryName} - ${warning.severity}');
             }
           }
         }
       }
     } catch (error) {
-      console.error('Error checking overstay warnings:', error);
+      logger.error('Error checking overstay warnings:', error);
     }
   }
   
@@ -212,7 +213,7 @@ export class NotificationScheduler {
         }
       }
     } catch (error) {
-      console.error('Error sending stay reminders:', error);
+      logger.error('Error sending stay reminders:', error);
     }
   }
 }

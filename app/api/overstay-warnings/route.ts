@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { checkOverstayWarnings, predictOverstayForTrip } from '@/lib/visa/overstay-checker';
+import { checkOverstayWarnings } from '@/lib/visa/overstay-checker';
 import { z } from 'zod';
 import { parseISO } from 'date-fns';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error checking overstay warnings:', error);
+    logger.error('Error checking overstay warnings:', error);
     return NextResponse.json(
       { error: 'Failed to check overstay warnings' },
       { status: 500 }
@@ -129,7 +130,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error predicting overstay:', error);
+    logger.error('Error predicting overstay:', error);
     return NextResponse.json(
       { error: 'Failed to predict overstay' },
       { status: 500 }
@@ -180,7 +181,7 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error dismissing warning:', error);
+    logger.error('Error dismissing warning:', error);
     return NextResponse.json(
       { error: 'Failed to dismiss warning' },
       { status: 500 }

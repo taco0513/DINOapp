@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -43,7 +44,7 @@ export async function DELETE(
       );
     }
 
-    console.error('Error deleting notification:', error);
+    logger.error('Error deleting notification:', error);
     return NextResponse.json(
       { error: 'Failed to delete notification' },
       { status: 500 }

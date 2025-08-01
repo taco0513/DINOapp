@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -86,7 +87,7 @@ export function useOffline() {
 
       toast.success('데이터가 동기화되었습니다!')
     } catch (error) {
-      console.error('동기화 실패:', error)
+      logger.error('동기화 실패:', error)
     }
   }, [isOnline, saveForOffline])
 
@@ -133,7 +134,7 @@ export function useOffline() {
         await (self.registration as any).sync.register('background-sync')
         toast.info('백그라운드 동기화가 예약되었습니다')
       } catch (error) {
-        console.error('백그라운드 동기화 등록 실패:', error)
+        logger.error('백그라운드 동기화 등록 실패:', error)
       }
     }
   }, [])

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-
 // Page icon names
 export type PageIconName = 
+
   | 'Dashboard'
   | 'Trips'
   | 'Schengen'

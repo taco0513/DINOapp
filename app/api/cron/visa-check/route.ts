@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runDailyVisaCheck } from '@/lib/schedulers/visa-scheduler';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
     // 인증 검증
     if (cronSecret) {
       if (authHeader !== `Bearer ${cronSecret}`) {
-        console.error('Unauthorized cron job attempt:', {
+        logger.error('Unauthorized cron job attempt:', {
           authHeader,
           userAgent: request.headers.get('user-agent'),
           ip: request.headers.get('x-forwarded-for')
@@ -38,11 +39,11 @@ export async function GET(request: NextRequest) {
       }
     } else if (!isVercelCron) {
       // 개발 환경에서는 Vercel Cron이 아닌 경우 경고 로그만 출력
-      console.warn('Cron job accessed without proper authentication in development');
+      logger.warn('Cron job accessed without proper authentication in development');
     }
 
     const startTime = Date.now();
-    console.info('[CRON] Starting visa expiry check at ${new Date().toISOString()}');
+    logger.info('[CRON] Starting visa expiry check at ${new Date().toISOString()}');
 
     // 일일 비자 만료 확인 실행
     await runDailyVisaCheck();
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
       isVercelCron
     };
 
-    console.debug('[CRON] Visa expiry check completed:', result);
+    logger.debug('[CRON] Visa expiry check completed:', result);
 
     return NextResponse.json(result);
 
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
       environment: process.env.NODE_ENV
     };
 
-    console.error('[CRON] Visa expiry check failed:', errorResult);
+    logger.error('[CRON] Visa expiry check failed:', errorResult);
 
     return NextResponse.json(errorResult, { status: 500 });
   }
@@ -91,7 +92,7 @@ export async function POST(request: NextRequest) {
     }
 
     const startTime = Date.now();
-    console.info('[MANUAL] Manual visa expiry check started at ${new Date().toISOString()}');
+    logger.info('[MANUAL] Manual visa expiry check started at ${new Date().toISOString()}');
 
     await runDailyVisaCheck();
 
@@ -105,12 +106,12 @@ export async function POST(request: NextRequest) {
       forceRun
     };
 
-    console.debug('[MANUAL] Manual visa expiry check completed:', result);
+    logger.debug('[MANUAL] Manual visa expiry check completed:', result);
 
     return NextResponse.json(result);
 
   } catch (error) {
-    console.error('[MANUAL] Manual visa expiry check failed:', error);
+    logger.error('[MANUAL] Manual visa expiry check failed:', error);
     return NextResponse.json(
       { 
         success: false,

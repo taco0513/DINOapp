@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -97,7 +98,7 @@ export async function GET(request: NextRequest) {
       data: visasWithUpdatedStatus,
     });
   } catch (error) {
-    console.error('Error fetching visas:', error);
+    logger.error('Error fetching visas:', error);
     return NextResponse.json(
       { error: 'Failed to fetch visas' },
       { status: 500 }
@@ -164,7 +165,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error creating visa:', error);
+    logger.error('Error creating visa:', error);
     return NextResponse.json(
       { error: 'Failed to create visa' },
       { status: 500 }
@@ -239,7 +240,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    console.error('Error updating visa:', error);
+    logger.error('Error updating visa:', error);
     return NextResponse.json(
       { error: 'Failed to update visa' },
       { status: 500 }
@@ -298,7 +299,7 @@ export async function DELETE(request: NextRequest) {
       data: cancelledVisa,
     });
   } catch (error) {
-    console.error('Error deleting visa:', error);
+    logger.error('Error deleting visa:', error);
     return NextResponse.json(
       { error: 'Failed to delete visa' },
       { status: 500 }

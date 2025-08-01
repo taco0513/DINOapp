@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     // 실제 환경에서는 데이터베이스에 저장
     // 현재는 콘솔에 로그로 출력
-    console.log('💬 새 피드백 접수:', {
+    logger.info('💬 새 피드백 접수:', {
       id: feedbackEntry.id,
       type: feedbackEntry.type,
       priority: feedbackEntry.priority,
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
         
         await fs.writeFile(filepath, JSON.stringify(feedbackEntry, null, 2));
       } catch (fileError) {
-        console.warn('피드백 파일 저장 실패:', fileError);
+        logger.warn('피드백 파일 저장 실패:', fileError);
       }
     }
 
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('피드백 처리 오류:', error);
+    logger.error('피드백 처리 오류:', error);
     
     return NextResponse.json(
       { 
@@ -151,7 +152,7 @@ export async function GET(_request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('피드백 조회 오류:', error);
+    logger.error('피드백 조회 오류:', error);
     return NextResponse.json(
       { error: '피드백 조회 중 오류가 발생했습니다.' },
       { status: 500 }

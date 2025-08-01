@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 'use client'
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
@@ -44,7 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log error to monitoring service
-    console.error('ErrorBoundary caught an error:', error, JSON.stringify(errorInfo))
+    logger.error('ErrorBoundary caught an error:', error, JSON.stringify(errorInfo))
     
     // Update state with error details
     this.setState(prevState => ({
@@ -89,7 +91,7 @@ export class ErrorBoundary extends Component<Props, State> {
         }
         localStorage.setItem('dino-errors', JSON.stringify(existingErrors))
       } catch (e) {
-        console.warn('Failed to store error report:', e)
+        logger.warn('Failed to store error report:', e)
       }
 
       // Send to API endpoint for server-side logging
@@ -123,7 +125,7 @@ export class ErrorBoundary extends Component<Props, State> {
         
         // Attempted recovery: cleared corrupted localStorage data
       } catch (e) {
-        console.warn('Recovery attempt failed:', e)
+        logger.warn('Recovery attempt failed:', e)
       }
     }
   }
@@ -241,7 +243,7 @@ export class ErrorBoundary extends Component<Props, State> {
 // Hook for functional components
 export function useErrorHandler() {
   return (error: Error, errorInfo?: ErrorInfo) => {
-    console.error('Error caught by useErrorHandler:', error, errorInfo ? JSON.stringify(errorInfo) : undefined)
+    logger.error('Error caught by useErrorHandler:', error, errorInfo ? JSON.stringify(errorInfo) : undefined)
     
     // You can add custom error handling logic here
     // For example, showing a toast notification

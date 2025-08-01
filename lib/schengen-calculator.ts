@@ -1,5 +1,6 @@
 import type { CountryVisit, SchengenStatus, SchengenViolation } from '@/types/global'
 import { getSchengenCountries } from '@/data/countries'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -41,7 +42,7 @@ export interface SchengenVisit {
  * @example
  * ```typescript
  * if (isSchengenCountry('France')) {
- *   console.info('France is in the Schengen Area');
+ *   logger.info('France is in the Schengen Area');
  * }
  * ```
  */
@@ -76,9 +77,9 @@ function calculateDaysBetween(startDate: Date, endDate: Date): number {
  * ];
  * 
  * const status = calculateSchengenStatus(visits);
- * console.info('Used: ${status.usedDays}/90 days');
- * console.info('Remaining: ${status.remainingDays} days');
- * console.info('Compliant: ${status.isCompliant}');
+ * logger.info('Used: ${status.usedDays}/90 days');
+ * logger.info('Remaining: ${status.remainingDays} days');
+ * logger.info('Compliant: ${status.isCompliant}');
  * ```
  */
 export function calculateSchengenStatus(visits: CountryVisit[]): SchengenStatus {
@@ -151,7 +152,7 @@ export function calculateSchengenStatus(visits: CountryVisit[]): SchengenStatus 
  * ```typescript
  * const warnings = getSchengenWarnings(status);
  * if (warnings.length > 0) {
- *   warnings.forEach(warning => console.log(warning));
+ *   warnings.forEach(warning => logger.info(warning));
  * }
  * ```
  */
@@ -195,9 +196,9 @@ export function calculateMaxStayDays(status: SchengenStatus): number {
  * ```typescript
  * const nextEntry = getNextEntryDate(visits);
  * if (nextEntry) {
- *   console.info('Can enter Schengen area from: ${nextEntry.toLocaleDateString()}');
+ *   logger.info('Can enter Schengen area from: ${nextEntry.toLocaleDateString()}');
  * } else {
- *   console.info('Can enter Schengen area immediately');
+ *   logger.info('Can enter Schengen area immediately');
  * }
  * ```
  */
@@ -251,8 +252,8 @@ export interface FutureTripValidation {
  * );
  * 
  * if (!validation.canTravel) {
- *   console.debug('Trip not allowed:', validation.warnings);
- *   console.debug('Suggestions:', validation.suggestions);
+ *   logger.debug('Trip not allowed:', validation.warnings);
+ *   logger.debug('Suggestions:', validation.suggestions);
  * }
  * ```
  */
@@ -385,9 +386,9 @@ function calculateSchengenStatusOnDate(visits: CountryVisit[], checkDate: Date):
  * ```typescript
  * const safeDates = getSafeTravelDates(visits, 14); // 14-day trip
  * if (safeDates) {
- *   console.info('Safe to travel from ${safeDates.startDate} to ${safeDates.endDate}');
+ *   logger.info('Safe to travel from ${safeDates.startDate} to ${safeDates.endDate}');
  * } else {
- *   console.info('No safe dates found within the next year');
+ *   logger.info('No safe dates found within the next year');
  * }
  * ```
  */

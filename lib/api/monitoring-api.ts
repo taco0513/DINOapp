@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -318,7 +319,7 @@ export class MonitoringAPI {
         };
       }
     } catch (error) {
-      console.warn(
+      logger.warn(
         'Performance data collection failed, using fallback:',
         error
       );
@@ -374,7 +375,7 @@ export class MonitoringAPI {
 
       return baseStats;
     } catch (error) {
-      console.warn('Usage data collection failed, using cached data:', error);
+      logger.warn('Usage data collection failed, using cached data:', error);
 
       // 에러 발생 시 폴백 데이터
       return {
@@ -443,7 +444,7 @@ export class MonitoringAPI {
         ],
       };
     } catch (error) {
-      console.warn('Error data collection failed, using fallback:', error);
+      logger.warn('Error data collection failed, using fallback:', error);
 
       // 폴백 데이터
       return {
@@ -506,7 +507,7 @@ export class MonitoringAPI {
         },
       };
     } catch (error) {
-      console.warn('Feature data collection failed, using fallback:', error);
+      logger.warn('Feature data collection failed, using fallback:', error);
 
       // 폴백 데이터
       return {

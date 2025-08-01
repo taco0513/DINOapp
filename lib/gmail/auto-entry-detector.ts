@@ -3,6 +3,7 @@ import { ko } from 'date-fns/locale';
 import { prisma } from '@/lib/prisma';
 import { parseFlightEmail, airportToCountry, type FlightDetails, type ParsedFlightEmail } from './flight-parser';
 import { analyzeTravelEmails } from '@/lib/gmail';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -89,7 +90,7 @@ export async function detectEntriesFromGmail(
     return validateAndFinalizeEntries(entryExitPairs, userId);
     
   } catch (error) {
-    console.error('Error detecting entries from Gmail:', error);
+    logger.error('Error detecting entries from Gmail:', error);
     throw new Error('Gmail에서 입출국 기록을 감지하는 중 오류가 발생했습니다.');
   }
 }
@@ -407,7 +408,7 @@ export async function saveAutoDetectedEntries(
       
       saved++;
     } catch (error) {
-      console.error('Error saving auto-detected entry:', error);
+      logger.error('Error saving auto-detected entry:', error);
       errors++;
     }
   }

@@ -191,7 +191,7 @@ export async function GET(request: NextRequest) {
 
       // Log performance metrics
       const stats = queryOptimizer.getPerformanceStats();
-      console.info('Optimized trips query completed', {
+      logger.info('Optimized trips query completed', {
         tripCount: trips.length,
         performanceStats: stats,
       });
@@ -208,7 +208,7 @@ export async function GET(request: NextRequest) {
     } catch (queryError) {
       endDbTimer();
       // Fallback to original method if optimized query fails
-      console.warn('Optimized query failed, using fallback', {
+      logger.warn('Optimized query failed, using fallback', {
         error: queryError instanceof Error ? queryError.message : queryError,
       });
 
@@ -353,7 +353,7 @@ export async function POST(request: NextRequest) {
     businessMetrics.tripCreated(validatedData.country, validatedData.visaType);
 
     // Log successful creation
-    console.info('Trip created successfully', {
+    logger.info('Trip created successfully', {
       tripId: trip.id,
       country: validatedData.country,
       visaType: validatedData.visaType,

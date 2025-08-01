@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { notificationScheduler } from '@/lib/scheduled-jobs/notification-scheduler';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Error in notification cron job:', error);
+    logger.error('Error in notification cron job:', error);
     return NextResponse.json(
       { error: 'Failed to run notification checks' },
       { status: 500 }

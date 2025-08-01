@@ -1,7 +1,7 @@
-// @ts-ignore: Storybook is optional in production
 import type { Meta, StoryObj } from '@storybook/react';
 import FeedbackButton from './FeedbackButton';
 
+// @ts-ignore: Storybook is optional in production
 const meta = {
   title: 'Components/Feedback/FeedbackButton',
   component: FeedbackButton,

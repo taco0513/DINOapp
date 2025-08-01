@@ -1,6 +1,7 @@
 import type { CountryVisit, VisaType, PassportCountry } from '@/types/global'
 import { CacheKeys, memoryCache } from '@/lib/cache/memory-cache'
 import { toast } from 'sonner'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -63,7 +64,7 @@ const CACHE_TIMES = {
  * // Get all trips for the current user
  * const response = await ApiClient.getTrips('user123');
  * if (response.success) {
- *   console.debug('Trips:', response.data);
+ *   logger.debug('Trips:', response.data);
  * }
  * ```
  */
@@ -81,7 +82,7 @@ export class ApiClient {
       const data = await response.json()
       return data.token || data.csrfToken
     } catch (error) {
-      console.error('Failed to get CSRF token:', error)
+      logger.error('Failed to get CSRF token:', error)
       return ''
     }
   }
@@ -129,7 +130,7 @@ export class ApiClient {
             }
           }
         } catch (csrfError) {
-          console.error('Failed to get CSRF token:', csrfError)
+          logger.error('Failed to get CSRF token:', csrfError)
           // Continue without CSRF token in development
         }
       }
@@ -154,7 +155,7 @@ export class ApiClient {
       return data
     } catch (error) {
       // API request failed
-      console.error('API request failed:', error)
+      logger.error('API request failed:', error)
       
       // 오프라인 상태 처리
       if (!navigator.onLine) {
@@ -215,7 +216,7 @@ export class ApiClient {
    * ```typescript
    * const { success, data } = await ApiClient.getTrips('user123');
    * if (success) {
-   *   console.info('User has ${data.length} trips');
+   *   logger.info('User has ${data.length} trips');
    * }
    * ```
    */
@@ -322,7 +323,7 @@ export class ApiClient {
    * @example
    * ```typescript
    * const { data } = await ApiClient.getSchengenStatus('user123');
-   * console.info('Days used: ${data.usedDays}/90');
+   * logger.info('Days used: ${data.usedDays}/90');
    * ```
    */
   static async getSchengenStatus(userId?: string): Promise<ApiResponse<any>> {

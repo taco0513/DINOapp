@@ -1,11 +1,11 @@
-import { Metadata } from 'next'
-import { PerformanceDashboard } from '@/components/monitoring/PerformanceDashboard'
-// Remove shadcn/ui imports - using minimal design system
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-
+// Remove shadcn/ui imports - using minimal design system
 export const metadata: Metadata = {
+import { getServerSession } from 'next-auth'
+import { Metadata } from 'next'
+import { authOptions } from '@/lib/auth'
+import { PerformanceDashboard } from '@/components/monitoring/PerformanceDashboard'
+
   title: '모니터링 대시보드',
   description: 'DINO 애플리케이션 성능 및 사용 통계 모니터링',
 }

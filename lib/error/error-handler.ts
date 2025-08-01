@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -127,7 +128,7 @@ function logError(error: Error, requestId?: string) {
   }
   
   // Always log to console
-  console.error('Error Log:', JSON.stringify(errorLog, null, 2))
+  logger.error('Error Log:', JSON.stringify(errorLog, null, 2))
 }
 
 // Error factory functions

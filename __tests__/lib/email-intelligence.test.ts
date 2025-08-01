@@ -1,6 +1,7 @@
 // Email Intelligence Tests - Advanced Email Analysis Testing
 
 import {
+import { logger } from '@/lib/logger';
   normalizeDateString,
   validateFlightNumber,
   validateAirportCode,
@@ -285,7 +286,7 @@ describe('Email Intelligence', () => {
         expect(validation.issues).toHaveLength(0)
       } else {
         // Log the issues for debugging
-        console.log('Unexpected validation issues:', validation.issues)
+        logger.info('Unexpected validation issues:', validation.issues)
       }
     })
 
@@ -385,7 +386,7 @@ describe('Email Intelligence', () => {
         expect(validation.issues.some(issue => issue.includes('30 days in the past'))).toBe(true)
       } else {
         // If consistent, the validation might allow past dates within reasonable limits
-        console.log('Past date validation is more permissive than expected')
+        logger.info('Past date validation is more permissive than expected')
       }
     })
 

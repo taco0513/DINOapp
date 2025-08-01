@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -181,7 +182,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error fetching visa stats:', error);
+    logger.error('Error fetching visa stats:', error);
     return NextResponse.json(
       { error: 'Failed to fetch visa stats' },
       { status: 500 }

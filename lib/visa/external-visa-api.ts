@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 // 외부 비자 정보 API 통합 서비스
@@ -70,7 +71,7 @@ export class ExternalVisaApiService {
       const data = await response.json();
       return this.normalizeSherpaResponse(data);
     } catch (error) {
-      console.error('Sherpa API 오류:', error);
+      logger.error('Sherpa API 오류:', error);
       return null;
     }
   }
@@ -97,7 +98,7 @@ export class ExternalVisaApiService {
       const data = await response.json();
       return this.normalizeVisaHqResponse(data);
     } catch (error) {
-      console.error('VisaHQ API 오류:', error);
+      logger.error('VisaHQ API 오류:', error);
       return null;
     }
   }
@@ -126,7 +127,7 @@ export class ExternalVisaApiService {
       const data = await response.json();
       return this.normalizeIataResponse(data);
     } catch (error) {
-      console.error('IATA API 오류:', error);
+      logger.error('IATA API 오류:', error);
       return null;
     }
   }

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // Enhanced i18n system for DINO with expanded language support
 type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'fr';
 
@@ -611,7 +612,7 @@ export function t(key: string, params?: Record<string, string>): string {
   const translation = translations[key];
 
   if (!translation) {
-    console.warn(`Translation not found for key: ${key}`);
+    logger.warn(`Translation not found for key: ${key}`);
     return key;
   }
 

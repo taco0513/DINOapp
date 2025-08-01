@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ suggestions });
   } catch (error) {
-    console.error('Pair programming error:', error);
+    logger.error('Pair programming error:', error);
     return NextResponse.json(
       { error: 'Failed to generate suggestions' },
       { status: 500 }
@@ -168,7 +169,7 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json({ stats });
   } catch (error) {
-    console.error('Failed to fetch pair programming stats:', error);
+    logger.error('Failed to fetch pair programming stats:', error);
     return NextResponse.json(
       { error: 'Failed to fetch stats' },
       { status: 500 }

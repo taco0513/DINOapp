@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('Error processing performance metrics:', error);
+    logger.error('Error processing performance metrics:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -109,7 +110,7 @@ export async function GET(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('Error generating performance report:', error);
+    logger.error('Error generating performance report:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

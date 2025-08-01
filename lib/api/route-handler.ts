@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -172,7 +173,7 @@ export function createRouteHandler<TBody = any, TQuery = any>(
       
     } catch (error) {
       // Log error
-      console.error('API Error:', error)
+      logger.error('API Error:', error)
       
       // Handle known errors
       if (error instanceof APIError) {

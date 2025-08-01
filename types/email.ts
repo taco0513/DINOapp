@@ -1,4 +1,5 @@
 export interface EmailProvider {
+
   name: string;
   domains: string[];
   patterns: EmailPattern[];

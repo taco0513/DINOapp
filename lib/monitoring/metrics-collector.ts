@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -203,13 +204,13 @@ export class MetricsCollector {
 
       // Log in development
       if (process.env.NODE_ENV === 'development') {
-        console.debug('📊 Metrics Flush:', JSON.stringify(aggregations, null, 2))
+        logger.debug('📊 Metrics Flush:', JSON.stringify(aggregations, null, 2))
       }
 
       // Clear old metrics
       this.cleanupOldMetrics()
     } catch (error) {
-      console.error('Failed to flush metrics:', error)
+      logger.error('Failed to flush metrics:', error)
     }
   }
 
@@ -279,12 +280,12 @@ export class MetricsCollector {
   // Alert management methods (required by monitoring route)
   addAlert(alert: any): void {
     // TODO: Implement alert management
-    console.debug('Alert added:', alert)
+    logger.debug('Alert added:', alert)
   }
 
   removeAlert(name: string): void {
     // TODO: Implement alert removal
-    console.debug('Alert removed:', name)
+    logger.debug('Alert removed:', name)
   }
 
   getAlerts(): any[] {

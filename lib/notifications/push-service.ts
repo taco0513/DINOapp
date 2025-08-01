@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -96,7 +97,7 @@ export class PushNotificationService {
 
       await webpush.sendNotification(subscription, notificationPayload, pushOptions);
     } catch (error) {
-      console.error('Failed to send push notification:', error);
+      logger.error('Failed to send push notification:', error);
       throw error;
     }
   }
@@ -312,7 +313,7 @@ export class PushNotificationService {
         try {
           await this.sendNotification(subscription, payload);
         } catch (error) {
-          console.error('Scheduled notification failed:', error);
+          logger.error('Scheduled notification failed:', error);
         }
       }, delay);
     } else {

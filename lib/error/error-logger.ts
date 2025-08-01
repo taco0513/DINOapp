@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -64,7 +65,7 @@ class ConsoleErrorLogger implements ErrorLogger {
     
     // Immediately log critical errors
     if (error instanceof AppError && error.severity === ErrorSeverity.CRITICAL) {
-      console.error('🚨 CRITICAL ERROR:', JSON.stringify(entry, null, 2))
+      logger.error('🚨 CRITICAL ERROR:', JSON.stringify(entry, null, 2))
     }
   }
 
@@ -109,18 +110,18 @@ class ConsoleErrorLogger implements ErrorLogger {
     if (process.env.NODE_ENV === 'development') {
       entriesToFlush.forEach(entry => {
         const emoji = this.getEmoji(entry.level, entry.severity)
-        console.info('${emoji} [${entry.timestamp}] ${entry.level.toUpperCase()}: ${entry.message}')
+        logger.info('${emoji} [${entry.timestamp}] ${entry.level.toUpperCase()}: ${entry.message}')
         
         if (entry.context) {
-          console.debug('  Context:', entry.context)
+          logger.debug('  Context:', entry.context)
         }
         
         if (entry.metadata) {
-          console.debug('  Metadata:', entry.metadata)
+          logger.debug('  Metadata:', entry.metadata)
         }
         
         if (entry.stack && entry.level === 'error') {
-          console.debug('  Stack:', entry.stack)
+          logger.debug('  Stack:', entry.stack)
         }
       })
     }
@@ -170,7 +171,7 @@ class ConsoleErrorLogger implements ErrorLogger {
       }
     } catch (error) {
       // Don't throw if monitoring fails
-      console.error('Failed to send logs to monitoring:', error)
+      logger.error('Failed to send logs to monitoring:', error)
     }
   }
 

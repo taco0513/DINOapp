@@ -157,7 +157,7 @@ export function reportWebVitals(metric: any) {
   // Log to structured logger in development
   if (process.env.NODE_ENV === 'development') {
     import('@/lib/logger').then(({ logger }) => {
-      console.debug('Web Vital metric', { 
+      logger.debug('Web Vital metric', { 
         name: metric.name, 
         value: metric.value 
       });

@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test'
+import { logger } from '@/lib/logger';
 
 /**
  * MVP Stability End-to-End Tests
@@ -13,11 +14,11 @@ test.describe('MVP Stability - Critical User Flows', () => {
     
     // Set up error tracking
     page.on('pageerror', error => {
-      console.error('Page error:', error.message)
+      logger.error('Page error:', error.message)
     })
     
     page.on('requestfailed', request => {
-      console.error('Request failed:', request.url(), request.failure()?.errorText)
+      logger.error('Request failed:', request.url(), request.failure()?.errorText)
     })
   })
 

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { addDays, differenceInDays, format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -121,7 +122,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error checking visa expiry:', error);
+    logger.error('Error checking visa expiry:', error);
     return NextResponse.json(
       { error: 'Failed to check visa expiry' },
       { status: 500 }
@@ -222,7 +223,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error sending visa alert:', error);
+    logger.error('Error sending visa alert:', error);
     return NextResponse.json(
       { error: 'Failed to send visa alert' },
       { status: 500 }

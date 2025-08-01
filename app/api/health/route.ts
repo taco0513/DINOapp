@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { metrics } from '@/lib/monitoring/metrics-collector'
 import { dbManager, getDbHealth, isDbHealthy } from '@/lib/database/connection-manager'
+import { logger } from '@/lib/logger';
 // TODO: Remove unused loggers import
 
 // TODO: Remove unused logger import
@@ -67,7 +68,7 @@ export async function GET(_request: NextRequest) {
       }
     }
   } catch (error) {
-    console.error('Health check database error', {
+    logger.error('Health check database error', {
       error: error instanceof Error ? error.message : error
     })
     
@@ -145,7 +146,7 @@ export async function GET(_request: NextRequest) {
   }
 
   // Log health check results
-  console.info('Health check completed', {
+  logger.info('Health check completed', {
     status: checks.status,
     databaseHealthy: checks.checks.database?.status === 'healthy',
     memoryUsage: checks.checks.memory?.heapUsed,

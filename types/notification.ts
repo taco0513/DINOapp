@@ -1,4 +1,5 @@
 export interface Notification {
+
   id: string
   userId: string
   type: 'visa_expiry' | 'schengen_warning' | 'trip_reminder' | 'system'

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -25,7 +26,7 @@ export function useABTest(testId: string): ABTestHook {
           setVariant(data.variant?.name || null);
         }
       } catch (error) {
-        console.error('Failed to fetch AB test variant:', error);
+        logger.error('Failed to fetch AB test variant:', error);
       } finally {
         setLoading(false);
       }
@@ -46,7 +47,7 @@ export function useABTest(testId: string): ABTestHook {
         }),
       });
     } catch (error) {
-      console.error('Failed to track AB test event:', error);
+      logger.error('Failed to track AB test event:', error);
     }
   };
 

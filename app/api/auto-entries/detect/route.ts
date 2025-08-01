@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { parseISO, subMonths } from 'date-fns';
 import { detectEntriesFromGmail, saveAutoDetectedEntries } from '@/lib/gmail/auto-entry-detector';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -94,7 +95,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error detecting auto entries:', error);
+    logger.error('Error detecting auto entries:', error);
     return NextResponse.json(
       { error: 'Failed to detect entries from Gmail' },
       { status: 500 }
@@ -188,7 +189,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching auto entries:', error);
+    logger.error('Error fetching auto entries:', error);
     return NextResponse.json(
       { error: 'Failed to fetch auto-detected entries' },
       { status: 500 }

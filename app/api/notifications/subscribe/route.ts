@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { pushNotificationService } from '@/lib/notifications/push-service';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
       try {
         await pushNotificationService.testNotification(subscription);
       } catch (error) {
-        console.warn('Test notification failed:', error);
+        logger.warn('Test notification failed:', error);
         // Don't fail the subscription if test notification fails
       }
     }
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
       message: 'Successfully subscribed to push notifications',
     });
   } catch (error) {
-    console.error('Push subscription error:', error);
+    logger.error('Push subscription error:', error);
     return NextResponse.json(
       { error: 'Failed to subscribe to push notifications' },
       { status: 500 }
@@ -113,7 +114,7 @@ export async function PUT(request: NextRequest) {
       message: 'Notification preferences updated',
     });
   } catch (error) {
-    console.error('Preference update error:', error);
+    logger.error('Preference update error:', error);
     return NextResponse.json(
       { error: 'Failed to update preferences' },
       { status: 500 }
@@ -168,7 +169,7 @@ export async function DELETE(request: NextRequest) {
       message: 'Successfully unsubscribed from push notifications',
     });
   } catch (error) {
-    console.error('Unsubscribe error:', error);
+    logger.error('Unsubscribe error:', error);
     return NextResponse.json(
       { error: 'Failed to unsubscribe' },
       { status: 500 }
@@ -206,7 +207,7 @@ export async function GET() {
       count: 0,
     });
   } catch (error) {
-    console.error('Get subscriptions error:', error);
+    logger.error('Get subscriptions error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch subscriptions' },
       { status: 500 }

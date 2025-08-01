@@ -4,6 +4,7 @@
 
 import { BaseAIService } from './base';
 import { 
+import { logger } from '@/lib/logger';
   AIResponse, 
   CodeSpec, 
   GeneratedCode, 
@@ -54,7 +55,7 @@ export class MockAIService extends BaseAIService {
       typescript: `// ${spec.description}
 export function processData(input: any): any {
   // TODO: Implement ${spec.description}
-  console.debug('Processing:', input);
+  logger.debug('Processing:', input);
   return {
     success: true,
     data: input
@@ -73,7 +74,7 @@ def process_data(input_data):
       javascript: `// ${spec.description}
 function processData(input) {
   // TODO: Implement ${spec.description}
-  console.debug('Processing:', input);
+  logger.debug('Processing:', input);
   return {
     success: true,
     data: input

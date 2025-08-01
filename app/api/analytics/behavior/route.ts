@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -47,7 +48,7 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json(mockData);
   } catch (error) {
-    console.error('Failed to fetch behavior analytics:', error);
+    logger.error('Failed to fetch behavior analytics:', error);
     return NextResponse.json(
       { error: 'Failed to fetch analytics' },
       { status: 500 }

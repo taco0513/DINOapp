@@ -1,14 +1,10 @@
-import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+export const metadata: Metadata = {
 import { getServerSession } from 'next-auth'
+import { Metadata } from 'next'
 import { authOptions } from '@/lib/auth'
 import MonitoringDashboard from '@/components/admin/MonitoringDashboard'
 
-
-
-
-
-export const metadata: Metadata = {
   title: '시스템 모니터링 - DINO Admin',
   description: '실시간 시스템 성능 및 건강 상태 모니터링을 확인합니다.',
 };

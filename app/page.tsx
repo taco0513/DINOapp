@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { StandardCard } from '@/components/layout/StandardPageLayout';
+import Link from 'next/link';
+// 하이드레이션 안전한 세션 체크 컴포넌트
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icons';
+import { StandardCard } from '@/components/layout/StandardPageLayout';
 
-// 하이드레이션 안전한 세션 체크 컴포넌트
 const SessionCheck = dynamic(() => import('@/components/auth/SessionCheck'), {
   ssr: false,
   loading: () => null,

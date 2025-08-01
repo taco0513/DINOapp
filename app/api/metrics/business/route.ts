@@ -3,6 +3,7 @@ import { withApiSecurity, SecurityPresets } from '@/lib/security/api-security';
 import prisma from '@/lib/prisma';
 // TODO: Remove unused logger import
 import {
+import { logger } from '@/lib/logger';
   startOfWeek,
   startOfMonth,
   startOfQuarter,
@@ -198,7 +199,7 @@ async function businessMetricsHandler(request: NextRequest, _context?: any) {
     return NextResponse.json({ metrics, charts });
   } catch (error) {
     
-    console.error('Failed to fetch business metrics', { error });
+    logger.error('Failed to fetch business metrics', { error });
     return NextResponse.json(
       { error: 'Failed to fetch metrics' },
       { status: 500 }

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -84,7 +85,7 @@ export async function getPrismaClient(): Promise<PrismaClient> {
           const duration = Date.now() - startTime
           
           if (duration > 1000) {
-            console.warn(`⚠️ Slow query (${duration}ms):`, {
+            logger.warn(`⚠️ Slow query (${duration}ms):`, {
               model: params.model,
               action: params.action
             })
@@ -108,7 +109,7 @@ export async function getPrismaClient(): Promise<PrismaClient> {
           maxRetries: 2,
           retryDelay: 500,
           onRetry: (attempt, error) => {
-            console.warn('Retrying database operation (${attempt}/2):', error.message)
+            logger.warn('Retrying database operation (${attempt}/2):', error.message)
           }
         })
       }

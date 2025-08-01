@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -68,9 +69,9 @@ export function validateEnv(): ValidatedEnv {
     return envSchema.parse(process.env)
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.error('❌ Invalid environment variables:')
+      logger.error('❌ Invalid environment variables:')
       error.issues.forEach((err: any) => {
-        console.error(`  - ${err.path.join('.')}: ${err.message}`)
+        logger.error(`  - ${err.path.join('.')}: ${err.message}`)
       })
       
       // In production, fail fast

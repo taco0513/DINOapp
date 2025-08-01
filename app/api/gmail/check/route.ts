@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { withGmailAuth, getRateLimitStatus } from '@/lib/gmail-middleware'
 import { checkGmailConnection } from '@/lib/gmail'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
   return withGmailAuth(request, async (session) => {
     // Debug: Check if accessToken exists
     if (!session.accessToken) {
-      console.error('No access token in session:', session)
+      logger.error('No access token in session:', session)
       return NextResponse.json({
         connected: false,
         message: 'Gmail 연결에 실패했습니다. 다시 로그인해주세요.',

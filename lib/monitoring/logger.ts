@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -111,19 +112,19 @@ export class Logger {
     
     switch (level) {
       case 'debug':
-        console.debug(formatted)
+        logger.debug(formatted)
         break
       case 'info':
-        console.info(formatted)
+        logger.info(formatted)
         break
       case 'warn':
-        console.warn(formatted)
+        logger.warn(formatted)
         break
       case 'error':
-        console.error(formatted)
+        logger.error(formatted)
         break
       case 'fatal':
-        console.error(formatted)
+        logger.error(formatted)
         break
     }
 
@@ -192,7 +193,7 @@ export class Logger {
       //   body: JSON.stringify({ logs })
       // })
     } catch (error) {
-      console.error('Failed to send logs:', error)
+      logger.error('Failed to send logs:', error)
     }
   }
 }

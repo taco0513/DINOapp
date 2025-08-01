@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -46,16 +47,16 @@ class Logger {
 
     switch (entry.level) {
       case 'debug':
-        console.debug(message, entry.data || '')
+        logger.debug(message, entry.data || '')
         break
       case 'info':
-        console.info(message, entry.data || '')
+        logger.info(message, entry.data || '')
         break
       case 'warn':
-        console.warn(message, entry.data || '')
+        logger.warn(message, entry.data || '')
         break
       case 'error':
-        console.error(message, entry.data || '')
+        logger.error(message, entry.data || '')
         break
     }
   }
@@ -80,7 +81,7 @@ class Logger {
           }
         }).catch(() => {
           // Fallback to console if Sentry is not available
-          console.error('Sentry logging failed:', entry)
+          logger.error('Sentry logging failed:', entry)
         })
       } catch {
         // Silent fail - don't break the app if logging fails

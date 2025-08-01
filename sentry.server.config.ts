@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -44,8 +45,8 @@ if (SENTRY_DSN) {
       
       // 개발 환경 콘솔 출력
       if (process.env.NODE_ENV === 'development') {
-        console.error('Sentry Event:', event)
-        console.error('Error:', hint.originalException)
+        logger.error('Sentry Event:', event)
+        logger.error('Error:', hint.originalException)
       }
       
       return event

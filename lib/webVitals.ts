@@ -1,4 +1,5 @@
 import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -27,7 +28,7 @@ function sendToAnalytics(metric: Metric, options: any) {
   };
 
   if (options.debug) {
-    console.debug('[Analytics]', metric.name, JSON.stringify(body, null, 2));
+    logger.debug('[Analytics]', metric.name, JSON.stringify(body, null, 2));
   }
 
   const blob = new Blob([new URLSearchParams(body).toString()], {
@@ -60,6 +61,6 @@ export function reportWebVitals(options: {
     onCLS((metric: Metric) => sendToAnalytics(metric, options));
     onFCP((metric: Metric) => sendToAnalytics(metric, options));
   } catch (err) {
-    console.error('[Analytics]', err);
+    logger.error('[Analytics]', err);
   }
 }

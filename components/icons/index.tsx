@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 'use client'
 
 import { ArrowLeft,
@@ -162,7 +164,7 @@ export function Icon({
   if (!icon) {
     // Icon not found - fail silently in production
     if (process.env.NODE_ENV === 'development') {
-      console.warn('Icon not found:', name);
+      logger.warn('Icon not found:', name);
     }
     return null
   }

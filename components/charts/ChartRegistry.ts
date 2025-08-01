@@ -1,5 +1,6 @@
-// Chart.js component registry for tree shaking
 import {
+
+// Chart.js component registry for tree shaking
   Chart as ChartJS,
   CategoryScale,
   LinearScale,

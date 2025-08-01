@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -19,7 +20,7 @@ const PreferencesSchema = z.object({
 });
 
 // GET /api/notifications/preferences - Get notification preferences
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching notification preferences:', error);
+    logger.error('Error fetching notification preferences:', error);
     return NextResponse.json(
       { error: 'Failed to fetch notification preferences' },
       { status: 500 }
@@ -142,7 +143,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    console.error('Error updating notification preferences:', error);
+    logger.error('Error updating notification preferences:', error);
     return NextResponse.json(
       { error: 'Failed to update notification preferences' },
       { status: 500 }

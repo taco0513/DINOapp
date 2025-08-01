@@ -2,6 +2,7 @@
 
 // Web Push Notifications Management
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 // VAPID public key (should be in environment variable)
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
@@ -40,17 +41,17 @@ export class PushNotificationManager {
   // Initialize service worker and get registration
   async initialize(): Promise<ServiceWorkerRegistration | null> {
     if (!this.isSupported()) {
-      console.info('Push notifications not supported');
+      logger.info('Push notifications not supported');
       return null;
     }
 
     try {
       // Register service worker if not already registered
       this.registration = await navigator.serviceWorker.ready;
-      console.info('Service worker ready');
+      logger.info('Service worker ready');
       return this.registration;
     } catch (error) {
-      console.error('Failed to initialize service worker:', error);
+      logger.error('Failed to initialize service worker:', error);
       return null;
     }
   }
@@ -73,7 +74,7 @@ export class PushNotificationManager {
       
       return permission;
     } catch (error) {
-      console.error('Failed to request permission:', error);
+      logger.error('Failed to request permission:', error);
       toast.error('알림 권한 요청에 실패했습니다.');
       return 'denied';
     }
@@ -86,7 +87,7 @@ export class PushNotificationManager {
     }
 
     if (!this.registration) {
-      console.error('No service worker registration');
+      logger.error('No service worker registration');
       return null;
     }
 
@@ -124,7 +125,7 @@ export class PushNotificationManager {
       toast.success('푸시 알림이 구독되었습니다.');
       return subscriptionData;
     } catch (error) {
-      console.error('Failed to subscribe to push notifications:', error);
+      logger.error('Failed to subscribe to push notifications:', error);
       toast.error('푸시 알림 구독에 실패했습니다.');
       return null;
     }
@@ -148,7 +149,7 @@ export class PushNotificationManager {
       
       return false;
     } catch (error) {
-      console.error('Failed to unsubscribe:', error);
+      logger.error('Failed to unsubscribe:', error);
       toast.error('푸시 알림 해제에 실패했습니다.');
       return false;
     }
@@ -168,7 +169,7 @@ export class PushNotificationManager {
       const subscription = await this.registration.pushManager.getSubscription();
       return !!subscription;
     } catch (error) {
-      console.error('Failed to check subscription:', error);
+      logger.error('Failed to check subscription:', error);
       return false;
     }
   }
@@ -176,7 +177,7 @@ export class PushNotificationManager {
   // Show local notification (for testing)
   async showLocalNotification(title: string, options?: NotificationOptions): Promise<void> {
     if (Notification.permission !== 'granted') {
-      console.warn('Notification permission not granted');
+      logger.warn('Notification permission not granted');
       return;
     }
 
@@ -210,7 +211,7 @@ export class PushNotificationManager {
         throw new Error('Failed to save subscription');
       }
     } catch (error) {
-      console.error('Failed to save subscription to server:', error);
+      logger.error('Failed to save subscription to server:', error);
       throw error;
     }
   }
@@ -230,7 +231,7 @@ export class PushNotificationManager {
         throw new Error('Failed to remove subscription');
       }
     } catch (error) {
-      console.error('Failed to remove subscription from server:', error);
+      logger.error('Failed to remove subscription from server:', error);
     }
   }
 

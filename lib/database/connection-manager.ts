@@ -69,7 +69,7 @@ export class DatabaseConnectionManager {
         this.startHealthChecks()
       }
     } catch (error) {
-      console.error('Failed to initialize database connection:', error)
+      logger.error('Failed to initialize database connection:', error)
       this.scheduleReconnect()
     }
   }
@@ -78,7 +78,7 @@ export class DatabaseConnectionManager {
     const logger = loggers.db
     
     try {
-      console.info('Attempting database connection', {
+      logger.info('Attempting database connection', {
         attempt: this.retryAttempts + 1,
         maxRetries: this.options.maxRetries
       })
@@ -112,7 +112,7 @@ export class DatabaseConnectionManager {
           const duration = after - before
           
           if (duration > 5000) { // Log slow queries
-            console.warn('Slow query detected', {
+            logger.warn('Slow query detected', {
               model: params.model,
               action: params.action,
               duration
@@ -122,7 +122,7 @@ export class DatabaseConnectionManager {
           return result
         } catch (error) {
           const after = Date.now()
-          console.error('Query failed', {
+          logger.error('Query failed', {
             model: params.model,
             action: params.action,
             duration: after - before,
@@ -142,7 +142,7 @@ export class DatabaseConnectionManager {
           await this.prisma.$executeRaw`SELECT set_config('max_connections', ${this.options.poolSize}::text, false)`
         } catch (configError) {
           // Ignore configuration errors - we might not have permissions
-          console.warn('Could not optimize connection settings', {
+          logger.warn('Could not optimize connection settings', {
             error: configError instanceof Error ? configError.message : configError
           })
         }
@@ -164,7 +164,7 @@ export class DatabaseConnectionManager {
       this.health.lastCheck = new Date()
       this.retryAttempts = 0
       
-      console.info('Database connection established successfully', {
+      logger.info('Database connection established successfully', {
         poolSize: this.options.poolSize,
         databaseType: isSQLite ? 'sqlite' : 'postgresql'
       })
@@ -174,7 +174,7 @@ export class DatabaseConnectionManager {
       this.health.errorCount++
       this.health.lastCheck = new Date()
       
-      console.error('Database connection failed', {
+      logger.error('Database connection failed', {
         attempt: this.retryAttempts + 1,
         errorCount: this.health.errorCount,
         error: error instanceof Error ? error.message : error
@@ -196,12 +196,12 @@ export class DatabaseConnectionManager {
     
     // Check if we have a healthy connection
     if (!this.prisma || !this.health.isHealthy) {
-      console.warn('Database connection unhealthy, attempting reconnection')
+      logger.warn('Database connection unhealthy, attempting reconnection')
       await this.reconnect()
     }
 
     if (!this.prisma) {
-      console.error('Database client unavailable after reconnection attempt')
+      logger.error('Database client unavailable after reconnection attempt')
       throw errors.database(
         'Database connection not available',
         { 
@@ -218,7 +218,7 @@ export class DatabaseConnectionManager {
     const logger = loggers.db
     
     if (this.retryAttempts >= this.options.maxRetries) {
-      console.error('Maximum reconnection attempts exceeded', {
+      logger.error('Maximum reconnection attempts exceeded', {
         maxRetries: this.options.maxRetries,
         errorCount: this.health.errorCount
       })
@@ -234,7 +234,7 @@ export class DatabaseConnectionManager {
     }
 
     this.retryAttempts++
-    console.info('Attempting database reconnection', {
+    logger.info('Attempting database reconnection', {
       attempt: this.retryAttempts,
       maxRetries: this.options.maxRetries
     })
@@ -248,7 +248,7 @@ export class DatabaseConnectionManager {
             new Promise(resolve => setTimeout(resolve, 5000)) // 5s timeout for disconnect
           ])
         } catch (disconnectError) {
-          console.warn('Error during disconnect', {
+          logger.warn('Error during disconnect', {
             error: disconnectError instanceof Error ? disconnectError.message : disconnectError
           })
         }
@@ -260,16 +260,16 @@ export class DatabaseConnectionManager {
       const jitter = Math.random() * 1000 // Add up to 1s jitter
       const delay = Math.min(baseDelay + jitter, 30000) // Cap at 30s
       
-      console.info('Waiting before reconnection attempt', { delay: Math.round(delay) })
+      logger.info('Waiting before reconnection attempt', { delay: Math.round(delay) })
       await this.delay(delay)
 
       // Attempt to connect
       await this.connect()
       
-      console.info('Database reconnection successful')
+      logger.info('Database reconnection successful')
       
     } catch (error) {
-      console.error('Reconnection attempt failed', {
+      logger.error('Reconnection attempt failed', {
         attempt: this.retryAttempts,
         error: error instanceof Error ? error.message : error
       })
@@ -291,7 +291,7 @@ export class DatabaseConnectionManager {
     const delay = this.options.retryDelay * Math.pow(2, this.retryAttempts)
     this.reconnectTimer = setTimeout(() => {
       this.reconnect().catch(error => {
-        console.error('Scheduled reconnection failed:', error)
+        logger.error('Scheduled reconnection failed:', error)
       })
     }, delay)
   }
@@ -398,7 +398,7 @@ export class DatabaseConnectionManager {
         const duration = Date.now() - startTime
         
         if (attempt > 0) {
-          console.info('Database operation succeeded after retry', {
+          logger.info('Database operation succeeded after retry', {
             operationName,
             attempt: attempt + 1,
             duration
@@ -410,7 +410,7 @@ export class DatabaseConnectionManager {
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error))
         
-        console.warn('Database operation failed', {
+        logger.warn('Database operation failed', {
           operationName,
           attempt: attempt + 1,
           totalAttempts: maxRetries + 1,
@@ -419,7 +419,7 @@ export class DatabaseConnectionManager {
         
         // Don't retry on certain errors
         if (this.isNonRetryableError(lastError)) {
-          console.error('Non-retryable database error', {
+          logger.error('Non-retryable database error', {
             operationName,
             error: lastError.message
           })
@@ -428,7 +428,7 @@ export class DatabaseConnectionManager {
 
         // Check if this is a connection issue and attempt reconnection
         if (this.isConnectionError(lastError)) {
-          console.warn('Connection error detected, marking connection as unhealthy')
+          logger.warn('Connection error detected, marking connection as unhealthy')
           this.health.isHealthy = false
           this.health.errorCount++
         }
@@ -439,7 +439,7 @@ export class DatabaseConnectionManager {
           }
           
           const delay = retryDelay * Math.pow(2, attempt)
-          console.info('Retrying database operation', {
+          logger.info('Retrying database operation', {
             operationName,
             nextAttempt: attempt + 2,
             delay
@@ -450,7 +450,7 @@ export class DatabaseConnectionManager {
       }
     }
 
-    console.error('Database operation failed after all retry attempts', {
+    logger.error('Database operation failed after all retry attempts', {
       operationName,
       attempts: maxRetries + 1,
       lastError: lastError?.message
@@ -523,7 +523,7 @@ export class DatabaseConnectionManager {
       this.prisma = null
     }
     
-    console.info('🔌 Database connection closed')
+    logger.info('🔌 Database connection closed')
   }
 
   getHealth(): ConnectionHealth {

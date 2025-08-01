@@ -1,6 +1,7 @@
 import { ApiClient, ApiResponse, TripFormData } from './api-client';
 import { offlineStorage } from './offline-storage';
 import type { CountryVisit } from '@/types/global';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -44,9 +45,9 @@ export class OfflineApiClient {
    * ```typescript
    * const result = await OfflineApiClient.getTrips('user123');
    * if (result.success) {
-   *   console.info('Found ${result.data.length} trips');
+   *   logger.info('Found ${result.data.length} trips');
    *   if (result.message?.includes('오프라인')) {
-   *     console.info('Using offline data');
+   *     logger.info('Using offline data');
    *   }
    * }
    * ```
@@ -109,7 +110,7 @@ export class OfflineApiClient {
    * });
    *
    * if (result.data?._isTemporary) {
-   *   console.info('Trip saved offline, will sync later');
+   *   logger.info('Trip saved offline, will sync later');
    * }
    * ```
    */
@@ -177,9 +178,9 @@ export class OfflineApiClient {
    * ```typescript
    * const result = await OfflineApiClient.getCountries();
    * if (result.success) {
-   *   console.info('Available countries: ${result.data.length}');
+   *   logger.info('Available countries: ${result.data.length}');
    *   result.data.forEach(country => {
-   *     console.info('${country.name} (${country.code})');
+   *     logger.info('${country.name} (${country.code})');
    *   });
    * }
    * ```
@@ -242,10 +243,10 @@ export class OfflineApiClient {
    * ```typescript
    * const result = await OfflineApiClient.getSchengenStatus('user123');
    * if (result.success) {
-   *   console.info('Days used: ${result.data.usedDays}/90');
-   *   console.info('Days remaining: ${result.data.remainingDays}');
-   *   console.info('Compliant: ${result.data.isCompliant}');
-   *   console.info('Next reset: ${result.data.nextResetDate}');
+   *   logger.info('Days used: ${result.data.usedDays}/90');
+   *   logger.info('Days remaining: ${result.data.remainingDays}');
+   *   logger.info('Compliant: ${result.data.isCompliant}');
+   *   logger.info('Next reset: ${result.data.nextResetDate}');
    * }
    * ```
    */
@@ -311,9 +312,9 @@ export class OfflineApiClient {
    * ```typescript
    * // Typically called when network connection is restored
    * window.addEventListener('online', async () => {
-   *   console.info('Network restored, syncing offline data...');
+   *   logger.info('Network restored, syncing offline data...');
    *   await OfflineApiClient.syncOfflineData();
-   *   console.info('Offline data synced successfully');
+   *   logger.info('Offline data synced successfully');
    * });
    * ```
    */

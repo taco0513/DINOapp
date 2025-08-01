@@ -3,8 +3,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
-import { differenceInDays, format, parseISO, isAfter, isBefore, addDays } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { differenceInDays, format, parseISO } from 'date-fns';
+import { logger } from '@/lib/logger';
+// import { ko } from 'date-fns/locale'; // unused
 
 // TODO: Remove unused logger import
 
@@ -283,7 +284,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error validating trip plan:', error);
+    logger.error('Error validating trip plan:', error);
     return NextResponse.json(
       { error: 'Failed to validate trip plan' },
       { status: 500 }

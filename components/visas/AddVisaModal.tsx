@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 'use client';
 
 import React, { useState } from 'react';
@@ -186,7 +188,7 @@ export function AddVisaModal({ onVisaAdded, trigger }: AddVisaModalProps) {
         onVisaAdded(result.data);
       }
     } catch (error) {
-      console.error('Error creating visa:', error);
+      logger.error('Error creating visa:', error);
       toast.error(error instanceof Error ? error.message : '비자 추가에 실패했습니다.');
     } finally {
       setLoading(false);

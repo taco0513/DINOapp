@@ -150,7 +150,7 @@ export function recordServiceFailure(service: string) {
     
     // Log circuit breaker activation via structured logger
     import('@/lib/logger').then(({ logger }) => {
-      console.error('Circuit breaker opened', { 
+      logger.error('Circuit breaker opened', { 
         service, 
         failures: breaker.failures,
         threshold: CIRCUIT_BREAKER_CONFIG.failureThreshold 

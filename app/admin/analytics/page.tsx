@@ -1,11 +1,11 @@
-import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
-
+import { redirect } from 'next/navigation';
+import dynamic from 'next/dynamic';
 // Dynamic import for heavy analytics dashboard
+import { getServerSession } from 'next-auth';
+import { Metadata } from 'next';
+import { authOptions } from '@/lib/auth';
+
 const LazyAnalyticsDashboard = dynamic(() => import('@/components/lazy/LazyAnalyticsDashboard'), {
   loading: () => (
     <div className="flex items-center justify-center h-96">

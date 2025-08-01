@@ -3,8 +3,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
-import { differenceInDays, format, parseISO, isAfter, isBefore } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { differenceInDays, format, parseISO, isBefore } from 'date-fns';
+import { logger } from '@/lib/logger';
+// import { ko } from 'date-fns/locale'; // unused
 
 // TODO: Remove unused logger import
 
@@ -52,7 +53,7 @@ interface StayStats {
 }
 
 // GET /api/stay-tracking - 현재 체류 현황 조회
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -212,7 +213,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching stay tracking data:', error);
+    logger.error('Error fetching stay tracking data:', error);
     return NextResponse.json(
       { error: 'Failed to fetch stay tracking data' },
       { status: 500 }
@@ -233,7 +234,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { visaId, entryDate, purpose, expectedExitDate, notes } = CreateStaySchema.parse(body);
+    const { visaId, entryDate, purpose, expectedExitDate: _expectedExitDate, notes } = CreateStaySchema.parse(body);
 
     // 비자 존재 확인
     const userVisa = await prisma.userVisa.findFirst({
@@ -310,7 +311,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error creating stay entry:', error);
+    logger.error('Error creating stay entry:', error);
     return NextResponse.json(
       { error: 'Failed to create stay entry' },
       { status: 500 }
@@ -414,7 +415,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    console.error('Error updating stay entry:', error);
+    logger.error('Error updating stay entry:', error);
     return NextResponse.json(
       { error: 'Failed to update stay entry' },
       { status: 500 }

@@ -9,6 +9,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -47,7 +48,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       // Allow Google sign in only
       if (account?.provider === 'google') {
-        console.debug('Google sign in successful for:', user.email);
+        logger.debug('Google sign in successful for:', user.email);
         return true;
       }
       return false;
@@ -154,7 +155,7 @@ export const authOptions: NextAuthOptions = {
   events: {
     async signOut(message) {
       // Log signout event
-      console.debug('User signed out:', message);
+      logger.debug('User signed out:', message);
     },
   },
 };

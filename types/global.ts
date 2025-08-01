@@ -1,6 +1,7 @@
+export type VisaType = 
+
 // Global type definitions for DiNoCal
 
-export type VisaType = 
   | 'Tourist'
   | 'Business'
   | 'Student'

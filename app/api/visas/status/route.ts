@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { differenceInDays, format, isAfter, isBefore } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -216,7 +217,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error checking visa status:', error);
+    logger.error('Error checking visa status:', error);
     return NextResponse.json(
       { error: 'Failed to check visa status' },
       { status: 500 }
@@ -280,7 +281,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error updating visa status:', error);
+    logger.error('Error updating visa status:', error);
     return NextResponse.json(
       { error: 'Failed to update visa status' },
       { status: 500 }

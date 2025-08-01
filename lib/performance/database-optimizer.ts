@@ -82,7 +82,7 @@ class DatabaseOptimizer {
 
     prisma.$on('error', (e) => {
       import('@/lib/logger').then(({ logger }) => {
-        console.error('Database error', { error: e });
+        logger.error('Database error', { error: e });
       });
     })
 
@@ -99,7 +99,7 @@ class DatabaseOptimizer {
     // Log slow queries
     if (metric.duration > this.slowQueryThreshold) {
       import('@/lib/logger').then(({ logger }) => {
-        console.warn('Slow query detected', {
+        logger.warn('Slow query detected', {
           duration: metric.duration,
           query: metric.query,
           threshold: this.slowQueryThreshold
@@ -295,7 +295,7 @@ export class QueryOptimizer {
           results.push(result.value)
         } else {
           import('@/lib/logger').then(({ logger }) => {
-            console.error('Batch query failed', { reason: result.reason });
+            logger.error('Batch query failed', { reason: result.reason });
           });
           throw result.reason
         }

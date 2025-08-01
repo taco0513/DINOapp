@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -44,7 +45,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
     setIsSupported(supported);
 
     if (!supported) {
-      console.warn('Performance monitoring not supported in this browser');
+      logger.warn('Performance monitoring not supported in this browser');
       return;
     }
 
@@ -53,7 +54,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
       setMetrics({ ...metricsRef.current });
 
       if (enableLogging) {
-        console.debug('Performance metrics updated:', newMetrics);
+        logger.debug('Performance metrics updated:', newMetrics);
       }
     };
 
@@ -96,7 +97,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
 
           // LCP 임계값 체크
           if (thresholds.lcp && lcp > thresholds.lcp) {
-            console.warn(
+            logger.warn(
               `LCP threshold exceeded: ${lcp}ms > ${thresholds.lcp}ms`
             );
           }
@@ -114,7 +115,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
 
             // FID 임계값 체크
             if (thresholds.fid && fid > thresholds.fid) {
-              console.warn(
+              logger.warn(
                 `FID threshold exceeded: ${fid}ms > ${thresholds.fid}ms`
               );
             }
@@ -135,7 +136,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
 
               // CLS 임계값 체크
               if (thresholds.cls && clsValue > thresholds.cls) {
-                console.warn(
+                logger.warn(
                   `CLS threshold exceeded: ${clsValue} > ${thresholds.cls}`
                 );
               }
@@ -201,7 +202,7 @@ export function usePerformanceMonitor(options: PerformanceMonitorOptions = {}) {
   // 분석 도구로 메트릭 전송
   const reportMetricsToAnalytics = (metrics: Partial<PerformanceMetrics>) => {
     // 실제 구현에서는 Google Analytics, Sentry 등으로 전송
-    console.debug('Reporting metrics to analytics:', metrics);
+    logger.debug('Reporting metrics to analytics:', metrics);
 
     // 예시: Google Analytics 4 이벤트
     if (

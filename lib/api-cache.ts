@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // TODO: Remove unused logger import
 
 /**
@@ -191,7 +192,7 @@ class ApiCache {
     return setInterval(() => {
       const deletedCount = this.cleanup();
       if (deletedCount > 0) {
-        console.info('[ApiCache] Cleaned up ${deletedCount} expired entries');
+        logger.info('[ApiCache] Cleaned up ${deletedCount} expired entries');
       }
     }, intervalMs);
   }

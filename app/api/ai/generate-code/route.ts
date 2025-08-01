@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ code: generatedCode });
   } catch (error) {
-    console.error('Code generation error:', error);
+    logger.error('Code generation error:', error);
     return NextResponse.json(
       { error: 'Failed to generate code' },
       { status: 500 }
@@ -287,7 +288,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Failed to fetch users:', error);
+    logger.error('Failed to fetch users:', error);
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }
@@ -343,7 +344,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(user, { status: 201 });
   } catch (error) {
-    console.error('Failed to create user:', error);
+    logger.error('Failed to create user:', error);
     return NextResponse.json(
       { error: 'Failed to create user' },
       { status: 500 }

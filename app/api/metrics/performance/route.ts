@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // TODO: Remove unused logger import
 
@@ -62,7 +63,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ metrics, webVitals });
   } catch (error) {
-    console.error('Failed to fetch performance metrics:', error);
+    logger.error('Failed to fetch performance metrics:', error);
     return NextResponse.json(
       { error: 'Failed to fetch metrics' },
       { status: 500 }

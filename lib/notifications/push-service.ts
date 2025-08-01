@@ -136,7 +136,9 @@ export class PushNotificationService {
             results.success++;
           } else {
             results.failed++;
-            results.errors.push(result.value.error);
+            if (result.value.error) {
+              results.errors.push(result.value.error);
+            }
           }
         } else {
           results.failed++;

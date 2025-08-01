@@ -182,7 +182,7 @@ export async function GET(request: NextRequest) {
         startDate,
         endDate,
         status,
-        countryCode,
+        country: countryCode,
         limit,
         offset,
       });

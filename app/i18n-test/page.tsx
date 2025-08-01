@@ -8,7 +8,7 @@ import {
   formatDuration,
   formatRelativeTime,
 } from '@/lib/i18n-utils';
-import { PageHeader } from '@/components/common/PageHeader';
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
 
 export default function I18nTestPage() {
   const { locale, t } = useI18n();
@@ -16,12 +16,11 @@ export default function I18nTestPage() {
   const [endDate] = useState(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)); // 7 days later
 
   return (
-    <main className='min-h-screen bg-background'>
-      <div className='container mx-auto px-4 py-8'>
-        <PageHeader
-          title='🌍 국제화 테스트 페이지'
-          description='6개 언어 지원 및 실시간 언어 변경 테스트'
-        />
+    <StandardPageLayout
+      title='🌍 국제화 테스트 페이지'
+      description='6개 언어 지원 및 실시간 언어 변경 테스트'
+      className='bg-background'
+    >
 
         {/* Language Selector Variants */}
         <div className='grid md:grid-cols-3 gap-8 mb-8'>
@@ -169,7 +168,6 @@ export default function I18nTestPage() {
             <li>날짜와 숫자 형식이 언어에 맞게 표시되는지 확인하세요</li>
           </ul>
         </div>
-      </div>
-    </main>
+    </StandardPageLayout>
   );
 }

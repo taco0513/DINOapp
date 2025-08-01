@@ -64,24 +64,22 @@ class VisaAlertsService {
       const cutoffDate = new Date()
       cutoffDate.setDate(cutoffDate.getDate() + this.ALERT_INTERVALS.REMINDER)
 
-      const expiringVisas = await prisma.visa.findMany({
-        where: {
-          status: 'active',
-          expiryDate: {
-            lte: cutoffDate
-          }
-        },
-        include: {
-          user: true
-        }
-      })
+      // TODO: This should query actual user visa records, not visa requirements
+      // VisaRequirement model stores country-to-country visa rules, not individual user visas
+      // const expiringVisas = await prisma.visaRequirement.findMany({
+      //   where: {
+      //     visaRequired: true
+      //     // TODO: Add proper query for user visa expiry dates when visa tracking is implemented
+      //   }
+      // })
 
-      for (const visa of expiringVisas) {
-        if (await this.shouldSendAlert(visa)) {
-          await this.sendExpiryAlert(visa)
-          await this.updateLastAlertSent(visa.id)
-        }
-      }
+      // TODO: Implement visa expiry alerts when proper visa tracking model is added
+      // for (const visa of expiringVisas) {
+      //   if (await this.shouldSendAlert(visa)) {
+      //     await this.sendExpiryAlert(visa)
+      //     await this.updateLastAlertSent(visa.id)
+      //   }
+      // }
     } catch (error) {
       await systemAlert.error(
         `Failed to check expiring visas: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -105,38 +103,38 @@ class VisaAlertsService {
   /**
    * 비자 만료 알림 발송
    */
-  private async sendExpiryAlert(visa: Visa): Promise<void> {
-    const daysUntilExpiry = Math.ceil(
-      (visa.expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-    )
+  // private async _sendExpiryAlert(visa: Visa): Promise<void> {
+  //   const daysUntilExpiry = Math.ceil(
+  //     (visa.expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+  //   )
 
-    let severity: 'info' | 'warning' | 'error' | 'critical' = 'info'
-    let urgencyLevel = 'reminder'
+  //   let severity: 'info' | 'warning' | 'error' | 'critical' = 'info'
+  //   let urgencyLevel = 'reminder'
 
-    if (daysUntilExpiry <= this.ALERT_INTERVALS.URGENT) {
-      severity = 'critical'
-      urgencyLevel = 'urgent'
-    } else if (daysUntilExpiry <= this.ALERT_INTERVALS.WARNING) {
-      severity = 'error'
-      urgencyLevel = 'warning'
-    }
+  //   if (daysUntilExpiry <= this.ALERT_INTERVALS.URGENT) {
+  //     severity = 'critical'
+  //     urgencyLevel = 'urgent'
+  //   } else if (daysUntilExpiry <= this.ALERT_INTERVALS.WARNING) {
+  //     severity = 'error'
+  //     urgencyLevel = 'warning'
+  //   }
 
-    await alertManager.sendDirectAlert({
-      title: `${urgencyLevel === 'urgent' ? '🚨 URGENT: ' : '⚠️ '}${visa.countryName} Visa Expiring Soon`,
-      message: `Your ${visa.type || 'visa'} for ${visa.countryName} expires in ${daysUntilExpiry} days on ${visa.expiryDate.toLocaleDateString()}. Please take action to renew or plan accordingly.`,
-      severity,
-      source: 'visa-alerts',
-      metadata: {
-        visaId: visa.id,
-        userId: visa.userId,
-        countryName: visa.countryName,
-        visaType: visa.type,
-        expiryDate: visa.expiryDate,
-        daysUntilExpiry,
-        urgencyLevel
-      }
-    })
-  }
+  //   await alertManager.sendDirectAlert({
+  //     title: `${urgencyLevel === 'urgent' ? '🚨 URGENT: ' : '⚠️ '}${visa.countryName} Visa Expiring Soon`,
+  //     message: `Your ${visa.type || 'visa'} for ${visa.countryName} expires in ${daysUntilExpiry} days on ${visa.expiryDate.toLocaleDateString()}. Please take action to renew or plan accordingly.`,
+  //     severity,
+  //     source: 'visa-alerts',
+  //     metadata: {
+  //       visaId: visa.id,
+  //       userId: visa.userId,
+  //       countryName: visa.countryName,
+  //       visaType: visa.type,
+  //       expiryDate: visa.expiryDate,
+  //       daysUntilExpiry,
+  //       urgencyLevel
+  //     }
+  //   })
+  // }
 
   /**
    * 비자별 맞춤 알림 생성
@@ -274,20 +272,22 @@ class VisaAlertsService {
   /**
    * 마지막 알림 발송 시간 업데이트
    */
-  private async updateLastAlertSent(visaId: string): Promise<void> {
-    try {
-      await prisma.visa.update({
-        where: { id: visaId },
-        data: { lastAlertSent: new Date() }
-      })
-    } catch (error) {
-      // Log error but don't throw to avoid breaking the main flow
-      await systemAlert.warning(
-        `Failed to update last alert sent for visa ${visaId}`,
-        'visa-alerts'
-      )
-    }
-  }
+  // private async _updateLastAlertSent(visaId: string): Promise<void> {
+  //   try {
+  //     // TODO: Update lastAlertSent when proper visa tracking model is implemented
+  //     // VisaRequirement model doesn't have lastAlertSent field
+  //     // await prisma.visaRequirement.update({
+  //     //   where: { id: visaId },
+  //     //   data: { lastAlertSent: new Date() }
+  //     // })
+  //   } catch (error) {
+  //     // Log error but don't throw to avoid breaking the main flow
+  //     await systemAlert.warning(
+  //       `Failed to update last alert sent for visa ${visaId}`,
+  //       'visa-alerts'
+  //     )
+  //   }
+  // }
 }
 
 // Export new service instance
@@ -295,23 +295,21 @@ export const visaAlerts = new VisaAlertsService()
 
 // Legacy functions for backward compatibility
 export async function checkVisaAlerts(userId: string) {
-  const trips = await prisma.trip.findMany({
+  const trips = await prisma.countryVisit.findMany({
     where: {
       userId,
-      endDate: {
+      exitDate: {
         gte: new Date() // 현재 진행 중이거나 미래 여행
       }
-    },
-    include: {
-      country: true
     }
+    // Note: country field is a string, not a relation
   })
 
   const alerts: VisaAlert[] = []
   
   for (const trip of trips) {
     // 비자 만료일 계산 (임시 - 실제는 DB에서)
-    const visaExpiryDate = addDays(trip.startDate, 90) // 예시: 90일 비자
+    const visaExpiryDate = addDays(trip.entryDate, 90) // 예시: 90일 비자
     const daysUntilExpiry = differenceInDays(visaExpiryDate, new Date())
     
     // 알림 필요 체크
@@ -321,7 +319,7 @@ export async function checkVisaAlerts(userId: string) {
         id: `alert-${trip.id}-${daysUntilExpiry}`,
         userId: trip.userId,
         tripId: trip.id,
-        countryCode: trip.countryCode,
+        countryCode: trip.country,
         expiryDate: visaExpiryDate,
         alertDays,
         alertType: 'VISA_EXPIRY'

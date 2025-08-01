@@ -56,11 +56,10 @@ describe('useLocalStorage', () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
     
     // Simulate storage event from another tab
-    const storageEvent = new StorageEvent('storage', {
-      key: 'test-key',
-      newValue: JSON.stringify('value from another tab'),
-      storageArea: localStorage
-    })
+    const storageEvent = new Event('storage') as StorageEvent
+    Object.defineProperty(storageEvent, 'key', { value: 'test-key' })
+    Object.defineProperty(storageEvent, 'newValue', { value: JSON.stringify('value from another tab') })
+    Object.defineProperty(storageEvent, 'storageArea', { value: localStorage })
 
     act(() => {
       window.dispatchEvent(storageEvent)
@@ -77,11 +76,10 @@ describe('useLocalStorage', () => {
     })
 
     // Simulate deletion from another tab
-    const storageEvent = new StorageEvent('storage', {
-      key: 'test-key',
-      newValue: null,
-      storageArea: localStorage
-    })
+    const storageEvent = new Event('storage') as StorageEvent
+    Object.defineProperty(storageEvent, 'key', { value: 'test-key' })
+    Object.defineProperty(storageEvent, 'newValue', { value: null })
+    Object.defineProperty(storageEvent, 'storageArea', { value: localStorage })
 
     act(() => {
       window.dispatchEvent(storageEvent)
@@ -93,11 +91,10 @@ describe('useLocalStorage', () => {
   it('should ignore storage events for different keys', () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
     
-    const storageEvent = new StorageEvent('storage', {
-      key: 'different-key',
-      newValue: JSON.stringify('some value'),
-      storageArea: localStorage
-    })
+    const storageEvent = new Event('storage') as StorageEvent
+    Object.defineProperty(storageEvent, 'key', { value: 'different-key' })
+    Object.defineProperty(storageEvent, 'newValue', { value: JSON.stringify('some value') })
+    Object.defineProperty(storageEvent, 'storageArea', { value: localStorage })
 
     act(() => {
       window.dispatchEvent(storageEvent)

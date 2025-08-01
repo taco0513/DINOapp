@@ -50,7 +50,8 @@ import {
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { VisaComparison } from '@/components/visa/VisaComparison';
 import { VisaChecklist } from '@/components/visa/VisaChecklist';
-import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
+import { t } from '@/lib/i18n';
 
 export default function VisaPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -209,23 +210,15 @@ export default function VisaPage() {
     : null;
 
   return (
-    <main style={{ minHeight: '100vh' }}>
-      <div
-        className='container'
-        style={{
-          paddingTop: 'var(--space-6)',
-          paddingBottom: 'var(--space-6)',
-        }}
-      >
-        <PageHeader
-          title='Visa Information'
-          description='Comprehensive visa requirements and travel information for digital nomads and travelers'
-          icon={PageIcons.Globe}
-          breadcrumbs={[
-            { label: '대시보드', href: '/dashboard' },
-            { label: 'Visa Information' },
-          ]}
-        />
+    <StandardPageLayout
+      title='Visa Information'
+      description='Comprehensive visa requirements and travel information for digital nomads and travelers'
+      icon='Globe'
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.visa') },
+      ]}
+    >
         {/* Search and Filters */}
         <Card className='mb-8'>
           <CardHeader>
@@ -726,7 +719,6 @@ export default function VisaPage() {
             onClose={() => setShowChecklist(null)}
           />
         )}
-      </div>
-    </main>
+    </StandardPageLayout>
   );
 }

@@ -4,6 +4,11 @@ import { useState } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
 import type { CountryVisit } from '@/types/global'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Icon } from '@/components/icons'
 
 interface TripCardProps {
   trip: CountryVisit
@@ -54,145 +59,126 @@ export default function TripCard({ trip, onEdit, onDelete }: TripCardProps) {
   }
 
   return (
-    <div className="card">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="card-title flex items-center">
-            {country?.flag || '🌍'} {trip.country}
-            {country?.isSchengen && (
-              <span className="badge ml-2">
-                셰겐
-              </span>
-            )}
-          </h3>
-          <p className="card-description">
-            {trip.visaType}
-          </p>
+    <Card className="ios-card-interactive">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h3 className="text-title-3 flex items-center gap-2">
+              {country?.flag || <Icon name="world" size="sm" />} {trip.country}
+              {country?.isSchengen && (
+                <Badge variant="secondary">셰겐</Badge>
+              )}
+            </h3>
+            <p className="text-body-sm text-muted-foreground">
+              {trip.visaType}
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => onEdit(trip)}
+            >
+              수정
+            </Button>
+            <Button 
+              variant="destructive-outline" 
+              size="sm"
+              onClick={handleDelete}
+              disabled={loading}
+              className={showDeleteConfirm ? 'bg-destructive/10' : ''}
+            >
+              {loading ? '...' : '삭제'}
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* Dates */}
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span className="text-body-sm text-muted-foreground">입국:</span>
+            <span className="text-body-sm font-medium">{formatDate(entryDate)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-body-sm text-muted-foreground">출국:</span>
+            <span className="text-body-sm font-medium">
+              {exitDate ? formatDate(exitDate) : (
+                <Badge variant="success">현재 체류 중</Badge>
+              )}
+            </span>
+          </div>
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={() => onEdit(trip)}
-            className="btn btn-sm btn-ghost"
-          >
-            수정
-          </button>
-          <button
-            onClick={handleDelete}
-            disabled={loading}
-            className="btn btn-sm btn-ghost"
-            style={{
-              borderColor: 'var(--color-error)',
-              color: 'var(--color-error)',
-              backgroundColor: showDeleteConfirm ? 'rgba(239, 68, 68, 0.05)' : 'transparent'
-            }}
-          >
-            {loading ? '...' : '삭제'}
-          </button>
-        </div>
-      </div>
-
-      {/* Dates */}
-      <div className="mb-4">
-        <div className="flex justify-between mb-2">
-          <span className="text-small text-secondary">입국:</span>
-          <span className="text-small font-semibold">{formatDate(entryDate)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-small text-secondary">출국:</span>
-          <span className="text-small font-semibold">
-            {exitDate ? formatDate(exitDate) : (
-              <span className="badge badge-success">
-                현재 체류 중
-              </span>
-            )}
-          </span>
-        </div>
-      </div>
-
-      {/* Duration */}
-      <div className="stat mb-4">
+        {/* Duration */}
         <div className="flex justify-between items-center">
-          <span className="text-small text-secondary">체류 일수:</span>
+          <span className="text-body-sm text-muted-foreground">체류 일수:</span>
           <div className="text-right">
-            <span className="font-bold text-lg">
+            <span className="text-lg font-bold">
               {days}일
             </span>
-            <span className="text-small text-tertiary ml-2">
+            <span className="text-body-sm text-muted-foreground ml-2">
               / {trip.maxDays}일
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div style={{ 
-          width: '100%', 
-          height: '20px', 
-          border: '1px solid var(--color-border-strong)',
-          backgroundColor: 'var(--color-surface)',
-          position: 'relative'
-        }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${Math.min((days / trip.maxDays) * 100, 100)}%`,
-              backgroundColor: days > trip.maxDays ? 'var(--color-error)' : days > trip.maxDays * 0.8 ? 'var(--color-warning)' : 'var(--color-success)'
-            }}
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <Progress 
+            value={Math.min((days / trip.maxDays) * 100, 100)}
+            className={`h-5 ${
+              days > trip.maxDays ? 'progress-error' : 
+              days > trip.maxDays * 0.8 ? 'progress-warning' : 
+              'progress-success'
+            }`}
           />
-          <span style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: 'var(--text-xs)',
-            fontWeight: 'var(--font-semibold)'
-          }}>
-            {Math.round((days / trip.maxDays) * 100)}%
-          </span>
-        </div>
-        {days > trip.maxDays && (
-          <p className="text-small mt-2" style={{ color: 'var(--color-error)' }}>⚠️ 최대 체류 일수 초과</p>
-        )}
-      </div>
-
-      {/* Notes */}
-      {trip.notes && (
-        <div style={{ paddingTop: 'var(--space-4)', borderTop: '1px solid var(--color-border)' }}>
-          <p className="text-small text-secondary">{trip.notes}</p>
-        </div>
-      )}
-
-      {/* Delete Confirmation */}
-      {showDeleteConfirm && (
-        <div className="alert alert-error mt-4">
-          <p className="text-small mb-3">
-            정말 이 여행 기록을 삭제하시겠습니까?
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={handleDelete}
-              disabled={loading}
-              className="btn btn-sm"
-              style={{
-                backgroundColor: 'var(--color-error)',
-                borderColor: 'var(--color-error)',
-                color: 'white'
-              }}
-            >
-              {loading ? '삭제 중...' : '삭제'}
-            </button>
-            <button
-              onClick={() => setShowDeleteConfirm(false)}
-              className="btn btn-sm"
-            >
-              취소
-            </button>
+          <div className="flex justify-between text-footnote text-muted-foreground">
+            <span>{Math.round((days / trip.maxDays) * 100)}% 사용</span>
+            {days > trip.maxDays && (
+              <span className="text-destructive flex items-center gap-1">
+                <Icon name="alert-triangle" size="xs" />
+                최대 체류 일수 초과
+              </span>
+            )}
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Notes */}
+        {trip.notes && (
+          <div className="pt-4 border-t border-border">
+            <p className="text-body-sm text-muted-foreground">{trip.notes}</p>
+          </div>
+        )}
+
+        {/* Delete Confirmation */}
+        {showDeleteConfirm && (
+          <div className="bg-error p-4 rounded-lg border border-destructive/20">
+            <p className="text-body-sm mb-3 text-destructive">
+              정말 이 여행 기록을 삭제하시겠습니까?
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                {loading ? '삭제 중...' : '삭제'}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                취소
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }

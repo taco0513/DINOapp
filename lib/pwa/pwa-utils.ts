@@ -132,10 +132,13 @@ export const checkForUpdates = async () => {
         resolve(event.data.updateAvailable)
       }
 
-      navigator.serviceWorker.controller.postMessage(
-        { type: 'CHECK_UPDATE' },
-        [messageChannel.port2]
-      )
+      const controller = navigator.serviceWorker.controller
+      if (controller) {
+        controller.postMessage(
+          { type: 'CHECK_UPDATE' },
+          [messageChannel.port2]
+        )
+      }
     })
   } catch (error) {
     console.error('Update check failed:', error)
@@ -277,7 +280,9 @@ export const syncOfflineData = async () => {
   try {
     // Trigger background sync
     const registration = await navigator.serviceWorker.ready
-    await registration.sync.register('sync-offline-data')
+    if ('sync' in registration) {
+      await (registration as any).sync.register('sync-offline-data')
+    }
     return true
   } catch (error) {
     console.error('Sync failed:', error)

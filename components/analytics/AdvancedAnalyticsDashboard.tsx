@@ -105,7 +105,7 @@ export default function AdvancedAnalyticsDashboard() {
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 dateRange === range
                   ? 'bg-primary text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
               {range === '7d' && '7일'}

@@ -401,17 +401,17 @@ export class OptimizedQueries {
     options: {
       page?: number
       limit?: number
-      countryCode?: string
+      country?: string
       year?: number
     } = {}
   ) {
-    const { page = 1, limit = 20, countryCode, year } = options
+    const { page = 1, limit = 20, country: countryCode, year } = options
     const skip = (page - 1) * limit
 
     const where: any = { userId }
     
     if (countryCode) {
-      where.countryCode = countryCode
+      where.country = countryCode
     }
     
     if (year) {
@@ -423,11 +423,11 @@ export class OptimizedQueries {
 
     return QueryOptimizer.optimizeQuery(
       () => Promise.all([
-        this.prisma.travelRecord.findMany({
+        this.prisma.countryVisit.findMany({
           where,
           select: {
             id: true,
-            countryCode: true,
+            country: true,
             entryDate: true,
             exitDate: true,
             purpose: true,
@@ -437,7 +437,7 @@ export class OptimizedQueries {
           skip,
           take: limit
         }),
-        this.prisma.travelRecord.count({ where })
+        this.prisma.countryVisit.count({ where })
       ]),
       {
         cacheKey: `travel-records:${userId}:${JSON.stringify(options)}`,
@@ -452,10 +452,10 @@ export class OptimizedQueries {
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 
     return QueryOptimizer.optimizeQuery(
-      () => this.prisma.travelRecord.findMany({
+      () => this.prisma.countryVisit.findMany({
         where: {
           userId,
-          countryCode: {
+          country: {
             in: [
               // Schengen countries
               'AT', 'BE', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU',
@@ -470,7 +470,7 @@ export class OptimizedQueries {
         },
         select: {
           id: true,
-          countryCode: true,
+          country: true,
           entryDate: true,
           exitDate: true
         },
@@ -487,7 +487,7 @@ export class OptimizedQueries {
   async batchCreateTravelRecords(records: any[]) {
     return QueryOptimizer.batchQueries(
       records.map(record => () => 
-        this.prisma.travelRecord.create({ data: record })
+        this.prisma.countryVisit.create({ data: record })
       ),
       5 // Process 5 at a time
     )

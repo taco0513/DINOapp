@@ -1,24 +1,10 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { ArrowLeft, HelpCircle, Settings } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
-interface PageHeaderProps {
-  title: string;
-  subtitle?: string;
-  description?: string;
-  icon?: ReactNode;
-  showBackButton?: boolean;
-  action?: React.ReactNode;
-  className?: string;
-  showHelp?: boolean;
-  onHelpClick?: () => void;
-  breadcrumbs?: Array<{
-    label: string;
-    href?: string;
-  }>;
-}
+import { Breadcrumbs } from './Breadcrumbs';
+import { Icon, PageIconPresets } from '@/components/icons';
+import type { PageHeaderProps, PageIconName } from '@/types/layout';
 
 export default function PageHeader({
   title,
@@ -39,37 +25,10 @@ export default function PageHeader({
   };
 
   return (
-    <div className={`pb-6 mb-6 ${className}`}>
+    <div className={className} style={{ paddingBottom: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
       {/* Breadcrumbs */}
-      {breadcrumbs.length > 0 && (
-        <nav
-          className='flex items-center space-x-2 text-sm mb-4'
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
-          {breadcrumbs.map((crumb, index) => (
-            <div key={index} className='flex items-center'>
-              {index > 0 && <span className='mx-2'>/</span>}
-              {crumb.href ? (
-                <button
-                  onClick={() => router.push(crumb.href!)}
-                  className='hover:underline'
-                  style={{ color: 'var(--color-primary)' }}
-                >
-                  {crumb.label}
-                </button>
-              ) : (
-                <span
-                  style={{
-                    color: 'var(--color-text-primary)',
-                    fontWeight: 'var(--font-medium)',
-                  }}
-                >
-                  {crumb.label}
-                </span>
-              )}
-            </div>
-          ))}
-        </nav>
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <Breadcrumbs items={breadcrumbs} className="mb-4" />
       )}
 
       <div
@@ -86,14 +45,19 @@ export default function PageHeader({
               {showBackButton && (
                 <button
                   onClick={handleBackClick}
-                  className='mt-2 p-2 rounded-lg hover:bg-muted transition-colors'
+                  className='hover:bg-muted transition-colors'
+                  style={{ marginTop: 'var(--space-2)', padding: 'var(--space-2)', borderRadius: 'var(--radius)' }}
                 >
-                  <ArrowLeft className='h-4 w-4' />
+                  <Icon name="arrow-left" size="sm" />
                 </button>
               )}
 
               {/* Icon */}
-              {icon && <div className='flex-shrink-0 mt-1'>{icon}</div>}
+              {icon && (
+                <div className='flex-shrink-0 mt-1'>
+                  {typeof icon === 'string' && icon in PageIconPresets ? PageIconPresets[icon as PageIconName] : icon}
+                </div>
+              )}
 
               {/* Title Section */}
               <div className='flex-1 min-w-0'>
@@ -113,9 +77,10 @@ export default function PageHeader({
                   {showHelp && onHelpClick && (
                     <button
                       onClick={onHelpClick}
-                      className='p-1 rounded-lg hover:bg-muted transition-colors text-muted-foreground'
+                      className='hover:bg-muted transition-colors text-muted-foreground'
+                      style={{ padding: 'var(--space-1)', borderRadius: 'var(--radius)' }}
                     >
-                      <HelpCircle className='h-4 w-4' />
+                      <Icon name="help-circle" size="sm" />
                     </button>
                   )}
                 </div>
@@ -163,67 +128,3 @@ export default function PageHeader({
 
 // Named export for compatibility
 export { PageHeader };
-
-// 미리 정의된 페이지별 아이콘들
-export const PageIcons: Record<string, ReactNode> = {
-  Dashboard: (
-    <div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-lg'>
-      🏠
-    </div>
-  ),
-  Trips: (
-    <div className='w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-lg'>
-      ✈️
-    </div>
-  ),
-  Schengen: (
-    <div className='w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-lg'>
-      🇪🇺
-    </div>
-  ),
-  Calendar: (
-    <div className='w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg'>
-      📅
-    </div>
-  ),
-  Gmail: (
-    <div className='w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center text-lg'>
-      📧
-    </div>
-  ),
-  Analytics: (
-    <div className='w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-lg'>
-      📊
-    </div>
-  ),
-  Monitoring: (
-    <div className='w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center text-lg'>
-      🖥️
-    </div>
-  ),
-  AI: (
-    <div className='w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-lg'>
-      🤖
-    </div>
-  ),
-  Settings: (
-    <div className='w-8 h-8 bg-muted rounded-lg flex items-center justify-center'>
-      <Settings className='h-4 w-4' />
-    </div>
-  ),
-  Profile: (
-    <div className='w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center text-lg'>
-      👤
-    </div>
-  ),
-  Bell: (
-    <div className='w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center text-lg'>
-      🔔
-    </div>
-  ),
-  Globe: (
-    <div className='w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center text-lg'>
-      🌍
-    </div>
-  ),
-};

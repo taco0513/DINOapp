@@ -94,11 +94,26 @@ export function captureMessage(message: string, level: Sentry.SeverityLevel = 'i
   Sentry.captureMessage(message, level)
 }
 
-// 성능 추적
-export function startTransaction(name: string, op: string) {
-  // @ts-ignore - startTransaction might not be available in all versions
-  if (typeof Sentry.startTransaction === 'function') {
-    return Sentry.startTransaction({ name, op })
+// 성능 추적 (deprecated in newer Sentry versions)
+export function startTransaction(name: string, op: string): (() => void) | null {
+  // Modern Sentry uses startSpan instead of startTransaction
+  try {
+    // @ts-ignore - Use modern span API if available
+    if (typeof Sentry.startSpan === 'function') {
+      let span: any = null
+      Sentry.startSpan({ name, op }, (activeSpan) => {
+        span = activeSpan
+      })
+      return () => {
+        if (span && typeof span.end === 'function') {
+          span.end()
+        }
+      }
+    }
+    // Fallback to deprecated API (commented out due to type issues)
+    // Modern Sentry versions no longer support startTransaction
+  } catch (error) {
+    console.warn('Sentry transaction/span API not available:', error)
   }
   return null
 }

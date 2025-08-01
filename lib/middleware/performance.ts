@@ -135,7 +135,7 @@ export function performanceMiddleware(options: PerformanceMiddlewareOptions = {}
       if (contentType.includes('application/json')) {
         await processJSONResponse(
           clonedResponse,
-          response as NextResponse,
+          response,
           cacheKey,
           config,
           duration,
@@ -175,8 +175,8 @@ export function performanceMiddleware(options: PerformanceMiddlewareOptions = {}
 
 // Process JSON responses for caching and compression
 async function processJSONResponse(
-  clonedResponse: NextResponse,
-  originalResponse: NextResponse,
+  clonedResponse: Response,
+  originalResponse: Response,
   cacheKey: string,
   config: PerformanceMiddlewareOptions,
   _duration: number,

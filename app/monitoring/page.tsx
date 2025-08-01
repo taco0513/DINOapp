@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 // import { ApiClient } from '@/lib/api-client'
-import { PageHeader, PageIcons } from '@/components/common/PageHeader'
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout'
 // import { Activity, RefreshCw, Download, Settings } from 'lucide-react'
 
 interface SystemMetrics {
@@ -230,46 +230,45 @@ export default function MonitoringPage() {
   const { current, database, system, history } = monitoring
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <PageHeader
-          title="시스템 모니터링"
-          description="실시간 시스템 성능 및 건강 상태 모니터링"
-          icon={PageIcons.Monitoring}
-          breadcrumbs={[
-            { label: '대시보드', href: '/dashboard' },
-            { label: '시스템 모니터링' }
-          ]}
-          action={
-            <div className="flex gap-3 items-center">
-              <select
-                value={selectedTimeRange}
-                onChange={(e) => setSelectedTimeRange(e.target.value)}
-                className="px-3 py-2 border border-border rounded text-sm bg-background"
-              >
-                <option value="1h">Last 1 Hour</option>
-                <option value="24h">Last 24 Hours</option>
-                <option value="7d">Last 7 Days</option>
-              </select>
-              
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`px-4 py-2 text-sm rounded text-white ${
-                  autoRefresh ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'
-                }`}
-              >
-                {autoRefresh ? '🔄 Auto' : '⏸️ Manual'}
-              </button>
-              
-              <button
-                onClick={loadMonitoringData}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded"
-              >
-                🔄 Refresh
-              </button>
-            </div>
-          }
-        />
+    <StandardPageLayout
+      title="시스템 모니터링"
+      description="실시간 시스템 성능 및 건강 상태 모니터링"
+      icon='Monitoring'
+      breadcrumbs={[
+        { label: '대시보드', href: '/dashboard' },
+        { label: '시스템 모니터링' }
+      ]}
+      headerActions={
+        <div className="flex gap-3 items-center">
+          <select
+            value={selectedTimeRange}
+            onChange={(e) => setSelectedTimeRange(e.target.value)}
+            className="px-3 py-2 border border-border rounded text-sm bg-background"
+          >
+            <option value="1h">Last 1 Hour</option>
+            <option value="24h">Last 24 Hours</option>
+            <option value="7d">Last 7 Days</option>
+          </select>
+          
+          <button
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            className={`px-4 py-2 text-sm rounded text-white ${
+              autoRefresh ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'
+            }`}
+          >
+            {autoRefresh ? '🔄 Auto' : '⏸️ Manual'}
+          </button>
+          
+          <button
+            onClick={loadMonitoringData}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded"
+          >
+            🔄 Refresh
+          </button>
+        </div>
+      }
+      className='bg-background'
+    >
 
         {/* Status Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5 mb-8">
@@ -399,7 +398,6 @@ export default function MonitoringPage() {
             </div>
           </div>
         </div>
-      </div>
-    </main>
+    </StandardPageLayout>
   )
 }

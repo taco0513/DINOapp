@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -40,16 +40,16 @@ import {
 
 export default function AIPage() {
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <PageHeader
-        title="AI 개발 도구"
-        description="AI와 함께 개발 생산성을 10배 향상시키세요 (데모 버전)"
-        icon={PageIcons.AI}
-        breadcrumbs={[
-          { label: '대시보드', href: '/dashboard' },
-          { label: 'AI 개발 도구' }
-        ]}
-      />
+    <StandardPageLayout
+      title="AI 개발 도구"
+      description="AI와 함께 개발 생산성을 10배 향상시키세요 (데모 버전)"
+      icon='AI'
+      breadcrumbs={[
+        { label: '대시보드', href: '/dashboard' },
+        { label: 'AI 개발 도구' }
+      ]}
+      className=''
+    >
 
       {/* 데모 알림 */}
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
@@ -166,6 +166,6 @@ export default function AIPage() {
           </Suspense>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPageLayout>
   );
 }

@@ -152,7 +152,8 @@ export class MetricsCollector {
     } catch (error) {
       // Put metrics back in buffer on error
       this.buffer.unshift(...metricsToFlush)
-      throw error
+      // Log error but don't throw - handle gracefully
+      console.error('Metrics storage error:', error)
     }
   }
 

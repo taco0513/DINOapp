@@ -166,7 +166,12 @@ export class TravelManager {
       take: limit,
     });
 
-    return trips;
+    // Convert database Date objects to ISO strings to match CountryVisit interface
+    return trips.map((trip: any) => ({
+      ...trip,
+      entryDate: trip.entryDate.toISOString(),
+      exitDate: trip.exitDate ? trip.exitDate.toISOString() : null,
+    }));
   }
 
   /**
@@ -384,8 +389,15 @@ export class TravelManager {
       }
     });
 
+    // Convert trips to CountryVisit format for calculateSchengenStatus
+    const convertedTrips = trips.map((trip: any) => ({
+      ...trip,
+      entryDate: trip.entryDate.toISOString(),
+      exitDate: trip.exitDate ? trip.exitDate.toISOString() : null,
+    }));
+
     // Get Schengen status
-    const schengenStatus = calculateSchengenStatus(trips);
+    const schengenStatus = calculateSchengenStatus(convertedTrips);
 
     // Popular destinations
     const countryFrequency: {
@@ -568,8 +580,15 @@ export class TravelManager {
   ): Promise<FutureTripValidation> {
     const trips = await this.getTrips();
 
+    // Convert trips to CountryVisit format
+    const convertedTrips = trips.map((trip: any) => ({
+      ...trip,
+      entryDate: trip.entryDate.toISOString(),
+      exitDate: trip.exitDate ? trip.exitDate.toISOString() : null,
+    }));
+
     return validateFutureTrip(
-      trips,
+      convertedTrips,
       new Date(entryDate),
       new Date(exitDate),
       country

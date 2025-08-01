@@ -291,7 +291,7 @@ class RateLimiter {
 export const rateLimiter = new RateLimiter();
 
 // Optimized fetch wrapper with caching, deduplication, and retry logic
-interface OptimizedFetchOptions extends RequestInit {
+interface OptimizedFetchOptions extends Omit<RequestInit, 'cache'> {
   cache?: boolean;
   cacheTtl?: number;
   deduplicate?: boolean;

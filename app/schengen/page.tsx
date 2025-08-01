@@ -190,27 +190,27 @@ export default function SchengenPage() {
       {loading ? (
         <StandardCard>
           <div className='text-center py-12'>
-            <div className='text-gray-600'>데이터를 불러오는 중...</div>
+            <div className='text-gray-600'>{t('common.loading')}</div>
           </div>
         </StandardCard>
       ) : hasTrips ? (
         <div className='space-y-8'>
           {/* Schengen Status Card */}
-          <StandardCard title='현재 셰겐 상태'>
+          <StandardCard title={t('schengen.current_status')}>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
               <StatsCard
                 value={schengenData ? `${schengenData.status.usedDays} / 90` : '0 / 90'}
-                label='사용된 일수'
+                label={t('schengen.used_days')}
                 color='blue'
               />
               <StatsCard
                 value={schengenData ? schengenData.status.remainingDays : '90'}
-                label='남은 일수'
+                label={t('schengen.remaining_days')}
                 color='green'
               />
               <StatsCard
                 value={schengenData ? schengenData.status.nextResetDate : '---'}
-                label='다음 재설정'
+                label={t('schengen.next_reset')}
                 color='purple'
               />
             </div>
@@ -226,8 +226,8 @@ export default function SchengenPage() {
                   }`}
                 >
                   {schengenData.status.isCompliant
-                    ? '✅ 셰겐 규정 준수'
-                    : '⚠️ 셰겐 규정 위반'}
+                    ? t('schengen.compliant')
+                    : t('schengen.violation')}
                 </div>
 
                 {schengenData.warnings &&

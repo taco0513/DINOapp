@@ -1,4 +1,4 @@
-import { onCLS, onFID, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
+import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
 
 const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
 
@@ -52,7 +52,7 @@ export function reportWebVitals(options: {
   debug?: boolean;
 } = {}) {
   try {
-    onFID((metric: Metric) => sendToAnalytics(metric, options));
+    onINP((metric: Metric) => sendToAnalytics(metric, options)); // FID is deprecated, using INP (Interaction to Next Paint)
     onTTFB((metric: Metric) => sendToAnalytics(metric, options));
     onLCP((metric: Metric) => sendToAnalytics(metric, options));
     onCLS((metric: Metric) => sendToAnalytics(metric, options));

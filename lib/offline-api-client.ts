@@ -138,9 +138,10 @@ export class OfflineApiClient {
         id: tempId,
         ...data,
         userId: userId || 'unknown',
+        exitDate: data.exitDate || null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        _isTemporary: true,
+        // Note: _isTemporary is handled separately
       };
 
       // 오프라인 큐에 추가

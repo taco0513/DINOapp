@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import '../styles/design-tokens.css'
+import '../styles/ios-components.css'
 import '../styles/mobile-touch.css'
 import SessionProvider from '@/components/providers/SessionProvider'
 import MainLayout from '@/components/layout/MainLayout'
@@ -11,7 +13,7 @@ import Script from 'next/script'
 import { AnalyticsWrapper } from '@/lib/analytics/vercel'
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor'
 import { SkipLink } from '@/components/ui/SkipLink'
-import { ErrorBoundary } from '@/components/error/ErrorBoundary'
+import { PageErrorBoundary } from '@/components/ErrorBoundary'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -289,13 +291,7 @@ export default function RootLayout({
         />
 
         <SkipLink />
-        <ErrorBoundary onError={(error, errorInfo) => {
-          // Send error to monitoring service
-          if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
-            console.error('Global error boundary caught:', error, errorInfo)
-            // Here you would send to Sentry or other monitoring service
-          }
-        }}>
+        <PageErrorBoundary>
           <MonitoringProvider>
             <SessionProvider>
               <AnalyticsWrapper>
@@ -314,7 +310,7 @@ export default function RootLayout({
               </AnalyticsWrapper>
             </SessionProvider>
           </MonitoringProvider>
-        </ErrorBoundary>
+        </PageErrorBoundary>
       </body>
     </html>
   )

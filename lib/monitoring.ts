@@ -308,7 +308,7 @@ export function createAPIPerformanceMiddleware() {
 
 // Error boundary for React components
 export class ErrorBoundary extends Error {
-  constructor(message: string, public componentStack?: string) {
+  constructor(message: string, public _componentStack?: string) {
     super(message)
     this.name = 'ErrorBoundary'
   }

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout'
+import { t } from '@/lib/i18n'
 
 interface EmailPattern {
   id: string
@@ -265,14 +267,15 @@ export default function GmailIntegrationPage() {
   const importedTrips = extractedTrips.filter(t => t.status === 'imported')
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gmail 연동 📧</h1>
-          <p className="text-gray-600">
-            이메일에서 여행 예약 정보를 자동으로 추출합니다
-          </p>
-        </div>
+    <StandardPageLayout
+      title="Gmail 연동"
+      description="이메일에서 여행 예약 정보를 자동으로 추출합니다"
+      icon="Gmail"
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.gmail') }
+      ]}
+    >
 
         {/* 연결 상태 카드 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -504,7 +507,6 @@ export default function GmailIntegrationPage() {
             )}
           </>
         )}
-      </div>
-    </div>
+    </StandardPageLayout>
   )
 }

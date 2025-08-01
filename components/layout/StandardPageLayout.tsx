@@ -1,17 +1,10 @@
 'use client'
 
-import { ReactNode } from 'react'
-import { PageHeader, PageIcons } from '@/components/common/PageHeader'
-
-interface StandardPageLayoutProps {
-  children: ReactNode
-  title?: string
-  description?: string
-  icon?: keyof typeof PageIcons
-  breadcrumbs?: Array<{ label: string; href?: string }>
-  headerActions?: ReactNode
-  className?: string
-}
+import { PageHeader } from '@/components/common/PageHeader'
+import { Loading } from '@/components/ui/loading'
+import { Error } from '@/components/ui/error'
+import { Icon } from '@/components/icons'
+import type { StandardPageLayoutProps, StandardCardProps, StatsCardProps, EmptyStateProps, LoadingCardProps } from '@/types/layout'
 
 export function StandardPageLayout({
   children,
@@ -23,9 +16,9 @@ export function StandardPageLayout({
   className = '',
 }: StandardPageLayoutProps) {
   return (
-    <div className={`min-h-screen bg-gray-50 ${className}`}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="space-y-8">
+    <div className={`min-h-screen ${className}`} style={{ backgroundColor: 'var(--color-background)' }}>
+      <div className="container mx-auto" style={{ paddingLeft: 'var(--space-4)', paddingRight: 'var(--space-4)', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-8)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
           {/* Page Header (if provided) */}
           {title && (
             <PageHeader
@@ -33,14 +26,8 @@ export function StandardPageLayout({
               description={description}
               icon={icon}
               breadcrumbs={breadcrumbs}
+              action={headerActions}
             />
-          )}
-          
-          {/* Header Actions (optional) */}
-          {headerActions && (
-            <div className="flex justify-end">
-              {headerActions}
-            </div>
           )}
           
           {/* Main Content */}
@@ -54,13 +41,6 @@ export function StandardPageLayout({
 /**
  * 표준 카드 컴포넌트 - 대시보드와 일관된 스타일
  */
-interface StandardCardProps {
-  children: ReactNode
-  title?: string
-  className?: string
-  titleIcon?: string
-}
-
 export function StandardCard({ 
   children, 
   title, 
@@ -68,9 +48,9 @@ export function StandardCard({
   titleIcon
 }: StandardCardProps) {
   return (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-100 p-6 ${className}`}>
+    <div className={`${className}`} style={{ backgroundColor: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', padding: 'var(--space-6)' }}>
       {title && (
-        <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
+        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginBottom: 'var(--space-6)', textAlign: 'center' }}>
           {titleIcon && <span className="mr-2">{titleIcon}</span>}
           {title}
         </h2>
@@ -83,13 +63,6 @@ export function StandardCard({
 /**
  * 통계 카드 컴포넌트 - 대시보드 스타일
  */
-interface StatsCardProps {
-  value: string | number
-  label: string
-  color?: 'blue' | 'green' | 'purple' | 'emerald' | 'red' | 'yellow'
-  className?: string
-}
-
 export function StatsCard({ 
   value, 
   label, 
@@ -108,8 +81,11 @@ export function StatsCard({
   const [bgColor, borderColor, valueColor, labelColor] = colorStyles[color].split(' ')
   
   return (
-    <div className={`text-center p-4 ${bgColor} rounded-lg border ${borderColor} ${className}`}>
-      <div className={`text-3xl font-bold ${valueColor} mb-2`}>
+    <div 
+      className={`text-center rounded-lg border ${bgColor} ${borderColor} ${className}`}
+      style={{ padding: 'var(--space-4)' }}
+    >
+      <div className={`text-3xl font-bold ${valueColor}`} style={{ marginBottom: 'var(--space-2)' }}>
         {value}
       </div>
       <div className={`text-sm font-medium ${labelColor}`}>
@@ -122,15 +98,6 @@ export function StatsCard({
 /**
  * 빈 상태 컴포넌트 - 대시보드 스타일
  */
-interface EmptyStateProps {
-  icon: string
-  title: string
-  description?: string
-  action?: ReactNode
-  className?: string
-  children?: ReactNode
-}
-
 export function EmptyState({
   icon,
   title,
@@ -139,43 +106,40 @@ export function EmptyState({
   className = '',
   children
 }: EmptyStateProps) {
+  // Convert emoji to icon name if possible
+  const iconName = typeof icon === 'string' && icon.length > 2 ? 'file-text' : icon
+  
   return (
-    <div className={`text-center py-12 ${className}`}>
-      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-        <span className="text-4xl">{icon}</span>
-      </div>
-      <p className="text-gray-600 mb-4 text-lg">
-        {title}
-      </p>
-      {description && (
-        <p className="text-gray-500 mb-4">
-          {description}
-        </p>
-      )}
-      {action}
-      {children}
-    </div>
+    <Error.Empty
+      icon={iconName as string}
+      title={title}
+      message={description}
+      action={
+        <>
+          {action}
+          {children}
+        </>
+      }
+      className={className}
+    />
   )
 }
 
 /**
  * 로딩 상태 컴포넌트 - 대시보드 스타일
  */
-interface LoadingCardProps {
-  rows?: number
-  className?: string
-  children?: ReactNode
-}
-
 export function LoadingCard({ rows = 4, className = '', children }: LoadingCardProps) {
   return (
-    <div className={`bg-white p-6 rounded-xl shadow-sm border border-gray-100 animate-pulse ${className}`}>
-      <div className="h-6 bg-gray-200 rounded-lg w-32 mx-auto mb-4"></div>
-      <div className={`grid grid-cols-2 md:grid-cols-${rows} gap-4`}>
+    <div 
+      className={`bg-white rounded-xl shadow-sm border border-gray-100 ${className}`}
+      style={{ padding: 'var(--space-6)' }}
+    >
+      <Loading.Skeleton height={24} width="128px" className="mx-auto mb-4" />
+      <div className={`grid grid-cols-2 md:grid-cols-${rows}`} style={{ gap: 'var(--space-4)' }}>
         {[...Array(rows)].map((_, i) => (
-          <div key={i} className="p-4 bg-gray-50 rounded-lg">
-            <div className="h-8 bg-gray-200 rounded w-16 mx-auto mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-20 mx-auto"></div>
+          <div key={i} className="bg-gray-50 rounded-lg" style={{ padding: 'var(--space-4)' }}>
+            <Loading.Skeleton height={32} width="64px" className="mx-auto mb-2" />
+            <Loading.Skeleton height={16} width="80px" className="mx-auto" />
           </div>
         ))}
       </div>

@@ -9,7 +9,7 @@ export interface PerformanceMetrics {
 
 class PerformanceMonitor {
   private metrics: PerformanceMetrics = {}
-  private reportCallback?: (metrics: PerformanceMetrics) => void
+  private reportCallback?: (_metrics: PerformanceMetrics) => void
 
   constructor() {
     if (typeof window !== 'undefined' && 'performance' in window) {
@@ -87,7 +87,7 @@ class PerformanceMonitor {
     }
   }
 
-  public onReport(callback: (metrics: PerformanceMetrics) => void) {
+  public onReport(callback: (_metrics: PerformanceMetrics) => void) {
     this.reportCallback = callback
   }
 

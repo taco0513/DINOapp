@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
-import { PageHeader, PageIcons } from '@/components/common/PageHeader';
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
 import { t } from '@/lib/i18n';
 import { HydrationSafeLoading } from '@/components/ui/HydrationSafeLoading';
 import { ArrowLeft } from 'lucide-react';
@@ -42,47 +42,38 @@ export default function NewTripPage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh' }}>
-      <div
-        className='container'
-        style={{
-          paddingTop: 'var(--space-6)',
-          paddingBottom: 'var(--space-6)',
-        }}
-      >
-        <PageHeader
-          title='새 여행 추가'
-          description='여행 정보를 입력하여 비자 추적을 시작하세요'
-          icon={PageIcons.Trips}
-          breadcrumbs={[
-            { label: t('nav.dashboard'), href: '/dashboard' },
-            { label: t('nav.trips'), href: '/trips' },
-            { label: '새 여행 추가' },
-          ]}
-          action={
-            <button
-              onClick={handleCancel}
-              className='btn btn-ghost'
-              style={{ flexShrink: 0 }}
-            >
-              <ArrowLeft className='h-4 w-4 mr-2' />
-              돌아가기
-            </button>
+    <StandardPageLayout
+      title='새 여행 추가'
+      description='여행 정보를 입력하여 비자 추적을 시작하세요'
+      icon='Trips'
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.trips'), href: '/trips' },
+        { label: '새 여행 추가' },
+      ]}
+      headerActions={
+        <button
+          onClick={handleCancel}
+          className='btn btn-ghost'
+          style={{ flexShrink: 0 }}
+        >
+          <ArrowLeft className='h-4 w-4 mr-2' />
+          돌아가기
+        </button>
+      }
+      className=''
+    >
+      <div className='max-w-4xl mx-auto'>
+        <Suspense
+          fallback={
+            <div className='card' style={{ padding: 'var(--space-8)' }}>
+              <HydrationSafeLoading />
+            </div>
           }
-        />
-
-        <div className='max-w-4xl mx-auto'>
-          <Suspense
-            fallback={
-              <div className='card' style={{ padding: 'var(--space-8)' }}>
-                <HydrationSafeLoading />
-              </div>
-            }
-          >
-            <NewTripForm onSuccess={handleSuccess} onCancel={handleCancel} />
-          </Suspense>
-        </div>
+        >
+          <NewTripForm onSuccess={handleSuccess} onCancel={handleCancel} />
+        </Suspense>
       </div>
-    </main>
+    </StandardPageLayout>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { uiLogger } from '@/lib/logger';
 
 type SetValue<T> = (value: T | ((val: T) => T)) => void;
 
@@ -22,7 +23,7 @@ export function useLocalStorage<T>(
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error(`Error loading localStorage key "${key}":`, error);
+      uiLogger.error(`Failed to load localStorage key "${key}"`, error);
       return initialValue;
     }
   });
@@ -38,7 +39,7 @@ export function useLocalStorage<T>(
           window.localStorage.setItem(key, JSON.stringify(valueToStore));
         }
       } catch (error) {
-        console.error(`Error saving to localStorage key "${key}":`, error);
+        uiLogger.error(`Failed to save localStorage key "${key}"`, error);
       }
     },
     [key, storedValue]
@@ -49,18 +50,23 @@ export function useLocalStorage<T>(
     if (typeof window === 'undefined') return;
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === key && e.newValue !== null) {
-        try {
-          setStoredValue(JSON.parse(e.newValue));
-        } catch (error) {
-          console.error(`Error parsing storage event for key "${key}":`, error);
+      if (e.key === key) {
+        if (e.newValue === null) {
+          // Key was deleted - reset to initial value
+          setStoredValue(initialValue);
+        } else {
+          try {
+            setStoredValue(JSON.parse(e.newValue));
+          } catch (error) {
+            uiLogger.error(`Failed to parse storage event for key "${key}"`, error);
+          }
         }
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [key]);
+  }, [key, initialValue]);
 
   return [storedValue, setValue];
 }

@@ -77,19 +77,19 @@ export default function Header() {
   }
 
   return (
-    <header className='bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm'>
+    <header className='ios-nav-bar border-b border-border'>
       <div className='container mx-auto px-4 h-16 flex items-center'>
         <div className='flex justify-between items-center w-full'>
           {/* Logo */}
           <div>
             <Link
               href={'/dashboard' as any}
-              className='flex items-center space-x-2 no-underline'
+              className='flex items-center space-x-2 no-underline hover:opacity-80 transition-opacity duration-200'
             >
-              <div className='w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-sm'>🦕</span>
+              <div className='w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shadow-sm'>
+                <span className='text-primary-foreground font-bold text-sm'>🦕</span>
               </div>
-              <h1 className='text-xl font-bold text-gray-900'>DINO</h1>
+              <h1 className='text-xl font-bold text-foreground'>DINO</h1>
             </Link>
           </div>
 
@@ -102,10 +102,8 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href as any}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                className={`ios-nav-item ${
+                  isActive(item.href) ? 'ios-nav-item-active' : ''
                 }`}
               >
                 <span className='mr-2'>{item.icon}</span>

@@ -5,6 +5,8 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isWithinInterval, differenceInDays } from 'date-fns'
 import { ko } from 'date-fns/locale'
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout'
+import { t } from '@/lib/i18n'
 
 interface Trip {
   id: string
@@ -158,31 +160,31 @@ export default function CalendarPage() {
   const weekDays = ['일', '월', '화', '수', '목', '금', '토']
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* 헤더 */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">여행 캘린더 📅</h1>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setViewMode(viewMode === 'month' ? 'year' : 'month')}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                {viewMode === 'month' ? '연간 보기' : '월간 보기'}
-              </button>
-              <button
-                onClick={() => setShowSchengenInfo(!showSchengenInfo)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                셰겐 {showSchengenInfo ? '숨기기' : '보기'}
-              </button>
-            </div>
-          </div>
-          <p className="text-gray-600">
-            여행 일정을 한눈에 확인하고 관리하세요
-          </p>
+    <StandardPageLayout
+      title="여행 캘린더"
+      description="여행 일정을 한눈에 확인하고 관리하세요"
+      icon="Calendar"
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.calendar') }
+      ]}
+      headerActions={
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setViewMode(viewMode === 'month' ? 'year' : 'month')}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            {viewMode === 'month' ? '연간 보기' : '월간 보기'}
+          </button>
+          <button
+            onClick={() => setShowSchengenInfo(!showSchengenInfo)}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            셰겐 {showSchengenInfo ? '숨기기' : '보기'}
+          </button>
         </div>
+      }
+    >
 
         {/* 캘린더 네비게이션 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
@@ -375,7 +377,6 @@ export default function CalendarPage() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </StandardPageLayout>
   )
 }

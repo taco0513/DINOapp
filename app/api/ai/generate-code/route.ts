@@ -229,6 +229,7 @@ function generateAPICode(
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
 
 // GET /api/users - 사용자 목록 조회
 export async function GET(request: NextRequest) {

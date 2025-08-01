@@ -7,11 +7,12 @@ import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
 import { TravelStatsWidget } from '@/components/dashboard/TravelStatsWidget'
 import { PullToRefresh } from '@/components/mobile/PullToRefresh'
-import { PageHeader, PageIcons } from '@/components/common/PageHeader'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout'
 import { format, startOfYear, endOfYear, eachMonthOfInterval, differenceInDays, startOfMonth, endOfMonth } from 'date-fns'
 import { ko } from 'date-fns/locale'
+import { t } from '@/lib/i18n'
 
 interface Trip {
   id: string
@@ -184,29 +185,26 @@ export default function AnalyticsPage() {
   }
 
   const pageContent = (
-    <div className="container mx-auto px-4 py-6">
-        <PageHeader
-          title="여행 분석"
-          description="당신의 여행 패턴과 통계를 자세히 분석해보세요"
-          icon={PageIcons.Analytics}
-          breadcrumbs={[
-            { label: '대시보드', href: '/dashboard' },
-            { label: '여행 분석' }
-          ]}
-          action={
-            <div className="flex items-center space-x-2">
-              <Button
-                onClick={loadStats}
-                disabled={loading}
-                variant="outline"
-                size="sm"
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                새로고침
-              </Button>
-            </div>
-          }
-        />
+    <StandardPageLayout
+      title="여행 분석"
+      description="당신의 여행 패턴과 통계를 자세히 분석해보세요"
+      icon="Analytics"
+      breadcrumbs={[
+        { label: t('nav.dashboard'), href: '/dashboard' },
+        { label: t('nav.analytics') || '여행 분석' }
+      ]}
+      headerActions={
+        <Button
+          onClick={loadStats}
+          disabled={loading}
+          variant="outline"
+          size="sm"
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          새로고침
+        </Button>
+      }
+    >
 
         {/* Enhanced Analytics Navigation */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -546,8 +544,8 @@ export default function AnalyticsPage() {
             </Button>
           </div>
         )}
-      </div>
-    )
+    </StandardPageLayout>
+  )
 
   return (
     <main className="min-h-screen bg-background">

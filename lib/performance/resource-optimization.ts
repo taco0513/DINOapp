@@ -2,6 +2,8 @@
  * Resource optimization utilities for critical path performance
  */
 
+import { perfLogger } from '@/lib/logger'
+
 // Critical resource preloading
 export const preloadCriticalResources = () => {
   if (typeof window === 'undefined') return
@@ -84,19 +86,20 @@ export const registerServiceWorker = async () => {
       if (newWorker) {
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // New content is available, refresh
-            if (confirm('New version available. Refresh to update?')) {
-              window.location.reload()
-            }
+            // New content is available, show update notification
+            // Instead of blocking confirm dialog, we'll dispatch a custom event
+            window.dispatchEvent(new CustomEvent('sw-update-available', {
+              detail: { registration }
+            }))
           }
         })
       }
     })
 
-    console.log('Service Worker registered successfully')
+    perfLogger.info('Service Worker registered successfully')
     return true
   } catch (error) {
-    console.error('Service Worker registration failed:', error)
+    perfLogger.error('Service Worker registration failed', error)
     return false
   }
 }
@@ -450,7 +453,7 @@ export const monitorPerformanceBudget = () => {
       }
 
       if (metric && budgets[metric] && value > budgets[metric]) {
-        console.warn(`Performance budget exceeded: ${metric} = ${value}, budget = ${budgets[metric]}`)
+        perfLogger.warn(`Performance budget exceeded: ${metric} = ${value}, budget = ${budgets[metric]}`)
         
         // Report to monitoring
         if ((window as any).metricsCollector) {

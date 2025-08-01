@@ -116,6 +116,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss": "^3.4.3",
     "tar": "^7.4.3",
+    "web-push": "^3.6.7",
     "web-vitals": "^5.0.3",
     "zod": "^4.0.10"
   },
@@ -127,6 +128,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
     "@types/react": "^18.3.23",
+    "@types/web-push": "^3.6.4",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
     "eslint": "^8.57.0",

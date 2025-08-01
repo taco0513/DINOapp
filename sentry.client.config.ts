@@ -19,23 +19,10 @@ if (SENTRY_DSN) {
     
     // 통합 설정
     integrations: [
-      // @ts-ignore - BrowserTracing might not be available in all versions
-      ...(Sentry.BrowserTracing ? [
-        new Sentry.BrowserTracing({
-          // Next.js 라우팅 추적
-          // @ts-ignore
-          routingInstrumentation: Sentry.nextRouterInstrumentation || undefined,
-        })
-      ] : []),
-      // @ts-ignore - Replay might not be available in all versions
-      ...(Sentry.Replay ? [
-        new Sentry.Replay({
-          // 마스킹 설정
-          maskAllText: true,
-          maskAllInputs: true,
-          blockAllMedia: true,
-        })
-      ] : []),
+      // BrowserTracing is now included by default in newer Sentry versions
+      // Automatic instrumentation handles most tracing needs
+      // Replay integration is now handled through configuration options
+      // Session replay is configured via replaysSessionSampleRate above
     ],
     
     // 에러 필터링

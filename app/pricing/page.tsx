@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import PricingSection from '@/components/billing/PricingCard';
-import { PageHeader } from '@/components/common/PageHeader';
+import { StandardPageLayout } from '@/components/layout/StandardPageLayout';
+import { Icon } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: '가격 - DINO',
@@ -10,12 +11,11 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <div className='min-h-screen bg-white'>
-      <PageHeader
-        title='가격'
-        description='복잡한 비자 걱정 없이 여행을 즐기세요'
-      />
-
+    <StandardPageLayout
+      title='가격'
+      description='복잡한 비자 걱정 없이 여행을 즐기세요'
+      className='bg-white'
+    >
       <div className='container mx-auto px-4'>
         <PricingSection />
       </div>
@@ -27,7 +27,7 @@ export default function PricingPage() {
           <div className='grid md:grid-cols-4 gap-8 max-w-4xl mx-auto'>
             <div className='text-center'>
               <div className='w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4'>
-                🔒
+                <Icon name="lock" size="lg" />
               </div>
               <h3 className='font-semibold mb-2'>데이터 보안</h3>
               <p className='text-sm text-gray-600'>
@@ -36,7 +36,7 @@ export default function PricingPage() {
             </div>
             <div className='text-center'>
               <div className='w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4'>
-                📱
+                <Icon name="smartphone" size="lg" />
               </div>
               <h3 className='font-semibold mb-2'>모바일 최적화</h3>
               <p className='text-sm text-gray-600'>
@@ -45,7 +45,7 @@ export default function PricingPage() {
             </div>
             <div className='text-center'>
               <div className='w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4'>
-                🌍
+                <Icon name="world" size="lg" />
               </div>
               <h3 className='font-semibold mb-2'>78개국 지원</h3>
               <p className='text-sm text-gray-600'>
@@ -54,7 +54,7 @@ export default function PricingPage() {
             </div>
             <div className='text-center'>
               <div className='w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4'>
-                💬
+                <Icon name="message-square" size="lg" />
               </div>
               <h3 className='font-semibold mb-2'>고객 지원</h3>
               <p className='text-sm text-gray-600'>
@@ -89,6 +89,6 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
-    </div>
+    </StandardPageLayout>
   );
 }

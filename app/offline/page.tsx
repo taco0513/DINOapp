@@ -72,15 +72,18 @@ export default function OfflinePage() {
       
       setCachedTrips([])
       setCacheSize('0')
-      window.alert('오프라인 데이터가 삭제되었습니다.')
+      // Dispatch event instead of alert
+      window.dispatchEvent(new CustomEvent('offline-data-cleared', {
+        detail: { message: '오프라인 데이터가 삭제되었습니다.' }
+      }))
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* 상태 카드 */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8 mb-6">
+        <div className="bg-card rounded-lg shadow-lg border border-border p-8 mb-6">
           <div className="text-center mb-8">
             {/* 오프라인 아이콘 */}
             <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center ${
@@ -97,10 +100,10 @@ export default function OfflinePage() {
               )}
             </div>
             
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               {isOnline ? '다시 온라인입니다!' : '오프라인 모드'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {isOnline 
                 ? '인터넷 연결이 복구되었습니다. 대시보드로 돌아가실 수 있습니다.'
                 : '인터넷 연결이 없습니다. 오프라인 기능만 사용 가능합니다.'
@@ -109,10 +112,10 @@ export default function OfflinePage() {
           </div>
 
           {/* 연결 정보 */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+          <div className="bg-muted/50 rounded-lg p-4 mb-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">연결 상태</span>
+                <span className="text-sm font-medium text-foreground">연결 상태</span>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                   isOnline 
                     ? 'bg-green-100 text-green-800' 
@@ -124,19 +127,19 @@ export default function OfflinePage() {
               
               {lastSync && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">마지막 동기화</span>
-                  <span className="text-sm text-gray-600">{lastSync}</span>
+                  <span className="text-sm font-medium text-foreground">마지막 동기화</span>
+                  <span className="text-sm text-muted-foreground">{lastSync}</span>
                 </div>
               )}
               
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">캐시 사용량</span>
-                <span className="text-sm text-gray-600">{cacheSize} MB</span>
+                <span className="text-sm font-medium text-foreground">캐시 사용량</span>
+                <span className="text-sm text-muted-foreground">{cacheSize} MB</span>
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">저장된 여행</span>
-                <span className="text-sm text-gray-600">{cachedTrips.length}개</span>
+                <span className="text-sm font-medium text-foreground">저장된 여행</span>
+                <span className="text-sm text-muted-foreground">{cachedTrips.length}개</span>
               </div>
             </div>
           </div>
@@ -148,7 +151,7 @@ export default function OfflinePage() {
               className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
                 isOnline 
                   ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
               {isOnline ? '대시보드로 이동' : '다시 연결 시도'}
@@ -157,7 +160,7 @@ export default function OfflinePage() {
             {!isOnline && cachedTrips.length > 0 && (
               <button 
                 onClick={() => window.location.href = '/trips?offline=true'}
-                className="w-full px-4 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                className="w-full px-4 py-3 bg-card text-card-foreground border border-border rounded-lg font-medium hover:bg-muted/50"
               >
                 저장된 여행 기록 보기 ({cachedTrips.length}개)
               </button>

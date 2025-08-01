@@ -20,7 +20,7 @@ export interface OptimizedTripQuery {
   startDate?: Date
   endDate?: Date
   status?: 'PLANNED' | 'COMPLETED' | 'CANCELLED'
-  countryCode?: string
+  country?: string
   limit?: number
   offset?: number
 }
@@ -30,7 +30,7 @@ export class QueryOptimizer {
   private cache = new Map<string, { data: any; timestamp: number; ttl: number }>()
   private logger = loggers.performance
 
-  constructor(private maxMetrics = 1000, private defaultCacheTtl = 300000) {}
+  constructor(private _maxMetrics = 1000, private _defaultCacheTtl = 300000) {}
 
   /**
    * Optimized trip queries with caching and performance monitoring
@@ -73,12 +73,12 @@ export class QueryOptimizer {
         whereClause.status = params.status
       }
 
-      if (params.countryCode) {
-        whereClause.countryCode = params.countryCode
+      if (params.country) {
+        whereClause.country = params.country
       }
 
       // Execute optimized query with proper indexing
-      const trips = await prisma.trip.findMany({
+      const trips = await prisma.countryVisit.findMany({
         where: whereClause,
         orderBy: [
           { entryDate: 'desc' },
@@ -88,7 +88,7 @@ export class QueryOptimizer {
         skip: params.offset || 0,
         select: {
           id: true,
-          countryCode: true,
+          country: true,
           entryDate: true,
           exitDate: true,
           purpose: true,
@@ -166,10 +166,10 @@ export class QueryOptimizer {
         'PT', 'SK', 'SI', 'ES', 'SE', 'CH'
       ]
 
-      const schengenTrips = await prisma.trip.findMany({
+      const schengenTrips = await prisma.countryVisit.findMany({
         where: {
           userId,
-          countryCode: {
+          country: {
             in: schengenCountries
           },
           entryDate: {
@@ -181,7 +181,7 @@ export class QueryOptimizer {
           entryDate: 'asc'
         },
         select: {
-          countryCode: true,
+          country: true,
           entryDate: true,
           exitDate: true,
           status: true
@@ -241,22 +241,22 @@ export class QueryOptimizer {
         countriesVisited,
         recentTrips
       ] = await Promise.all([
-        prisma.trip.count({
+        prisma.countryVisit.count({
           where: { userId }
         }),
-        prisma.trip.count({
+        prisma.countryVisit.count({
           where: { userId, status: 'COMPLETED' }
         }),
-        prisma.trip.groupBy({
-          by: ['countryCode'],
+        prisma.countryVisit.groupBy({
+          by: ['country'],
           where: { userId, status: 'COMPLETED' }
         }),
-        prisma.trip.findMany({
+        prisma.countryVisit.findMany({
           where: { userId },
           orderBy: { entryDate: 'desc' },
           take: 5,
           select: {
-            countryCode: true,
+            country: true,
             entryDate: true,
             exitDate: true,
             status: true
@@ -308,7 +308,7 @@ export class QueryOptimizer {
       // Use transaction for batch operations
       const result = await prisma.$transaction(
         trips.map(trip => 
-          prisma.trip.create({
+          prisma.countryVisit.create({
             data: {
               ...trip,
               userId
@@ -373,7 +373,9 @@ export class QueryOptimizer {
     // Limit cache size
     if (this.cache.size > 1000) {
       const firstKey = this.cache.keys().next().value
-      this.cache.delete(firstKey)
+      if (firstKey) {
+        this.cache.delete(firstKey)
+      }
     }
 
     this.cache.set(key, {

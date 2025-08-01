@@ -20,6 +20,8 @@ import {
   Info,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { t } from '@/lib/i18n';
 
 interface NewTripFormProps {
   onSuccess: () => void;
@@ -75,7 +77,7 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
       if (exit <= entry) {
         setErrors(prev => ({
           ...prev,
-          exitDate: '출국 날짜는 입국 날짜 이후여야 합니다',
+          exitDate: t('tripForm.error.exitAfterEntry'),
         }));
         setStayDuration(null);
       } else {
@@ -123,9 +125,9 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
       // Client-side validation
       const newErrors: Record<string, string> = {};
 
-      if (!formData.country) newErrors.country = '국가를 선택해주세요';
-      if (!formData.entryDate) newErrors.entryDate = '입국 날짜를 선택해주세요';
-      if (!formData.visaType) newErrors.visaType = '비자 유형을 선택해주세요';
+      if (!formData.country) newErrors.country = t('tripForm.error.selectCountry');
+      if (!formData.entryDate) newErrors.entryDate = t('tripForm.error.selectEntryDate');
+      if (!formData.visaType) newErrors.visaType = t('tripForm.error.selectVisaType');
       if (!formData.passportCountry)
         newErrors.passportCountry = '여권 국가를 선택해주세요';
 
@@ -210,14 +212,16 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
 
             return (
               <div key={step} className='flex items-center'>
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setCurrentStep(step)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                  className={`w-10 h-10 rounded-full p-0 font-semibold transition-all ${
                     status === 'completed'
-                      ? 'bg-green-500 text-white'
+                      ? 'bg-success text-success-foreground hover:bg-success/90'
                       : status === 'current'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-500'
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
                   {status === 'completed' ? (
@@ -225,11 +229,11 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
                   ) : (
                     step
                   )}
-                </button>
+                </Button>
                 {step < 4 && (
                   <div
                     className={`w-16 h-0.5 mx-2 ${
-                      step < currentStep ? 'bg-green-500' : 'bg-gray-200'
+                      step < currentStep ? 'bg-success' : 'bg-muted'
                     }`}
                   />
                 )}
@@ -257,13 +261,15 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
 
       {/* Help Toggle */}
       <div className='mb-6 flex justify-end'>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => setShowHelp(!showHelp)}
-          className='flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
+          className='text-primary hover:text-primary/90'
         >
-          <HelpCircle className='w-4 h-4' />
+          <HelpCircle className='w-4 h-4 mr-2' />
           {showHelp ? '도움말 숨기기' : '도움말 보기'}
-        </button>
+        </Button>
       </div>
 
       {/* Help Section */}
@@ -648,57 +654,52 @@ export default function NewTripForm({ onSuccess, onCancel }: NewTripFormProps) {
       <div className='mt-8 flex items-center justify-between'>
         <div className='flex gap-3'>
           {currentStep > 1 && (
-            <button
+            <Button
+              variant="outline"
               onClick={() => setCurrentStep(currentStep - 1)}
-              className='px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
+              className='px-6'
             >
               이전
-            </button>
+            </Button>
           )}
         </div>
 
         <div className='flex gap-3'>
-          <button
+          <Button
+            variant="outline"
             onClick={onCancel}
-            className='px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
+            className='px-6'
           >
             취소
-          </button>
+          </Button>
 
           {currentStep < 4 ? (
-            <button
+            <Button
               onClick={() => setCurrentStep(currentStep + 1)}
               disabled={!isStepValid(currentStep)}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                isStepValid(currentStep)
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
+              className='px-6'
             >
               다음
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
+              variant="success"
               onClick={handleSubmit}
               disabled={loading || !isValid}
-              className={`px-8 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${
-                loading || !isValid
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-green-500 text-white hover:bg-green-600'
-              }`}
+              className='px-8'
             >
               {loading ? (
                 <>
-                  <Loader2 className='w-4 h-4 animate-spin' />
+                  <Loader2 className='w-4 h-4 animate-spin mr-2' />
                   저장 중...
                 </>
               ) : (
                 <>
-                  <CheckCircle className='w-4 h-4' />
+                  <CheckCircle className='w-4 h-4 mr-2' />
                   여행 추가
                 </>
               )}
-            </button>
+            </Button>
           )}
         </div>
       </div>

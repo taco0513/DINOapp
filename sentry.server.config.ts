@@ -15,19 +15,11 @@ if (SENTRY_DSN) {
     
     // 통합 설정
     integrations: [
-      // HTTP 요청 추적
-      // @ts-ignore - Integrations might have different structure
-      ...(Sentry.Integrations?.Http ? [
-        new Sentry.Integrations.Http({ tracing: true })
-      ] : []),
+      // HTTP integration is now included by default in newer Sentry versions
+      // Automatic instrumentation handles HTTP request tracing
       
-      // Prisma 에러 추적
-      // @ts-ignore - Integrations might have different structure
-      ...(Sentry.Integrations?.Prisma ? [
-        new Sentry.Integrations.Prisma({
-          client: true,
-        })
-      ] : []),
+      // Prisma integration setup varies by Sentry version
+      // Manual error capture recommended for Prisma operations
     ],
     
     // 에러 필터링

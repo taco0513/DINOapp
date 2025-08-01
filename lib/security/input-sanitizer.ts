@@ -306,7 +306,7 @@ export async function sanitizeRequestBody(
     }
 
     // 기본 정화 규칙
-    const defaultRules = {
+    const defaultRules: Record<string, string> = {
       country: 'text',
       notes: 'text',
       visaType: 'text',
@@ -317,7 +317,7 @@ export async function sanitizeRequestBody(
 
     const rules = { ...defaultRules, ...sanitizationRules }
     
-    return InputSanitizer.sanitizeObject(body, rules)
+    return InputSanitizer.sanitizeObject(body, rules as any)
   } catch (error) {
     // Request body sanitization failed
     return null

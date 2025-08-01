@@ -53,7 +53,7 @@ export interface CountryData {
   currency?: string;
   timezone?: string;
   language?: string[];
-  requirements: Record<PassportCountry, VisaRequirement>;
+  requirements: Partial<Record<PassportCountry, VisaRequirement>>;
   visaTypes: VisaType[];
   requiredDocuments: string[];
   embassy?: EmbassyInfo;

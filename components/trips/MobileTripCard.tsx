@@ -6,6 +6,9 @@ import { ApiClient } from '@/lib/api-client'
 import { getCountryByName } from '@/data/countries'
 import type { CountryVisit } from '@/types/global'
 import { Edit, Trash2, Calendar, CreditCard } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface MobileTripCardProps {
   trip: CountryVisit
@@ -79,9 +82,8 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
       threshold={80}
       className="mb-4"
     >
-      <div className="card relative overflow-hidden">
-        {/* Main Content */}
-        <div className="p-4">
+      <Card className="relative overflow-hidden">
+        <CardContent className="p-4">
           {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
@@ -89,7 +91,7 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
                 <span className="text-2xl">{country?.flag || '🌍'}</span>
                 <span>{trip.country}</span>
                 {country?.isSchengen && (
-                  <span className="badge badge-sm">셰겐</span>
+                  <Badge variant="secondary" className="text-xs">셰겐</Badge>
                 )}
               </h3>
               <p className="text-sm text-secondary mt-1 flex items-center gap-2">
@@ -99,9 +101,9 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
             </div>
             
             {isCurrentlyStaying && (
-              <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+              <Badge variant="success" className="text-xs">
                 체류 중
-              </div>
+              </Badge>
             )}
           </div>
 
@@ -126,7 +128,7 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
               {trip.notes}
             </div>
           )}
-        </div>
+        </CardContent>
 
         {/* Action Buttons - Revealed on swipe */}
         <div 
@@ -135,25 +137,29 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
           }`}
           style={{ width: '140px' }}
         >
-          <button
+          <Button
+            variant="default"
+            size="sm"
             onClick={() => {
               setShowActions(false)
               onEdit(trip)
             }}
-            className="flex-1 py-3 bg-blue-500 text-white rounded-lg flex flex-col items-center justify-center"
+            className="flex-1 py-3 rounded-lg flex flex-col items-center justify-center"
             disabled={loading}
           >
             <Edit className="h-5 w-5 mb-1" />
             <span className="text-xs">수정</span>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
             onClick={handleDelete}
-            className="flex-1 py-3 bg-red-500 text-white rounded-lg flex flex-col items-center justify-center"
+            className="flex-1 py-3 rounded-lg flex flex-col items-center justify-center"
             disabled={loading}
           >
             <Trash2 className="h-5 w-5 mb-1" />
             <span className="text-xs">{loading ? '...' : '삭제'}</span>
-          </button>
+          </Button>
         </div>
 
         {/* Swipe Hint */}
@@ -162,7 +168,7 @@ export default function MobileTripCard({ trip, onEdit, onDelete }: MobileTripCar
             <span className="text-xs">←</span>
           </div>
         )}
-      </div>
+      </Card>
     </SwipeableCard>
   )
 }

@@ -1,0 +1,21 @@
+watch:
+  paths:
+    - "**/*"
+  debounceMs: 1000
+docs:
+  autoGenerate: true
+  templates:
+    readme: true
+    api: true
+    changelog: true
+    progress: true
+  outputFormats:
+    - md
+  language: ko
+git:
+  autoCommit: false
+  commitPrefix: "📝 docs:"
+notifications:
+  enabled: true
+  missingDocs: true
+  changes: true

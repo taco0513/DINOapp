@@ -35,8 +35,8 @@ cp -r AI_Workflow_Playbook/MASTER_PLAYBOOK/{README.md,INDEX.md,00_Prompts,04_BMA
 ⚡ 핵심 시스템 (우선순위):
 5. @MASTER_PLAYBOOK/15_Living_Documentation/README.md - 실시간 문서화 ⭐⭐
 6. @MASTER_PLAYBOOK/04_BMAD_Method/README.md - 체계적 개발 방법론
-7. @MASTER_PLAYBOOK/20_Smart_Problem_Solving/README.md - 2분 룰 시스템
-8. @MASTER_PLAYBOOK/17_Design_System/README.md - AI 디자인 시스템
+7. @MASTER_PLAYBOOK/19_Roadmap_Guard_System/README.md - 로드맵 가드 시스템
+8. @MASTER_PLAYBOOK/20_Smart_Problem_Solving/README.md - 2분 룰 시스템
 
 🚀 고급 기능 (선택적):
 9. @MASTER_PLAYBOOK/06_SuperClaude_Framework/README.md - Claude 고급 기능

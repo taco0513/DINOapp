@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": [
+    "lib/gmail/**/*",
+    "app/api/gmail/**/*",
+    "components/gmail/**/*",
+    "types/gmail.ts"
+  ]
+}

@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Utility class for form inputs with guaranteed visibility */
+  .form-input {
+    @apply px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100;
+    color: #111827 !important; /* text-gray-900 */
+    background-color: #ffffff !important; /* bg-white */
+  }
+  
+  .form-select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100;
+    color: #111827 !important; /* text-gray-900 */
+    background-color: #ffffff !important; /* bg-white */
+  }
+}
+
+/* Fix for select and input text visibility */
+@layer base {
+  select {
+    color: #111827 !important; /* text-gray-900 */
+    background-color: #ffffff !important; /* bg-white */
+  }
+  
+  select option {
+    color: #111827 !important; /* text-gray-900 */
+    background-color: #ffffff !important; /* bg-white */
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  textarea {
+    color: #111827 !important; /* text-gray-900 */
+    background-color: #ffffff !important; /* bg-white */
+  }
+  
+  /* Dark mode overrides if needed */
+  @media (prefers-color-scheme: dark) {
+    select,
+    select option,
+    input[type="text"],
+    input[type="email"], 
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+      color: #111827 !important; /* Keep dark text */
+      background-color: #ffffff !important; /* Keep white background */
+    }
+  }
+}

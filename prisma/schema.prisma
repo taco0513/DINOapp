@@ -1,0 +1,291 @@
+// DINO v2.0 - Prisma Schema
+// Complete database schema for digital nomad travel management
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum ApplicationType {
+  TOURIST
+  BUSINESS
+  WORK
+  STUDENT
+  TRANSIT
+  FAMILY
+  OTHER
+}
+
+enum ApplicationStatus {
+  PLANNING
+  PREPARING
+  SUBMITTED
+  PROCESSING
+  APPROVED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum AlertType {
+  PROCESSING
+  DEADLINE
+  DOCUMENT
+  EXPIRY
+}
+
+enum AlertPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// User model with NextAuth integration
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  trips         Trip[]
+  visas         Visa[]
+  notifications Notification[]
+  passports     Passport[]
+  visaApplications VisaApplication[]
+  userProfile   UserProfile?
+  
+  // Profile
+  nationality   String?   // Country code (e.g., "KR")
+  passportExpiry DateTime?
+  preferences   Json?     // User preferences and settings
+}
+
+// NextAuth Account model
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+}
+
+// NextAuth Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Trip model for tracking travel history
+model Trip {
+  id          String    @id @default(cuid())
+  userId      String
+  country     String    // Country code (e.g., "DE")
+  countryName String    // Full country name
+  entryDate   DateTime
+  exitDate    DateTime?
+  purpose     String    @default("tourism") // tourism, business, transit, etc.
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Computed fields (handled in application)
+  isSchengen  Boolean   @default(false)
+  stayDays    Int?      // Calculated from entry/exit dates
+  
+  @@index([userId, entryDate])
+  @@index([country])
+}
+
+// Visa model for tracking visa status
+model Visa {
+  id           String    @id @default(cuid())
+  userId       String
+  country      String    // Country code
+  countryName  String    // Full country name
+  visaType     String    // tourist, business, student, etc.
+  issueDate    DateTime
+  expiryDate   DateTime
+  maxStayDays  Int       // Maximum days allowed per entry
+  entries      String    // single, multiple
+  status       String    @default("active") // active, expired, cancelled
+  notes        String?
+  documentUrl  String?   // URL to visa document/photo
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, expiryDate])
+  @@index([country])
+}
+
+// Notification model for alerts and reminders
+model Notification {
+  id         String    @id @default(cuid())
+  userId     String
+  type       String    // visa_expiry, schengen_warning, trip_reminder, etc.
+  title      String
+  message    String
+  priority   String    @default("medium") // low, medium, high, urgent
+  read       Boolean   @default(false)
+  readAt     DateTime?
+  actionUrl  String?   // Link to relevant page/action
+  metadata   Json?     // Additional data for the notification
+  createdAt  DateTime  @default(now())
+  scheduledFor DateTime? // For future notifications
+  
+  // Relations
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, read, createdAt])
+  @@index([scheduledFor])
+}
+
+// User Profile model for special visa statuses
+model UserProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Special visa statuses
+  specialStatuses Json?    // e.g., { "KR": { type: "long_term", days: 183, rolling: true } }
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// Passport model for multiple passport support
+model Passport {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  countryCode    String    // e.g., "KR", "US"
+  countryName    String    // e.g., "Republic of Korea"
+  passportNumber String
+  issueDate      DateTime
+  expiryDate     DateTime
+  isPrimary      Boolean   @default(false)
+  isActive       Boolean   @default(true)
+  notes          String?
+  
+  // Additional fields for visa-free tracking
+  visaFreeCountries Json    @default("[]") // Array of country codes
+  lastUpdated       DateTime @default(now())
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  @@unique([userId, passportNumber])
+  @@index([userId, isPrimary])
+}
+
+// Visa Application model for tracking applications
+model VisaApplication {
+  id                   String              @id @default(cuid())
+  userId               String
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  countryCode          String
+  countryName          String
+  applicationType      ApplicationType
+  status               ApplicationStatus
+  
+  // Dates
+  plannedTravelDate    DateTime
+  applicationDeadline  DateTime?
+  submissionDate       DateTime?
+  processingTime       Int?                // days
+  expectedDecisionDate DateTime?
+  visaValidFrom        DateTime?
+  visaValidUntil       DateTime?
+  
+  // Details
+  consulate            String?
+  applicationFee       Float?
+  currency             String?
+  notes                String?
+  
+  // Notifications
+  alertsEnabled        Boolean             @default(true)
+  reminderDays         String?             // JSON array e.g., "[30,14,7,3,1]"
+  
+  // Relations
+  documents            VisaDocument[]
+  alerts              VisaAlert[]
+  
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  
+  @@index([userId, status])
+  @@index([applicationDeadline])
+}
+
+// Visa Document model for tracking required documents
+model VisaDocument {
+  id               String           @id @default(cuid())
+  applicationId    String
+  application      VisaApplication  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  
+  name             String
+  description      String
+  isRequired       Boolean          @default(true)
+  status           String           // missing, preparing, ready, submitted
+  notes            String?
+  expiryDate       DateTime?
+  fileUrl          String?
+  
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  
+  @@index([applicationId, status])
+}
+
+// Visa Alert model for application-specific alerts
+model VisaAlert {
+  id               String           @id @default(cuid())
+  applicationId    String
+  application      VisaApplication  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  
+  type             AlertType
+  title            String
+  message          String
+  alertDate        DateTime
+  isRead           Boolean          @default(false)
+  priority         AlertPriority
+  
+  createdAt        DateTime         @default(now())
+  
+  @@index([applicationId, isRead])
+  @@index([alertDate])
+}

@@ -1,0 +1,7 @@
+{
+  "/page": "app/page.js",
+  "/trips/page": "app/trips/page.js",
+  "/multi-passport/page": "app/multi-passport/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
+}

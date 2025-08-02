@@ -1,34 +1,48 @@
-# 🦕 DINO v2.0 - Digital International Navigation Optimizer
+# 🦕 DINO v3.0 - Dashboard Platform
 
-스마트한 여행 계획을 위한 올인원 디지털 노마드 플랫폼
+> Real-time dashboard application for digital nomads
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## 🌟 주요 기능
+## ✨ v3.0 New Features
 
-### 🛂 비자 관리
-- **비자 체커**: 195개국 비자 요구사항 실시간 확인
-- **비자 추적기**: 비자 만료일 자동 알림
-- **비자 도우미**: 신청 프로세스 단계별 가이드
-- **정책 업데이트**: 실시간 비자 정책 변경 알림
+### 🔄 Real-time Dashboard
+- **Live Data Updates**: WebSocket-powered real-time information
+- **Interactive Widgets**: Customizable dashboard components
+- **Smart Insights**: AI-powered travel recommendations
+- **Real-time Alerts**: Instant notifications for important events
 
-### 🇪🇺 샹겐 관리
-- **90/180일 규칙 계산기**: 정확한 체류 가능 일수 계산
-- **입출국 기록 추적**: 시각적 타임라인 표시
-- **재입국 가능일 예측**: 스마트 알고리즘 기반 예측
+### 🎨 Customizable Widget System  
+- **Drag & Drop**: Rearrange dashboard widgets freely
+- **Widget Library**: Choose from 15+ specialized widgets
+- **Personal Layouts**: Save and switch between custom layouts
+- **Responsive Design**: Optimal experience on all devices
 
-### 📊 여행 분석
-- **여행 통계**: 방문 국가, 체류 기간, 비자 사용률
-- **지출 분석**: 국가별 여행 비용 추적
-- **패턴 인사이트**: 여행 습관 분석 및 추천
+### 📱 PWA with Offline Support
+- **Progressive Enhancement**: Works seamlessly offline
+- **Push Notifications**: Stay informed even when closed
+- **Home Screen Install**: Native app-like experience
+- **Background Sync**: Automatic data synchronization
 
-### 📔 다중 여권 지원
-- **여권 관리**: 복수 국적자를 위한 여권 관리
-- **최적 여권 추천**: 목적지별 최적 여권 선택
-- **만료일 추적**: 여권 갱신 알림
+### ⚡ Lightning-fast Interactions
+- **<100ms Response**: Instant UI feedback
+- **Optimistic Updates**: Immediate visual responses
+- **Smart Caching**: Reduced loading times
+- **Parallel Processing**: Efficient data handling
+
+### 🧮 Advanced Analytics
+- **Travel Patterns**: Comprehensive travel behavior analysis
+- **Predictive Insights**: Forecast travel needs and compliance
+- **Visual Reports**: Beautiful charts and interactive maps
+- **Export Options**: PDF reports and data export
+
+## 📈 Version History
+- **v3.0** (In Development): Dashboard Platform
+- **v2.0** (Archived): Travel Management Tools
+- **v1.0** (Legacy): Basic Visa Checker
 
 ## 🚀 시작하기
 

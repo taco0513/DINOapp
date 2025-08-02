@@ -1,6 +1,8 @@
 {
-  "name": "dino-v2",
-  "version": "0.1.0",
+  "name": "dino-v3",
+  "version": "3.0.0-alpha.1",
+  "description": "DINO v3.0 - Real-time Dashboard Platform for Digital Nomads",
+  "keywords": ["dashboard", "travel", "nomad", "real-time", "pwa"],
   "private": true,
   "scripts": {
     "dev": "next dev",

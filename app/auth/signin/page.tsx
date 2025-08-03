@@ -10,7 +10,7 @@ import { signIn, getSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ClientRedirect } from '@/components/ClientRedirect';
-import { trackConversion } from '@/lib/analytics/demo-tracker';
+// import { trackConversion } from '@/lib/analytics/demo-tracker'; // TODO: Implement demo tracker
 
 export default function SignInPage() {
   const searchParams = useSearchParams();
@@ -54,7 +54,7 @@ export default function SignInPage() {
     
     try {
       // Track conversion attempt
-      trackConversion('signup_attempt');
+      // trackConversion('signup_attempt'); // TODO: Implement demo tracker
       
       const result = await signIn('google', {
         callbackUrl,
@@ -64,7 +64,7 @@ export default function SignInPage() {
       if (result?.error) {
         setError('Google 로그인에 실패했습니다. 다시 시도해주세요.');
       } else if (result?.url) {
-        trackConversion('signup_success');
+        // trackConversion('signup_success'); // TODO: Implement demo tracker
         setShouldRedirect(result.url);
       }
     } catch {
@@ -76,7 +76,7 @@ export default function SignInPage() {
 
   const handleDemoMode = () => {
     // Track demo mode start
-    trackConversion('demo_start');
+    // trackConversion('demo_start'); // TODO: Implement demo tracker
     
     // Initialize demo mode
     localStorage.setItem('dino-demo-initialized', 'true');

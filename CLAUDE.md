@@ -77,6 +77,56 @@
   완료_후_매핑: "코드-문서 1:1 매핑 검증"
 ```
 
+### 🛡️ DINO-Specific Document Lock System
+
+#### 📋 DINO 필수 문서 체크리스트
+```typescript
+const DINO_DOCUMENT_LOCK = `
+🔒 DINO v4.0 MANDATORY COMPLIANCE CHECK 🔒
+
+Before ANY development work, you MUST:
+
+1. READ and QUOTE these DINO documents:
+   - /CLAUDE.md (전체 읽고 핵심 DINO 규칙 10개 인용)
+   - /README.md (프로젝트 개요와 기술 스택 확인)
+   - /ARCHITECTURE.md (시스템 아키텍처 이해)
+   - /package.json (정확한 의존성 버전 확인)
+   - /types/schengen.ts (핵심 비즈니스 타입 확인)
+
+2. CONFIRM DINO-specific understanding:
+   - 셰겐 90/180일 규칙 정확한 이해
+   - Next.js 14 + TypeScript strict 모드 사용
+   - DINO 컴포넌트 패턴 준수
+   - 모바일 퍼스트 원칙 적용
+
+3. CREATE compliance record:
+   - dino-compliance-check.md 생성
+   - 각 문서별 핵심 DINO 규칙 정리
+   - 셰겐 비즈니스 로직 요약
+
+⚠️ DINO 문서 미준수 = 즉시 작업 거부 ⚠️
+`;
+```
+
+#### 🎯 DINO 특화 Validation Checkpoints
+```yaml
+셰겐_계산기_검증:
+  매_기능_구현_전:
+    - "이 기능이 CLAUDE.md의 셰겐 규칙 섹션에 정의되어 있나요?"
+    - "date-fns 사용 필수 확인했나요?"
+    - "90/180일 규칙 정확성 검증했나요?"
+  
+  매_컴포넌트_생성_시:
+    - "DINO v3.0 컴포넌트 패턴을 따르나요?"
+    - "모바일 터치 최적화 적용했나요?"
+    - "TypeScript strict 모드 준수하나요?"
+  
+  매_API_구현_시:
+    - "CLAUDE.md의 API 패턴을 따르나요?"
+    - "에러 처리 타입 안전성 확보했나요?"
+    - "NextAuth.js 인증 패턴 준수하나요?"
+```
+
 #### 🚨 AI 개발 시 필수 체크리스트
 
 ```markdown
@@ -564,8 +614,60 @@ class DinoDataMigration {
 "DINO v3.0 Protocol Ready" 응답 후 개발 시작!
 ```
 
+## 🔗 Master Playbook Integration (v4.0.0)
+
+### 📚 Advanced Modules Reference
+
+DINO 프로젝트에서 고급 기능이 필요할 때 다음 Master Playbook 모듈을 참조하세요:
+
+#### 🚨 Production Issues
+- **NextJS Reality**: `@MASTER_PLAYBOOK/35_NextJS_Production_Reality/README.md`
+  - Hydration 에러 해결: `/patterns/hydration-error-patterns.md`
+  - SSR/CSR 결정 프레임워크: `/patterns/ssr-csr-decision-framework.md`
+
+#### 📊 Data Migration
+- **Data Migration Mastery**: `@MASTER_PLAYBOOK/34_Data_Migration_Mastery/README.md`
+  - LocalStorage → Cloud 패턴: `/patterns/localstorage-to-cloud-patterns.md`
+  - Migration Analyzer: `/scripts/migration-analyzer.ts`
+
+#### 🛡️ Crisis Management
+- **Crisis Management**: `@MASTER_PLAYBOOK/31_Crisis_Management/README.md`
+  - Emergency Protocols: `/detailed/emergency-protocols.md`
+  - TypeScript Crisis: `/templates/typescript-crisis.md`
+
+#### 🤖 AI Communication
+- **Context Engineering**: `@MASTER_PLAYBOOK/22_Context_Engineering/README.md`
+  - Smart Context Assembly: `/01_Smart_Context_Assembly.md`
+  - Auto Knowledge RAG: `/02_Auto_Knowledge_RAG.md`
+
+#### 🏭 Templates & Patterns
+- **Industry Templates**: `@MASTER_PLAYBOOK/25_Industry_Templates/README.md`
+- **Design System**: `@MASTER_PLAYBOOK/17_Design_System/README.md`
+- **Testing Strategy**: `@MASTER_PLAYBOOK/09_Testing_QA/README.md`
+
+### 🎯 Quick Access Commands
+
+```bash
+# Master Playbook 참조
+ls MASTER_PLAYBOOK/
+
+# 특정 모듈 접근
+@MASTER_PLAYBOOK/35_NextJS_Production_Reality/patterns/hydration-error-patterns.md
+
+# Crisis 상황 대응
+@MASTER_PLAYBOOK/31_Crisis_Management/protocols/emergency-steps.md
+```
+
+### 🔄 Integration Guidelines
+
+1. **DINO First**: 항상 DINO 특화 가이드를 우선 적용
+2. **Master Playbook Second**: 고급 패턴이나 특수 상황에서만 Master Playbook 참조
+3. **Adaptation Required**: Master Playbook 패턴을 DINO 컨텍스트에 맞게 조정
+4. **Document Updates**: 새로운 패턴 적용 시 CLAUDE.md 업데이트
+
 ---
 
-**🦕 DINO v3.0**: Document-First, AI-Optimized, Production-Ready! 
+**🦕 DINO v4.0**: Document-First, AI-Optimized, Production-Ready! 
 
-*Powered by AI Workflow Playbook v4.0.0 - 97% 문서 준수율, 98% AI 정확도, Zero 기술부채*
+*Powered by AI Workflow Playbook v4.0.0 Integration*
+*🔗 Master Playbook Access | 📋 97% Document Compliance | 🤖 98% AI Accuracy*

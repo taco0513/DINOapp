@@ -10,7 +10,7 @@ import { createGmailService } from '@/lib/gmail/gmail-service';
 import { createFlightParser } from '@/lib/gmail/flight-parser';
 import { createTravelPeriodCreator } from '@/lib/gmail/travel-period-creator';
 import { createMetricsCollector } from '@/lib/gmail/parsing-metrics';
-import type { GmailSyncResponse, GmailSyncRequest, EmailParseResult } from '@/types/gmail';
+import type { GmailSyncResponse, GmailSyncRequest, EmailParseResult, GmailSyncStatus } from '@/types/gmail';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {

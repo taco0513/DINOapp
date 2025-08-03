@@ -2,7 +2,13 @@
   "name": "dino-v3",
   "version": "3.0.0-alpha.1",
   "description": "DINO v3.0 - Real-time Dashboard Platform for Digital Nomads",
-  "keywords": ["dashboard", "travel", "nomad", "real-time", "pwa"],
+  "keywords": [
+    "dashboard",
+    "travel",
+    "nomad",
+    "real-time",
+    "pwa"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -56,6 +62,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^16.1.2",
     "postcss": "^8",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   },

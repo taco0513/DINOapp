@@ -1,0 +1,90 @@
+# Page snapshot
+
+```yaml
+- navigation:
+    - link "🦕 DINO v2.0":
+        - /url: /
+    - link "홈 페이지로 이동":
+        - /url: /
+        - text: 🏠 홈
+    - button "비자 서비스 메뉴 열기":
+        - text: 🛂 비자 서비스
+        - img
+    - heading "🛂 비자 서비스" [level=3]
+    - link "비자 체커 - 국가별 비자 요구사항 확인":
+        - /url: /visa
+        - text: 🔍 비자 체커 국가별 비자 요구사항 확인
+    - link "비자 추적기 - 비자 만료일 관리 및 알림":
+        - /url: /visa-tracker
+        - text: ⏰ 비자 추적기 비자 만료일 관리 및 알림
+    - link "비자 도우미 - 비자 신청 단계별 가이드":
+        - /url: /visa-assistant
+        - text: 📋 비자 도우미 비자 신청 단계별 가이드
+    - link "정책 업데이트 - 실시간 비자 정책 변경 알림":
+        - /url: /visa-updates
+        - text: 🔔 정책 업데이트 실시간 비자 정책 변경 알림
+    - button "여행 관리 메뉴 열기" [expanded]:
+        - text: ✈️ 여행 관리
+        - img
+    - heading "✈️ 여행 관리" [level=3]
+    - link "대시보드 - 여행 통계 및 현황 한눈에 보기":
+        - /url: /dashboard
+        - text: 📈 대시보드 여행 통계 및 현황 한눈에 보기
+    - link "샹겐 추적기 - 샹겐 90/180일 규칙 계산":
+        - /url: /schengen
+        - text: 🇪🇺 샹겐 추적기 샹겐 90/180일 규칙 계산
+    - link "여행 기록 - 지난 여행 기록 관리":
+        - /url: /trips
+        - text: 📅 여행 기록 지난 여행 기록 관리
+    - link "여행 분석 - 여행 패턴 및 지출 분석":
+        - /url: /analytics
+        - text: 📊 여행 분석 여행 패턴 및 지출 분석
+    - link "다국가 추적 - 여러 국가 체류 기간 추적":
+        - /url: /tracker
+        - text: 🌍 다국가 추적 여러 국가 체류 기간 추적
+    - link "여권 관리 페이지로 이동":
+        - /url: /multi-passport
+        - text: 📔 여권 관리
+    - link "로그인 페이지로 이동":
+        - /url: /auth/signin
+        - text: 로그인
+- text: 🦕
+- heading "DINO v2.0" [level=1]
+- paragraph: Digital Nomad Travel Manager
+- paragraph: 디지털 노마드를 위한 스마트 여행 관리 플랫폼입니다. 셰겐 규정 준수, 비자 관리, 여행 계획을 한 곳에서 해결하세요.
+- link "🚀 시작하기":
+    - /url: /dashboard
+- link "🇪🇺 셰겐 계산기":
+    - /url: /schengen
+- heading "왜 DINO v2.0인가요?" [level=2]
+- paragraph: 완전히 새롭게 설계된 아키텍처로 더 빠르고 안정적인 서비스를 제공합니다
+- text: 🧮
+- heading "정확한 셰겐 계산" [level=3]
+- paragraph: 90/180일 규칙을 정확하게 계산하여 안전한 여행 계획을 세울 수 있습니다
+- text: ⚡
+- heading "제로 기술부채" [level=3]
+- paragraph: 처음부터 새롭게 설계한 아키텍처로 빠르고 안정적인 성능을 보장합니다
+- text: 🛡️
+- heading "완벽한 타입 안전성" [level=3]
+- paragraph: TypeScript 100% 적용으로 오류 없는 안정적인 서비스를 제공합니다
+- text: 📱
+- heading "모바일 최적화" [level=3]
+- paragraph: 언제 어디서나 편리하게 이용할 수 있는 반응형 디자인을 제공합니다
+- text: 🚀
+- heading "초고속 성능" [level=3]
+- paragraph: 번들 크기 300KB 미만, 1초 미만 로딩으로 빠른 사용자 경험을 제공합니다
+- text: 🎯
+- heading "핵심 기능 집중" [level=3]
+- paragraph: 불필요한 기능을 제거하고 정말 필요한 핵심 기능에만 집중했습니다
+- heading "v2.0 개발 현황" [level=2]
+- text: 0 TypeScript 에러 <300KB 번들 크기 <1s 로딩 시간 100% 타입 안전성
+- heading "지금 바로 시작해보세요" [level=2]
+- paragraph: 새롭게 태어난 DINO v2.0으로 스마트한 여행 관리를 경험해보세요
+- link "🦕 DINO v2.0 시작하기":
+    - /url: /dashboard
+- contentinfo:
+    - text: 🦕
+    - paragraph: DINO v2.0 - Digital Nomad Travel Manager
+    - paragraph: Built with Next.js 14, TypeScript, and ❤️ for digital nomads
+- alert
+```

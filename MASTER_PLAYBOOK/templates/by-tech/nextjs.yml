@@ -1,0 +1,38 @@
+name: "Next.js Project Template"
+token_limit: 200
+description: "Next.js 프로젝트 전용 컨텍스트"
+
+versions:
+  14: "App Router 기본"
+  13: "App Router 도입"
+  12: "Pages Router"
+
+common_issues:
+  hydration: "@30_Traps/quick/hydration"
+  routing: "@detailed/nextjs-routing"
+  api_routes: "@detailed/nextjs-api"
+  deployment: "@10_Deployment/vercel"
+
+essential_config:
+  next_config:
+    - reactStrictMode: true
+    - swcMinify: true
+    
+  typescript:
+    - strict: true
+    - skipLibCheck: true
+
+performance:
+  image_optimization: "next/image 사용"
+  font_optimization: "next/font 사용"
+  lazy_loading: "dynamic imports"
+  
+quick_commands:
+  dev: "bun dev"
+  build: "bun build"
+  start: "bun start"
+  
+best_practices:
+  - "App Router 사용"
+  - "Server Components 기본"
+  - "Metadata API 활용"

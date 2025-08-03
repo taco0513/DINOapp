@@ -1,0 +1,44 @@
+{
+  "name": "crisis-management-toolkit",
+  "version": "1.0.0",
+  "description": "Crisis management and recovery tools for development projects",
+  "scripts": {
+    "crisis:analyze": "ts-node crisis-analyzer.ts",
+    "crisis:recover": "ts-node recovery-toolkit.ts",
+    "crisis:ts-errors": "ts-node recovery-toolkit.ts typescript",
+    "crisis:security": "ts-node recovery-toolkit.ts security", 
+    "crisis:build": "ts-node recovery-toolkit.ts build",
+    "crisis:rollback": "ts-node recovery-toolkit.ts rollback",
+    "crisis:diagnose": "ts-node crisis-analyzer.ts .",
+    "crisis:fix-imports": "ts-node ../30_Real_World_Traps/scripts/fix-hydration.ts",
+    "crisis:hydration-debug": "ts-node ../30_Real_World_Traps/scripts/fix-hydration.ts --debug",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.0.0"
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.22.0",
+    "@babel/traverse": "^7.22.0", 
+    "@babel/generator": "^7.22.0",
+    "@babel/types": "^7.22.0",
+    "glob": "^10.0.0",
+    "jest": "^29.0.0"
+  },
+  "bin": {
+    "crisis-analyze": "./crisis-analyzer.ts",
+    "crisis-recover": "./recovery-toolkit.ts"
+  },
+  "keywords": [
+    "crisis",
+    "recovery",
+    "typescript",
+    "debugging",
+    "automation"
+  ],
+  "author": "MASTER_PLAYBOOK",
+  "license": "MIT"
+}

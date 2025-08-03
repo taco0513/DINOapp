@@ -1,0 +1,37 @@
+name: "New Project Template"
+token_limit: 150
+description: "새 프로젝트 시작을 위한 최소 컨텍스트"
+
+required_info:
+  - project_type: "웹앱/API/모바일"
+  - timeline: "MVP 기한"
+  - team_size: "개발자 수"
+  - main_features: "핵심 기능 3개"
+
+auto_load:
+  - QUICK_START.md
+  - 24_Interview/quick-start
+  - 25_Templates/index
+
+project_types:
+  webapp:
+    template: "@25_Templates/webapp"
+    stack: "Next.js + TypeScript"
+    
+  api:
+    template: "@25_Templates/api"
+    stack: "Node + Express + Prisma"
+    
+  mobile:
+    template: "@25_Templates/mobile"
+    stack: "React Native + Expo"
+
+quick_decisions:
+  auth: "Supabase Auth"
+  db: "PostgreSQL"
+  hosting: "Vercel/Railway"
+  
+first_steps:
+  1: "Clone template"
+  2: "Run setup script"
+  3: "Start AI interview"

@@ -1,0 +1,26 @@
+{
+  "name": "ai-workflow-auto-docs",
+  "version": "1.0.0",
+  "description": "자동 문서 생성 및 파일 변경 추적 시스템",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "install-global": "npm install -g ."
+  },
+  "bin": {
+    "auto-docs": "./cli.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "commander": "^11.1.0", 
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
+    "yaml": "^2.3.4",
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.6"
+  },
+  "keywords": ["documentation", "automation", "ai", "workflow"],
+  "author": "AI Workflow Playbook",
+  "license": "MIT"
+}

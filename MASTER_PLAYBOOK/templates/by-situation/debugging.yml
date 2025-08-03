@@ -1,0 +1,30 @@
+name: "Debugging Template"
+token_limit: 200
+description: "효율적인 디버깅을 위한 컨텍스트 템플릿"
+
+required_info:
+  - error_message: "정확한 에러 메시지"
+  - environment: "개발/스테이징/프로덕션"
+  - recent_changes: "최근 변경사항"
+  - browser_console: "브라우저 콘솔 로그"
+
+load_modules:
+  - 31_Crisis/quick/debug
+  - 09_Testing/quick/debug
+  - 30_Traps/quick/common-errors
+
+quick_checks:
+  - console_errors: "콘솔 에러 확인"
+  - network_tab: "네트워크 실패 요청"
+  - source_maps: "소스맵 활성화 여부"
+  - env_variables: "환경 변수 설정"
+
+common_patterns:
+  undefined_error: "@30_Traps/quick/undefined"
+  async_error: "@30_Traps/quick/async"
+  import_error: "@30_Traps/quick/imports"
+
+next_steps:
+  success: "@detailed/optimization"
+  partial: "@detailed/debugging"
+  failure: "@crisis/escalation"

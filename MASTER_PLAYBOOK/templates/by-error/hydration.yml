@@ -1,0 +1,31 @@
+name: "Hydration Error Template"
+token_limit: 180
+description: "Next.js Hydration 에러 전용 템플릿"
+
+error_patterns:
+  - "Hydration failed"
+  - "Text content does not match"
+  - "Expected server HTML"
+
+instant_checks:
+  - window_usage: "window/document 직접 사용 확인"
+  - date_rendering: "new Date() 렌더링 확인"
+  - conditional_render: "조건부 렌더링 확인"
+  - random_values: "Math.random() 사용 확인"
+
+quick_fixes:
+  - use_effect: "useEffect로 이동"
+  - suppress_warning: "suppressHydrationWarning"
+  - dynamic_import: "dynamic(() => import(), {ssr: false})"
+  - mounted_state: "mounted state 패턴"
+
+load_resources:
+  - 30_Traps/quick/hydration-fix
+  - 30_Traps/scripts/hydration-debugger
+
+validation:
+  dev_check: "개발 환경에서 재현되는가?"
+  prod_only: "프로덕션에서만 발생하는가?"
+  
+escalation:
+  if_persist: "@30_Traps/detailed/hydration"

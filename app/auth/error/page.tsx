@@ -6,13 +6,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function AuthErrorPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('알 수 없는 오류가 발생했습니다.');
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
   
   const error = searchParams.get('error');
 
@@ -82,8 +84,15 @@ export default function AuthErrorPage() {
     }
   }, [error]);
 
+  const handleDemoMode = () => {
+    // Initialize demo mode
+    localStorage.setItem('dino-demo-initialized', 'true');
+    // Redirect to dashboard
+    router.push('/dashboard');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo */}
         <div className="flex justify-center">
@@ -129,20 +138,46 @@ export default function AuthErrorPage() {
               다시 로그인하기
             </Link>
             
-            <Link
-              href="/"
+            <button
+              onClick={handleDemoMode}
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
             >
-              홈으로 돌아가기
-            </Link>
+              <span className="mr-2">🎮</span>
+              체험 모드로 시작하기
+            </button>
           </div>
 
-          {/* Technical Details */}
+          {/* Technical Details - Expandable for mobile */}
           {error && (
-            <div className="mt-6 p-3 bg-gray-50 rounded-md">
-              <p className="text-xs text-gray-500">
-                <strong>오류 코드:</strong> {error}
-              </p>
+            <div className="mt-6">
+              <button
+                onClick={() => setShowDetails(!showDetails)}
+                className="w-full text-left p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600">기술적 세부 사항</span>
+                  <svg
+                    className={`w-4 h-4 text-gray-400 transform transition-transform ${
+                      showDetails ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </button>
+              {showDetails && (
+                <div className="mt-2 p-3 bg-gray-50 rounded-md">
+                  <p className="text-xs text-gray-500">
+                    <strong>오류 코드:</strong> {error}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    <strong>시간:</strong> {new Date().toLocaleString('ko-KR')}
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

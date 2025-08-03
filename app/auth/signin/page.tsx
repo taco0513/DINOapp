@@ -7,12 +7,14 @@
 
 import { useEffect, useState } from 'react';
 import { signIn, getSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ClientRedirect } from '@/components/ClientRedirect';
+import { trackConversion } from '@/lib/analytics/demo-tracker';
 
 export default function SignInPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldRedirect, setShouldRedirect] = useState<string | null>(null);
@@ -51,6 +53,9 @@ export default function SignInPage() {
     setError(null);
     
     try {
+      // Track conversion attempt
+      trackConversion('signup_attempt');
+      
       const result = await signIn('google', {
         callbackUrl,
         redirect: false,
@@ -59,6 +64,7 @@ export default function SignInPage() {
       if (result?.error) {
         setError('Google 로그인에 실패했습니다. 다시 시도해주세요.');
       } else if (result?.url) {
+        trackConversion('signup_success');
         setShouldRedirect(result.url);
       }
     } catch {
@@ -68,8 +74,19 @@ export default function SignInPage() {
     }
   };
 
+  const handleDemoMode = () => {
+    // Track demo mode start
+    trackConversion('demo_start');
+    
+    // Initialize demo mode
+    localStorage.setItem('dino-demo-initialized', 'true');
+    
+    // Redirect to dashboard
+    router.push('/dashboard');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo */}
         <div className="flex justify-center">
@@ -82,7 +99,7 @@ export default function SignInPage() {
           </Link>
         </div>
         
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900">
           로그인
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
@@ -129,6 +146,29 @@ export default function SignInPage() {
             </button>
           </div>
 
+          {/* Demo Mode CTA */}
+          <div className="mt-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">또는</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleDemoMode}
+              className="mt-4 w-full flex justify-center items-center gap-2 py-3 px-4 border-2 border-blue-600 rounded-md shadow-sm bg-white text-sm font-medium text-blue-600 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              <span className="text-lg">🎮</span>
+              체험 모드로 시작하기
+            </button>
+            <p className="mt-2 text-center text-xs text-gray-500">
+              로그인 없이 모든 기능을 체험해보세요
+            </p>
+          </div>
+
           {/* Info */}
           <div className="mt-6">
             <div className="text-center">
@@ -147,13 +187,19 @@ export default function SignInPage() {
           </div>
         </div>
 
-        {/* Back to Home */}
-        <div className="mt-6 text-center">
+        {/* Mobile-friendly navigation */}
+        <div className="mt-6 text-center space-y-2">
           <Link
-            href="/"
-            className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
+            href="/dashboard"
+            className="block text-sm text-blue-600 hover:text-blue-500 transition-colors"
           >
-            ← 홈으로 돌아가기
+            ← 대시보드로 돌아가기
+          </Link>
+          <Link
+            href="/about"
+            className="block text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            DINO 소개
           </Link>
         </div>
       </div>

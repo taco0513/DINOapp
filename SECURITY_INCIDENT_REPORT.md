@@ -3,7 +3,7 @@
 **Date**: 2025-08-03  
 **Incident Type**: High Entropy Secret Exposure on GitHub  
 **Severity**: HIGH  
-**Status**: RESOLVED
+**Status**: PARTIALLY RESOLVED - REQUIRES GOOGLE OAUTH ROTATION
 
 ## Incident Summary
 
@@ -36,18 +36,14 @@ The following sensitive information was exposed in commit `561f395`:
    - Delete or regenerate the exposed client secret
    - Update your application with new credentials
 
-2. **Regenerate NextAuth Secret**:
+2. ✅ **Regenerate NextAuth Secret**:
+   - Generated new secret: `6K4hKOZSY2/51cw+K2tHqNCQ1fsx0lmOo70m3oXwFq8=`
+   - Updated in `.env.local`
 
-   ```bash
-   openssl rand -base64 32
-   ```
-
-   - Use the output as your new `NEXTAUTH_SECRET`
-
-3. **Update Environment Variables**:
-   - Copy `.env.local.template` to `.env.local`
-   - Fill in the new credentials
-   - Verify `.env.local` is in `.gitignore`
+3. ⚠️ **Update Environment Variables**:
+   - ✅ Created `.env.local` with new NEXTAUTH_SECRET
+   - 🔴 **CRITICAL**: Google OAuth credentials still compromised - must rotate in Google Console
+   - ✅ Verified `.env.local` is in `.gitignore`
 
 ## Prevention Measures Implemented
 
